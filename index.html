@@ -3,8 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="sample tmp">
@@ -55,48 +55,8 @@
 			</tr>
 		</table>
 	</div>
-
 </div>
-
-
-<script>
-new Vue({
-	el: '.sample',
-	data: {
-		showModal: false,
-		showModal: true,
-		modalProductName: '',
-
-		i1: [
-			{
-				id: 1,
-				name: 'bmx'
-			},
-			{
-				id: 2,
-				name: 'forvard'
-			},
-			{
-				id: 3,
-				name: 'stells'
-			},
-		],
-		i2: []
-	},
-	methods: {
-		set(item, index) {
-			this.showModal = true;
-			this.modalProductName = item.name;
-			// this.i2.push(item);
-			// this.i1.splice(index, 1);
-		},
-		unset(item, index) {
-			this.i1.push(item);
-			this.i2.splice(index, 1);
-		}
-	}
-
-})
-</script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
