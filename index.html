@@ -11,7 +11,7 @@
 	<div class="snippet snippet__products">
 		<h3>Свободные</h3>
 		<table class="table table-bordered">
-			<tr v-for="(item, index) in i1" @click="set(item, index)">
+			<tr v-for="(item, index) in i1" @click="toEdit(item)">
 				<td>{{ index + 1}}</td>
 				<td>{{ item.name}}</td>
 			</tr>
@@ -83,7 +83,7 @@
 		</table>
 		<div class="show-modal__button-group">
 			<button type="button">Печать</button>
-			<button type="submit">ОК</button>
+			<button type="submit" @click.prevent="set(modalProductName)">ОК</button>
 			<button type="button">Отмена</button>
 		</div>
 	</form>

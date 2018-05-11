@@ -22,11 +22,15 @@ new Vue({
 		i2: []
 	},
 	methods: {
-		set(item, index) {
+		toEdit(item) {
 			this.showModal = true;
 			this.modalProductName = item.name;
-			// this.i2.push(item);
-			// this.i1.splice(index, 1);
+		},
+		set(name) {
+			this.i2.push({name: name});
+			this.showModal = false;
+			this.i1.splice(this.i1.indexOf(name), 1);
+			console.log(name)
 		},
 		unset(item, index) {
 			this.i1.push(item);
