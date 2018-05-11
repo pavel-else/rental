@@ -27,5 +27,11 @@
 	background-color: #fff;
 	padding: 10px 15px;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
+	align-items: center;
+}
+
+.show-modal__caption {
+	text-align: center;
 }

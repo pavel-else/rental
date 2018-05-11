@@ -2,7 +2,7 @@ new Vue({
 	el: '.sample',
 	data: {
 		showModal: false,
-		showModal: true,
+		// showModal: true,
 		modalProductName: '',
 
 		i1: [

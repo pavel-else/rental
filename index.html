@@ -27,8 +27,9 @@
 		</table>
 	</div>
 
-	<div class="show-modal" v-show="showModal">
-		<table class="table">
+	<form action="" class="show-modal" v-show="showModal">
+		<h3 class="show-modal__caption">Добавление нового ордера проката</h3>
+		<table class="table table-bordered">
 			<tr>
 				<td>Товар</td>
 				<td>{{modalProductName}}</td>
@@ -39,22 +40,53 @@
 			</tr>
 			<tr>
 				<td>Аванс</td>
-				<td></td>
+				<td><input type="text"></td>
 			</tr>
 			<tr>
 				<td>Клиент</td>
+				<td><input type="text"></td>
+			</tr>
+			<tr>
 				<td>Залог</td>
+				<td>
+					<select>
+		              <option value="">Паспорт</option>
+		              <option value="">Права</option>
+		              <option value="">Еще</option>
+		            </select>
+		        </td>
 			</tr>
 			<tr>
 				<td>Примечание</td>
+				<td><input type="text"></td>
+			</tr>
+			<tr>
 				<td>Акция</td>
+				<td>
+		            <select>
+		              <option value="">Новый Год</option>
+		              <option value="">Студент</option>
+		              <option value="">Еще</option>
+		            </select>
+				</td>
 			</tr>
 			<tr>
 				<td>Аксессуары</td>
-				<td></td>
+				<td>
+					<select>
+		              <option value="">Кресло</option>
+		              <option value="">Шлем</option>
+		              <option value="">Еще</option>
+		            </select>
+		        </td>
 			</tr>
 		</table>
-	</div>
+		<div class="show-modal__button-group">
+			<button type="button">Печать</button>
+			<button type="submit">ОК</button>
+			<button type="button">Отмена</button>
+		</div>
+	</form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="main.js"></script>
