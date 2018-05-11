@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+<div class="sample tmp">
+	<div class="snippet snippet__products">
+		<h3>Свободные</h3>
+		<table class="table table-bordered">
+			<tr v-for="(item, index) in i1" @click="set(item, index)">
+				<td>{{ index + 1}}</td>
+				<td>{{ item.name}}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="snippet snippet__orders">
+		<h3>В прокате</h3>
+		<table class="table table-bordered">
+			<tr v-for="(item, index) in i2" @click="unset(item, index)">
+				<td>{{ index + 1}}</td>
+				<td>{{ item.name}}</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="show-modal" v-show="showModal">
+		<table class="table">
+			<tr>
+				<td>Товар</td>
+				<td>{{modalProductName}}</td>
+			</tr>
+			<tr>
+				<td>ID</td>
+				<td>001</td>
+			</tr>
+			<tr>
+				<td>Аванс</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Клиент</td>
+				<td>Залог</td>
+			</tr>
+			<tr>
+				<td>Примечание</td>
+				<td>Акция</td>
+			</tr>
+			<tr>
+				<td>Аксессуары</td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+
+</div>
+
+
+<script>
+new Vue({
+	el: '.sample',
+	data: {
+		showModal: false,
+		showModal: true,
+		modalProductName: '',
+
+		i1: [
+			{
+				id: 1,
+				name: 'bmx'
+			},
+			{
+				id: 2,
+				name: 'forvard'
+			},
+			{
+				id: 3,
+				name: 'stells'
+			},
+		],
+		i2: []
+	},
+	methods: {
+		set(item, index) {
+			this.showModal = true;
+			this.modalProductName = item.name;
+			// this.i2.push(item);
+			// this.i1.splice(index, 1);
+		},
+		unset(item, index) {
+			this.i1.push(item);
+			this.i2.splice(index, 1);
+		}
+	}
+
+})
+</script>
+
+<style>
+	.table {
+		width: 300px;
+	}
+	.sample {
+		display: flex;
+		width: 960px;
+		margin: 0 auto;
+		padding-top: 20px;
+	}
+	.tmp {
+		outline: 1px solid lightgray;
+	}
+	.snippet {
+		display: flex;
+		width: 50%;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.show-modal {
+		width: 400px;
+		border: 1px solid lightgray;
+		box-sizing: border-box;
+		position: absolute;
+		left: calc(50% - 200px);
+		top: 100px;
+		background-color: #fff;
+		padding: 10px 15px;
+		display: flex;
+		justify-content: center;
+	}
+</style>
+</body>
+</html>
