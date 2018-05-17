@@ -17,12 +17,14 @@
 			</tr>
 		</table>
 	</div>
+
 	<div class="snippet snippet__orders">
 		<h3>В прокате</h3>
 		<table class="table table-bordered">
 			<tr v-for="(item, index) in orders" @click="unset(item, index)">
 				<td>{{ index + 1}}</td>
 				<td>{{ item.name}}</td>
+				<td>{{ item.timeStart }}</td>
 			</tr>
 		</table>
 	</div>

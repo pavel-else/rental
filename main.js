@@ -3,11 +3,12 @@ new Vue({
 	data: {
 		showOrderModal: false,
 		order: {
-			show: false,
 			id: Number,
 			name: String,
 			customer: String,
-			timeStart: Number,
+			time: Date,
+			timeStart: String,
+			timePlay: Date,
 			timeEnd: Number,
 			timeFull: Number,
 			bill: Boolean,
@@ -22,7 +23,10 @@ new Vue({
 		toEdit(item) {
 			this.showOrderModal = true;
 			this.order.name = item.name;
-			this.order.timeStart = new Date();
+			let time = new Date();
+			this.order.time = time;
+			this.timeStart = "time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.getHours() + ':' + time.getSeconds()";
+			console.log(this.timeStart)
 		},
 		setOrder() {
 			this.orders.push(this.order);
