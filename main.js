@@ -1,14 +1,38 @@
 new Vue({
 	el: '.sample',
 	data: {
-		showModal: false,
-		// showModal: true,
-		modalProductName: '',
+		showOrderModal: false,
+		order: {
+			show: false,
+			id: Number,
+			name: String,
+			customer: String,
+			timeStart: Number,
+			timeEnd: Number,
+			timeFull: Number,
+			bill: Boolean,
+			note: String,
+			saleId: Number,
+		},
 
 		products: false,
-		i2: []
+		orders: []
 	},
 	methods: {
+		toEdit(item) {
+			this.showOrderModal = true;
+			this.order.name = item.name;
+			this.order.timeStart = new Date();
+		},
+		setOrder() {
+			this.orders.push(this.order);
+			this.showOrderModal = false;
+			this.products.splice(this.products.indexOf(name), 1);
+		},
+		unset(item, index) {
+			this.products.push(item);
+			this.orders.splice(index, 1);
+		},
 		getData() {
 			//Эммитирует запрос к БД
 			return [
@@ -44,25 +68,8 @@ new Vue({
 					active: true,
 					tarif_id: 2,
 				},
-
-
 			]
 		},
-
-		toEdit(item) {
-			this.showModal = true;
-			this.modalProductName = item.name;
-		},
-		set(name) {
-			this.i2.push({name: name});
-			this.showModal = false;
-			this.products.splice(this.products.indexOf(name), 1);
-			console.log(name)
-		},
-		unset(item, index) {
-			this.products.push(item);
-			this.i2.splice(index, 1);
-		}
 	},
 	created() {
 		this.products = this.getData();

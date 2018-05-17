@@ -20,19 +20,19 @@
 	<div class="snippet snippet__orders">
 		<h3>В прокате</h3>
 		<table class="table table-bordered">
-			<tr v-for="(item, index) in i2" @click="unset(item, index)">
+			<tr v-for="(item, index) in orders" @click="unset(item, index)">
 				<td>{{ index + 1}}</td>
 				<td>{{ item.name}}</td>
 			</tr>
 		</table>
 	</div>
 
-	<form action="" class="show-modal" v-show="showModal">
+	<form action="" class="show-modal" v-show="showOrderModal">
 		<h3 class="show-modal__caption">Добавление нового ордера проката</h3>
 		<table class="table table-bordered">
 			<tr>
 				<td>Товар</td>
-				<td>{{modalProductName}}</td>
+				<td>{{order.name}}</td>
 			</tr>
 			<tr>
 				<td>ID</td>
@@ -83,8 +83,8 @@
 		</table>
 		<div class="show-modal__button-group">
 			<button type="button">Печать</button>
-			<button type="submit" @click.prevent="set(modalProductName)">ОК</button>
-			<button type="button" @click="showModal = false">Отмена</button>
+			<button type="submit" @click.prevent="setOrder">ОК</button>
+			<button type="button" @click="showOrderModal = false">Отмена</button>
 		</div>
 	</form>
 </div>
