@@ -11,7 +11,7 @@
 	<div class="snippet snippet__products">
 		<h3>Свободные</h3>
 		<table class="table table-bordered">
-			<tr v-for="(item, index) in i1" @click="toEdit(item)">
+			<tr v-for="(item, index) in products" @click="toEdit(item)">
 				<td>{{ index + 1}}</td>
 				<td>{{ item.name}}</td>
 			</tr>
