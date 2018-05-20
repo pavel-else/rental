@@ -2,34 +2,26 @@ new Vue({
 	el: '.sample',
 	data: {
 		showOrderModal: false,
-		order: {
-			id: Number,
-			name: String,
-			customer: String,
-			time: Date,
-			timeStart: String,
-			timePlay: Date,
-			timeEnd: Number,
-			timeFull: Number,
-			bill: Boolean,
-			note: String,
-			saleId: Number,
-		},
+		order: {},
 
 		products: false,
 		orders: []
 	},
 	methods: {
 		toEdit(item) {
+			this.clearOrder();
 			this.showOrderModal = true;
 			this.order.name = item.name;
-			let time = new Date();
-			this.order.time = time;
-			this.timeStart = "time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.getHours() + ':' + time.getSeconds()";
-			console.log(this.timeStart)
 		},
 		setOrder() {
+			let time = new Date();
+			this.order.time = time;
+			this.order.timeStart = time.toLocaleString();
+			this.order.timePlay = new Date() - time;
+
 			this.orders.push(this.order);
+			this.clearOrder();
+
 			this.showOrderModal = false;
 			this.products.splice(this.products.indexOf(name), 1);
 		},
@@ -74,9 +66,29 @@ new Vue({
 				},
 			]
 		},
+		clearOrder() {
+			this.order = {
+			id: Number,
+			name: String,
+			customer: String,
+			time: Date,
+			timeStart: String,
+			timePlay: Date,
+			timeEnd: Number,
+			timeFull: Number,
+			bill: Boolean,
+			note: String,
+			saleId: Number,
+		}
+		}
 	},
 	created() {
 		this.products = this.getData();
 		//Нужно добавить обработку возможных ошибок
+		setInterval(function(orders) {
+			for (let order = 0; order < orders.length; order++) {
+				orders[order].timePlay = new Date() - orders[order].time;
+			}
+		}, 1000, this.orders);
 	}
 })
