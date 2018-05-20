@@ -24,7 +24,7 @@
 			<tr v-for="(item, index) in orders" @click="unset(item, index)">
 				<td>{{ index + 1}}</td>
 				<td>{{ item.name}}</td>
-				<td>{{ item.timePlay }}</td>
+				<td>{{ timeFormat(item.timePlay) }}</td>
 			</tr>
 		</table>
 	</div>
@@ -90,6 +90,7 @@
 		</div>
 	</form>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="main.js"></script>
 </body>
