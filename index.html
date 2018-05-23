@@ -11,6 +11,10 @@
 	<div class="snippet snippet__products">
 		<h3>Свободные</h3>
 		<table class="table table-bordered">
+			<tr>
+				<th>№</th>
+				<th>Товар</th>
+			</tr>
 			<tr v-for="(item, index) in products" @click="toEdit(item)">
 				<td>{{ index + 1}}</td>
 				<td>{{ item.name}}</td>
@@ -21,9 +25,16 @@
 	<div class="snippet snippet__orders">
 		<h3>В прокате</h3>
 		<table class="table table-bordered">
+			<tr>
+				<th>№</th>
+				<th>Товар</th>
+				<th>Старт</th>
+				<th>В прокате</th>
+			</tr>
 			<tr v-for="(item, index) in orders" @click="unset(item, index)">
 				<td>{{ index + 1}}</td>
 				<td>{{ item.name}}</td>
+				<td>{{ item.timeStart }}</td>
 				<td>{{ timeFormat(item.timePlay) }}</td>
 			</tr>
 		</table>
