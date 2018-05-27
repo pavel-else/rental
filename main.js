@@ -1,3 +1,44 @@
+Vue.component('app-progress', {
+	props: {
+		max: 0,
+		val: 0,
+	},
+	computed: {
+		width() {
+			let w = this.val / this.max * 100;
+			return {
+				width: w + '%'
+			}
+		}
+	},
+	template: `
+		<div class="progress">
+			<div class="progress-bar" :style="width"></div>
+		</div>
+	`
+})
+
+Vue.component('product-list', {
+	props: {
+		products: Array
+	},
+	template: `
+	<div class="snippet snippet__products">
+		<h3>Свободные</h3>
+		<table class="table table-bordered">
+			<tr>
+				<th>№</th>
+				<th>Товар</th>
+			</tr>
+			<tr v-for="(item, index) in products" @click="toEdit(item)">
+				<td>{{ index + 1}}</td>
+				<td>{{ item.name}}</td>
+			</tr>
+		</table>
+	</div>
+	`
+})
+
 new Vue({
 	el: '.sample',
 	data: {
@@ -5,7 +46,9 @@ new Vue({
 		order: {},
 
 		products: [],
-		orders: []
+		orders: [],
+		max: 10,
+		val: 10
 	},
 	methods: {
 		toEdit(item) {
