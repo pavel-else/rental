@@ -3,8 +3,8 @@ Vue.component('product-list', {
 		products: Array
 	},
 	methods: {
-		toEdit(item) {
-			this.$emit("edit", item);
+		toEdit(item, index) {
+			this.$emit("edit", item, index);
 		}
 	},
 	template: `
@@ -15,7 +15,7 @@ Vue.component('product-list', {
 				<th>№</th>
 				<th>Товар</th>
 			</tr>
-			<tr v-for="(item, index) in products" @click="toEdit(item)">
+			<tr v-for="(item, index) in products" @click="toEdit(item, index)">
 				<td>{{ index + 1}}</td>
 				<td>{{ item.name}}</td>
 			</tr>
@@ -24,9 +24,35 @@ Vue.component('product-list', {
 	`
 })
 
+Vue.component('order-list', {
+	props: {
+		orders: Array,
+	},
+	template: `
+		<div class="snippet snippet__orders">
+			<h3>В прокате</h3>
+			<table class="table table-bordered">
+				<tr>
+					<th>№</th>
+					<th>Товар</th>
+					<th>Старт</th>
+					<th>В прокате</th>
+				</tr>
+				<tr v-for="(item, index) in orders" @click="unset(item, index)">
+					<td>{{ index + 1}}</td>
+					<td>{{ item.productName}}</td>
+					<td>{{}}</td>
+					<td>{{}}</td>
+				</tr>
+			</table>
+		</div>
+	`
+})
+
 Vue.component('edit-list', {
 	props: {
 		product : Object,
+		position: Number, //Позиция в массиве, для последующего удаления
 	},
 	data() {
 		return {
@@ -44,7 +70,7 @@ Vue.component('edit-list', {
 		setOrder() {
 			this.order.productName = this.product.name;
 
-			this.$emit("set", this.order)
+			this.$emit("set", this.order, this.position)
 		},
 		closeModal() {
 			this.$emit("close")
@@ -122,6 +148,7 @@ new Vue({
 		order: {
 			name: String,
 		},
+		productPosition: Number,
 		showOrderModal: false,
 		products: [],
 		orders: [],
@@ -133,9 +160,10 @@ new Vue({
 		closeModal() {
 			this.showOrderModal = false;
 		},
-		toEdit(item) {
+		toEdit(item, index) {
 			this.clearOrder();
 			this.order.name = item.name;
+			this.productPosition = index;
 			this.showOrderModal = true;
 		},
 		setOrder(order) {
@@ -148,8 +176,9 @@ new Vue({
 			this.orders.push(order);
 			// this.clearOrder();
 
+			console.log(this.products);
+			this.products.splice(this.productPosition, 1);
 			this.showOrderModal = false;
-			this.products.splice(this.products.indexOf(name), 1);
 		},
 		unset(item, index) {
 			this.products.push(item);
