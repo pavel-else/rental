@@ -1,26 +1,11 @@
-Vue.component('app-progress', {
-	props: {
-		max: 0,
-		val: 0,
-	},
-	computed: {
-		width() {
-			let w = this.val / this.max * 100;
-			return {
-				width: w + '%'
-			}
-		}
-	},
-	template: `
-		<div class="progress">
-			<div class="progress-bar" :style="width"></div>
-		</div>
-	`
-})
-
 Vue.component('product-list', {
 	props: {
 		products: Array
+	},
+	methods: {
+		toEdit(item) {
+			this.$emit("edit", item);
+		}
 	},
 	template: `
 	<div class="snippet snippet__products">
