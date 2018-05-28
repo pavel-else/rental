@@ -28,6 +28,22 @@ Vue.component('order-list', {
 	props: {
 		orders: Array,
 	},
+	methods: {
+		timeFormat (ms/**number*/){
+		    function num(val){
+		        val = Math.floor(val);
+		        return val < 10 ? '0' + val : val;
+		    }
+		    
+	        var sec = ms / 1000
+	          , hours = sec / 3600  % 24
+	          , minutes = sec / 60 % 60
+	          , seconds = sec % 60
+	        ;
+
+		    return num(hours) + ":" + num(minutes) + ":" + num(seconds);
+		},
+	},
 	template: `
 		<div class="snippet snippet__orders">
 			<h3>В прокате</h3>
@@ -39,10 +55,10 @@ Vue.component('order-list', {
 					<th>В прокате</th>
 				</tr>
 				<tr v-for="(item, index) in orders" @click="unset(item, index)">
-					<td>{{ index + 1}}</td>
-					<td>{{ item.productName}}</td>
-					<td>{{}}</td>
-					<td>{{}}</td>
+					<td>{{ index + 1 }}</td>
+					<td>{{ item.productName }}</td>
+					<td>{{ item.timeStart }}</td>
+					<td>{{ timeFormat(item.timePlay) }}</td>
 				</tr>
 			</table>
 		</div>
@@ -63,12 +79,18 @@ Vue.component('edit-list', {
 				customerId: Number,
 				customerName: String,
 				time: Object,
+				timeStart: String,
+				timePlay: Number,
 			}
 		}
 	},
 	methods: {
 		setOrder() {
 			this.order.productName = this.product.name;
+			let time = new Date();
+			this.order.time = time;
+			this.order.timeStart = time.toLocaleString();
+			this.order.timePlay = 0;
 
 			this.$emit("set", this.order, this.position)
 		},
@@ -167,16 +189,11 @@ new Vue({
 			this.showOrderModal = true;
 		},
 		setOrder(order) {
-			console.log(order)
-			// // let time = new Date();
-			// this.order.time = time;
-			// this.order.timeStart = time.toLocaleString();
-			// this.order.timePlay = 0;
+
 
 			this.orders.push(order);
 			// this.clearOrder();
 
-			console.log(this.products);
 			this.products.splice(this.productPosition, 1);
 			this.showOrderModal = false;
 		},
@@ -186,20 +203,6 @@ new Vue({
 		},
 		clearOrder() {
 			this.order = {}
-		},
-		timeFormat (ms/**number*/){
-		    function num(val){
-		        val = Math.floor(val);
-		        return val < 10 ? '0' + val : val;
-		    }
-		    
-	        var sec = ms / 1000
-	          , hours = sec / 3600  % 24
-	          , minutes = sec / 60 % 60
-	          , seconds = sec % 60
-	        ;
-
-		    return num(hours) + ":" + num(minutes) + ":" + num(seconds);
 		},
 	},
 	created() {
