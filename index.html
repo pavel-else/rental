@@ -8,8 +8,9 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
 </head>
 <body>
-<div class="sample tmp">
+<div id="app" class="tmp">
 	<product-list :products="products" @edit="toEdit"></product-list>
+	<edit-list :order="order" v-show="showOrderModal" @close="closeModal"></edit-list>
 <!-- 	
 <div class="snippet snippet__products">
 	<h3>Свободные</h3>
@@ -44,7 +45,7 @@
 	</table>
 </div> -->
 
-	<form action="" class="show-modal" v-show="showOrderModal">
+<!-- 	<form action="" class="show-modal" v-show="showOrderModal">
 		<h3 class="show-modal__caption">Добавление нового ордера проката</h3>
 		<table class="table table-bordered">
 			<tr>
@@ -103,7 +104,7 @@
 			<button type="submit" @click.prevent="setOrder">ОК</button>
 			<button type="button" @click="showOrderModal = false">Отмена</button>
 		</div>
-	</form>
+	</form> -->
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

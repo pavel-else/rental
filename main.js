@@ -24,11 +24,98 @@ Vue.component('product-list', {
 	`
 })
 
+Vue.component('edit-list', {
+	props: {
+		order : Object,
+	},
+	methods: {
+		closeModal() {
+			this.$emit("close")
+		}
+	},
+	template: `
+		<form action="" class="show-modal">
+			<h3 class="show-modal__caption">Добавление нового ордера проката</h3>
+			<table class="table table-bordered">
+				<tr>
+					<td>Товар</td>
+					<td>{{ order.name}}</td>
+				</tr>
+				<tr>
+					<td>ID</td>
+					<td>001</td>
+				</tr>
+				<tr>
+					<td>Аванс</td>
+					<td><input type="text"></td>
+				</tr>
+				<tr>
+					<td>Клиент</td>
+					<td><input type="text"></td>
+				</tr>
+				<tr>
+					<td>Залог</td>
+					<td>
+						<select>
+			              <option value="">Паспорт</option>
+			              <option value="">Права</option>
+			              <option value="">Еще</option>
+			            </select>
+			        </td>
+				</tr>
+				<tr>
+					<td>Примечание</td>
+					<td><input type="text"></td>
+				</tr>
+				<tr>
+					<td>Акция</td>
+					<td>
+			            <select>
+			              <option value="">Новый Год</option>
+			              <option value="">Студент</option>
+			              <option value="">Еще</option>
+			            </select>
+					</td>
+				</tr>
+				<tr>
+					<td>Аксессуары</td>
+					<td>
+						<select>
+			              <option value="">Кресло</option>
+			              <option value="">Шлем</option>
+			              <option value="">Еще</option>
+			            </select>
+			        </td>
+				</tr>
+			</table>
+
+			<div class="show-modal__button-group">
+				<button type="button">Печать</button>
+				<button type="submit" @click.prevent="setOrder">ОК</button>
+				<button type="button" @click="closeModal()">Отмена</button>
+			</div>
+
+		</form>
+	`,
+}); 
+
 new Vue({
-	el: '.sample',
+	el: '#app',
 	data: {
 		showOrderModal: false,
-		order: {},
+		order: {
+			id: Number,
+			name: String,
+			customer: String,
+			time: Date,
+			timeStart: String,
+			timePlay: Date,
+			timeEnd: Number,
+			timeFull: Number,
+			bill: Boolean,
+			note: String,
+			saleId: Number,
+		},
 
 		products: [],
 		orders: [],
@@ -36,10 +123,13 @@ new Vue({
 		val: 10
 	},
 	methods: {
+		closeModal() {
+			this.showOrderModal = false;
+		},
 		toEdit(item) {
 			this.clearOrder();
-			this.showOrderModal = true;
 			this.order.name = item.name;
+			this.showOrderModal = true;
 		},
 		setOrder() {
 			let time = new Date();
@@ -59,17 +149,6 @@ new Vue({
 		},
 		clearOrder() {
 			this.order = {
-				id: Number,
-				name: String,
-				customer: String,
-				time: Date,
-				timeStart: String,
-				timePlay: Date,
-				timeEnd: Number,
-				timeFull: Number,
-				bill: Boolean,
-				note: String,
-				saleId: Number,
 			}
 		},
 		timeFormat (ms/**number*/){
