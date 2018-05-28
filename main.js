@@ -26,12 +26,29 @@ Vue.component('product-list', {
 
 Vue.component('edit-list', {
 	props: {
-		order : Object,
+		product : Object,
+	},
+	data() {
+		return {
+			order: {
+				id: Number,
+				productName: String, 
+				advance: Number, //Сумма предоплаты
+				customerId: Number,
+				customerName: String,
+				time: Object,
+			}
+		}
 	},
 	methods: {
+		setOrder() {
+			this.order.productName = this.product.name;
+
+			this.$emit("set", this.order)
+		},
 		closeModal() {
 			this.$emit("close")
-		}
+		},
 	},
 	template: `
 		<form action="" class="show-modal">
@@ -39,7 +56,7 @@ Vue.component('edit-list', {
 			<table class="table table-bordered">
 				<tr>
 					<td>Товар</td>
-					<td>{{ order.name}}</td>
+					<td>{{ product.name }}</td>
 				</tr>
 				<tr>
 					<td>ID</td>
@@ -92,7 +109,7 @@ Vue.component('edit-list', {
 			<div class="show-modal__button-group">
 				<button type="button">Печать</button>
 				<button type="submit" @click.prevent="setOrder">ОК</button>
-				<button type="button" @click="closeModal()">Отмена</button>
+				<button type="button" @click="closeModal">Отмена</button>
 			</div>
 
 		</form>
@@ -102,26 +119,16 @@ Vue.component('edit-list', {
 new Vue({
 	el: '#app',
 	data: {
-		showOrderModal: false,
 		order: {
-			id: Number,
 			name: String,
-			customer: String,
-			time: Date,
-			timeStart: String,
-			timePlay: Date,
-			timeEnd: Number,
-			timeFull: Number,
-			bill: Boolean,
-			note: String,
-			saleId: Number,
 		},
-
+		showOrderModal: false,
 		products: [],
 		orders: [],
 		max: 10,
 		val: 10
 	},
+
 	methods: {
 		closeModal() {
 			this.showOrderModal = false;
@@ -131,14 +138,15 @@ new Vue({
 			this.order.name = item.name;
 			this.showOrderModal = true;
 		},
-		setOrder() {
-			let time = new Date();
-			this.order.time = time;
-			this.order.timeStart = time.toLocaleString();
-			this.order.timePlay = 0;
+		setOrder(order) {
+			console.log(order)
+			// // let time = new Date();
+			// this.order.time = time;
+			// this.order.timeStart = time.toLocaleString();
+			// this.order.timePlay = 0;
 
-			this.orders.push(this.order);
-			this.clearOrder();
+			this.orders.push(order);
+			// this.clearOrder();
 
 			this.showOrderModal = false;
 			this.products.splice(this.products.indexOf(name), 1);
@@ -148,8 +156,7 @@ new Vue({
 			this.orders.splice(index, 1);
 		},
 		clearOrder() {
-			this.order = {
-			}
+			this.order = {}
 		},
 		timeFormat (ms/**number*/){
 		    function num(val){

@@ -10,7 +10,7 @@
 <body>
 <div id="app" class="tmp">
 	<product-list :products="products" @edit="toEdit"></product-list>
-	<edit-list :order="order" v-show="showOrderModal" @close="closeModal"></edit-list>
+	<edit-list :product="order" v-show="showOrderModal" @set="setOrder" @close="closeModal"></edit-list>
 <!-- 	
 <div class="snippet snippet__products">
 	<h3>Свободные</h3>
