@@ -1,7 +1,7 @@
 .table {
 	width: 300px;
 }
-.sample {
+#app {
 	display: flex;
 	width: 960px;
 	margin: 100px auto 0;
@@ -34,4 +34,8 @@
 
 .show-modal__caption {
 	text-align: center;
+}
+
+.customer__select-list {
+	width: 100%;
 }

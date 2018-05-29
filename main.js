@@ -67,6 +67,7 @@ Vue.component('order-list', {
 
 Vue.component('edit-list', {
 	props: {
+		customers: Array,
 		product : Object,
 		position: Number, //Позиция в массиве, для последующего удаления
 	},
@@ -116,7 +117,12 @@ Vue.component('edit-list', {
 				</tr>
 				<tr>
 					<td>Клиент</td>
-					<td><input type="text"></td>
+					<td>
+
+						<select name="customer-list" class="customer__select-list">
+							<option value="" v-for="(item) in customers">{{item.fname}} {{item.sname}}</option>
+						</select>
+					</td>
 				</tr>
 				<tr>
 					<td>Залог</td>
@@ -167,15 +173,14 @@ Vue.component('edit-list', {
 new Vue({
 	el: '#app',
 	data: {
+		orders: [],
+		products: [],
+		customers: [],
 		order: {
 			name: String,
 		},
 		productPosition: Number,
 		showOrderModal: false,
-		products: [],
-		orders: [],
-		max: 10,
-		val: 10
 	},
 
 	methods: {
@@ -189,8 +194,6 @@ new Vue({
 			this.showOrderModal = true;
 		},
 		setOrder(order) {
-
-
 			this.orders.push(order);
 			// this.clearOrder();
 
@@ -201,15 +204,16 @@ new Vue({
 			this.products.push(item);
 			this.orders.splice(index, 1);
 		},
-		clearOrder() {
-			this.order = {}
-		},
 	},
 	created() {
 		//Нужно добавить обработку возможных ошибок
-		axios.get('http://overhost.net/rental2/api_v1/ajax/te.php')
+		axios.get('http://overhost.net/rental2/api_v1/te.php')
+		.catch(error => console.log('AXIOS' , error))
 		.then(response => {
-			this.products = response.data
+			this.products = response.data.products;
+			this.orders = response.data.orders;
+			this.customers = response.data.customers;
+			console.log(response.data)
 		})
 
 		setInterval(function(orders) {

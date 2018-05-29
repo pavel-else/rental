@@ -8,10 +8,18 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
 </head>
 <body>
+
 <div id="app" class="tmp">
 	<product-list :products="products" @edit="toEdit"></product-list>
 	<order-list :orders="orders"></order-list>
-	<edit-list :product="order" v-show="showOrderModal" @set="setOrder" @close="closeModal"></edit-list>
+	<edit-list 
+		:product="order" 
+		v-show="showOrderModal" 
+		@set="setOrder" 
+		@close="closeModal"
+		:customers="customers"
+		>			
+	</edit-list>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
