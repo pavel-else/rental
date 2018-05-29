@@ -207,7 +207,7 @@ new Vue({
 	},
 	created() {
 		//Нужно добавить обработку возможных ошибок
-		axios.get('http://overhost.net/rental2/api_v1/te.php', 'cmd=getInitial')
+		axios.get('http://overhost.net/rental2/api_v1/ajax/request.php', 'cmd=getInitial')
 		.catch(error => console.log('AXIOS' , error))
 		.then(response => {
 			this.products = response.data.products;
