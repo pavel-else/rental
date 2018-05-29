@@ -184,6 +184,21 @@ new Vue({
 	},
 
 	methods: {
+		click() {
+			var xhr = new XMLHttpRequest();
+
+			// var body = 'name=' + 'NAME' + '&surname=' + 'SURNAME';
+			var body = 'cmd=' + 'send' + '&value=' + "DATA"; 
+
+			xhr.open("POST", 'http://overhost.net/rental2/api_v1/te.php', true);
+			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+			//xhr.onreadystatechange = ...;
+
+			xhr.send(body);
+		},
+		click2() {
+		},
 		closeModal() {
 			this.showOrderModal = false;
 		},
