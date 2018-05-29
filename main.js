@@ -184,21 +184,6 @@ new Vue({
 	},
 
 	methods: {
-		click() {
-			var xhr = new XMLHttpRequest();
-
-			// var body = 'name=' + 'NAME' + '&surname=' + 'SURNAME';
-			var body = 'cmd=' + 'send' + '&value=' + "DATA"; 
-
-			xhr.open("POST", 'http://overhost.net/rental2/api_v1/te.php', true);
-			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-			//xhr.onreadystatechange = ...;
-
-			xhr.send(body);
-		},
-		click2() {
-		},
 		closeModal() {
 			this.showOrderModal = false;
 		},
@@ -222,7 +207,7 @@ new Vue({
 	},
 	created() {
 		//Нужно добавить обработку возможных ошибок
-		axios.get('http://overhost.net/rental2/api_v1/te.php')
+		axios.get('http://overhost.net/rental2/api_v1/te.php', 'cmd=getInitial')
 		.catch(error => console.log('AXIOS' , error))
 		.then(response => {
 			this.products = response.data.products;
@@ -230,6 +215,21 @@ new Vue({
 			this.customers = response.data.customers;
 			console.log(response.data)
 		})
+
+		var body = 'cmd=' + 'getInitial' +  '&value=' + '';
+		request = new XMLHttpRequest();
+		
+		request.onreadystatechange = function() {
+		      if (request.readyState == 4) {
+		            responseBody = request.responseText;
+		            data = JSON.parse(responseBody);
+		            console.log(data);
+		            // alert(data['message']);
+		      }
+		};
+
+		request.open('GET', 'http://overhost.net/rental2/api_v1/te.php', true);
+		request.send(body);
 
 		setInterval(function(orders) {
 			for (let order = 0; order < orders.length; order++) {

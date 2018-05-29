@@ -1,0 +1,139 @@
+commit 60fab4cbe3e4c6cdca3e674d5f934ea3e05b4c88
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Tue May 29 14:02:40 2018 +0300
+
+    postdata
+
+commit 6270185ab29b1c9005703c60721a2946005dd583
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Tue May 29 11:49:03 2018 +0300
+
+    Добавлена выборка клиентов
+
+commit 6fdb2c025aa1621013ffada6ffa54e42fcf4769a
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Mon May 28 15:09:33 2018 +0300
+
+    refactoring
+
+commit eb82465a9ca63fb30672dd9f899009c88b0efe0f
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Mon May 28 15:00:10 2018 +0300
+
+    Добавлено удаление позиций из списка продукции
+
+commit aa45be243a1a6706db77a86b302098c80fc42514
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Mon May 28 14:21:35 2018 +0300
+
+    В компонент editOrder оранизована передача данных
+
+commit 9bc56520b637cce2a1ece7eccdfc84230ff7c466
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Mon May 28 12:28:36 2018 +0300
+
+    Добавлен компонент editOrder
+
+commit 9bb27e499fde63c7350076118e43043b127e5376
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Mon May 28 10:22:14 2018 +0300
+
+    productList оформлен в глобальный компонент
+
+commit dce9ab5760dbfe98340e29f5f941fcecf0081dda
+Author: pavel-else <de.pavel.se@yande.ru>
+Date:   Sun May 27 23:02:08 2018 +0300
+
+     tmp
+
+commit 5f97f03cc4b09ffd6f43655b96b2a766e4316f32
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Fri May 25 12:20:26 2018 +0300
+
+    Добавлен модуль axios
+    Выборка данных с удаленного сервера
+
+commit 3c6a9c9e465365b24066f262ef526e2880ea588a
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Wed May 23 21:54:14 2018 +0300
+
+    add timestart
+    э
+
+commit 29494e10d6798cc4a586a4eff029676b65481f07
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Mon May 21 01:53:28 2018 +0300
+
+    добавлен формат времени ms -> hh:mm:ss
+
+commit 21a813bdc5f1c9aa020c0e9fad35e2e6425284a6
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Mon May 21 01:20:35 2018 +0300
+
+    Добавлена функция обновления времени аренды
+
+commit 51a3983f8021a29e6c8ea2ecd64bb88eebe4bdf8
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Fri May 18 00:01:35 2018 +0300
+
+    Временная метка
+
+commit bd2f8bc208017b2e04a2831e1de709e957bef971
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Thu May 17 23:31:56 2018 +0300
+
+    рефакторинг
+
+commit 4c3337627494999b21a33b91eeb503eae9e8feeb
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Thu May 17 22:26:21 2018 +0300
+
+    Переработан массив с продукцией
+
+commit 37bd6f48be920ccf863d6c3b76fb5414944c4596
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Fri May 11 23:52:28 2018 +0300
+
+     модалка. отмена
+
+commit f3eb1f4bd6342455b9a379fff2dda11868cb046a
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Fri May 11 23:48:39 2018 +0300
+
+    Добавлен механизм сохранения информации в список Активного проката
+
+commit 9095ca60a3c752e003d001bf3544c177fbe12494
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Fri May 11 23:29:37 2018 +0300
+
+    Добавлена форма добавления ордеров проката
+
+commit 5552ce89edf20a6663d3531a9f53d9976fddfc47
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Fri May 11 23:10:24 2018 +0300
+
+    JS вынесен в отдельный файл
+
+commit 950f2a81984fdafa29c087842a748e3fffa3e5d5
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Fri May 11 23:05:44 2018 +0300
+
+    Стили вынесены в отдельный файл
+
+commit bf98f4b8cb0fbbce4d4dc828b49002c4da574414
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Fri May 11 23:03:47 2018 +0300
+
+    Проект преосмыслен на Laravel/Vue
+
+commit 32f2b855ac89cb21fa098caf95d82a84a29fb9a0
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Fri May 4 23:42:09 2018 +0300
+
+    Добавлен таймтрек
+
+commit 4bc30f27ce41d1d4ca24997da2bcb48525c13c15
+Author: pavel-else <de.pavel.se@yandex.ru>
+Date:   Fri May 4 22:59:22 2018 +0300
+
+    initial commit
