@@ -13,11 +13,11 @@
 	<product-list :products="products" @edit="toEdit"></product-list>
 	<order-list :orders="orders"></order-list>
 	<edit-list 
-		:product="order" 
 		v-show="showOrderModal" 
+		:product-name="productName" 
+		:customers="customers"
 		@set="setOrder" 
 		@close="closeModal"
-		:customers="customers"
 		>			
 	</edit-list>
 </div>

@@ -68,7 +68,7 @@ Vue.component('order-list', {
 Vue.component('edit-list', {
 	props: {
 		customers: Array,
-		product : Object,
+		productName: String,
 		position: Number, //Позиция в массиве, для последующего удаления
 	},
 	data() {
@@ -87,7 +87,7 @@ Vue.component('edit-list', {
 	},
 	methods: {
 		setOrder() {
-			this.order.productName = this.product.name;
+			this.order.productName = this.productName;
 			let time = new Date();
 			this.order.time = time;
 			this.order.timeStart = time.toLocaleString();
@@ -105,7 +105,7 @@ Vue.component('edit-list', {
 			<table class="table table-bordered">
 				<tr>
 					<td>Товар</td>
-					<td>{{ product.name }}</td>
+					<td>{{ productName }}</td>
 				</tr>
 				<tr>
 					<td>ID</td>
@@ -165,7 +165,6 @@ Vue.component('edit-list', {
 				<button type="submit" @click.prevent="setOrder">ОК</button>
 				<button type="button" @click="closeModal">Отмена</button>
 			</div>
-
 		</form>
 	`,
 }); 
@@ -176,9 +175,7 @@ new Vue({
 		orders: [],
 		products: [],
 		customers: [],
-		order: {
-			name: String,
-		},
+		productName: '',
 		productPosition: Number,
 		showOrderModal: false,
 	},
@@ -188,14 +185,14 @@ new Vue({
 			this.showOrderModal = false;
 		},
 		toEdit(item, index) {
-			this.clearOrder();
-			this.order.name = item.name;
+			// this.productName = item.name;
+			console.log(item.name)
 			this.productPosition = index;
 			this.showOrderModal = true;
 		},
 		setOrder(order) {
 			this.orders.push(order);
-			// this.clearOrder();
+			this.clearOrder();
 			this.products.splice(this.productPosition, 1);
 			this.showOrderModal = false;
 		},
