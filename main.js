@@ -214,20 +214,11 @@ new Vue({
 		        val: ''
 		    }
 		})
-		.then(function(response) {
-		    console.log(response.data.products);
-		    // this.products = response.data.products;
-		    
-		    // for(var i = 0; i < response.data.products.length; i++) {
-		    // 	this.products.push(response.data.products[i]);
-		    // }
-		    this.products = response.data.products;
-
+		.then(response => {
+			this.products = response.data.products;
+			this.orders = response.data.orders;
+			this.customers = response.data.customers;
 		})
-		.catch(function (error) {
-		    console.log(error);
-		});
-
 		setInterval(function(orders) {
 			for (let order = 0; order < orders.length; order++) {
 				orders[order].timePlay = new Date() - orders[order].time;
