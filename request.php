@@ -24,26 +24,39 @@ switch ($cmd) {
     	new_customer($val);
     break;
     case 'getInitial':
-    	getData();
+    	echo json_encode(getInitial());
+    break;
+    case 'getProducts':
+    	echo json_encode(getProducts());
+    break;
+    case 'getOrders':
+    	echo json_encode(getOrders());
     break;
 }
-// getData();
-// $name = "Не известно";
-// $age = "Не известно";
-// if(isset($_POST['name'])) $name = $_POST['name'];
-// if (isset($_POST['age'])) $age = $_POST['age'];
-// echo "Ваше имя: $name  <br> Ваш возраст: $age";
 
-function getData() {
+function getInitial() {
 	$result = [];
+	$result['products'] = getProducts();
+	$result['orders'] = getOrders();
+
+	return $result;
+}
+
+function getProducts() {
 	$app_id = '8800000001';
 	$not_in_rental = '0,';			// Велосипеды которые не в прокате
 	$pDB = rent_connect_DB();		// Подключаемся к БД
 	
 	$sql = 'SELECT * FROM `products` WHERE `id_rent` NOT IN ('.trim($not_in_rental,',').') AND `active` = 1 AND `id_rental_org` = '.$app_id.' ORDER BY `name`';		// Перебираем все товары кроме активных (свободные велосипеды)
-	$result['products'] = $pDB->get($sql, false, true);
+	return $pDB->get($sql, false, true);
+}
 
-	echo json_encode($result);
+function getOrders() {
+	$app_id = '8800000001';
+	$sql = 'SELECT * FROM `orders` WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$app_id;
+	$pDB = rent_connect_DB();		// Подключаемся к БД
+	
+	return $pDB->get($sql, false, true);
 }
 
 function new_customer($customer) {

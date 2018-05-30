@@ -204,7 +204,7 @@ new Vue({
 			this.products.push(item);
 			this.orders.splice(index, 1);
 		},
-		sendRequest(cmd, value, promis) {
+		sendRequest(cmd, value, callback) {
 			/*
 			* For example
 				this.sendRequest('getInitial', '', response => {
@@ -219,14 +219,17 @@ new Vue({
 			        val: value
 			    }
 			})
-			.then(promis)
+			.then(callback)
 		}
 	},
 	created() {
+		// Запрос данных
 		this.sendRequest('getInitial', '', response => {
-				this.products = response.data.products;
-			});
-
+			this.products = response.data.products;
+			this.orders = response.data.orders;
+			console.log(response.data)
+		})
+		
 		setInterval(function(orders) {
 			for (let order = 0; order < orders.length; order++) {
 				orders[order].timePlay = new Date() - orders[order].time;
