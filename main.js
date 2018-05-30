@@ -196,7 +196,6 @@ new Vue({
 		setOrder(order) {
 			this.orders.push(order);
 			// this.clearOrder();
-
 			this.products.splice(this.productPosition, 1);
 			this.showOrderModal = false;
 		},
@@ -223,11 +222,10 @@ new Vue({
 		}
 	},
 	created() {
-		// Запрос данных
+		// Запрос данных для инициализации приложения
 		this.sendRequest('getInitial', '', response => {
 			this.products = response.data.products;
 			this.orders = response.data.orders;
-			console.log(response.data)
 		})
 		
 		setInterval(function(orders) {
@@ -239,8 +237,6 @@ new Vue({
 	mounted() {
 		this.sendRequest('getClients', '', response => {
 			this.customers = response.data;
-			console.log(this.customers)
 		})
 	}
-
 })
