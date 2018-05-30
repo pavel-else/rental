@@ -9,8 +9,11 @@ header('Access-Control-Allow-Credentials: true');
 error_reporting(E_ALL & ~E_NOTICE);
 date_default_timezone_set('Europe/Moscow');
 
-$cmd = $_REQUEST['cmd'];
-$val = $_REQUEST['value'];
+$postDataJSON = file_get_contents('php://input');
+$dataJSON = json_decode($postDataJSON, true);
+
+$cmd = $dataJSON['cmd'];
+$val = $dataJSON['value'];
 
 switch ($cmd) {
     case 'test':
@@ -24,7 +27,12 @@ switch ($cmd) {
     	getData();
     break;
 }
-getData();
+// getData();
+// $name = "Не известно";
+// $age = "Не известно";
+// if(isset($_POST['name'])) $name = $_POST['name'];
+// if (isset($_POST['age'])) $age = $_POST['age'];
+// echo "Ваше имя: $name  <br> Ваш возраст: $age";
 
 function getData() {
 	$result = [];
@@ -93,7 +101,7 @@ function new_customer($customer) {
 
 // /* Функция подключения БД */
 function rent_connect_DB(){
-	include_once('lib.db.php');
+	include_once('../lib.db.php');
 
 	$pDB = new Pdo_Db();
 

@@ -206,30 +206,27 @@ new Vue({
 		},
 	},
 	created() {
-		//Нужно добавить обработку возможных ошибок
-		axios.get('http://overhost.net/rental2/api_v1/ajax/request.php', 'cmd=getInitial')
-		.catch(error => console.log('AXIOS' , error))
-		.then(response => {
-			this.products = response.data.products;
-			this.orders = response.data.orders;
-			this.customers = response.data.customers;
-			console.log(response.data)
+		axios({
+		    method: 'post',
+		    url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
+		    data: {
+		        cmd: 'getInitial',
+		        val: ''
+		    }
 		})
+		.then(function(response) {
+		    console.log(response.data.products);
+		    // this.products = response.data.products;
+		    
+		    // for(var i = 0; i < response.data.products.length; i++) {
+		    // 	this.products.push(response.data.products[i]);
+		    // }
+		    this.products = response.data.products;
 
-		var body = 'cmd=' + 'getInitial' +  '&value=' + '';
-		request = new XMLHttpRequest();
-		
-		request.onreadystatechange = function() {
-		      if (request.readyState == 4) {
-		            responseBody = request.responseText;
-		            data = JSON.parse(responseBody);
-		            console.log(data);
-		            // alert(data['message']);
-		      }
-		};
-
-		request.open('GET', 'http://overhost.net/rental2/api_v1/te.php', true);
-		request.send(body);
+		})
+		.catch(function (error) {
+		    console.log(error);
+		});
 
 		setInterval(function(orders) {
 			for (let order = 0; order < orders.length; order++) {
