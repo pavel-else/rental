@@ -235,6 +235,12 @@ new Vue({
 				orders[order].timePlay = new Date() - orders[order].time;
 			}
 		}, 1000, this.orders);
+	},
+	mounted() {
+		this.sendRequest('getClients', '', response => {
+			this.customers = response.data;
+			console.log(this.customers)
+		})
 	}
 
 })
