@@ -204,21 +204,29 @@ new Vue({
 			this.products.push(item);
 			this.orders.splice(index, 1);
 		},
+		sendRequest(cmd, value, promis) {
+			/*
+			* For example
+				this.sendRequest('getInitial', '', response => {
+				this.products = response.data.products;
+			});
+			*/
+			axios({
+			    method: 'post',
+			    url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
+			    data: {
+			        cmd: cmd,
+			        val: value
+			    }
+			})
+			.then(promis)
+		}
 	},
 	created() {
-		axios({
-		    method: 'post',
-		    url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
-		    data: {
-		        cmd: 'getInitial',
-		        val: ''
-		    }
-		})
-		.then(response => {
-			this.products = response.data.products;
-			this.orders = response.data.orders;
-			this.customers = response.data.customers;
-		})
+		this.sendRequest('getInitial', '', response => {
+				this.products = response.data.products;
+			});
+
 		setInterval(function(orders) {
 			for (let order = 0; order < orders.length; order++) {
 				orders[order].timePlay = new Date() - orders[order].time;
