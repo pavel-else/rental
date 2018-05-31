@@ -230,14 +230,15 @@ new Vue({
 		this.sendRequest('getInitial', '', response => {
 			this.products = response.data.products;
 			this.orders = response.data.orders;
+		  	console.log(response)
 		})
 
 		// Обновление таймеров
 		setInterval(() => {this.now = new Date()}, 1000)
 	},
 	mounted() {
-		this.sendRequest('getClients', '', response => {
-			this.customers = response.data;
-		})
+		// this.sendRequest('getClients', '', response => {
+		// 	this.customers = response.data;
+		// })
 	}
 })
