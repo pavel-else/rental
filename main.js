@@ -27,9 +27,13 @@ Vue.component('product-list', {
 Vue.component('order-list', {
 	props: {
 		orders: Array,
+		now: null,
 	},
 	methods: {
 		timeFormat (ms/**number*/){
+			if (ms < 0) {
+				ms = 0;
+			}
 		    function num(val){
 		        val = Math.floor(val);
 		        return val < 10 ? '0' + val : val;
@@ -43,7 +47,11 @@ Vue.component('order-list', {
 
 		    return num(hours) + ":" + num(minutes) + ":" + num(seconds);
 		},
+		getTimePlay(time, delay) {
+			return this.timeFormat(this.now - time);			
+		}
 	},
+
 	template: `
 		<div class="snippet snippet__orders">
 			<h3>В прокате</h3>
@@ -58,43 +66,42 @@ Vue.component('order-list', {
 					<td>{{ index + 1 }}</td>
 					<td>{{ item.productName }}</td>
 					<td>{{ item.timeStart }}</td>
-					<td>{{ timeFormat(item.timePlay) }}</td>
+					<td>{{ getTimePlay(item.time, item.timeDelay) }}</td>
 				</tr>
 			</table>
 		</div>
 	`
 })
 
-Vue.component('edit-list', {
+Vue.component('edit-order', {
 	props: {
 		customers: Array,
 		productName: String,
 		position: Number, //Позиция в массиве, для последующего удаления
 	},
-	data() {
-		return {
-			order: {
+	methods: {
+		setOrder() {
+			let order = {
 				id: Number,
 				productName: String, 
 				advance: Number, //Сумма предоплаты
 				customerId: Number,
 				customerName: String,
 				time: Object,
-				timeStart: String,
-				timePlay: Number,
+				timeStart: Object,
+				timeDelay: 120000, //Number, ms
 			}
-		}
-	},
-	methods: {
-		setOrder() {
-			this.order.productName = this.productName;
-			let time = new Date();
-			this.order.time = time;
-			this.order.timeStart = time.toLocaleString();
-			this.order.timePlay = 0;
+		
+			order.productName = this.productName;
 
-			this.$emit("set", this.order, this.position)
+			let time = new Date();
+			order.time = time;
+			order.timePlay = 0;
+			order.timeStart = time.toLocaleString();
+
+			this.$emit("set", order, this.position);
 		},
+
 		closeModal() {
 			this.$emit("close")
 		},
@@ -172,6 +179,7 @@ Vue.component('edit-list', {
 new Vue({
 	el: '#app',
 	data: {
+		now: Date,
 		orders: [],
 		products: [],
 		customers: [],
@@ -185,14 +193,13 @@ new Vue({
 			this.showOrderModal = false;
 		},
 		toEdit(item, index) {
-			// this.productName = item.name;
-			console.log(item.name)
+			this.productName = item.name;
 			this.productPosition = index;
 			this.showOrderModal = true;
 		},
 		setOrder(order) {
 			this.orders.push(order);
-			this.clearOrder();
+			//this.clearOrder();
 			this.products.splice(this.productPosition, 1);
 			this.showOrderModal = false;
 		},
@@ -216,7 +223,7 @@ new Vue({
 			    }
 			})
 			.then(callback)
-		}
+		},
 	},
 	created() {
 		// Запрос данных для инициализации приложения
@@ -224,12 +231,9 @@ new Vue({
 			this.products = response.data.products;
 			this.orders = response.data.orders;
 		})
-		
-		setInterval(function(orders) {
-			for (let order = 0; order < orders.length; order++) {
-				orders[order].timePlay = new Date() - orders[order].time;
-			}
-		}, 1000, this.orders);
+
+		// Обновление таймеров
+		setInterval(() => {this.now = new Date()}, 1000)
 	},
 	mounted() {
 		this.sendRequest('getClients', '', response => {
