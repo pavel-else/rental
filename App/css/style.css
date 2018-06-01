@@ -17,6 +17,10 @@
 	align-items: center;
 }
 
+.table-bordered {
+	width: 400px;
+}
+
 .show-modal {
 	width: 400px;
 	border: 1px solid lightgray;
