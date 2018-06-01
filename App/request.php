@@ -1,5 +1,4 @@
 <?php
-
 error_reporting(E_ALL & ~E_NOTICE);
 date_default_timezone_set('Europe/Moscow');
 
@@ -11,6 +10,8 @@ header('Access-Control-Allow-Credentials: true');
 
 class Request
 {
+    public $logs = [];
+    private $response;
     private $dataJSON;
     private $app_id;
     private $pDB;
@@ -22,29 +23,58 @@ class Request
     }
 
     public function response()  {
+        /*
+        *   1. Подключаемся к БД
+        *   2. Парсим входящий запрос по отдельным командам
+        *   3. По одной команде пропускаем через свитч, кот определяет какая функция обработает эту команду
+        *   4. Результат своей работы каждая функция записывает в $this->response
+        *   5. Массив $this->response отправляется на клиент.
+        */
+
+        $this->response  = [];
         $this->pDB = $this->rent_connect_DB();
         
-        $cmd = $this->dataJSON['cmd'];
+
+        $cmds = $this->dataJSON['cmds'];
         $value = $this->dataJSON['value'];
 
-        switch ($cmd) {
-            case 'getInitial':
-                $this->sendToClient($this->getInitial());
-            break;
-            case 'getProducts':
-                echo "case getProducts";
-                $this->sendToClient($this->getProducts());
-            break;
-            case 'getOrders':
-                $this->sendToClient($this->getOrders());
-            break;
-            case 'getClients':
-                $this->sendToClient($this->getClients());
-            break;
+        $switch = function ($cmd) use($value) {
+            switch ($cmd) {
+                case 'getLogs':
+                    $this->response['logs'] = $this->logs;
+                break;
+                case 'getProducts':
+                    $this->response['products'] = $this->getProducts();
+                break;
+                case 'getOrders':
+                    $this->response['orders'] = $this->getOrders();
+                break;
+                case 'getClients':
+                    $this->response['clients'] = $this->getClients();
+                break;
+                case 'writeLog':
+                    $this->writeLog($value);
+                break;
+                case 'setLogs':
+                    $this->writeLog($value);
+                    $this->getLogs();
+                break;
+            } 
+        };
+
+        if (gettype($cmds) == 'array'){
+            foreach ($cmds as $key => $cmd) {
+                $switch($cmd);
+            }    
+        } else {
+            $switch($cmds);
         }
+
+        $this->send($this->response);
     }
 
-    private function sendToClient($data) {
+    // Отправка данных клиенту
+    private function send($data) {
         echo json_encode($data);
     }
     
@@ -63,24 +93,27 @@ class Request
         return $pDB;
     }
 
-    private function getInitial() {
-        $result = [];
-        $result['products'] = $this->getProducts();
-        $result['orders'] = $this->getOrders();
-        return $result;
+    private function writeLog($log) {
+        $this->logs[] = $log;
     }
 
+    private function getLogs() {
+        $this->response['logs'] = $this->logs;
+    }
+
+
     private function getProducts() {
-        $not_in_rental = '0,';          // Велосипеды которые не в прокате  
-            $app_id = '8800000001'; 
-    $sql = 'SELECT * FROM `products` WHERE `id_rent` NOT IN ('.trim($not_in_rental,',').') AND `active` = 1 AND `id_rental_org` = '.$app_id.' ORDER BY `name`';     // Перебираем все товары кроме активных (свободные велосипеды)
-        echo json_decode ($this->pDB->get($sql, false, true));
+        $not_in_rental = '0,';          // Велосипеды которые не в прокате   
+        $sql = 'SELECT * FROM `products` WHERE `id_rent` NOT IN ('.trim($not_in_rental,',').') AND `active` = 1 AND `id_rental_org` = '.$this->app_id.' ORDER BY `name`';     // Перебираем все товары кроме активных (свободные велосипеды)
+
+        $this->writeLog("f.GetProducts completed");
         return $this->pDB->get($sql, false, true);
     }
 
     private function getOrders() {
         $sql = 'SELECT * FROM `orders` WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
-        
+        $this->writeLog("f.Orders completed");
+
         return $this->pDB->get($sql, false, true);
     }
 

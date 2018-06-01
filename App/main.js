@@ -180,6 +180,7 @@ new Vue({
     el: '#app',
     data: {
         now: Date,
+        logs: '',
         orders: [],
         products: [],
         customers: [],
@@ -207,37 +208,44 @@ new Vue({
             this.products.push(item);
             this.orders.splice(index, 1);
         },
-        sendRequest(cmd, value, callback) {
-            /*
-            * For example
-                this.sendRequest('getInitial', '', response => {
-                this.products = response.data.products;
-            });
-            */
+        getData(cmds, callback) {
             axios({
                 method: 'post',
                 url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
                 data: {
-                    cmd: cmd,
-                    val: value
+                    cmds: cmds,
                 }
             })
             .then(callback)
         },
+        setData(cmds, value, callback) {
+
+            axios({
+                method: 'post',
+                url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
+                data: {
+                    cmds: cmds,
+                    value: value,
+                }
+            })
+            .then(callback)
+        }
     },
     created() {
-        // Запрос данных для инициализации приложения
-        this.sendRequest('getInitial', '', response => {
+        //Запрос данных для инициализации приложения
+        this.getData(['getProducts', 'getOrders', 'getLogs'], response => {
             this.products = response.data.products;
             this.orders = response.data.orders;
+            this.logs = response.data.logs;
+            // console.log(this.logs);
         })
 
         // Обновление таймеров
         setInterval(() => {this.now = new Date()}, 1000)
     },
     mounted() {
-        this.sendRequest('getClients', '', response => {
-            this.customers = response.data;
+        this.getData(['getClients'], response => {
+            this.customers = response.data.clients;
         })
     }
 })
