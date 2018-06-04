@@ -14,12 +14,14 @@
     <order-list :orders="orders" :now="now"></order-list>
     <edit-order 
         v-show="showOrderModal" 
-        :product-name="productName" 
+        :product-name="productName"
+        :product="product" 
         :customers="customers"
         @set="setOrder" 
         @close="closeModal"
         >
     </edit-order>
+    <button @click="test">test</button>
 </div> 
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

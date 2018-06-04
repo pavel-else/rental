@@ -18,6 +18,7 @@ Vue.component('product-list', {
             <tr v-for="(item, index) in products" @click="toEdit(item, index)">
                 <td>{{ index + 1}}</td>
                 <td>{{ item.name}}</td>
+                <td>{{item.id}}</td>
             </tr>
         </table>
     </div>
@@ -65,7 +66,7 @@ Vue.component('order-list', {
                 <tr v-for="(item, index) in orders" @click="unset(item, index)">
                     <td>{{ index + 1 }}</td>
                     <td>{{ item.productName }}</td>
-                    <td>{{ item.timeStart }}</td>
+                    <td>{{ item.start_time }}</td>
                     <td>{{ getTimePlay(item.time, item.timeDelay) }}</td>
                 </tr>
             </table>
@@ -77,27 +78,49 @@ Vue.component('edit-order', {
     props: {
         customers: Array,
         productName: String,
-        position: Number, //Позиция в массиве, для последующего удаления
+        product: Object,
+        position: Number, //Позиция в массиве, для последующего удаления из <product-list>
     },
     methods: {
         setOrder() {
             let order = {
+                accessories: '',
+                advance: 0, //Сумма предоплаты
+                advance_hold: false,
+                advance_time: 0,
+                bill: 0,
+                bill_no_sale: null,
+                customer_id: Number,
+                customer_name: "Кравцова Лолита Александровна",
+                end_time: '',
                 id: Number,
-                productName: String, 
-                advance: Number, //Сумма предоплаты
-                customerId: Number,
-                customerName: String,
+                id_rental_org: "8800000001",
+                note: '',
+                order_id: Number,
+                play_pause: true,
+                products: [18,13,10],
+                sale_id: '',
+                start_time: String,
+                status: String,
+
                 time: Object,
-                timeStart: Object,
+                productName: String, 
+                customerName: String,
+
                 timeDelay: 120000, //Number, ms
             }
-        
-            order.productName = this.productName;
+
+            order.status = 'ACTIVE';
+            order.customer_id = 531;
+            order.order_id = 777;
 
             let time = new Date();
             order.time = time;
             order.timePlay = 0;
-            order.timeStart = time.toLocaleString();
+            order.start_time = Math.floor(Date.now() / 1000);
+
+            order.productName = this.product.name;
+
 
             this.$emit("set", order, this.position);
         },
@@ -113,6 +136,7 @@ Vue.component('edit-order', {
                 <tr>
                     <td>Товар</td>
                     <td>{{ productName }}</td>
+                    <td>{{ product.name}}</td>
                 </tr>
                 <tr>
                     <td>ID</td>
@@ -182,10 +206,14 @@ new Vue({
         now: Date,
         logs: '',
         orders: [],
+        product: {},
         products: [],
         customers: [],
+
+        product: {},
         productName: '',
         productPosition: Number,
+
         showOrderModal: false,
     },
 
@@ -196,12 +224,18 @@ new Vue({
         toEdit(item, index) {
             this.productName = item.name;
             this.productPosition = index;
+
+            this.product = item;
+
             this.showOrderModal = true;
         },
         setOrder(order) {
             this.orders.push(order);
-            //this.clearOrder();
-            this.products.splice(this.productPosition, 1);
+            this.setData('setOrder', order, response => {
+                console.log(response.data);
+            });
+            // console.log(order);
+            this.products.splice(this.productPosition, 1);  
             this.showOrderModal = false;
         },
         unset(item, index) {
@@ -218,17 +252,32 @@ new Vue({
             })
             .then(callback)
         },
-        setData(cmds, value, callback) {
+        setData(cmd, value, callback) {
 
             axios({
                 method: 'post',
                 url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
                 data: {
-                    cmds: cmds,
+                    cmds: cmd,
                     value: value,
                 }
             })
             .then(callback)
+        },
+
+        test() {
+            data = {
+                id: '155',
+                order_id: '777',
+                product_id: '16',
+                bill: 0,
+                bill_no_sale: 0,
+                end_time: 0,
+            }
+
+            this.setData('test', data, response => {
+                console.log(response.data)
+            })
         }
     },
     created() {
@@ -237,7 +286,7 @@ new Vue({
             this.products = response.data.products;
             this.orders = response.data.orders;
             this.logs = response.data.logs;
-            // console.log(this.logs);
+             console.log(this.orders);
         })
 
         // Обновление таймеров
