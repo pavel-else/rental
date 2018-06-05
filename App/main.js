@@ -98,7 +98,7 @@ Vue.component('edit-order', {
                 note: '',
                 order_id: Number,
                 play_pause: true,
-                products: [18,13,10],
+                products: [18],
                 sale_id: '',
                 start_time: String,
                 status: String,

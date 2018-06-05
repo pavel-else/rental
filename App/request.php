@@ -132,9 +132,35 @@ class Request
     }
 
     private function setOrder($order) {
-        $sql = 'INSERT INTO `orders` (`id`, `order_id`, `id_rental_org`, `status`, `customer_id`, `customer_name`, `start_time`, `advance_time`, `advance`, `advance_hold`, `sale_id`, `note`, `products`, `accessories`, `play_pause`, `bill`, `bill_no_sale`, `end_time`) 
-                VALUES (NULL, :order_id, :id_rental_org, :status, :order_customer_id, :order_customer_name, :order_start_time, :order_advance_time, :order_advance, :order_advance_hold, :order_sale_id, :order_note, :order_products, :order_accessories, :order_play_pause, :order_bill, :order_bill_no_sale, NULL)';
-        $data = array(
+        $sql = 'INSERT INTO `orders` (
+            `id`,
+            `order_id`,
+            `id_rental_org`,
+            `status`,
+            `customer_id`,
+            `customer_name`,
+            `start_time`,
+            `advance_time`,
+            `advance`,
+            `advance_hold`,
+            `sale_id`,
+            `note`
+        ) VALUES (
+            NULL, 
+            :order_id, 
+            :id_rental_org, 
+            :status, 
+            :order_customer_id, 
+            :order_customer_name, 
+            :order_start_time, 
+            :order_advance_time, 
+            :order_advance, 
+            :order_advance_hold, 
+            :order_sale_id, 
+            :order_note
+        )';
+
+        $order_data = array(
             'order_id' =>               $order[order_id],
             'id_rental_org' =>          $order[id_rental_org],//$this->app_id,
             'status' =>                 $order[status],
@@ -146,15 +172,39 @@ class Request
             'order_advance_hold' =>     $order[advance_hold],
             'order_sale_id' =>          $order[sale_id],
             'order_note' =>             $order[note],
-            'order_products' =>         $order[products],
-            'order_accessories' =>      $order[accessories],
-            'order_play_pause' =>       $order[play_pause],
-            'order_bill' =>             $order[bill],
-            'order_bill_no_sale' =>     $order[bill_no_sale]
         );
-        
-        if ($this->pDB->set($sql, $data)) {
-            //$sql = INSERT
+       
+        if ($this->pDB->set($sql, $order_data)) {
+            
+            $subsql = 'INSERT INTO `order_products` (
+                `id`, 
+                `order_id`, 
+                `product_id`,
+                `bill`,
+                `bill_no_sale`,
+                `end_time`
+            ) VALUES (
+                NULL, 
+                :order_id, 
+                :product_id,
+                :bill,
+                :bill_no_sale,
+                :end_time
+            )';
+
+            $product_data = array(
+                'order_id' => $order[order_id],
+                'product_id' => '',
+                'bill' => 0,
+                'bill_no_sale' => 0,
+                'end_time' => $order[end_time] ? date("Y-m-d H:i:s", $order[end_time]) : NULL
+            );
+
+            foreach ($order[products] as $key => $product) {
+                $product_data[product_id] = $product;
+
+                $this->pDB->set($subsql, $product_data);                
+            }
         } else {
             $this->request['logs'] = 'setOrder Error';
         }
@@ -164,13 +214,14 @@ class Request
     private function test($value) {
         $sql = 'INSERT INTO `order_products` (`id`, `order_id` , `product_id`, `bill`, `bill_no_sale`, `end_time`) VALUES (:id, :order_id, :product_id, :bill, :bill_no_sale, :end_time)';
         $data = array(
-            'id' => $value[id],
+            'id' => null,
             'order_id' => $value[order_id],
             'product_id' => $value[product_id],
             'bill' => $value[bill],
             'bill_no_sale' => $value[bill_no_sale],
             'end_time' => $value[end_time]
         );
+
         $this->pDB->set($sql, $data);
     }
 }
