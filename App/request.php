@@ -56,6 +56,9 @@ class Request
                 case 'getClients':
                     $this->response['clients'] = $this->getClients();
                 break;
+                case 'getMaxOrderID':
+                    $this->response['options']['max_order_id'] = $this->getMaxOrderID();
+                break;
                 case 'writeLog':
                     $this->writeLog($value);
                 break;
@@ -92,7 +95,7 @@ class Request
     
     // /* Функция подключения БД */
     private function rent_connect_DB(){
-        require_once('../lib.db.php');
+        require_once('../../lib.db.php');
 
         $pDB = new Pdo_Db();
 
@@ -134,9 +137,7 @@ class Request
             $result[] = $order;
         }
 
-
         return $result;
-
     }
 
     private function getOrderProducts($order_id) {
@@ -151,6 +152,15 @@ class Request
         $sql = 'SELECT * FROM `clients` WHERE `id_rental_org` = '.$this->app_id .' ORDER BY `clients`.`fname` ASC';
 
         return $this->pDB->get($sql, false, true);
+    }
+
+    private function getMaxOrderID() {
+        $sql = 'SELECT `order_id` FROM `orders` WHERE `id_rental_org` = '.$this->app_id .' ORDER BY `order_id` DESC LIMIT 1';
+        $result = $this->pDB->get($sql, false, true);
+
+        foreach ($result as $key => $value) {
+            return $value[order_id];
+        }
     }
 
     private function setOrder($order) {
@@ -225,7 +235,9 @@ class Request
             foreach ($order[products] as $key => $product) {
                 $product_data[product_id] = $product;
 
-                $this->pDB->set($subsql, $product_data);                
+                $this->pDB->set($subsql, $product_data); 
+
+                echo("UPDATE `products` SET `active` = active  WHERE `product_id` = " . $product); 
             }
         } else {
             $this->request['logs'] = 'setOrder Error';
@@ -233,11 +245,9 @@ class Request
     }
 
     private function test($value) {
-        print_r($this->getOrderProducts(777));
     }
 }
 
 $request = new Request(8800000001);
 $request->response();
-
 ?>

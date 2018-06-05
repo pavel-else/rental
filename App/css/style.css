@@ -10,6 +10,8 @@
 	width: 960px;
 	margin: 100px auto 0;
 	padding-top: 20px;
+	display: flex;
+	justify-content: space-between;
 }
 .tmp {
 	outline: 1px solid lightgray;
@@ -46,4 +48,11 @@
 
 .customer__select-list {
 	width: 100%;
+}
+
+.snippet__products {
+	width: 200px;
+}
+.snippet__orders {
+	width: 400px;
 }

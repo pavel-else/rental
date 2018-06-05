@@ -14,9 +14,9 @@
     <order-list :orders="orders" :now="now"></order-list>
     <edit-order 
         v-show="showOrderModal" 
-        :product-name="productName"
         :product="product" 
         :customers="customers"
+        :options="options"
         @set="setOrder" 
         @close="closeModal"
         >

@@ -18,7 +18,7 @@ Vue.component('product-list', {
             <tr v-for="(item, index) in products" @click="toEdit(item, index)">
                 <td>{{ index + 1}}</td>
                 <td>{{ item.name}}</td>
-                <td>{{item.id}}</td>
+                <td>{{ item.id }}</td>
             </tr>
         </table>
     </div>
@@ -80,6 +80,8 @@ Vue.component('order-list', {
                     <th>Старт</th>
                     <th>В прокате</th>
                 </tr>
+            </table>
+            <table class="table table-bordered">
 
                 <tr v-for="(item, index) in orders" @click="unset(item, index)">
                     <td>{{ index + 1 }}</td>
@@ -100,11 +102,22 @@ Vue.component('order-list', {
 Vue.component('edit-order', {
     props: {
         customers: Array,
-        productName: String,
         product: Object,
+        options: Object,
         position: Number, //Позиция в массиве, для последующего удаления из <product-list>
     },
+    data() {
+        return {
+            selectCustomerID: 0
+        }
+    },
     methods: {
+        order_id() {
+            return +this.options.max_order_id + 1;
+        },
+        onSelected(item) {
+            console.log(item)
+        },
         setOrder() {
             let order = {
                 accessories: '',
@@ -114,14 +127,14 @@ Vue.component('edit-order', {
                 bill: 0,
                 bill_no_sale: null,
                 customer_id: Number,
-                customer_name: "Кравцова Лолита Александровна",
+                customer_name: '',
                 end_time: '',
                 id: Number,
                 id_rental_org: "8800000001",
                 note: '',
                 order_id: Number,
                 play_pause: true,
-                products: [18],
+                products: Array,
                 sale_id: '',
                 start_time: String,
                 status: String,
@@ -130,12 +143,14 @@ Vue.component('edit-order', {
             }
 
             order.status = 'ACTIVE';
-            order.customer_id = 531;
-            order.order_id = 777;
+            order.customer_id = this.selectCustomerID;
+            order.order_id = this.options.max_order_id;
             order.products = [this.product.id];
 
             order.start_time = Math.floor(Date.now() / 1000);
-            this.$emit("set", order, this.position);
+
+            //this.$emit("set", order, this.position);
+            console.log(order)
         },
 
         closeModal() {
@@ -152,7 +167,7 @@ Vue.component('edit-order', {
                 </tr>
                 <tr>
                     <td>ID</td>
-                    <td>001</td>
+                    <td>{{ order_id() }}</td>
                 </tr>
                 <tr>
                     <td>Аванс</td>
@@ -163,7 +178,13 @@ Vue.component('edit-order', {
                     <td>
 
                         <select name="customer-list" class="customer__select-list">
-                            <option value="" v-for="(item) in customers">{{item.fname}} {{item.sname}}</option>
+                            <option 
+                                value="" 
+                                v-for="(item) in customers"
+                                
+                            >
+                                {{ item.fname }} {{ item.sname }}
+                            </option>
                         </select>
                     </td>
                 </tr>
@@ -215,16 +236,18 @@ Vue.component('edit-order', {
 new Vue({
     el: '#app',
     data: {
+        options: {
+            max_order_id: Number,
+        },
+
         now: Date,
-        logs: '',
+
         orders: [],
-        product: {},
         products: [],
         customers: [],
-        order_products: {},
-
         product: {},
-        productName: '',
+        logs: '',
+
         productPosition: Number,
 
         showOrderModal: false,
@@ -235,7 +258,6 @@ new Vue({
             this.showOrderModal = false;
         },
         toEdit(item, index) {
-            this.productName = item.name;
             this.productPosition = index;
 
             this.product = item;
@@ -243,22 +265,32 @@ new Vue({
             this.showOrderModal = true;
         },
         setOrder(order) {
-            this.orders.push(order);
+            // this.orders.push(order);
             this.setData('setOrder', order, response => {
-                console.log(response.data);
+
+                this.update();
             });
-            // console.log(order);
-            this.products.splice(this.productPosition, 1);  
+
+            //this.products.splice(this.productPosition, 1);  
             this.showOrderModal = false;
         },
         unset(item, index) {
             this.products.push(item);
             this.orders.splice(index, 1);
         },
+        update() {
+            this.getData(['getProducts', 'getOrders', 'getMaxOrderID', 'getLogs'], response => {
+                this.options = response.data.options;           
+                this.products = response.data.products;
+                this.orders = response.data.orders; 
+                this.logs = response.data.logs;
+                console.log(this.products);          
+            })
+        },
         getData(cmds, callback) {
             axios({
                 method: 'post',
-                url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
+                url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
                 data: {
                     cmds: cmds,
                 }
@@ -268,7 +300,7 @@ new Vue({
         setData(cmd, value, callback) {
             axios({
                 method: 'post',
-                url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
+                url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
                 data: {
                     cmds: cmd,
                     value: value,
@@ -287,24 +319,14 @@ new Vue({
                 end_time: 0,
             }
 
-            this.getData('test', response => {
+            this.getData('getMaxOrderID', response => {
                 console.log(response.data)
             })
         }
     },
     created() {
         //Запрос данных для инициализации приложения
-        this.getData(['getProducts', 'getOrders', 'getLogs'], response => {
-            this.products = response.data.products;
-            this.orders = response.data.orders;            
-            this.logs = response.data.logs;
-            console.log(response.data);          
-        })
-
-        // this.setData('getOrderProducts', '777', response => {
-        //     this.order_products = response.data.order_products;
-        //     console.log(this.order_products);
-        // })
+        this.update();
 
         // Обновление таймеров
         setInterval(() => {this.now = new Date()}, 1000)
