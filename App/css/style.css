@@ -1,6 +1,10 @@
 .table {
 	width: 300px;
 }
+
+.table td {
+	padding: 5px;
+}
 #app {
 	display: flex;
 	width: 960px;

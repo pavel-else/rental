@@ -49,6 +49,10 @@ class Request
                 case 'getOrders':
                     $this->response['orders'] = $this->getOrders();
                 break;
+                case 'getOrderProducts':
+
+                    $this->response['order_products'] = $this->getOrderProducts($value);
+                break;
                 case 'getClients':
                     $this->response['clients'] = $this->getClients();
                 break;
@@ -120,9 +124,27 @@ class Request
 
     private function getOrders() {
         $sql = 'SELECT * FROM `orders` WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
+        //$sql = 'select * from order_products inner join orders on order_products.order_id = orders.order_id where `id_rental_org` = '.$this->app_id;
         $this->writeLog("f.Orders completed");
 
-        return $this->pDB->get($sql, false, true);
+        $orders = $this->pDB->get($sql, false, true);
+
+        foreach ($orders as $key => $order) {
+            $order[products] = $this->getOrderProducts($order[order_id]);
+            $result[] = $order;
+        }
+
+
+        return $result;
+
+    }
+
+    private function getOrderProducts($order_id) {
+        $sql = 'SELECT * FROM `order_products` WHERE `order_id` =' .$order_id;
+
+        $this->writeLog("f.getOrderProducts completed");
+
+        return $this->pDB->get($sql, false, true); 
     }
 
     private function getClients() {
@@ -208,21 +230,10 @@ class Request
         } else {
             $this->request['logs'] = 'setOrder Error';
         }
-
     }
 
     private function test($value) {
-        $sql = 'INSERT INTO `order_products` (`id`, `order_id` , `product_id`, `bill`, `bill_no_sale`, `end_time`) VALUES (:id, :order_id, :product_id, :bill, :bill_no_sale, :end_time)';
-        $data = array(
-            'id' => null,
-            'order_id' => $value[order_id],
-            'product_id' => $value[product_id],
-            'bill' => $value[bill],
-            'bill_no_sale' => $value[bill_no_sale],
-            'end_time' => $value[end_time]
-        );
-
-        $this->pDB->set($sql, $data);
+        print_r($this->getOrderProducts(777));
     }
 }
 

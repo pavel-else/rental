@@ -49,8 +49,24 @@ Vue.component('order-list', {
             return num(hours) + ":" + num(minutes) + ":" + num(seconds);
         },
         getTimePlay(time, delay) {
-            return this.timeFormat(this.now - time);
+            var date = new Date(time);
+            var now = new Date(this.now);
+            return this.timeFormat(now - date);
+        },
+        getOrderProducts(id) {
+            axios({
+                method: 'post',
+                url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
+                data: {
+                    cmds: 'getOrderProducts',
+                    value: id,
+                }
+            })
+            .then(response => {
+                console.log(response.data)
+            })
         }
+
     },
 
     template: `
@@ -59,15 +75,22 @@ Vue.component('order-list', {
             <table class="table table-bordered">
                 <tr>
                     <th>№</th>
-                    <th>Товар</th>
+                    <th>ID</th>
+                    <th>Id товара</th>
                     <th>Старт</th>
                     <th>В прокате</th>
                 </tr>
+
                 <tr v-for="(item, index) in orders" @click="unset(item, index)">
                     <td>{{ index + 1 }}</td>
-                    <td>{{ item.productName }}</td>
-                    <td>{{ item.start_time }}</td>
-                    <td>{{ getTimePlay(item.time, item.timeDelay) }}</td>
+                    <td>{{ item.order_id }}</td>
+                    <td>{{ item.product_id }}
+                        <tr v-for="(sbitem, index) in item.products">
+                            <td>{{ sbitem.product_id }}</td>
+                            <td>{{ item.start_time }}</td>
+                            <td>{{ getTimePlay(item.start_time, item.timeDelay) }}</td>
+                        </tr>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -103,25 +126,15 @@ Vue.component('edit-order', {
                 start_time: String,
                 status: String,
 
-                time: Object,
-                productName: String, 
-                customerName: String,
-
                 timeDelay: 120000, //Number, ms
             }
 
             order.status = 'ACTIVE';
             order.customer_id = 531;
             order.order_id = 777;
+            order.products = [this.product.id];
 
-            let time = new Date();
-            order.time = time;
-            order.timePlay = 0;
             order.start_time = Math.floor(Date.now() / 1000);
-
-            order.productName = this.product.name;
-
-
             this.$emit("set", order, this.position);
         },
 
@@ -135,7 +148,6 @@ Vue.component('edit-order', {
             <table class="table table-bordered">
                 <tr>
                     <td>Товар</td>
-                    <td>{{ productName }}</td>
                     <td>{{ product.name}}</td>
                 </tr>
                 <tr>
@@ -209,6 +221,7 @@ new Vue({
         product: {},
         products: [],
         customers: [],
+        order_products: {},
 
         product: {},
         productName: '',
@@ -253,7 +266,6 @@ new Vue({
             .then(callback)
         },
         setData(cmd, value, callback) {
-
             axios({
                 method: 'post',
                 url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
@@ -275,7 +287,7 @@ new Vue({
                 end_time: 0,
             }
 
-            this.setData('test', data, response => {
+            this.getData('test', response => {
                 console.log(response.data)
             })
         }
@@ -284,10 +296,15 @@ new Vue({
         //Запрос данных для инициализации приложения
         this.getData(['getProducts', 'getOrders', 'getLogs'], response => {
             this.products = response.data.products;
-            this.orders = response.data.orders;
+            this.orders = response.data.orders;            
             this.logs = response.data.logs;
-             console.log(this.orders);
+            console.log(response.data);          
         })
+
+        // this.setData('getOrderProducts', '777', response => {
+        //     this.order_products = response.data.order_products;
+        //     console.log(this.order_products);
+        // })
 
         // Обновление таймеров
         setInterval(() => {this.now = new Date()}, 1000)
