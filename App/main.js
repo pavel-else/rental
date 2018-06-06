@@ -31,12 +31,10 @@ Vue.component('order-list', {
         now: null,
         productsAll: Array,
     },
-
     methods: {
         timeFormat (ms/**number*/){
-            if (ms < 0) {
-                ms = 0;
-            }
+            if (ms < 0) ms = 0;
+
             function num(val){
                 val = Math.floor(val);
                 return val < 10 ? '0' + val : val;
@@ -53,11 +51,11 @@ Vue.component('order-list', {
         getTimePlay(time, delay) {
             var date = new Date(time);
             var now = new Date(this.now);
+
             return this.timeFormat(now - date);
         },
         getProductsName(id) {
             // Это все дико не оптимально
-
             for (let i = 0; i < this.productsAll.length; i++) {
                 if (this.productsAll[i].id_rent == id) return this.productsAll[i].name;
             }
@@ -105,7 +103,7 @@ Vue.component('edit-order', {
     },
     data() {
         return {
-            selectCustomerID: 0
+            selectCustomerID: 0, // 0 - default
         }
     },
     methods: {
@@ -141,13 +139,12 @@ Vue.component('edit-order', {
 
             order.order_id = ++this.options.max_order_id;
             order.products = [this.product.id];
-
+            order.customer_id = this.selectCustomerID;
             order.start_time = Math.floor(Date.now() / 1000);
 
             this.$emit("set", order, this.position);
-            // console.log(order)
+            console.log(order)
         },
-
         closeModal() {
             this.$emit("close")
         },
@@ -171,16 +168,16 @@ Vue.component('edit-order', {
                 <tr>
                     <td>Клиент</td>
                     <td>
-
-                        <select name="customer-list" class="customer__select-list">
+                        <select v-model="selectCustomerID" name="customer-list" class="customer__select-list">
                             <option 
                                 value="" 
-                                v-for="(item) in customers"
-                                
+                                v-for="item in customers"
+                                :value="item.id"                                
                             >
                                 {{ item.fname }} {{ item.sname }}
                             </option>
                         </select>
+                        <span v-if="selectCustomerID">ID: {{ selectCustomerID }}</span>
                     </td>
                 </tr>
                 <tr>
