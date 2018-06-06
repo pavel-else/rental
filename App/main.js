@@ -17,7 +17,7 @@ Vue.component('product-list', {
             </tr>
             <tr v-for="(item, index) in products" @click="toEdit(item, index)">
                 <td>{{ index + 1}}</td>
-                <td>{{ item.name}}</td>
+                <td>{{ item.name }}</td>
                 <td>{{ item.id }}</td>
             </tr>
         </table>
@@ -29,7 +29,9 @@ Vue.component('order-list', {
     props: {
         orders: Array,
         now: null,
+        productsAll: Array,
     },
+
     methods: {
         timeFormat (ms/**number*/){
             if (ms < 0) {
@@ -53,6 +55,13 @@ Vue.component('order-list', {
             var now = new Date(this.now);
             return this.timeFormat(now - date);
         },
+        getProductsName(id) {
+            // Это все дико не оптимально
+
+            for (let i = 0; i < this.productsAll.length; i++) {
+                if (this.productsAll[i].id_rent == id) return this.productsAll[i].name;
+            }
+        }
     },
 
     template: `
@@ -60,23 +69,25 @@ Vue.component('order-list', {
             <h3>В прокате</h3>
             <table class="table table-bordered">
                 <tr>
-                    <th>№</th>
-                    <th>ID</th>
-                    <th>Id товара</th>
-                    <th>Старт</th>
-                    <th>В прокате</th>
+                    <th class="ord__td-1">№</th>
+                    <th class="ord__td-2">ID</th>
+                    <th class="ord__td-3">Товар</th>
+                    <th class="ord__td-4"></th>
+                    <th class="ord__td-5">Старт</th>
+                    <th class="ord__td-6">В прокате</th>
                 </tr>
             </table>
             <table class="table table-bordered">
 
                 <tr v-for="(item, index) in orders" @click="unset(item, index)">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ item.order_id }}</td>
-                    <td>{{ item.product_id }}
+                    <td class="ord__td-1">{{ index + 1 }}</td>
+                    <td class="ord__td-2">{{ item.order_id }}</td>
+                    <td>
                         <tr v-for="(sbitem, index) in item.products">
-                            <td>{{ sbitem.product_id }}</td>
-                            <td>{{ item.start_time }}</td>
-                            <td>{{ getTimePlay(item.start_time, item.timeDelay) }}</td>
+                            <td class="ord__td-3">{{ sbitem.product_id }}</td>
+                            <td class="ord__td-4">{{ getProductsName(sbitem.product_id) }}</td>
+                            <td class="ord__td-5">{{ item.start_time }}</td>
+                            <td class="ord__td-6">{{ getTimePlay(item.start_time, item.timeDelay) }}</td>
                         </tr>
                     </td>
                 </tr>
@@ -228,6 +239,7 @@ new Vue({
 
         orders: [],
         products: [],
+        productsAll: [], 
         customers: [],
         product: {},
         logs: '',
@@ -265,11 +277,23 @@ new Vue({
         update() {
             this.getData(['getProducts', 'getOrders', 'getMaxOrderID', 'getLogs'], response => {
                 this.options = response.data.options;           
-                this.products = response.data.products;
+                this.productsAll = response.data.products;
+                this.products = this.filterProducts(this.productsAll);
                 this.orders = response.data.orders; 
                 this.logs = response.data.logs;
                 //console.log(this.products);          
             })
+        },
+        filterProducts(arr) {
+            let result = [];
+
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i].active != 0) {
+                    result.push(arr[i]);
+                }
+            }
+                    console.log(result);
+            return result;
         },
         getData(cmds, callback) {
             axios({

@@ -11,7 +11,7 @@
 
 <div id="app" class="tmp">
     <product-list :products="products" @edit="toEdit"></product-list>
-    <order-list :orders="orders" :now="now"></order-list>
+    <order-list :orders="orders" :now="now" :products-all="productsAll"></order-list>
     <edit-order 
         v-show="showOrderModal" 
         :product="product" 
