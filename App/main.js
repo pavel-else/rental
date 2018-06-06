@@ -134,7 +134,7 @@ Vue.component('edit-order', {
             order.start_time = Math.floor(Date.now() / 1000);
 
             this.$emit("set", order, this.position);
-            console.log(order)
+            // console.log(order)
         },
 
         closeModal() {

@@ -236,7 +236,7 @@ class Request
 
                 $this->pDB->set($subsql, $product_data); 
 
-                echo("UPDATE `products` SET `active` = active  WHERE `product_id` = " . $product); 
+                $this->pDB->set("UPDATE `products` SET `active` = 0  WHERE `id_rent` = " . $product); 
             }
         } else {
             $this->request['logs'] = 'setOrder Error';
