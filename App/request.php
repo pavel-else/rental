@@ -116,7 +116,6 @@ class Request
         $this->response['logs'] = $this->logs;
     }
 
-
     private function getProducts() {
         $not_in_rental = '0,';          // Велосипеды которые не в прокате   
         $sql = 'SELECT * FROM `products` WHERE `id_rent` NOT IN ('.trim($not_in_rental,',').') AND `active` = 1 AND `id_rental_org` = '.$this->app_id.' ORDER BY `name`';     // Перебираем все товары кроме активных (свободные велосипеды)

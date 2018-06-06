@@ -53,20 +53,6 @@ Vue.component('order-list', {
             var now = new Date(this.now);
             return this.timeFormat(now - date);
         },
-        getOrderProducts(id) {
-            axios({
-                method: 'post',
-                url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
-                data: {
-                    cmds: 'getOrderProducts',
-                    value: id,
-                }
-            })
-            .then(response => {
-                console.log(response.data)
-            })
-        }
-
     },
 
     template: `
@@ -138,18 +124,16 @@ Vue.component('edit-order', {
                 sale_id: '',
                 start_time: String,
                 status: String,
-
-                timeDelay: 120000, //Number, ms
             }
 
             order.status = 'ACTIVE';
-            order.customer_id = this.selectCustomerID;
-            order.order_id = this.options.max_order_id;
+
+            order.order_id = ++this.options.max_order_id;
             order.products = [this.product.id];
 
             order.start_time = Math.floor(Date.now() / 1000);
 
-            //this.$emit("set", order, this.position);
+            this.$emit("set", order, this.position);
             console.log(order)
         },
 
@@ -267,7 +251,7 @@ new Vue({
         setOrder(order) {
             // this.orders.push(order);
             this.setData('setOrder', order, response => {
-
+                console.log(response.data);
                 this.update();
             });
 
@@ -284,7 +268,7 @@ new Vue({
                 this.products = response.data.products;
                 this.orders = response.data.orders; 
                 this.logs = response.data.logs;
-                console.log(this.products);          
+                //console.log(this.products);          
             })
         },
         getData(cmds, callback) {
@@ -320,7 +304,7 @@ new Vue({
             }
 
             this.getData('getMaxOrderID', response => {
-                console.log(response.data)
+                //console.log(response.data)
             })
         }
     },
