@@ -4,7 +4,7 @@ Vue.component('product-list', {
     },
     methods: {
         toEdit(item, index) {
-            this.$emit("edit", item, index);
+            this.$emit("edit", item);
         }
     },
     template: `
@@ -15,7 +15,7 @@ Vue.component('product-list', {
                 <th>№</th>
                 <th>Товар</th>
             </tr>
-            <tr v-for="(item, index) in products" @click="toEdit(item, index)">
+            <tr v-for="(item, index) in products" @click="toEdit(item)">
                 <td>{{ index + 1}}</td>
                 <td>{{ item.name }}</td>
             </tr>
@@ -95,19 +95,41 @@ Vue.component('order-list', {
 
 Vue.component('edit-order', {
     props: {
-        customers: Array,
         product: Object,
-        options: Object,
-        position: Number, //Позиция в массиве, для последующего удаления из <product-list>
+        orders: Array,
+        customers: Array,
+        options: Object, // max_order_id,
     },
     data() {
         return {
             selectCustomerID: 0, // 0 - default
+            selectOrderID: null,
+        }
+    },
+    computed: {
+        ordersList() {
+            result = [];
+
+            for (let i = 0; i < this.orders.length; i++) {
+                result.push(this.orders[i].order_id);
+            }
+
+            return result;
+        },
+        getNewOrderID() {
+            return this.options.new_order_id
+        },
+        onSet() {
+            this.selectOrderID = this.options.new_order_id
+        },
+        showNew() {
+            return this.selectOrderID == this.options.new_order_id
         }
     },
     methods: {
-        order_id() {
-            return +this.options.max_order_id + 1;
+        onChange(e) {
+            this.selectOrderID = e.target.value;
+            console.log(e.target.value)
         },
         setOrder() {
             let order = {
@@ -133,7 +155,7 @@ Vue.component('edit-order', {
 
             order.status = 'ACTIVE';
 
-            order.order_id = ++this.options.max_order_id;
+            order.order_id = this.selectOrderID;
             order.products = [this.product.id];
             order.customer_id = this.selectCustomerID;
             order.start_time = Math.floor(Date.now() / 1000);
@@ -154,7 +176,13 @@ Vue.component('edit-order', {
                 </tr>
                 <tr>
                     <td>ID</td>
-                    <td>{{ order_id() }}</td>
+                    <td>
+                        <select name="" id="" @change="onChange" :huck="onSet">
+                            <option>{{ getNewOrderID }}</option>
+                            <option :value="item" v-for="item in ordersList">{{ item }}</option>
+                        </select>
+                        <span v-if="showNew">(Новый){{selectOrderID}}</span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Аванс</td>
@@ -164,8 +192,7 @@ Vue.component('edit-order', {
                     <td>Клиент</td>
                     <td>
                         <select v-model="selectCustomerID" name="customer-list" class="customer__select-list">
-                            <option 
-                                value="" 
+                            <option  
                                 v-for="item in customers"
                                 :value="item.id"                                
                             >
@@ -236,8 +263,6 @@ new Vue({
         product: {},
         logs: '',
 
-        productPosition: Number,
-
         showOrderModal: false,
     },
 
@@ -245,9 +270,7 @@ new Vue({
         closeModal() {
             this.showOrderModal = false;
         },
-        toEdit(item, index) {
-            this.productPosition = index;
-
+        toEdit(item) {
             this.product = item;
 
             this.showOrderModal = true;

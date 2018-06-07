@@ -50,7 +50,6 @@ class Request
                     $this->response['orders'] = $this->getOrders();
                 break;
                 case 'getOrderProducts':
-
                     $this->response['order_products'] = $this->getOrderProducts($value);
                 break;
                 case 'getClients':
@@ -58,6 +57,7 @@ class Request
                 break;
                 case 'getMaxOrderID':
                     $this->response['options']['max_order_id'] = $this->getMaxOrderID();
+                    $this->response['options']['new_order_id'] = $this->getMaxOrderID() + 1;
                 break;
                 case 'getOrderID':
                     $this->response['options']['get_order_id'] = $this->getOrderID($value);
