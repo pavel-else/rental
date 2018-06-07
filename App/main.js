@@ -324,8 +324,8 @@ new Vue({
                 end_time: 0,
             }
 
-            this.getData('getMaxOrderID', response => {
-                //console.log(response.data)
+            this.setData('getOrderID', '776', response => {
+                console.log(response.data)
             })
         }
     },

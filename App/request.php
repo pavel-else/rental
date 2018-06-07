@@ -59,6 +59,9 @@ class Request
                 case 'getMaxOrderID':
                     $this->response['options']['max_order_id'] = $this->getMaxOrderID();
                 break;
+                case 'getOrderID':
+                    $this->response['options']['get_order_id'] = $this->getOrderID($value);
+                break;
                 case 'writeLog':
                     $this->writeLog($value);
                 break;
@@ -72,6 +75,7 @@ class Request
                 break;
                 case 'test':
                     $this->test($value);
+                    $this->writeLog('asdfasdfasdf');
                     $this->getLogs();
                 break;
             } 
@@ -155,7 +159,7 @@ class Request
     }
 
     private function getMaxOrderID() {
-        $sql = 'SELECT `order_id` FROM `orders` WHERE `id_rental_org` = '.$this->app_id .' ORDER BY `order_id` DESC LIMIT 1';
+        $sql = 'SELECT `order_id` FROM `orders` WHERE `id_rental_org` = '. $this->app_id .' ORDER BY `order_id` DESC LIMIT 1';
         $result = $this->pDB->get($sql, false, true);
 
         foreach ($result as $key => $value) {
@@ -163,51 +167,73 @@ class Request
         }
     }
 
-    private function setOrder($order) {
-        $sql = 'INSERT INTO `orders` (
-            `id`,
-            `order_id`,
-            `id_rental_org`,
-            `status`,
-            `customer_id`,
-            `customer_name`,
-            `start_time`,
-            `advance_time`,
-            `advance`,
-            `advance_hold`,
-            `sale_id`,
-            `note`
-        ) VALUES (
-            NULL, 
-            :order_id, 
-            :id_rental_org, 
-            :status, 
-            :order_customer_id, 
-            :order_customer_name, 
-            :order_start_time, 
-            :order_advance_time, 
-            :order_advance, 
-            :order_advance_hold, 
-            :order_sale_id, 
-            :order_note
-        )';
+    private function getOrderID ($id) {
+        $sql = 'SELECT `order_id` FROM `orders` WHERE `id_rental_org` = ' . $this->app_id . ' AND `order_id` = ' . $id;
 
-        $order_data = array(
-            'order_id' =>               $order[order_id],
-            'id_rental_org' =>          $order[id_rental_org],//$this->app_id,
-            'status' =>                 $order[status],
-            'order_customer_id' =>      $order[customer_id],
-            'order_customer_name' =>    $order[customer_name],
-            'order_start_time' =>       date("Y-m-d H:i:s", $order[start_time]),
-            'order_advance_time' =>     $order[advance_time],
-            'order_advance' =>          $order[advance],
-            'order_advance_hold' =>     $order[advance_hold],
-            'order_sale_id' =>          $order[sale_id],
-            'order_note' =>             $order[note],
-        );
-       
-        if ($this->pDB->set($sql, $order_data)) {
-            
+        $result =  $this->pDB->get($sql, false, true);
+
+        return $result ? true : false;
+    }
+
+    private function setOrder($order) {
+        /*
+        * Определены 2 функции: для записи ордера и записи продуктов к ордеру
+        * Если ордер с указанным order_id уже существует, то просто добавляем продукты к ордеру.
+        * Если не существует - записываем новый ордер и продукты к нему.
+        * Функция возвращает TRUE, если запись прошла успешено.
+        */
+
+        $products = $order['products'];
+        $orderID = $order[order_id];
+        $result = false;
+
+        $setOrder = function ($order) {
+            $sql = 'INSERT INTO `orders` (
+                `id`,
+                `order_id`,
+                `id_rental_org`,
+                `status`,
+                `customer_id`,
+                `customer_name`,
+                `start_time`,
+                `advance_time`,
+                `advance`,
+                `advance_hold`,
+                `sale_id`,
+                `note`
+            ) VALUES (
+                NULL, 
+                :order_id, 
+                :id_rental_org, 
+                :status, 
+                :order_customer_id, 
+                :order_customer_name, 
+                :order_start_time, 
+                :order_advance_time, 
+                :order_advance, 
+                :order_advance_hold, 
+                :order_sale_id, 
+                :order_note
+            )';
+
+            $order_data = array(
+                'order_id' =>               $order[order_id],
+                'id_rental_org' =>          $order[id_rental_org],//$this->app_id,
+                'status' =>                 $order[status],
+                'order_customer_id' =>      $order[customer_id],
+                'order_customer_name' =>    $order[customer_name],
+                'order_start_time' =>       date("Y-m-d H:i:s", $order[start_time]),
+                'order_advance_time' =>     $order[advance_time],
+                'order_advance' =>          $order[advance],
+                'order_advance_hold' =>     $order[advance_hold],
+                'order_sale_id' =>          $order[sale_id],
+                'order_note' =>             $order[note],
+            );
+
+            return $this->pDB->set($sql, $order_data);
+        };
+
+        $setOrderProducts = function ($products, $orderID) use($order) {
             $subsql = 'INSERT INTO `order_products` (
                 `id`, 
                 `order_id`, 
@@ -225,7 +251,7 @@ class Request
             )';
 
             $product_data = array(
-                'order_id' => $order[order_id],
+                'order_id' => $orderID,
                 'product_id' => '',
                 'bill' => 0,
                 'bill_no_sale' => 0,
@@ -239,12 +265,21 @@ class Request
 
                 $this->pDB->set("UPDATE `products` SET `active` = 0  WHERE `id_rent` = " . $product); 
             }
-        } else {
-            $this->request['logs'] = 'setOrder Error';
+        };
+
+        if ($this->getOrderID($order[order_id])) {
+            $setOrderProducts($products, $orderID);
+            $result = true;
+        } else if ($setOrder($order)) {
+            $setOrderProducts($products, $orderID);
+            $result = true;
         }
+
+        return $result;
     }
 
     private function test($value) {
+        $this->writeLog($this->getOrderID($value));
     }
 }
 
