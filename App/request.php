@@ -62,13 +62,6 @@ class Request
                 case 'getOrderID':
                     $this->response['options']['get_order_id'] = $this->getOrderID($value);
                 break;
-                case 'writeLog':
-                    $this->writeLog($value);
-                break;
-                case 'setLogs':
-                    $this->writeLog($value);
-                    $this->getLogs();
-                break;
                 case 'setOrder':
                     $this->setOrder($value);
                     $this->getLogs();
@@ -122,7 +115,6 @@ class Request
 
     private function getProducts() {
         $not_in_rental = '0,';          // Велосипеды которые не в прокате   
-        //$sql = 'SELECT * FROM `products` WHERE `id_rent` NOT IN ('.trim($not_in_rental,',').') AND `active` = 1 AND `id_rental_org` = '.$this->app_id.' ORDER BY `name`';     // Перебираем все товары кроме активных (свободные велосипеды)
         $sql = 'SELECT * FROM `products` WHERE `id_rent` NOT IN ('.trim($not_in_rental,',').') AND `id_rental_org` = '.$this->app_id.' ORDER BY `name`';     // Перебираем все товары кроме активных (свободные велосипеды)
 
         $this->writeLog("f.GetProducts completed");
@@ -285,4 +277,5 @@ class Request
 
 $request = new Request(8800000001);
 $request->response();
+
 ?>

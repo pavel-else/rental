@@ -18,7 +18,6 @@ Vue.component('product-list', {
             <tr v-for="(item, index) in products" @click="toEdit(item, index)">
                 <td>{{ index + 1}}</td>
                 <td>{{ item.name }}</td>
-                <td>{{ item.id }}</td>
             </tr>
         </table>
     </div>
@@ -110,9 +109,6 @@ Vue.component('edit-order', {
         order_id() {
             return +this.options.max_order_id + 1;
         },
-        onSelected(item) {
-            console.log(item)
-        },
         setOrder() {
             let order = {
                 accessories: '',
@@ -143,7 +139,6 @@ Vue.component('edit-order', {
             order.start_time = Math.floor(Date.now() / 1000);
 
             this.$emit("set", order, this.position);
-            console.log(order)
         },
         closeModal() {
             this.$emit("close")
@@ -258,13 +253,11 @@ new Vue({
             this.showOrderModal = true;
         },
         setOrder(order) {
-            // this.orders.push(order);
             this.setData('setOrder', order, response => {
                 console.log(response.data);
                 this.update();
             });
-
-            //this.products.splice(this.productPosition, 1);  
+ 
             this.showOrderModal = false;
         },
         unset(item, index) {
@@ -289,7 +282,7 @@ new Vue({
                     result.push(arr[i]);
                 }
             }
-                    console.log(result);
+
             return result;
         },
         getData(cmds, callback) {
@@ -330,7 +323,7 @@ new Vue({
         }
     },
     created() {
-        //Запрос данных для инициализации приложения
+        //Запрос данных для инициализации и обновления компонентов приложения
         this.update();
 
         // Обновление таймеров
