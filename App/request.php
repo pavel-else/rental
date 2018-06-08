@@ -154,9 +154,18 @@ class Request
         $sql = 'SELECT `order_id` FROM `orders` WHERE `id_rental_org` = '. $this->app_id .' ORDER BY `order_id` DESC LIMIT 1';
         $result = $this->pDB->get($sql, false, true);
 
-        foreach ($result as $key => $value) {
-            return $value[order_id];
+        if (count($result)) {
+            foreach ($result as $key => $value) {
+                $this->writeLog('getMaxOrderID compleated. value = ' .$value[order_id]);
+
+                return $value[order_id];
+            }
+        } else {
+            $this->writeLog('getMaxOrderID return empty array');
+
+            return 0;
         }
+
     }
 
     private function getOrderID ($id) {

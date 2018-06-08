@@ -103,32 +103,33 @@ Vue.component('edit-order', {
     data() {
         return {
             selectCustomerID: 0, // 0 - default
-            selectOrderID: null,
+            showNew: true,
         }
     },
     computed: {
         ordersList() {
             result = [];
-
-            for (let i = 0; i < this.orders.length; i++) {
-                result.push(this.orders[i].order_id);
+            if (this.orders) {
+                for (let i = 0; i < this.orders.length; i++) {
+                    result.push(this.orders[i].order_id);
+                }
             }
 
             return result;
         },
-        getNewOrderID() {
+        selectOrderID() {
             return this.options.new_order_id
-        },
-        onSet() {
-            this.selectOrderID = this.options.new_order_id
-        },
-        showNew() {
-            return this.selectOrderID == this.options.new_order_id
         }
     },
     methods: {
         onChange(e) {
             this.selectOrderID = e.target.value;
+
+            if (e.target.value == this.options.new_order_id) {
+                this.showNew = true;
+            } else {
+                this.showNew = false;
+            }
             console.log(e.target.value)
         },
         setOrder() {
@@ -160,7 +161,7 @@ Vue.component('edit-order', {
             order.customer_id = this.selectCustomerID;
             order.start_time = Math.floor(Date.now() / 1000);
 
-            this.$emit("set", order, this.position);
+            this.$emit("set", order);
         },
         closeModal() {
             this.$emit("close")
@@ -177,11 +178,11 @@ Vue.component('edit-order', {
                 <tr>
                     <td>ID</td>
                     <td>
-                        <select name="" id="" @change="onChange" :huck="onSet">
-                            <option>{{ getNewOrderID }}</option>
+                        <select name="" id="" @change="onChange">
+                            <option>{{ options.new_order_id }}</option>
                             <option :value="item" v-for="item in ordersList">{{ item }}</option>
                         </select>
-                        <span v-if="showNew">(Новый){{selectOrderID}}</span>
+                        <span v-if="showNew">(Новый){{options.new_order_id}}</span>
                     </td>
                 </tr>
                 <tr>
@@ -288,13 +289,14 @@ new Vue({
             this.orders.splice(index, 1);
         },
         update() {
-            this.getData(['getProducts', 'getOrders', 'getMaxOrderID', 'getLogs'], response => {
+            this.getData(['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs'], response => {
                 this.options = response.data.options;           
                 this.productsAll = response.data.products;
                 this.products = this.filterProducts(this.productsAll);
-                this.orders = response.data.orders; 
+                this.orders = response.data.orders;
+                this.customers = response.data.clients;
                 this.logs = response.data.logs;
-                //console.log(this.products);          
+                console.log(response.data.options.max_order_id);          
             })
         },
         filterProducts(arr) {
@@ -340,7 +342,7 @@ new Vue({
                 end_time: 0,
             }
 
-            this.setData('getOrderID', '776', response => {
+            this.setData('getOrderID', '678', response => {
                 console.log(response.data)
             })
         }
