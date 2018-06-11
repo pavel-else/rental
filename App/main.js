@@ -123,8 +123,6 @@ Vue.component('edit-order', {
     },
     methods: {
         onChange(e) {
-            this.selectOrderID = e.target.value;
-
             if (e.target.value == this.options.new_order_id) {
                 this.showNew = true;
             } else {
@@ -182,7 +180,7 @@ Vue.component('edit-order', {
                             <option>{{ options.new_order_id }}</option>
                             <option :value="item" v-for="item in ordersList">{{ item }}</option>
                         </select>
-                        <span v-if="showNew">(Новый){{options.new_order_id}}</span>
+                        <span v-if="showNew">(Новый){{ options.new_order_id }}</span>
                     </td>
                 </tr>
                 <tr>
