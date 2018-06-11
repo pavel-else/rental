@@ -4,7 +4,7 @@
         <table class="table table-bordered">
             <tr v-for="(item, index) in orders" @click="unset(item, index)">
                 <td class="ord__td-1">{{ index + 1 }}</td>
-                <td class="ord__td-2">{{ item.order_id }}</td>
+                <td class="ord__td-2">{{ item.order_id_position }}</td>
                 <td>
                     <tr v-for="(sbitem, index) in item.products">
                         <td class="ord__td-3">{{ sbitem.product_id }}</td>

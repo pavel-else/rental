@@ -9,12 +9,15 @@
             </tr>
             <tr>
                 <td>ID</td>
-                <td>
-                    <select name="" id="" @change="onChange">
-                        <option>{{ options.new_order_id }}</option>
-                        <option :value="item" v-for="item in ordersList">{{ item }}</option>
-                    </select>
-                    <span v-if="showNew">(Новый){{ options.new_order_id }}</span>
+                <td class="id-buttons">
+                    <div v-if="showIDButtons" @click="showIDButtons = !showIDButtons" class="idbtn idbtn_once"><div></div></div>
+                    <div v-else class="idbtn idbtn_groupe">
+                        <div 
+                            v-for="item in order_id_position_list"
+                            :class="{empty: item.order_id}"
+                            @click="onClick(item)"
+                        >{{ item.id }}</div>                      
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -55,20 +58,30 @@
             return {
                 selectCustomerID: 0, // 0 - default
                 showNew: true,
+                showIDButtons: true, //true - default
+
+                selectCustomerID: null,
             }
         },
 
         computed: {
-            ordersList() {
-                let result = [];
-                if (this.orders) {
-                    for (let i = 0; i < this.orders.length; i++) {
-                        result.push(this.orders[i].order_id);
+            order_id_position_list() {
+                let result = {};
+
+                for (let i = 0; i <= 15; i++) {
+                    result[i] = {
+                        id: i,
+                        order_id: null,
                     }
                 }
 
-                return result;
+                for (let i = 0; i < this.orders.length; i++) {
+                    result[this.orders[i].order_id_position].order_id = this.orders[i].order_id
+                }
+
+                return result
             },
+
             selectOrderID() {
                 return this.options.new_order_id
             }
@@ -83,6 +96,12 @@
                 }
                 console.log(e.target.value)
             },
+
+            onClick(item) {
+                console.log(item);
+                this.selectCustomerID = item.order_id;
+            },
+
             setOrder() {
                 let order = {
                     accessories: '',
@@ -136,4 +155,32 @@
         justify-content: center;
         align-items: center;
     }
+
+    .idbtn_groupe {
+        width: 100px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        border: 1px solid;
+    }
+
+    .idbtn div {
+        width: 15px;
+        height: 15px;
+        margin: 4px;
+
+        font-size: 11px;
+        text-align: center;
+
+        background-color: #aaa;
+    }
+
+    .idbtn div:hover {
+        outline: 1px solid #000;
+    }
+
+    .empty {
+        border: 1px solid red;
+    }
+
 </style>
