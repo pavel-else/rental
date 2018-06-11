@@ -13,6 +13,8 @@
             :customers="customers"
             :options="options"
             class="tmp"
+            @close="closeModal"
+            @set="setOrder"
         ></edit-order>
 
         <order-list
