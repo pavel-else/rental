@@ -10,7 +10,12 @@
             <tr>
                 <td>ID</td>
                 <td class="id-buttons">
-                    <div v-if="showIDButtons" @click="showIDButtons = !showIDButtons" class="idbtn idbtn_once"><div></div></div>
+                    <div 
+                        v-if="showIDButtons" 
+                        @click="showIDButtons = !showIDButtons" 
+                        class="idbtn idbtn_once"
+                        ><div>{{ getFreeID }}</div>
+                    </div>
                     <div v-else class="idbtn idbtn_groupe">
                         <div 
                             v-for="item in order_id_position_list"
@@ -59,8 +64,6 @@
                 selectCustomerID: 0, // 0 - default
                 showNew: true,
                 showIDButtons: true, //true - default
-
-                selectCustomerID: null,
             }
         },
 
@@ -79,12 +82,30 @@
                     result[this.orders[i].order_id_position].order_id = this.orders[i].order_id
                 }
 
+
                 return result
             },
 
             selectOrderID() {
                 return this.options.new_order_id
+            },
+
+            getFreeID() {
+                let list = [];
+
+                for (let j = 0; j < this.orders.length; j++) {
+                    list.push(this.orders[j].order_id_position)
+                }
+
+                let min = Math.min.apply(null, list);
+
+                for (let i = 0; i <= 15; i++) {
+                    if (i != min) {
+                        return i
+                    }
+                }
             }
+                
         },
 
         methods: {
