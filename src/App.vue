@@ -1,12 +1,19 @@
 <template>
-    <div id="app">
-        <h1>hell0)</h1>
+    <div id="app"   class="tmp">
+        <product-list :products="products" @edit="toEdit"></product-list>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+import productList from './components/product-list'
+
 export default {
     name: 'app',
+
+    components: {
+        productList: productList,
+    },
 
     data () {
         return {
@@ -128,12 +135,16 @@ export default {
 
 <style>
     #app {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
-        margin-top: 60px;
+        display: flex;
+        width: 960px;
+        margin: 100px auto 0;
+        padding-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .tmp {
+        outline: 1px solid lightgray;
     }
 
     h1, h2 {
