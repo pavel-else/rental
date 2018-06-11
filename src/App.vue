@@ -14,6 +14,13 @@
             :options="options"
             class="tmp"
         ></edit-order>
+
+        <order-list
+            :orders="orders"
+            :now="now"
+            :products-all="productsAll"
+            class="tmp"
+        ></order-list>
     </div>
 </template>
 
@@ -21,6 +28,7 @@
 import axios from 'axios'
 import productList from './components/product-list'
 import editOrder from './components/edit-order'
+import orderList from './components/order-list'
 
 export default {
     name: 'app',
@@ -28,6 +36,7 @@ export default {
     components: {
         productList: productList,
         editOrder: editOrder,
+        orderList: orderList,
     },
 
     data () {
