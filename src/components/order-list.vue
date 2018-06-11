@@ -63,7 +63,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	.table td {
 		padding: 5px;
 		border: 1px solid lightgray;
