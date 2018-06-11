@@ -1,24 +1,37 @@
 <template>
     <div id="app"   class="tmp">
-        <product-list :products="products" @edit="toEdit"></product-list>
+        <product-list
+            :products="products"
+            @edit="toEdit"
+            class="tmp"
+        ></product-list>
+
+        <edit-order
+            v-if="showOrderModal"
+            :product="product" 
+            :orders="orders"
+            :customers="customers"
+            :options="options"
+            class="tmp"
+        ></edit-order>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
 import productList from './components/product-list'
+import editOrder from './components/edit-order'
 
 export default {
     name: 'app',
 
     components: {
         productList: productList,
+        editOrder: editOrder,
     },
 
     data () {
         return {
-            msg: 'Welcome to Your Vue.js App',
-
             options: {
                 max_order_id: Number,
             },
@@ -40,11 +53,12 @@ export default {
         closeModal() {
             this.showOrderModal = false;
         },
+
         toEdit(item) {
             this.product = item;
-
             this.showOrderModal = true;
         },
+
         setOrder(order) {
             this.setData('setOrder', order, response => {
                 console.log(response.data);
@@ -53,6 +67,7 @@ export default {
  
             this.showOrderModal = false;
         },
+
         unset(item, index) {
             this.products.push(item);
             this.orders.splice(index, 1);

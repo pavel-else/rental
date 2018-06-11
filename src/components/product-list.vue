@@ -1,5 +1,4 @@
 <template>
-
     <div class="snippet snippet__products">
         <h3>Свободные</h3>
         <table class="table table-bordered">
@@ -13,7 +12,6 @@
             </tr>
         </table>
     </div>
-
 </template>
 
 <script>
@@ -21,7 +19,7 @@
         name: 'productList',
 
         props: {
-            products: Array
+            products: Array,
         },
 
         methods: {
@@ -33,5 +31,7 @@
 </script>
 
 <style scoped>
-    
+    table {
+        
+    }
 </style>
