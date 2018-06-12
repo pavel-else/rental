@@ -23,6 +23,8 @@
             :products-all="productsAll"
             class="tmp"
         ></order-list>
+        
+        <test></test>
     </div>
 </template>
 
@@ -31,14 +33,16 @@ import axios from 'axios'
 import productList from './components/product-list'
 import editOrder from './components/edit-order'
 import orderList from './components/order-list'
+import Test from './components/Test'
 
 export default {
     name: 'app',
 
     components: {
-        productList: productList,
-        editOrder: editOrder,
-        orderList: orderList,
+        productList,
+        editOrder, 
+        orderList,
+        Test
     },
 
     data () {
@@ -146,6 +150,7 @@ export default {
     created() {
         //Запрос данных для инициализации и обновления компонентов приложения
         this.update();
+        this.$store.dispatch('upd', 'getProducts')
 
         // Обновление таймеров
         setInterval(() => {this.now = new Date()}, 1000)
