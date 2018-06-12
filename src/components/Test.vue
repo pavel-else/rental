@@ -1,6 +1,6 @@
 <template>
 	<div>		
-		<div v-for="i in res">{{ i.name }}</div>
+		<div v-for="i in res">{{ i }}</div>
 	</div>
 </template>
 
@@ -16,8 +16,8 @@
 
 		computed: {
 			res() {
-				return(this.$store.getters.products)
-				console.log(this.$store.getters.products)
+				return(this.$store.getters.orders)
+				console.log(this.$store.getters.orders)
 			}
 		}
 	}

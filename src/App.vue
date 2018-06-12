@@ -24,7 +24,7 @@
             class="tmp"
         ></order-list>
         
-        <test></test>
+        <!-- <test></test> -->
     </div>
 </template>
 
@@ -150,7 +150,7 @@ export default {
     created() {
         //Запрос данных для инициализации и обновления компонентов приложения
         this.update();
-        this.$store.dispatch('upd', 'getProducts')
+        this.$store.dispatch('upd', ['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs'])
 
         // Обновление таймеров
         setInterval(() => {this.now = new Date()}, 1000)

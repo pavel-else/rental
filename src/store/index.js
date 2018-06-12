@@ -7,25 +7,28 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
 	state: {
-		results: [1, 2, 3],
-
 		orders: [],
 		products: [],
 		customers: [],
-
-		count: 1
+		options: {
+			max_order_id: Number,
+		}
 	},
 
 	getters: {
-		results(state) {
-			return state.results
-		},
 		products(state) {
 			return state.products
 		},
-		count(state) {
-			return state.count
-		}
+		orders(state) {
+			return state.orders
+		},
+		customers(state) {
+			return state.customers
+		},
+		options(state) {
+			return state.options
+		},
+
 	},
 
 	mutations: {
@@ -47,6 +50,9 @@ const store = new Vuex.Store({
             })
             .then(r => {
             	commit('set', {type: 'products', items: r.data.products})
+            	commit('set', {type: 'orders', items: r.data.orders})
+            	commit('set', {type: 'customers', items: r.data.clients})
+            	commit('set', {type: 'options', items: r.data.options})
             	console.log(r)
             })
             .catch(e => {
@@ -58,25 +64,3 @@ const store = new Vuex.Store({
 })
 
 export default store
-
-        // getData(cmds, callback) {
-        //     axios({
-        //         method: 'post',
-        //         url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
-        //         data: {
-        //             cmds: cmds,
-        //         }
-        //     })
-        //     .then(callback)
-        // },
-        // update() {
-        //     this.getData(['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs'], response => {
-        //         this.options = response.data.options;           
-        //         this.productsAll = response.data.products;
-        //         this.products = this.filterProducts(this.productsAll);
-        //         this.orders = response.data.orders;
-        //         this.customers = response.data.clients;
-        //         this.logs = response.data.logs;
-        //         console.log(response.data.options.max_order_id);          
-        //     })
-        // },
