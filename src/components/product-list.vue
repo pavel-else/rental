@@ -27,6 +27,9 @@
                 this.$emit("edit", item);
             }
         },
+        computed: {
+            
+        }
     }
 </script>
 
