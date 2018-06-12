@@ -6,7 +6,7 @@
                 <th>№</th>
                 <th>Товар</th>
             </tr>
-            <tr v-for="(item, index) in products" @click="toEdit(item)">
+            <tr v-for="(item, index) in filterProducts" @click="toEdit(item)">
                 <td>{{ index + 1 }}</td>
                 <td>{{ item.name }}</td>
             </tr>
@@ -24,10 +24,13 @@
             }
         },
         computed: {
-            products() {
-                return this.$store.getters.products
-            }
+            filterProducts() {
+                const list = this.$store.getters.products
+
+                return list.filter(item => item.active != 0)
+            },
         }
+
     }
 </script>
 
