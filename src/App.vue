@@ -1,7 +1,6 @@
 <template>
     <div id="app"   class="tmp">
-        <product-list
-            :products="products"
+        <product-list           
             @edit="toEdit"
             class="tmp"
         ></product-list>
