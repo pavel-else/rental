@@ -21,7 +21,7 @@
             </tr>
         </table>
         <div class="buttons">
-            <button>OK</button>
+            <button @click="setOrder">OK</button>
             <button>cansel</button>
         </div>
     </div>
@@ -39,6 +39,9 @@
             selectClient(e) {
                 //console.log(this.client)
                 this.$store.dispatch('selectClient', this.client)
+            },
+            setOrder() {
+                console.log(this.$store.getters.newOrder.order)
             }
         },
 

@@ -44,6 +44,7 @@ const store = new Vuex.Store({
         set(state, {type, items}) {
             state[type] = items
         },
+
         setOrders(state, {orders, products}) {
             /*
             * Запись активных ордеров в хранилище
@@ -63,6 +64,7 @@ const store = new Vuex.Store({
 
             state.orders = result
         },
+
         newOrder(state, product) {
             state.newOrder.product = product
 
@@ -91,8 +93,6 @@ const store = new Vuex.Store({
         selectClient(state, customer) {
             state.newOrder.order.customer_id = customer.id
             state.newOrder.order.customer_name = customer.fname
-
-            console.log(customer.id)
         }
 
     },
