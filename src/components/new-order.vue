@@ -13,8 +13,9 @@
             <tr>
                 <td>Клиент</td>
                 <td>
-                    <select name="" id="">
-                        <option value="" v-for="customer in customers">{{ customer.fname }}</option>
+                    <select name="" id="" @change="selectClient" v-model="client">
+                        <option value="">Выбрать</option>
+                        <option :value="customer" v-for="customer in customers">{{ customer.fname }}</option>
                     </select>
                 </td>
             </tr>
@@ -31,9 +32,16 @@
         name: 'newOrder',
         data() {
             return {
-                a: 'asdfasdfasdf'
+                client: 0
             }
         },
+        methods: {
+            selectClient(e) {
+                //console.log(this.client)
+                this.$store.dispatch('selectClient', this.client)
+            }
+        },
+
         computed: {
             product() {
                 return this.$store.getters.newOrder.product

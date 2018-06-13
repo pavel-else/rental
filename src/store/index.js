@@ -6,73 +6,102 @@ import jsonp from 'jsonp'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-	state: {
-		orders: [],
-		products: [],
-		customers: [],
-		options: {
-			max_order_id: Number,
-		},
+    state: {
+        orders: [],
+        products: [],
+        customers: [],
+        options: {
+            max_order_id: Number,
+        },
 
-		newOrder: {
-			product: {}
-		}
-	},
+        newOrder: {
+            order: {},
+            product: {}
+        }
+    },
 
-	getters: {
-		products(state) {
-			return state.products
-		},
-		orders(state) {
-			return state.orders
-		},
-		customers(state) {
-			return state.customers
-		},
-		options(state) {
-			return state.options
-		},
+    getters: {
+        products(state) {
+            return state.products
+        },
+        orders(state) {
+            return state.orders
+        },
+        customers(state) {
+            return state.customers
+        },
+        options(state) {
+            return state.options
+        },
 
-		newOrder(state) {
-			return state.newOrder
-		}
+        newOrder(state) {
+            return state.newOrder
+        }
 
-	},
+    },
 
-	mutations: {
-		set(state, {type, items}) {
-			state[type] = items
-		},
-		setOrders(state, {orders, products}) {
-			/*
-			* Запись активных ордеров в хранилище
-			* Функция подмешивает в массив данные (название продукта) из таблицы Продукты
-			* Прогоняем массив Ордеров
-			* Прогоняем массив продуктов каждого ордера
-			* По id ордера продукта находим в таблице Продукты нужную запись
-			* Сохраняем данные в массиве Ордеров
-			*/
-			const result = orders.map(order => {
-				for (var i = 0; i < order.products.length; i++) {
-					order.products[i].name = products.find(p => p.id == order.products[i].product_id).name
-				}
+    mutations: {
+        set(state, {type, items}) {
+            state[type] = items
+        },
+        setOrders(state, {orders, products}) {
+            /*
+            * Запись активных ордеров в хранилище
+            * Функция подмешивает в массив данные (название продукта) из таблицы Продукты
+            * Прогоняем массив Ордеров
+            * Прогоняем массив продуктов каждого ордера
+            * По id ордера продукта находим в таблице Продукты нужную запись
+            * Сохраняем данные в массиве Ордеров
+            */
+            const result = orders.map(order => {
+                for (var i = 0; i < order.products.length; i++) {
+                    order.products[i].name = products.find(p => p.id == order.products[i].product_id).name
+                }
 
-				return order
-			})
+                return order
+            })
 
-			state.orders = result
-		},
-		newOrder(state, product) {
-			state.newOrder.product = product
-		}
+            state.orders = result
+        },
+        newOrder(state, product) {
+            state.newOrder.product = product
 
-	},
+            state.newOrder.order = {
+                status: 'ACTIVE',
+                products: [product.id],
 
-	actions: {
-		upd({commit}, cmds) {
-			const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
+                id_rental_org: "8800000001",
+                accessories: '',
+                advance: 0, //Сумма предоплаты
+                advance_hold: false,
+                advance_time: 0,
+                bill: 0,
+                bill_no_sale: null,
+                customer_id: Number,
+                customer_name: '',
+                end_time: '',
+                id: Number,
+                note: '',
+                order_id: Number,
+                play_pause: true,
+                sale_id: '',
+                start_time: String,
+            }
+        },
+        selectClient(state, customer) {
+            state.newOrder.order.customer_id = customer.id
+            state.newOrder.order.customer_name = customer.fname
 
-			axios({
+            console.log(customer.id)
+        }
+
+    },
+
+    actions: {
+        upd({commit}, cmds) {
+            const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
+
+            axios({
                 method: 'post',
                 url,
                 data: {
@@ -80,22 +109,26 @@ const store = new Vuex.Store({
                 }
             })
             .then(r => {
-            	commit('set', {type: 'products', items: r.data.products})
-            	commit('set', {type: 'customers', items: r.data.clients})
-            	commit('set', {type: 'options', items: r.data.options})
-            	//commit('set', {type: 'orders', items: r.data.orders})
-            	commit('setOrders', {orders: r.data.orders, products: r.data.products})
-            	console.log(r)
+                commit('set', {type: 'products', items: r.data.products})
+                commit('set', {type: 'customers', items: r.data.clients})
+                commit('set', {type: 'options', items: r.data.options})
+                //commit('set', {type: 'orders', items: r.data.orders})
+                commit('setOrders', {orders: r.data.orders, products: r.data.products})
+                console.log(r)
             })
             .catch(e => {
-            	console.log(e)
+                console.log(e)
             })
-		},
+        },
 
-		newOrder({commit}, product) {
-			commit('newOrder', product)
-		}
-	}
+        newOrder({commit}, product) {
+            commit('newOrder', product)
+        },
+
+        selectClient({commit}, customer) {
+            commit('selectClient', customer)
+        }
+    }
 })
 
 export default store
