@@ -50,13 +50,6 @@
 
 	            return this.timeFormat(now - date);
 	        },
-
-	        // getProductsName(id) {
-	        //     // Это все дико не оптимально
-	        //     for (let i = 0; i < this.productsAll.length; i++) {
-	        //         if (this.productsAll[i].id_rent == id) return this.productsAll[i].name;
-	        //     }
-	        // }
 	    },
 
 	    computed: {
@@ -66,9 +59,6 @@
 	    	products() {
 	    		return this.$store.getters.products
 	    	},
-	    	productName() {
-	    		return 'product name'
-	    	}
 	    }
 	}
 </script>

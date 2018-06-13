@@ -20,7 +20,8 @@
 
         methods: {
             toEdit(item, index) {
-                this.$emit("edit", item);
+                //this.$emit("edit", item);
+                this.$store.dispatch('newOrder', item)
             }
         },
         computed: {

@@ -12,6 +12,10 @@ const store = new Vuex.Store({
 		customers: [],
 		options: {
 			max_order_id: Number,
+		},
+
+		newOrder: {
+			product: {}
 		}
 	},
 
@@ -29,22 +33,25 @@ const store = new Vuex.Store({
 			return state.options
 		},
 
+		newOrder(state) {
+			return state.newOrder
+		}
+
 	},
 
 	mutations: {
 		set(state, {type, items}) {
 			state[type] = items
 		},
-
-		/*
-		* Запись активных ордеров в хранилище
-		* Функция подмешивает в массив данные (название продукта) из таблицы Продукты
-		* Прогоняем массив Ордеров
-		* Прогоняем массив продуктов каждого ордера
-		* По id ордера продукта находим в таблице Продукты нужную запись
-		* Сохраняем данные в массиве Ордеров
-		*/
 		setOrders(state, {orders, products}) {
+			/*
+			* Запись активных ордеров в хранилище
+			* Функция подмешивает в массив данные (название продукта) из таблицы Продукты
+			* Прогоняем массив Ордеров
+			* Прогоняем массив продуктов каждого ордера
+			* По id ордера продукта находим в таблице Продукты нужную запись
+			* Сохраняем данные в массиве Ордеров
+			*/
 			const result = orders.map(order => {
 				for (var i = 0; i < order.products.length; i++) {
 					order.products[i].name = products.find(p => p.id == order.products[i].product_id).name
@@ -54,7 +61,11 @@ const store = new Vuex.Store({
 			})
 
 			state.orders = result
+		},
+		newOrder(state, product) {
+			state.newOrder.product = product
 		}
+
 	},
 
 	actions: {
@@ -79,7 +90,10 @@ const store = new Vuex.Store({
             .catch(e => {
             	console.log(e)
             })
+		},
 
+		newOrder({commit}, product) {
+			commit('newOrder', product)
 		}
 	}
 })

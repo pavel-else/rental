@@ -1,17 +1,18 @@
-<template>
+<template> 
     <div id="app"   class="tmp">
         <product-list @edit="toEdit" class="tmp"></product-list>
 
-        <edit-order
+<!--         <edit-order
             v-if="showOrderModal"
-            :product="product" 
             :orders="orders"
             :customers="customers"
             :options="options"
-            class="tmp"
+
             @close="closeModal"
             @set="setOrder"
-        ></edit-order>
+            class="tmp"
+        ></edit-order> -->
+        <new-order v-if="true"></new-order>
 
         <order-list :now="now" class="tmp"></order-list>
         
@@ -24,6 +25,7 @@ import axios from 'axios'
 import productList from './components/product-list'
 import editOrder from './components/edit-order'
 import orderList from './components/order-list'
+import newOrder from './components/new-order'
 import Test from './components/Test'
 
 export default {
@@ -33,6 +35,7 @@ export default {
         productList,
         editOrder, 
         orderList,
+        newOrder,
         Test
     },
 

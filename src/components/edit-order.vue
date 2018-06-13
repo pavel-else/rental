@@ -53,7 +53,6 @@
 		name: 'editOrder',
 
         props: {
-            product: Object,
             orders: Array,
             customers: Array,
             options: Object, // max_order_id,
@@ -168,7 +167,7 @@
         box-sizing: border-box;
         position: absolute;
         left: calc(50% - 200px);
-        top: 100px;
+        top: 120px;
         background-color: #fff;
         padding: 10px 15px;
         display: flex;
