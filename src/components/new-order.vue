@@ -8,7 +8,7 @@
             </tr>
             <tr>
                 <td>ID</td>
-                <td>id</td>
+                <td><customer-id></customer-id></td>
             </tr>
             <tr>
                 <td>Клиент</td>
@@ -28,7 +28,12 @@
 </template>
 
 <script>
+    import customerId from './customer-id'
+
     export default {
+        components: {
+            customerId,
+        },
         name: 'newOrder',
         data() {
             return {
@@ -62,7 +67,7 @@
         border: 1px solid lightgray;
         box-sizing: border-box;
         position: absolute;
-        left: calc(50% - 200px);
+/*        left: calc(50% - 200px);*/
         top: 100px;
         background-color: #fff;
         padding: 10px 15px;

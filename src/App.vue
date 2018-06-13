@@ -12,7 +12,7 @@
             @set="setOrder"
             class="tmp"
         ></edit-order> -->
-        <new-order v-if="true"></new-order>
+        <new-order v-if="1"></new-order>
 
         <order-list :now="now" class="tmp"></order-list>
         
