@@ -8,7 +8,7 @@
                 <td>
                     <tr v-for="(sbitem, index) in item.products">
                         <td class="ord__td-3">{{ sbitem.product_id }}</td>
-                        <td class="ord__td-4">{{ getProductsName(sbitem.product_id) }}</td>
+                        <td class="ord__td-4">{{ productName }}</td>
                         <td class="ord__td-5">{{ item.start_time }}</td>
                         <td class="ord__td-6">{{ getTimePlay(item.start_time, item.timeDelay) }}</td>
                     </tr>
@@ -23,9 +23,7 @@
 		name: 'orderList',
 
 	    props: {
-	        orders: Array,
 	        now: null,
-	        productsAll: Array,
 	    },
 
 	    methods: {
@@ -53,13 +51,25 @@
 	            return this.timeFormat(now - date);
 	        },
 
-	        getProductsName(id) {
-	            // Это все дико не оптимально
-	            for (let i = 0; i < this.productsAll.length; i++) {
-	                if (this.productsAll[i].id_rent == id) return this.productsAll[i].name;
-	            }
-	        }
+	        // getProductsName(id) {
+	        //     // Это все дико не оптимально
+	        //     for (let i = 0; i < this.productsAll.length; i++) {
+	        //         if (this.productsAll[i].id_rent == id) return this.productsAll[i].name;
+	        //     }
+	        // }
 	    },
+
+	    computed: {
+	    	orders() {
+	    		return this.$store.getters.orders
+	    	},
+	    	products() {
+	    		return this.$store.getters.products
+	    	},
+	    	productName() {
+	    		return 'product name'
+	    	}
+	    }
 	}
 </script>
 

@@ -123,7 +123,10 @@ class Request
 
     private function getOrders() {
         $sql = 'SELECT * FROM `orders` WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
-        //$sql = 'select * from order_products inner join orders on order_products.order_id = orders.order_id where `id_rental_org` = '.$this->app_id;
+        // $sql = 'SELECT * FROM `order_products` 
+        //     INNER JOIN `orders` on orders.order_id = order_products.order_id 
+        //     WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
+
         $this->writeLog("f.Orders completed");
 
         $orders = $this->pDB->get($sql, false, true);

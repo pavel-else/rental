@@ -1,9 +1,6 @@
 <template>
     <div id="app"   class="tmp">
-        <product-list           
-            @edit="toEdit"
-            class="tmp"
-        ></product-list>
+        <product-list @edit="toEdit" class="tmp"></product-list>
 
         <edit-order
             v-if="showOrderModal"
@@ -16,12 +13,7 @@
             @set="setOrder"
         ></edit-order>
 
-        <order-list
-            :orders="orders"
-            :now="now"
-            :products-all="productsAll"
-            class="tmp"
-        ></order-list>
+        <order-list :now="now" class="tmp"></order-list>
         
         <!-- <test></test> -->
     </div>

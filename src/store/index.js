@@ -35,6 +35,15 @@ const store = new Vuex.Store({
 		set(state, {type, items}) {
 			state[type] = items
 		},
+		setOrders(state, orders, products) {
+			const result = orders.map(item => {
+				for (let i = 0; i < item.products.length; i++) {}
+					
+				return item
+				
+			})
+			state.orders = result
+		}
 	},
 
 	actions: {
@@ -50,9 +59,10 @@ const store = new Vuex.Store({
             })
             .then(r => {
             	commit('set', {type: 'products', items: r.data.products})
-            	commit('set', {type: 'orders', items: r.data.orders})
             	commit('set', {type: 'customers', items: r.data.clients})
             	commit('set', {type: 'options', items: r.data.options})
+            	//commit('set', {type: 'orders', items: r.data.orders})
+            	commit('setOrders', r.data.orders, r.data.products)
             	console.log(r)
             })
             .catch(e => {
