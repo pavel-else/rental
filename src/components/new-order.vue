@@ -52,6 +52,10 @@
             },
             setOrder() {
                 console.log(this.$store.getters.newOrder.order)
+                this.$store.dispatch('send', {
+                    cmd: 'setOrder',
+                    value: this.$store.getters.newOrder.order
+                })
             }
         },
 

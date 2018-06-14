@@ -21,6 +21,9 @@ const store = new Vuex.Store({
     },
 
     getters: {
+        url(state) {
+            return state.url
+        },
         products(state) {
             return state.products
         },
@@ -111,7 +114,7 @@ const store = new Vuex.Store({
 
     actions: {
         upd({commit}, cmds) {
-            const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
+            const url = this.state.url
 
             axios({
                 method: 'post',
@@ -119,6 +122,9 @@ const store = new Vuex.Store({
                 data: {
                     cmds
                 }
+            })
+            .catch(e => {
+                console.log(e)
             })
             .then(r => {
                 commit('set', {type: 'products', items: r.data.products})
@@ -128,11 +134,22 @@ const store = new Vuex.Store({
                 commit('setOrders', {orders: r.data.orders, products: r.data.products})
                 console.log(r)
             })
+        },
+        send({commit}, {cmd, value}) {
+            const url = this.state.url
+            
+            axios({
+                method: 'post',
+                url,
+                data: {
+                    cmds: cmd,
+                    value
+                }
+            })
             .catch(e => {
                 console.log(e)
             })
-        },
-        set({commit}, {cmd, data}) {
+            .then(r => { console.log(r) })
 
         },
 
