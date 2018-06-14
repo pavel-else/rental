@@ -68,7 +68,6 @@ class Request
                 break;
                 case 'test':
                     $this->test($value);
-                    $this->writeLog('asdfasdfasdf');
                     $this->getLogs();
                 break;
             } 
@@ -286,7 +285,7 @@ class Request
     }
 
     private function test($value) {
-        $this->writeLog($this->getOrderID($value));
+        $this->writeLog(date("Y-m-d H:i:s", $value));;
     }
 }
 

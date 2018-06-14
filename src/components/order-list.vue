@@ -6,11 +6,11 @@
             <tr v-for="(item, index) in orders" @click="unset(item, index)">
                 <td class="ord__td-1">{{ index + 1 }}</td>
                 <td class="ord__td-2">{{ item.order_id_position }}</td>
+                <td class="ord__td-5">{{ item.start_time }}</td>
                 <td>
                     <tr v-for="(sbitem, index) in item.products">
                         <td class="ord__td-3">{{ sbitem.product_id }}</td>
                         <td class="ord__td-4">{{ sbitem.name }}</td>
-                        <td class="ord__td-5">{{ item.start_time }}</td>
                         <td class="ord__td-6">{{ getTimePlay(item.start_time, item.timeDelay) }}</td>
                     </tr>
                 </td>

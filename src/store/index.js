@@ -82,6 +82,7 @@ const store = new Vuex.Store({
                 status: 'ACTIVE',
                 products: [product.id],
                 order_id_position: null,
+                start_time: Math.floor(Date.now() / 1000),
 
                 id_rental_org: "8800000001",
                 accessories: '',
@@ -98,7 +99,6 @@ const store = new Vuex.Store({
                 order_id: Number,
                 play_pause: true,
                 sale_id: '',
-                start_time: String,
             }
         },
         selectClient(state, customer) {
@@ -184,7 +184,6 @@ const store = new Vuex.Store({
                     console.log(r)
                 })
             })
-
         },
 
         newOrder({commit}, product) {

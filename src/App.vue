@@ -1,12 +1,12 @@
 <template> 
-    <div id="app"   class="tmp">
+    <div id="app" class="tmp">
         <product-list class="tmp"></product-list>
 
         <new-order v-if="showNewOrder"></new-order>
 
         <order-list :now="now" class="tmp"></order-list>
         
-        <!-- <test></test> -->
+       <!--  <test></test> -->
     </div>
 </template>
 
