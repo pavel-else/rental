@@ -12,6 +12,7 @@ const store = new Vuex.Store({
         customers: [],
         options: {
             max_order_id: Number,
+            new_order_id: Number,
         },
 
         newOrder: {
@@ -57,18 +58,19 @@ const store = new Vuex.Store({
             /*
             * Запись активных ордеров в хранилище
             * Функция подмешивает в массив данные (название продукта) из таблицы Продукты
+            * Проверяем входные данные на наличие
             * Прогоняем массив Ордеров
             * Прогоняем массив продуктов каждого ордера
             * По id ордера продукта находим в таблице Продукты нужную запись
             * Сохраняем данные в массиве Ордеров
             */
-            const result = orders.map(order => {
+            const result = orders ? orders.map(order => {
                 for (var i = 0; i < order.products.length; i++) {
                     order.products[i].name = products.find(p => p.id == order.products[i].product_id).name
                 }
 
                 return order
-            })
+            }) : []
 
             state.orders = result
         },
@@ -122,7 +124,9 @@ const store = new Vuex.Store({
 
     actions: {
         upd({commit}, cmds) {
+
             const url = this.state.url
+            cmds = ['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs']
 
             axios({
                 method: 'post',
@@ -143,9 +147,10 @@ const store = new Vuex.Store({
                 console.log(r)
             })
         },
+
         send({commit}, {cmd, value}) {
             const url = this.state.url
-            
+
             axios({
                 method: 'post',
                 url,
@@ -157,7 +162,28 @@ const store = new Vuex.Store({
             .catch(e => {
                 console.log(e)
             })
-            .then(r => { console.log(r) })
+            .then(r => {
+                const cmds = ['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs']
+
+                axios({
+                    method: 'post',
+                    url,
+                    data: {
+                        cmds
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+                .then(r => {
+                    commit('set', {type: 'products', items: r.data.products})
+                    commit('set', {type: 'customers', items: r.data.clients})
+                    commit('set', {type: 'options', items: r.data.options})
+                    //commit('set', {type: 'orders', items: r.data.orders})
+                    commit('setOrders', {orders: r.data.orders, products: r.data.products})
+                    console.log(r)
+                })
+            })
 
         },
 

@@ -51,11 +51,13 @@
                 this.$store.dispatch('selectClient', this.client)
             },
             setOrder() {
-                //console.log(this.$store.getters.newOrder.order)
+                console.log(this.$store.getters.newOrder.order)
+
                 this.$store.dispatch('send', {
                     cmd: 'setOrder',
                     value: this.$store.getters.newOrder.order
                 })
+                this.$store.dispatch('showNewOrder', false)
             },
             close() {
                 this.$store.dispatch('showNewOrder', false)
@@ -88,7 +90,6 @@
         justify-content: center;
         align-items: center;
         box-shadow: 0px 5px 10px 0px;
-
     }
 
     .new-order table {

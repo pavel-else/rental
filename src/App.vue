@@ -137,7 +137,7 @@ export default {
     created() {
         //Запрос данных для инициализации и обновления компонентов приложения
         this.update();
-        this.$store.dispatch('upd', ['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs'])
+        this.$store.dispatch('upd')
 
         // Обновление таймеров
         setInterval(() => {this.now = new Date()}, 1000)
@@ -155,14 +155,24 @@ export default {
     #app {
         display: flex;
         width: 960px;
-        margin: 100px auto 0;
+        margin: 50px auto 0;
         padding-top: 20px;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
     }
 
     .tmp {
         outline: 1px solid lightgray;
+    }
+
+    .snippet {
+        padding: 20px;
+    }
+    .snippet:first-child {
+        margin-right: 50px;
+    }
+    .snippet h3 {
+        text-align: center;
     }
 
     h1, h2 {

@@ -1,6 +1,7 @@
 <template>
     <div class="snippet snippet__orders">
         <h3>В прокате</h3>
+        <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
         <table class="table table-bordered">
             <tr v-for="(item, index) in orders" @click="unset(item, index)">
                 <td class="ord__td-1">{{ index + 1 }}</td>
@@ -64,6 +65,9 @@
 </script>
 
 <style scoped>
+	.empty {
+		padding: 0 20px;
+	}
 	.table td {
 		padding: 5px;
 		border: 1px solid lightgray;

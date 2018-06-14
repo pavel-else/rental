@@ -6,7 +6,7 @@
                 v-for="(item, index) in btns"
                 class="btn"
                 :class="{active: item.position, select: select == index}"
-                @click="onClick(item)"
+                @click="onClick(item, index)"
             >
                 {{item.position}}
             </div>
@@ -26,10 +26,12 @@
             }
         },
         methods: {
-            onClick(item) {
+            onClick(item, index) {
                 this.select = item.position
+
+                item.position = index
                 this.$store.dispatch('selectOrderId', item)
-                console.log(item)
+                
                 this.show = !this.show
             }
         },
@@ -41,7 +43,7 @@
             btns() {
                 const result = []
                 const orders = this.$store.getters.orders
-                const newId = this.$store.getters.options.max_order_id
+                const newId = this.$store.getters.options.new_order_id
 
                 for (let i = 0; i <= 15; i++) {
                     result[i] = {
@@ -59,25 +61,6 @@
                 
                 return result
             },
-            free() {
-                const result = []
-                const orders = this.$store.getters.orders
-
-                for (let i = 0; i <= 15; i++) {
-                    result[i] =  null
-                }
-
-                for (let i = 0; i < orders.length; i++) {
-                    let index = orders[i].order_id_position;
-
-                    result[index] = index
-                }
-
-                for (let i = 0; i < result.length; i++) {
-                    if (result[i] === null) return i
-                }
-            }
-
         }
     }
 </script>
