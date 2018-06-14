@@ -2,17 +2,7 @@
     <div id="app"   class="tmp">
         <product-list @edit="toEdit" class="tmp"></product-list>
 
-<!--         <edit-order
-            v-if="showOrderModal"
-            :orders="orders"
-            :customers="customers"
-            :options="options"
-
-            @close="closeModal"
-            @set="setOrder"
-            class="tmp"
-        ></edit-order> -->
-        <new-order v-if="1"></new-order>
+        <new-order v-if="showNewOrder"></new-order>
 
         <order-list :now="now" class="tmp"></order-list>
         
@@ -53,8 +43,6 @@ export default {
             customers: [],
             product: {},
             logs: '',
-
-            showOrderModal: false,
         }
     },
 
@@ -138,6 +126,11 @@ export default {
             this.setData('getOrderID', '678', response => {
                 console.log(response.data)
             })
+        }
+    },
+    computed: {
+        showNewOrder() {
+            return this.$store.getters.showNewOrder
         }
     },
 

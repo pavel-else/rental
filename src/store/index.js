@@ -17,12 +17,17 @@ const store = new Vuex.Store({
         newOrder: {
             order: {},
             product: {}
-        }
+        },
+
+        showNewOrder: false
     },
 
     getters: {
         url(state) {
             return state.url
+        },
+        showNewOrder(state) {
+            return state.showNewOrder
         },
         products(state) {
             return state.products
@@ -108,6 +113,9 @@ const store = new Vuex.Store({
         selectOrderId(state, item) {
             state.newOrder.order.order_id_position = item.position
             state.newOrder.order.order_id = item.order_id
+        },
+        showNewOrder(state, item) {
+            state.showNewOrder = item
         }
 
     },
@@ -162,6 +170,9 @@ const store = new Vuex.Store({
         },
         selectOrderId({commit}, id) {
             commit('selectOrderId', id)
+        },
+        showNewOrder({commit}, item) {
+            commit('showNewOrder', item)
         }
     }
 })

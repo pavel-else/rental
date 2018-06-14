@@ -27,7 +27,7 @@
         </table>
         <div class="buttons">
             <button @click="setOrder">OK</button>
-            <button>cansel</button>
+            <button @click="close">Отмена</button>
         </div>
     </div>
 </template>
@@ -51,11 +51,14 @@
                 this.$store.dispatch('selectClient', this.client)
             },
             setOrder() {
-                console.log(this.$store.getters.newOrder.order)
+                //console.log(this.$store.getters.newOrder.order)
                 this.$store.dispatch('send', {
                     cmd: 'setOrder',
                     value: this.$store.getters.newOrder.order
                 })
+            },
+            close() {
+                this.$store.dispatch('showNewOrder', false)
             }
         },
 
@@ -76,15 +79,15 @@
         border: 1px solid lightgray;
         box-sizing: border-box;
         position: absolute;
-/*        left: calc(50% - 200px);*/
-        top: 100px;
+        left: calc(50% - 200px);
+        top: 110px;
         background-color: #fff;
         padding: 10px 15px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        box-shadow: 2px 1px 1px 10px 10px;
+        box-shadow: 0px 5px 10px 0px;
 
     }
 
