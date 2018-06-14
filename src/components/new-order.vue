@@ -15,7 +15,12 @@
                 <td>
                     <select name="" id="" @change="selectClient" v-model="client">
                         <option value="">Выбрать</option>
-                        <option :value="customer" v-for="customer in customers">{{ customer.fname }}</option>
+                        <option 
+                            v-for="customer in customers"
+                            :value="customer" 
+                        >
+                            {{ customer.fname + ' ' + customer.sname  + ' ' + customer.tname }}
+                        </option>
                     </select>
                 </td>
             </tr>

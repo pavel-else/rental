@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import jsonp from 'jsonp'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
+        url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
         orders: [],
         products: [],
         customers: [],
@@ -71,6 +71,7 @@ const store = new Vuex.Store({
             state.newOrder.order = {
                 status: 'ACTIVE',
                 products: [product.id],
+                order_id_position: null,
 
                 id_rental_org: "8800000001",
                 accessories: '',
@@ -92,7 +93,18 @@ const store = new Vuex.Store({
         },
         selectClient(state, customer) {
             state.newOrder.order.customer_id = customer.id
-            state.newOrder.order.customer_name = customer.fname
+
+            let fname = customer.fname ? customer.fname : ''
+            let sname = customer.sname ? ' ' + customer.sname : ''
+            let tname = customer.tname ? ' ' + customer.tname : ''
+
+            let name = (fname + sname + tname).trim()
+
+            state.newOrder.order.customer_name = name
+        },
+        selectOrderId(state, item) {
+            state.newOrder.order.order_id_position = item.position
+            state.newOrder.order.order_id = item.order_id
         }
 
     },
@@ -120,6 +132,9 @@ const store = new Vuex.Store({
                 console.log(e)
             })
         },
+        set({commit}, {cmd, data}) {
+
+        },
 
         newOrder({commit}, product) {
             commit('newOrder', product)
@@ -127,6 +142,9 @@ const store = new Vuex.Store({
 
         selectClient({commit}, customer) {
             commit('selectClient', customer)
+        },
+        selectOrderId({commit}, id) {
+            commit('selectOrderId', id)
         }
     }
 })
