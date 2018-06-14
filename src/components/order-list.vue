@@ -3,7 +3,7 @@
         <h3>В прокате</h3>
         <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
         <table class="table table-bordered">
-            <tr v-for="(item, index) in orders" @click="unset(item, index)">
+            <tr v-for="(item, index) in orders">
                 <td class="ord__td-1">{{ index + 1 }}</td>
                 <td class="ord__td-2">{{ item.order_id_position }}</td>
                 <td class="ord__td-5">{{ item.start_time }}</td>
@@ -12,6 +12,7 @@
                         <td class="ord__td-3">{{ sbitem.product_id }}</td>
                         <td class="ord__td-4">{{ sbitem.name }}</td>
                         <td class="ord__td-6">{{ getTimePlay(item.start_time, item.timeDelay) }}</td>
+                        <td class=" ord__td-6 stop-order" @click="stopOrder(sbitem)">x</td>
                     </tr>
                 </td>
             </tr>
@@ -51,6 +52,11 @@
 
 	            return this.timeFormat(now - date);
 	        },
+
+	        stopOrder(item) {
+	        	//console.log(item)
+	        	this.$store.dispatch('stopOrder', item)
+	        }
 	    },
 
 	    computed: {
@@ -68,6 +74,16 @@
 	.empty {
 		padding: 0 20px;
 	}
+	.stop-order {
+		opacity: 0;
+	}
+	.stop-order:hover {
+		opacity: 1;
+		cursor: pointer;
+		text-align: center;
+	}
+
+
 	.table td {
 		padding: 5px;
 		border: 1px solid lightgray;
@@ -92,6 +108,9 @@
 		width: 120px;
 	}
 	.ord__td-6 {
+		width: 25px;
+	}
+	.ord__td-7 {
 		width: 25px;
 	}
 </style>

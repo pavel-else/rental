@@ -118,7 +118,7 @@ const store = new Vuex.Store({
         },
         showNewOrder(state, item) {
             state.showNewOrder = item
-        }
+        },
 
     },
 
@@ -198,6 +198,10 @@ const store = new Vuex.Store({
         },
         showNewOrder({commit}, item) {
             commit('showNewOrder', item)
+        },
+
+        stopOrder({commit}, order) {
+            console.log(order)
         }
     }
 })
