@@ -285,7 +285,7 @@ class Request
     }
 
     private function test($value) {
-        $this->writeLog(date("Y-m-d H:i:s", $value));;
+        $this->writeLog("function Test orbaiten normal");
     }
 }
 

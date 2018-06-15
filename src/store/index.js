@@ -20,7 +20,24 @@ const store = new Vuex.Store({
             product: {}
         },
 
-        showNewOrder: false
+        showNewOrder: false,
+
+        sendToServer(cmds, value, callback) {
+            const url = this.url
+            axios({
+                method: 'post',
+                url,
+                data: {
+                    cmds,
+                    value
+                }
+            })
+            .catch(e => {
+                console.log(e)
+            })
+            .then(callback)      
+        },
+
     },
 
     getters: {
@@ -46,11 +63,14 @@ const store = new Vuex.Store({
         newOrder(state) {
             return state.newOrder
         }
-
     },
 
     mutations: {
+        test(state, value) {
+            console.log(value)
+        },
         set(state, {type, items}) {
+            console.log('set ' + type)
             state[type] = items
         },
 
@@ -64,6 +84,8 @@ const store = new Vuex.Store({
             * По id ордера продукта находим в таблице Продукты нужную запись
             * Сохраняем данные в массиве Ордеров
             */
+            console.log('set Orders')
+
             const result = orders ? orders.map(order => {
                 for (var i = 0; i < order.products.length; i++) {
                     order.products[i].name = products.find(p => p.id == order.products[i].product_id).name
@@ -119,7 +141,6 @@ const store = new Vuex.Store({
         showNewOrder(state, item) {
             state.showNewOrder = item
         },
-
     },
 
     actions: {
@@ -179,7 +200,6 @@ const store = new Vuex.Store({
                     commit('set', {type: 'products', items: r.data.products})
                     commit('set', {type: 'customers', items: r.data.clients})
                     commit('set', {type: 'options', items: r.data.options})
-                    //commit('set', {type: 'orders', items: r.data.orders})
                     commit('setOrders', {orders: r.data.orders, products: r.data.products})
                     console.log(r)
                 })
@@ -201,7 +221,21 @@ const store = new Vuex.Store({
         },
 
         stopOrder({commit}, order) {
+            order.end_time = Math.floor(Date.now() / 1000)
+
+            const update = () => {
+                const cmds = ['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs']
+
+                this.state.sendToServer(cmds, null, r => {
+                    commit('set', {type: 'products', items: r.data.products})
+                    commit('set', {type: 'customers', items: r.data.clients})
+                    commit('set', {type: 'options', items: r.data.options})
+                    commit('setOrders', {orders: r.data.orders, products: r.data.products})
+                })                
+            }      
             console.log(order)
+            
+            this.state.sendToServer('test', order, update)
         }
     }
 })
