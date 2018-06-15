@@ -223,7 +223,11 @@ const store = new Vuex.Store({
         stopOrder({commit}, order) {
             order.end_time = Math.floor(Date.now() / 1000)
 
-            const update = () => {
+            console.log(Date.now())
+
+            const update = (r) => {
+                console.log(r)
+
                 const cmds = ['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs']
 
                 this.state.sendToServer(cmds, null, r => {
@@ -233,9 +237,9 @@ const store = new Vuex.Store({
                     commit('setOrders', {orders: r.data.orders, products: r.data.products})
                 })                
             }      
-            console.log(order)
-            
-            this.state.sendToServer('test', order, update)
+            //console.log(order)
+
+            //this.state.sendToServer('stopOrder', order, update)
         }
     }
 })

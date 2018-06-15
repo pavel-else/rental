@@ -64,11 +64,12 @@ class Request
                 break;
                 case 'setOrder':
                     $this->setOrder($value);
-                    $this->getLogs();
+                break;
+                case 'stopOrder':
+                    $this->stopOrder($value);
                 break;
                 case 'test':
-                    $this->test($value);
-                    $this->getLogs();
+                    $this->test($value);                    
                 break;
             } 
         };
@@ -81,6 +82,7 @@ class Request
             $switch($cmds);
         }
 
+        $this->getLogs();
         $this->send($this->response);
     }
 
@@ -282,6 +284,28 @@ class Request
         }
 
         return $result;
+    }
+
+    private function stopOrder($order) {
+        if (empty($order)) {
+            $this->writeLog('function stopOrder failed with error: empty order');
+            return;
+        }
+
+        $end_time = date("Y-m-d H:i:s", $order[end_time]);
+
+        $log = $this->pDB->set('
+            UPDATE `order_products` 
+             SET `end_time` = ' . '\'' . $end_time . '\'' . '
+             WHERE `order_id` = ' . $order[order_id] . '
+             AND `product_id` = ' . $order[product_id]
+        );
+
+        if ($log) {
+            $this->writeLog('function stopOrder compleated');
+        } else {
+            $this->writeLog('function stopOrder failed with error: SQL Request filed');
+        }
     }
 
     private function test($value) {

@@ -8,11 +8,11 @@
                 <td class="ord__td-2">{{ item.order_id_position }}</td>
                 <td class="ord__td-5">{{ item.start_time }}</td>
                 <td>
-                    <tr v-for="(sbitem, index) in item.products">
-                        <td class="ord__td-3">{{ sbitem.product_id }}</td>
-                        <td class="ord__td-4">{{ sbitem.name }}</td>
+                    <tr v-for="(subitem, index) in item.products">
+                        <td class="ord__td-3">{{ subitem.product_id }}</td>
+                        <td class="ord__td-4">{{ subitem.name }}</td>
                         <td class="ord__td-6">{{ getTimePlay(item.start_time, item.timeDelay) }}</td>
-                        <td class=" ord__td-6 stop-order" @click="stopOrder(sbitem)">x</td>
+                        <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem)">x</td>
                     </tr>
                 </td>
             </tr>
@@ -53,9 +53,12 @@
 	            return this.timeFormat(now - date);
 	        },
 
-	        stopOrder(item) {
-	        	//console.log(item)
-	        	this.$store.dispatch('stopOrder', item)
+	        stopOrder(item, subitem) {
+	        	const order = subitem
+	        	order.start_time = item.start_time
+	        	//console.log(order)
+
+	        	this.$store.dispatch('stopOrder', order)
 	        }
 	    },
 
