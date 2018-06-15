@@ -11,7 +11,8 @@
                     <tr v-for="(subitem, index) in item.products">
                         <td class="ord__td-3">{{ subitem.product_id }}</td>
                         <td class="ord__td-4">{{ subitem.name }}</td>
-                        <td class="ord__td-6">{{ getTimePlay(item.start_time, item.timeDelay) }}</td>
+                        <td class="ord__td-6">{{ getTimePlay(item, subitem) }}</td>
+                        <td v-if="subitem.bill > 0">{{subitem.bill}}</td>
                         <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem)">x</td>
                     </tr>
                 </td>
@@ -46,11 +47,12 @@
 	            return num(hours) + ":" + num(minutes) + ":" + num(seconds);
 	        },
 
-	        getTimePlay(time, delay) {
-	            var date = new Date(time);
-	            var now = new Date(this.now);
+	        getTimePlay(item, subitem) {
+	            const start_time = Date.parse(item.start_time)
+	            const end_time = subitem.end_time ? Date.parse(subitem.end_time) : null
+	            const diff = end_time ? end_time - start_time : this.now - start_time
 
-	            return this.timeFormat(now - date);
+	            return this.timeFormat(diff)
 	        },
 
 	        stopOrder(item, subitem) {
