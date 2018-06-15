@@ -294,9 +294,16 @@ class Request
 
         $end_time = date("Y-m-d H:i:s", $order[end_time]);
 
-        $log = $this->pDB->set('
+        $log['end_time'] = $this->pDB->set('
             UPDATE `order_products` 
              SET `end_time` = ' . '\'' . $end_time . '\'' . '
+             WHERE `order_id` = ' . $order[order_id] . '
+             AND `product_id` = ' . $order[product_id]
+        );
+
+        $log['bill'] = $this->pDB->set('
+            UPDATE `order_products` 
+             SET `bill` = ' . $order[bill] . '
              WHERE `order_id` = ' . $order[order_id] . '
              AND `product_id` = ' . $order[product_id]
         );

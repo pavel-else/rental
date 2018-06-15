@@ -38,6 +38,24 @@ const store = new Vuex.Store({
             .then(callback)      
         },
 
+        timeFormat (ms/**number*/){
+            if (ms < 0) ms = 0;
+
+            function num(val){
+                val = Math.floor(val);
+                return val < 10 ? '0' + val : val;
+            }
+            
+            var sec = ms / 1000
+              , hours = sec / 3600  % 24
+              , minutes = sec / 60 % 60
+              , seconds = sec % 60
+            ;
+
+            return num(hours) + ":" + num(minutes) + ":" + num(seconds);
+        },
+
+
     },
 
     getters: {
@@ -223,7 +241,15 @@ const store = new Vuex.Store({
         stopOrder({commit}, order) {
             order.end_time = Math.floor(Date.now() / 1000)
 
-            console.log(Date.now())
+            let time_diff_timestamp = order.end_time * 1000 - Date.parse(order.start_time)
+            let time_diff_h = (time_diff_timestamp / 1000 / 60 / 60).toFixed(2) //округл до сотых
+
+            const bill = Math.round(time_diff_h * 80) // * order.tarif 
+
+
+
+            console.log(bill)
+
 
             const update = (r) => {
                 console.log(r)
@@ -236,10 +262,13 @@ const store = new Vuex.Store({
                     commit('set', {type: 'options', items: r.data.options})
                     commit('setOrders', {orders: r.data.orders, products: r.data.products})
                 })                
-            }      
-            //console.log(order)
+            }     
 
-            //this.state.sendToServer('stopOrder', order, update)
+            order.bill = bill
+
+            console.log(order)
+
+            this.state.sendToServer('stopOrder', order, update)
         }
     }
 })
