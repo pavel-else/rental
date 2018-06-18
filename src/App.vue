@@ -46,6 +46,8 @@ export default {
 
         // Обновление таймеров
         setInterval(() => {this.now = new Date()}, 1000)
+
+        this.$store.dispatch('startTimer')
     },
 }
 </script>

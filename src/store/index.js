@@ -4,7 +4,42 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
+const moduleA = {
+    state: { count: 2 },
+    mutations: {},
+    actions: {},
+    getters: {
+        doubleCount(state) {
+            return state.count * 2;
+        }
+    }
+}
+
+const opt = {
+    state: {
+        now: new Date()
+    },
+    mutations: {
+        now(state, date) {
+            state.now = date
+        }
+    },
+    actions: {
+        startTimer({commit}) {
+            setInterval(() => {commit('now', new Date())}, 1000)
+        }
+    },
+    getters: {
+        now(state) {
+            return state.now
+        }
+    }
+}
+
 const store = new Vuex.Store({
+    modules: {
+        opt
+    },
     state: {
         url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
         orders: [],

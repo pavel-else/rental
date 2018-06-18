@@ -3,6 +3,7 @@
         <h3>В прокате</h3>
         <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
         <table class="table table-bordered">
+        	<div>{{ sd }}</div>
             <tr v-for="(item, index) in orders">
                 <td class="ord__td-1">{{ index + 1 }}</td>
                 <td class="ord__td-2">{{ item.order_id_position }}</td>
@@ -65,6 +66,9 @@
 	    },
 
 	    computed: {
+	    	sd() {
+	    		return this.$store.getters.now
+	    	},
 	    	orders() {
 	    		return this.$store.getters.orders
 	    	},
