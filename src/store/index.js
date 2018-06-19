@@ -18,14 +18,11 @@ const store = new Vuex.Store({
         newOrder,
         options
     },
-    state: {        
-
+    state: {
         newOrder: {
             order: {},
             product: {}
         },
-
-        showNewOrder: false,
 
         sendToServer(cmds, value, callback) {
             const url = this.url
@@ -62,10 +59,6 @@ const store = new Vuex.Store({
     },
 
     getters: {
-        showNewOrder(state) {
-            return state.showNewOrder
-        },
-
         newOrder(state) {
             return state.newOrder
         }
@@ -79,8 +72,6 @@ const store = new Vuex.Store({
             console.log('set ' + type)
             state[type] = items
         },
-
-
 
         newOrder(state, product) {
             state.newOrder.product = product
@@ -122,9 +113,6 @@ const store = new Vuex.Store({
         selectOrderId(state, item) {
             state.newOrder.order.order_id_position = item.position
             state.newOrder.order.order_id = item.order_id
-        },
-        showNewOrder(state, item) {
-            state.showNewOrder = item
         },
     },
 
@@ -199,9 +187,7 @@ const store = new Vuex.Store({
         selectOrderId({commit}, id) {
             commit('selectOrderId', id)
         },
-        showNewOrder({commit}, item) {
-            commit('showNewOrder', item)
-        },
+
 
         stopOrder({commit}, order) {
             order.end_time = Math.floor(Date.now() / 1000)

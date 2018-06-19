@@ -24,7 +24,7 @@
                     </select>
                 </td>
             </tr>
-        </table>
+        </table> 
         <div class="buttons">
             <button @click="setOrder">OK</button>
             <button @click="close">Отмена</button>
