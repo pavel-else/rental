@@ -8,6 +8,7 @@ import orders from './orders'
 import newOrder from './newOrder'
 import stopOrder from './stopOrder'
 import options from './opt'
+import tariffs from './tariffs'
 
 Vue.use(Vuex)
 
@@ -18,7 +19,8 @@ const store = new Vuex.Store({
         orders,
         newOrder,
         stopOrder,
-        options
+        options,
+        tariffs
     },
     state: {
         sendToServer(cmds, data, {commit}) {
