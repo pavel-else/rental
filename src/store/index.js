@@ -2,54 +2,19 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
+import products from './products'
+import options from './opt'
+
 Vue.use(Vuex)
-
-const moduleA = {
-    state: { count: 2 },
-    mutations: {},
-    actions: {},
-    getters: {
-        doubleCount(state) {
-            return state.count * 2;
-        }
-    }
-}
-
-const opt = {
-    state: {
-        now: new Date()
-    },
-    mutations: {
-        now(state, date) {
-            state.now = date
-        }
-    },
-    actions: {
-        startTimer({commit}) {
-            setInterval(() => {commit('now', new Date())}, 1000)
-        }
-    },
-    getters: {
-        now(state) {
-            return state.now
-        }
-    }
-}
 
 const store = new Vuex.Store({
     modules: {
-        opt
+        options,
+        products
     },
-    state: {
-        url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
+    state: {        
         orders: [],
-        products: [],
         customers: [],
-        options: {
-            max_order_id: Number,
-            new_order_id: Number,
-        },
-
         newOrder: {
             order: {},
             product: {}
@@ -89,8 +54,6 @@ const store = new Vuex.Store({
 
             return num(hours) + ":" + num(minutes) + ":" + num(seconds);
         },
-
-
     },
 
     getters: {
@@ -100,9 +63,7 @@ const store = new Vuex.Store({
         showNewOrder(state) {
             return state.showNewOrder
         },
-        products(state) {
-            return state.products
-        },
+
         orders(state) {
             return state.orders
         },
@@ -197,9 +158,8 @@ const store = new Vuex.Store({
     },
 
     actions: {
-        upd({commit}, cmds) {
-
-            const url = this.state.url
+        upd({commit}, cmds) {           
+            const url = options.state.url
             cmds = ['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs']
 
             axios({
@@ -213,17 +173,16 @@ const store = new Vuex.Store({
                 console.log(e)
             })
             .then(r => {
-                commit('set', {type: 'products', items: r.data.products})
+                commit('setProducts', r.data.products)
                 commit('set', {type: 'customers', items: r.data.clients})
-                commit('set', {type: 'options', items: r.data.options})
-                //commit('set', {type: 'orders', items: r.data.orders})
+                commit('setOpt', r.data.options)
                 commit('setOrders', {orders: r.data.orders, products: r.data.products})
                 console.log(r)
             })
         },
 
         send({commit}, {cmd, value}) {
-            const url = this.state.url
+            const url = options.state.url
 
             axios({
                 method: 'post',
@@ -252,7 +211,7 @@ const store = new Vuex.Store({
                 .then(r => {
                     commit('set', {type: 'products', items: r.data.products})
                     commit('set', {type: 'customers', items: r.data.clients})
-                    commit('set', {type: 'options', items: r.data.options})
+                    commit('setOpt', r.data.options)
                     commit('setOrders', {orders: r.data.orders, products: r.data.products})
                     console.log(r)
                 })

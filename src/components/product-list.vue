@@ -28,7 +28,7 @@
             filterProducts() {
                 const list = this.$store.getters.products
 
-                return list.filter(item => item.active != 0)
+                return list ? list.filter(item => item.active != 0) : []
             },
         }
 

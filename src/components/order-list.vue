@@ -13,7 +13,7 @@
                         <td class="ord__td-3">{{ subitem.product_id }}</td>
                         <td class="ord__td-4">{{ subitem.name }}</td>
                         <td class="ord__td-6">{{ getTimePlay(item, subitem) }}</td>
-                        <td v-if="subitem.bill > 0">{{subitem.bill}}</td>
+                        <td v-if="subitem.bill > 0">{{subitem.bill}}р</td>
                         <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem)">x</td>
                     </tr>
                 </td>
