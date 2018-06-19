@@ -67,7 +67,7 @@
 
 	    computed: {
 	    	sd() {
-	    		return this.$store.getters.now
+	    		//return this.$store.getters.options
 	    	},
 	    	orders() {
 	    		return this.$store.getters.orders

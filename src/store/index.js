@@ -3,18 +3,23 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import products from './products'
+import customers from './customers'
+import orders from './orders'
+import newOrder from './newOrder'
 import options from './opt'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
     modules: {
-        options,
-        products
+        products,
+        customers,
+        orders,
+        newOrder,
+        options
     },
     state: {        
-        orders: [],
-        customers: [],
+
         newOrder: {
             order: {},
             product: {}
@@ -57,21 +62,8 @@ const store = new Vuex.Store({
     },
 
     getters: {
-        url(state) {
-            return state.url
-        },
         showNewOrder(state) {
             return state.showNewOrder
-        },
-
-        orders(state) {
-            return state.orders
-        },
-        customers(state) {
-            return state.customers
-        },
-        options(state) {
-            return state.options
         },
 
         newOrder(state) {
@@ -88,28 +80,7 @@ const store = new Vuex.Store({
             state[type] = items
         },
 
-        setOrders(state, {orders, products}) {
-            /*
-            * Запись активных ордеров в хранилище
-            * Функция подмешивает в массив данные (название продукта) из таблицы Продукты
-            * Проверяем входные данные на наличие
-            * Прогоняем массив Ордеров
-            * Прогоняем массив продуктов каждого ордера
-            * По id ордера продукта находим в таблице Продукты нужную запись
-            * Сохраняем данные в массиве Ордеров
-            */
-            console.log('set Orders')
 
-            const result = orders ? orders.map(order => {
-                for (var i = 0; i < order.products.length; i++) {
-                    order.products[i].name = products.find(p => p.id == order.products[i].product_id).name
-                }
-
-                return order
-            }) : []
-
-            state.orders = result
-        },
 
         newOrder(state, product) {
             state.newOrder.product = product
@@ -174,7 +145,7 @@ const store = new Vuex.Store({
             })
             .then(r => {
                 commit('setProducts', r.data.products)
-                commit('set', {type: 'customers', items: r.data.clients})
+                commit('setCustomers', r.data.clients)
                 commit('setOpt', r.data.options)
                 commit('setOrders', {orders: r.data.orders, products: r.data.products})
                 console.log(r)
@@ -209,8 +180,8 @@ const store = new Vuex.Store({
                     console.log(e)
                 })
                 .then(r => {
-                    commit('set', {type: 'products', items: r.data.products})
-                    commit('set', {type: 'customers', items: r.data.clients})
+                    commit('setProducts', r.data.products)
+                    commit('setCustomers', r.data.clients)
                     commit('setOpt', r.data.options)
                     commit('setOrders', {orders: r.data.orders, products: r.data.products})
                     console.log(r)

@@ -7,8 +7,9 @@ export default {
     },
     mutations: {
         setOpt(state, opt) {
-            console.log(opt)
-            state.opt = opt
+            for (let prop in opt) {
+                state[prop] = opt[prop]
+            }
         },
         now(state, date) {
             state.now = date
@@ -22,6 +23,9 @@ export default {
     getters: {
         now(state) {
             return state.now
-        }
+        },
+        options(state) {
+            return state
+        },
     }
 }
