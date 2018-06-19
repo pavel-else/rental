@@ -1,6 +1,7 @@
 export default {
     state: {
         url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
+        cmds: ['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs'],
         now: new Date(),
         max_order_id: Number,
         new_order_id: Number,

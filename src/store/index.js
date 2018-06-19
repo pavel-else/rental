@@ -6,6 +6,7 @@ import products from './products'
 import customers from './customers'
 import orders from './orders'
 import newOrder from './newOrder'
+import stopOrder from './stopOrder'
 import options from './opt'
 
 Vue.use(Vuex)
@@ -16,28 +17,48 @@ const store = new Vuex.Store({
         customers,
         orders,
         newOrder,
+        stopOrder,
         options
     },
     state: {
-        newOrder: {
-            order: {},
-            product: {}
-        },
+        sendToServer(cmds, order, {commit}) {
+            const url = options.state.url
 
-        sendToServer(cmds, value, callback) {
-            const url = this.url
+            const callback = r => {
+                console.log(r)
+                commit('setProducts', r.data.products)
+                commit('setCustomers', r.data.clients)
+                commit('setOpt', r.data.options)
+                commit('setOrders', {orders: r.data.orders, products: r.data.products})
+            }
+
             axios({
                 method: 'post',
                 url,
                 data: {
                     cmds,
-                    value
+                    value: order
                 }
             })
             .catch(e => {
                 console.log(e)
             })
-            .then(callback)      
+            .then(r => {             
+                console.log(r)
+                axios({
+                    method: 'post',
+                    url,
+                    data: {
+                        cmds: options.state.cmds,
+                        value: order
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+                .then(callback)
+               
+            })
         },
 
         timeFormat (ms/**number*/){
@@ -57,63 +78,7 @@ const store = new Vuex.Store({
             return num(hours) + ":" + num(minutes) + ":" + num(seconds);
         },
     },
-
-    getters: {
-        newOrder(state) {
-            return state.newOrder
-        }
-    },
-
     mutations: {
-        test(state, value) {
-            console.log(value)
-        },
-        set(state, {type, items}) {
-            console.log('set ' + type)
-            state[type] = items
-        },
-
-        newOrder(state, product) {
-            state.newOrder.product = product
-
-            state.newOrder.order = {
-                status: 'ACTIVE',
-                products: [product.id],
-                order_id_position: null,
-                start_time: Math.floor(Date.now() / 1000),
-
-                id_rental_org: "8800000001",
-                accessories: '',
-                advance: 0, //Сумма предоплаты
-                advance_hold: false,
-                advance_time: 0,
-                bill: 0,
-                bill_no_sale: null,
-                customer_id: Number,
-                customer_name: '',
-                end_time: '',
-                id: Number,
-                note: '',
-                order_id: Number,
-                play_pause: true,
-                sale_id: '',
-            }
-        },
-        selectClient(state, customer) {
-            state.newOrder.order.customer_id = customer.id
-
-            let fname = customer.fname ? customer.fname : ''
-            let sname = customer.sname ? ' ' + customer.sname : ''
-            let tname = customer.tname ? ' ' + customer.tname : ''
-
-            let name = (fname + sname + tname).trim()
-
-            state.newOrder.order.customer_name = name
-        },
-        selectOrderId(state, item) {
-            state.newOrder.order.order_id_position = item.position
-            state.newOrder.order.order_id = item.order_id
-        },
     },
 
     actions: {
@@ -177,41 +142,25 @@ const store = new Vuex.Store({
             })
         },
 
-        newOrder({commit}, product) {
-            commit('newOrder', product)
-        },
-
-        selectClient({commit}, customer) {
-            commit('selectClient', customer)
-        },
-        selectOrderId({commit}, id) {
-            commit('selectOrderId', id)
-        },
-
-
         stopOrder({commit}, order) {
             order.end_time = Math.floor(Date.now() / 1000)
 
             let time_diff_timestamp = order.end_time * 1000 - Date.parse(order.start_time)
             let time_diff_h = (time_diff_timestamp / 1000 / 60 / 60).toFixed(2) //округл до сотых
 
-            const bill = Math.round(time_diff_h * 80) // * order.tarif 
-
-
-
-            console.log(bill)
-
+            const bill = Math.round(time_diff_h * 80) // * order.tarif
 
             const update = (r) => {
-                console.log(r)
+                console.log('asdfasdfasdf')
 
                 const cmds = ['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs']
 
                 this.state.sendToServer(cmds, null, r => {
-                    commit('set', {type: 'products', items: r.data.products})
-                    commit('set', {type: 'customers', items: r.data.clients})
-                    commit('set', {type: 'options', items: r.data.options})
+                    commit('setProducts', r.data.products)
+                    commit('setCustomers', r.data.clients)
+                    commit('setOpt', r.data.options)
                     commit('setOrders', {orders: r.data.orders, products: r.data.products})
+                    console.log(this._actions)
                 })                
             }     
 
@@ -219,8 +168,8 @@ const store = new Vuex.Store({
 
             console.log(order)
 
-            this.state.sendToServer('stopOrder', order, update)
-        }
+            this.state.sendToServer('stopOrder', order, {commit})
+        },
     }
 })
 
