@@ -6,7 +6,7 @@
                 <th>№</th>
                 <th>Товар</th>
             </tr>
-            <tr v-for="(item, index) in filterProducts" @click="toEdit(item)">
+            <tr v-for="(item, index) in filterProducts" @click="toEdit(item)" class="products__product">
                 <td>{{ index + 1 }}</td>
                 <td>{{ item.name }}</td>
             </tr>
@@ -36,4 +36,8 @@
 </script>
 
 <style scoped>
+ .products__product:hover {
+    cursor: pointer;
+    outline: 1px solid rgba(0, 0, 0, 0.3);
+ }
 </style>
