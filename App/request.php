@@ -308,6 +308,28 @@ class Request
              AND `product_id` = ' . $order[product_id]
         );
 
+        $log['product_status'] = $this->pDB->set('
+            UPDATE `products` 
+             SET `active` = 1' . '
+             WHERE `id_rent` = ' . $order[product_id]
+        );
+
+        $sql = 'SELECT `order_id`, `end_time` FROM `order_products` 
+         WHERE `order_id` =' .$order[order_id];
+
+
+        $products = $this->pDB->get($sql, false, true);
+        if (!$products) {
+            $result = false;
+
+            foreach ($products as $value) {
+                $result = $value;
+            }
+        }
+
+
+        $this->writeLog($value);
+
         if ($log) {
             $this->writeLog('function stopOrder compleated');
         } else {

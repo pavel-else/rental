@@ -6,7 +6,7 @@
 
         <order-list class="tmp"></order-list>
         
-        <test></test>
+<!--         <test></test> -->
     </div>
 </template>
 

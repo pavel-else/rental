@@ -38,6 +38,7 @@ const store = new Vuex.Store({
                 console.log(e)
             })
             .then(r => {
+                    console.log(r)
                 axios({
                     method: 'post',
                     url,
@@ -55,6 +56,7 @@ const store = new Vuex.Store({
                     commit('setCustomers', r.data.clients)
                     commit('setOpt', r.data.options)
                     commit('setOrders', {orders: r.data.orders, products: r.data.products})
+
                 })
                
             })

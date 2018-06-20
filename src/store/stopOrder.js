@@ -12,7 +12,7 @@ export default {
             */
 
             const gettTariffId = (product_id, products) => {
-                const product = products.find(p => p.id == product_id)
+                const product = products.find(p => p.id_rent == product_id)
 
                 return product.tariff_id ? product.tariff_id : null
             }
@@ -61,7 +61,7 @@ export default {
 
             order.bill = bill
 
-            //console.log(order)
+            console.log(order)
             this.state.sendToServer('stopOrder', order, {commit})
         },
 	}

@@ -16,7 +16,7 @@ export default {
             state.newOrder.order = {
                 status: 'ACTIVE',
                 products: [
-                    product.id,
+                    product.id_rent, ///
                 ],
                 order_id_position: null,
                 start_time: Math.floor(Date.now() / 1000),
