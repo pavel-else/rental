@@ -4,7 +4,7 @@
 
         <new-order v-if="showNewOrder"></new-order>
 
-        <order-list :now="now" class="tmp"></order-list>
+        <order-list class="tmp"></order-list>
         
         <test></test>
     </div>
@@ -29,11 +29,6 @@ export default {
         Test
     },
 
-    data () {
-        return {
-            now: Date,
-        }
-    },
     computed: {
         showNewOrder() {
             return this.$store.getters.showNewOrder
