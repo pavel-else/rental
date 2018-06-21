@@ -338,16 +338,16 @@ class Request
                 $sql = '
                     SELECT `order_id`, `end_time` 
                     FROM `order_products`
-                    WHERE `order_id` = :order_id
-                ';
-                $d = array(
-                    'order_id' => $order[order_id],
-                );
+                    WHERE `order_id` = ' . '\'' . $order[order_id] . '\''
+                ;
 
-                return $this->pDB->set($sql, $d);               
+                //$this->writeLog($this->pDB->get($sql, false, true));
+                return $this->pDB->get($sql, false, true);               
             };
 
-            $changeStatus = function ($order, $products) {
+            $changeStatus = function ($order, array $products) {
+                $this->writeLog($products);
+
                 if (empty($products)) {
                     return;
                 }
@@ -355,7 +355,7 @@ class Request
                 $result = true;
 
                 foreach ($products as $value) {
-                    if (is_null($value[end_time])) {
+                    if (empty($value[end_time])) {
                         $result = false;
                     }
                 }  
