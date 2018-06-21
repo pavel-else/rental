@@ -169,7 +169,6 @@ class Request
 
             return 0;
         }
-
     }
 
     private function getOrderID ($id) {
@@ -287,54 +286,109 @@ class Request
     }
 
     private function stopOrder($order) {
+        $setEndTime = function ($order) {
+            $end_time = date("Y-m-d H:i:s", $order[end_time]);            
+            $sql = '
+                UPDATE `order_products` 
+                SET `end_time` = :end_time 
+                WHERE `order_id` = :order_id 
+                AND `product_id` = :product_id' 
+            ;
+            $d = array(
+                'end_time' => $end_time,
+                'order_id' => $order[order_id],
+                'product_id' => $order[product_id],
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+        $setBill = function ($order) {
+            $sql = '
+                UPDATE `order_products` 
+                SET `bill` = :bill 
+                WHERE `order_id` = :order_id 
+                AND `product_id` = :product_id' 
+            ;
+            $d = array(
+                'bill' => $order[bill],
+                'order_id' => $order[order_id],
+                'product_id' => $order[product_id],
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+        $setProductStatus = function ($order) {
+            $sql = '
+                UPDATE `products` 
+                SET `active` = :active 
+                WHERE `id_rent` = :id_rent' 
+            ;
+            $d = array(
+                'active' => 1,
+                'id_rent' => $order[product_id],
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+        $setOrderStatus = function ($order) {
+            $getProducts = function ($order) {
+                $sql = '
+                    SELECT `order_id`, `end_time` 
+                    FROM `order_products`
+                    WHERE `order_id` = :order_id
+                ';
+                $d = array(
+                    'order_id' => $order[order_id],
+                );
+
+                return $this->pDB->set($sql, $d);               
+            };
+
+            $changeStatus = function ($order, $products) {
+                if (empty($products)) {
+                    return;
+                }
+
+                $result = true;
+
+                foreach ($products as $value) {
+                    if (is_null($value[end_time])) {
+                        $result = false;
+                    }
+                }  
+
+                if ($result) {
+                    $sql = '
+                        UPDATE `orders` 
+                        SET `status` = :status 
+                        WHERE `order_id` = :order_id
+                    ';
+                    $d = array(
+                        'order_id' => $order[order_id],
+                        'status' => 'END'
+                    );
+
+                    return $this->pDB->set($sql, $d);
+                } 
+            };
+
+            return $changeStatus($order, $getProducts($order));
+        };
+
         if (empty($order)) {
             $this->writeLog('function stopOrder failed with error: empty order');
             return;
         }
 
-        $end_time = date("Y-m-d H:i:s", $order[end_time]);
+        $log['end_time'] = $setEndTime($order);
+        $log['bill'] = $setBill($order);
+        $log['product_status'] = $setProductStatus($order);
+        $log['change_order_status'] = $setOrderStatus($order);
 
-        $log['end_time'] = $this->pDB->set('
-            UPDATE `order_products` 
-             SET `end_time` = ' . '\'' . $end_time . '\'' . '
-             WHERE `order_id` = ' . $order[order_id] . '
-             AND `product_id` = ' . $order[product_id]
-        );
-
-        $log['bill'] = $this->pDB->set('
-            UPDATE `order_products` 
-             SET `bill` = ' . $order[bill] . '
-             WHERE `order_id` = ' . $order[order_id] . '
-             AND `product_id` = ' . $order[product_id]
-        );
-
-        $log['product_status'] = $this->pDB->set('
-            UPDATE `products` 
-             SET `active` = 1' . '
-             WHERE `id_rent` = ' . $order[product_id]
-        );
-
-        $sql = 'SELECT `order_id`, `end_time` FROM `order_products` 
-         WHERE `order_id` =' .$order[order_id];
-
-
-        $products = $this->pDB->get($sql, false, true);
-        if (!$products) {
-            $result = false;
-
-            foreach ($products as $value) {
-                $result = $value;
-            }
-        }
-
-
-        $this->writeLog($value);
-
-        if ($log) {
-            $this->writeLog('function stopOrder compleated');
-        } else {
-            $this->writeLog('function stopOrder failed with error: SQL Request filed');
-        }
+        $this->writeLog($log);
     }
 
     private function test($value) {
