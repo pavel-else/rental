@@ -49,15 +49,27 @@ class Request
                 case 'getOrders':
                     $this->response['orders'] = $this->getOrders();
                 break;
+                case 'getOrderProducts':
+                    $this->response['order_products'] = $this->getOrderProducts($value);
+                break;
                 case 'getClients':
                     $this->response['clients'] = $this->getClients();
                 break;
-                case 'writeLog':
-                    $this->writeLog($value);
+                case 'getMaxOrderID':
+                    $this->response['options']['max_order_id'] = $this->getMaxOrderID();
+                    $this->response['options']['new_order_id'] = $this->getMaxOrderID() + 1;
                 break;
-                case 'setLogs':
-                    $this->writeLog($value);
-                    $this->getLogs();
+                case 'getOrderID':
+                    $this->response['options']['get_order_id'] = $this->getOrderID($value);
+                break;
+                case 'setOrder':
+                    $this->setOrder($value);
+                break;
+                case 'stopOrder':
+                    $this->stopOrder($value);
+                break;
+                case 'test':
+                    $this->test($value);                    
                 break;
             } 
         };
@@ -70,6 +82,7 @@ class Request
             $switch($cmds);
         }
 
+        $this->getLogs();
         $this->send($this->response);
     }
 
@@ -80,7 +93,7 @@ class Request
     
     // /* Функция подключения БД */
     private function rent_connect_DB(){
-        require_once('../lib.db.php');
+        require_once('../../lib.db.php');
 
         $pDB = new Pdo_Db();
 
@@ -101,10 +114,9 @@ class Request
         $this->response['logs'] = $this->logs;
     }
 
-
     private function getProducts() {
         $not_in_rental = '0,';          // Велосипеды которые не в прокате   
-        $sql = 'SELECT * FROM `products` WHERE `id_rent` NOT IN ('.trim($not_in_rental,',').') AND `active` = 1 AND `id_rental_org` = '.$this->app_id.' ORDER BY `name`';     // Перебираем все товары кроме активных (свободные велосипеды)
+        $sql = 'SELECT * FROM `products` WHERE `id_rent` NOT IN ('.trim($not_in_rental,',').') AND `id_rental_org` = '.$this->app_id.' ORDER BY `name`';     // Перебираем все товары кроме активных (свободные велосипеды)
 
         $this->writeLog("f.GetProducts completed");
         return $this->pDB->get($sql, false, true);
@@ -112,15 +124,287 @@ class Request
 
     private function getOrders() {
         $sql = 'SELECT * FROM `orders` WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
+        // $sql = 'SELECT * FROM `order_products` 
+        //     INNER JOIN `orders` on orders.order_id = order_products.order_id 
+        //     WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
+
         $this->writeLog("f.Orders completed");
 
-        return $this->pDB->get($sql, false, true);
+        $orders = $this->pDB->get($sql, false, true);
+
+        foreach ($orders as $key => $order) {
+            $order[products] = $this->getOrderProducts($order[order_id]);
+            $result[] = $order;
+        }
+
+        return $result;
+    }
+
+    private function getOrderProducts($order_id) {
+        $sql = 'SELECT * FROM `order_products` WHERE `order_id` =' .$order_id;
+
+        $this->writeLog("f.getOrderProducts completed");
+
+        return $this->pDB->get($sql, false, true); 
     }
 
     private function getClients() {
         $sql = 'SELECT * FROM `clients` WHERE `id_rental_org` = '.$this->app_id .' ORDER BY `clients`.`fname` ASC';
 
         return $this->pDB->get($sql, false, true);
+    }
+
+    private function getMaxOrderID() {
+        $sql = 'SELECT `order_id` FROM `orders` WHERE `id_rental_org` = '. $this->app_id .' ORDER BY `order_id` DESC LIMIT 1';
+        $result = $this->pDB->get($sql, false, true);
+
+        if (count($result)) {
+            foreach ($result as $key => $value) {
+                $this->writeLog('getMaxOrderID compleated. value = ' .$value[order_id]);
+
+                return $value[order_id];
+            }
+        } else {
+            $this->writeLog('getMaxOrderID return empty array');
+
+            return 0;
+        }
+    }
+
+    private function getOrderID ($id) {
+        $sql = 'SELECT `order_id` FROM `orders` WHERE `id_rental_org` = ' . $this->app_id . ' AND `order_id` = ' . $id;
+
+        $result =  $this->pDB->get($sql, false, true);
+
+        return $result ? true : false;
+    }
+
+    private function setOrder($order) {
+        /*
+        * Определены 2 функции: для записи ордера и записи продуктов к ордеру
+        * Если ордер с указанным order_id уже существует, то просто добавляем продукты к ордеру.
+        * Если не существует - записываем новый ордер и продукты к нему.
+        * Функция возвращает TRUE, если запись прошла успешено.
+        */
+
+        $products = $order['products'];
+        $orderID = $order[order_id];
+        $result = false;
+
+        $setOrder = function ($order) {
+            $sql = 'INSERT INTO `orders` (
+                `id`,
+                `order_id`,
+                `order_id_position`,
+                `id_rental_org`,
+                `status`,
+                `customer_id`,
+                `customer_name`,
+                `start_time`,
+                `advance_time`,
+                `advance`,
+                `advance_hold`,
+                `sale_id`,
+                `note`
+            ) VALUES (
+                NULL, 
+                :order_id, 
+                :order_id_position, 
+                :id_rental_org, 
+                :status, 
+                :order_customer_id, 
+                :order_customer_name, 
+                :order_start_time, 
+                :order_advance_time, 
+                :order_advance, 
+                :order_advance_hold, 
+                :order_sale_id, 
+                :order_note
+            )';
+
+            $order_data = array(
+                'order_id' =>               $order[order_id],
+                'order_id_position' =>      $order[order_id_position],
+                'id_rental_org' =>          $order[id_rental_org],//$this->app_id,
+                'status' =>                 $order[status],
+                'order_customer_id' =>      $order[customer_id],
+                'order_customer_name' =>    $order[customer_name],
+                'order_start_time' =>       date("Y-m-d H:i:s", $order[start_time]),
+                'order_advance_time' =>     $order[advance_time],
+                'order_advance' =>          $order[advance],
+                'order_advance_hold' =>     $order[advance_hold],
+                'order_sale_id' =>          $order[sale_id],
+                'order_note' =>             $order[note],
+            );
+
+            return $this->pDB->set($sql, $order_data);
+        };
+
+        $setOrderProducts = function ($products, $orderID) use($order) {
+            $subsql = 'INSERT INTO `order_products` (
+                `id`, 
+                `order_id`, 
+                `product_id`,
+                `bill`,
+                `bill_no_sale`,
+                `end_time`
+            ) VALUES (
+                NULL, 
+                :order_id, 
+                :product_id,
+                :bill,
+                :bill_no_sale,
+                :end_time
+            )';
+
+            $product_data = array(
+                'order_id' => $orderID,
+                'product_id' => '',
+                'bill' => 0,
+                'bill_no_sale' => 0,
+                'end_time' => $order[end_time] ? date("Y-m-d H:i:s", $order[end_time]) : NULL
+            );
+
+            foreach ($order[products] as $key => $product) {
+                $product_data[product_id] = $product;
+
+                $this->pDB->set($subsql, $product_data); 
+
+                $this->pDB->set("UPDATE `products` SET `active` = 0  WHERE `id_rent` = " . $product); 
+            }
+        };
+
+        if ($this->getOrderID($order[order_id])) {
+            $setOrderProducts($products, $orderID);
+            $result = true;
+        } else if ($setOrder($order)) {
+            $setOrderProducts($products, $orderID);
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    private function stopOrder($order) {
+        /*
+        * 1. Устанавливаем стопордер
+        * 2. Пишем стоимость
+        * 3. Меняем статусы продуктов
+        * 4. Меняем статус ордера, если активных продуктов нет
+        */
+        $setEndTime = function ($order) {
+            $end_time = date("Y-m-d H:i:s", $order[end_time]);            
+            $sql = '
+                UPDATE `order_products` 
+                SET `end_time` = :end_time 
+                WHERE `order_id` = :order_id 
+                AND `product_id` = :product_id' 
+            ;
+            $d = array(
+                'end_time' => $end_time,
+                'order_id' => $order[order_id],
+                'product_id' => $order[product_id],
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+        $setBill = function ($order) {
+            $sql = '
+                UPDATE `order_products` 
+                SET `bill` = :bill 
+                WHERE `order_id` = :order_id 
+                AND `product_id` = :product_id' 
+            ;
+            $d = array(
+                'bill' => $order[bill],
+                'order_id' => $order[order_id],
+                'product_id' => $order[product_id],
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+        $setProductStatus = function ($order) {
+            $sql = '
+                UPDATE `products` 
+                SET `active` = :active 
+                WHERE `id_rent` = :id_rent' 
+            ;
+            $d = array(
+                'active' => 1,
+                'id_rent' => $order[product_id],
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+        $setOrderStatus = function ($order) {
+            /*
+            * 1. Выбираем по id продукты вместе с их временными стоп-метками
+            * 2. Если на всех продуктах стоят стоп-метки - меняем статус ордера
+            */
+            $getProducts = function ($order) {
+                $sql = '
+                    SELECT `order_id`, `end_time` 
+                    FROM `order_products`
+                    WHERE `order_id` = ' . '\'' . $order[order_id] . '\''
+                ;
+
+                return $this->pDB->get($sql, false, true);               
+            };
+
+            $changeStatus = function ($order, array $products) {
+                /*
+                * 1. Перебираем все продуты ордера
+                * 2. Если среди них не нашлось активного продукта (end_time == null), меняем статус ордера
+                */
+
+                if (empty($products)) {
+                    return;
+                }
+
+                $result = true;
+
+                foreach ($products as $value) {
+                    if (empty($value[end_time])) {
+                        $result = false;
+                    }
+                }  
+
+                if ($result) {
+                    $sql = '
+                        UPDATE `orders` 
+                        SET `status` = :status 
+                        WHERE `order_id` = :order_id
+                    ';
+                    $d = array(
+                        'order_id' => $order[order_id],
+                        'status' => 'END'
+                    );
+
+                    return $this->pDB->set($sql, $d);
+                } 
+            };
+
+            return $changeStatus($order, $getProducts($order));
+        };
+
+        if (empty($order)) {
+            $this->writeLog('function stopOrder failed with error: empty order');
+            return;
+        }
+
+        $log['end_time'] = $setEndTime($order);
+        $log['bill'] = $setBill($order);
+        $log['product_status'] = $setProductStatus($order);
+        $log['change_order_status'] = $setOrderStatus($order);
+
+        $this->writeLog($log);
+    }
+
+    private function test($value) {
+        $this->writeLog("function Test orbaiten normal");
     }
 }
 

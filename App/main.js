@@ -4,7 +4,7 @@ Vue.component('product-list', {
     },
     methods: {
         toEdit(item, index) {
-            this.$emit("edit", item, index);
+            this.$emit("edit", item);
         }
     },
     template: `
@@ -15,9 +15,9 @@ Vue.component('product-list', {
                 <th>№</th>
                 <th>Товар</th>
             </tr>
-            <tr v-for="(item, index) in products" @click="toEdit(item, index)">
+            <tr v-for="(item, index) in products" @click="toEdit(item)">
                 <td>{{ index + 1}}</td>
-                <td>{{ item.name}}</td>
+                <td>{{ item.name }}</td>
             </tr>
         </table>
     </div>
@@ -28,12 +28,12 @@ Vue.component('order-list', {
     props: {
         orders: Array,
         now: null,
+        productsAll: Array,
     },
     methods: {
         timeFormat (ms/**number*/){
-            if (ms < 0) {
-                ms = 0;
-            }
+            if (ms < 0) ms = 0;
+
             function num(val){
                 val = Math.floor(val);
                 return val < 10 ? '0' + val : val;
@@ -48,7 +48,16 @@ Vue.component('order-list', {
             return num(hours) + ":" + num(minutes) + ":" + num(seconds);
         },
         getTimePlay(time, delay) {
-            return this.timeFormat(this.now - time);
+            var date = new Date(time);
+            var now = new Date(this.now);
+
+            return this.timeFormat(now - date);
+        },
+        getProductsName(id) {
+            // Это все дико не оптимально
+            for (let i = 0; i < this.productsAll.length; i++) {
+                if (this.productsAll[i].id_rent == id) return this.productsAll[i].name;
+            }
         }
     },
 
@@ -57,16 +66,27 @@ Vue.component('order-list', {
             <h3>В прокате</h3>
             <table class="table table-bordered">
                 <tr>
-                    <th>№</th>
-                    <th>Товар</th>
-                    <th>Старт</th>
-                    <th>В прокате</th>
+                    <th class="ord__td-1">№</th>
+                    <th class="ord__td-2">ID</th>
+                    <th class="ord__td-3">Товар</th>
+                    <th class="ord__td-4"></th>
+                    <th class="ord__td-5">Старт</th>
+                    <th class="ord__td-6">В прокате</th>
                 </tr>
+            </table>
+            <table class="table table-bordered">
+
                 <tr v-for="(item, index) in orders" @click="unset(item, index)">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ item.productName }}</td>
-                    <td>{{ item.timeStart }}</td>
-                    <td>{{ getTimePlay(item.time, item.timeDelay) }}</td>
+                    <td class="ord__td-1">{{ index + 1 }}</td>
+                    <td class="ord__td-2">{{ item.order_id }}</td>
+                    <td>
+                        <tr v-for="(sbitem, index) in item.products">
+                            <td class="ord__td-3">{{ sbitem.product_id }}</td>
+                            <td class="ord__td-4">{{ getProductsName(sbitem.product_id) }}</td>
+                            <td class="ord__td-5">{{ item.start_time }}</td>
+                            <td class="ord__td-6">{{ getTimePlay(item.start_time, item.timeDelay) }}</td>
+                        </tr>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -75,33 +95,72 @@ Vue.component('order-list', {
 
 Vue.component('edit-order', {
     props: {
+        product: Object,
+        orders: Array,
         customers: Array,
-        productName: String,
-        position: Number, //Позиция в массиве, для последующего удаления
+        options: Object, // max_order_id,
+    },
+    data() {
+        return {
+            selectCustomerID: 0, // 0 - default
+            showNew: true,
+        }
+    },
+    computed: {
+        ordersList() {
+            result = [];
+            if (this.orders) {
+                for (let i = 0; i < this.orders.length; i++) {
+                    result.push(this.orders[i].order_id);
+                }
+            }
+
+            return result;
+        },
+        selectOrderID() {
+            return this.options.new_order_id
+        }
     },
     methods: {
+        onChange(e) {
+            if (e.target.value == this.options.new_order_id) {
+                this.showNew = true;
+            } else {
+                this.showNew = false;
+            }
+            console.log(e.target.value)
+        },
         setOrder() {
             let order = {
+                accessories: '',
+                advance: 0, //Сумма предоплаты
+                advance_hold: false,
+                advance_time: 0,
+                bill: 0,
+                bill_no_sale: null,
+                customer_id: Number,
+                customer_name: '',
+                end_time: '',
                 id: Number,
-                productName: String, 
-                advance: Number, //Сумма предоплаты
-                customerId: Number,
-                customerName: String,
-                time: Object,
-                timeStart: Object,
-                timeDelay: 120000, //Number, ms
+                id_rental_org: "8800000001",
+                note: '',
+                order_id: Number,
+                play_pause: true,
+                products: Array,
+                sale_id: '',
+                start_time: String,
+                status: String,
             }
-        
-            order.productName = this.productName;
 
-            let time = new Date();
-            order.time = time;
-            order.timePlay = 0;
-            order.timeStart = time.toLocaleString();
+            order.status = 'ACTIVE';
 
-            this.$emit("set", order, this.position);
+            order.order_id = this.selectOrderID;
+            order.products = [this.product.id];
+            order.customer_id = this.selectCustomerID;
+            order.start_time = Math.floor(Date.now() / 1000);
+
+            this.$emit("set", order);
         },
-
         closeModal() {
             this.$emit("close")
         },
@@ -112,11 +171,17 @@ Vue.component('edit-order', {
             <table class="table table-bordered">
                 <tr>
                     <td>Товар</td>
-                    <td>{{ productName }}</td>
+                    <td>{{ product.name}}</td>
                 </tr>
                 <tr>
                     <td>ID</td>
-                    <td>001</td>
+                    <td>
+                        <select name="" id="" @change="onChange">
+                            <option>{{ options.new_order_id }}</option>
+                            <option :value="item" v-for="item in ordersList">{{ item }}</option>
+                        </select>
+                        <span v-if="showNew">(Новый){{ options.new_order_id }}</span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Аванс</td>
@@ -125,10 +190,15 @@ Vue.component('edit-order', {
                 <tr>
                     <td>Клиент</td>
                     <td>
-
-                        <select name="customer-list" class="customer__select-list">
-                            <option value="" v-for="(item) in customers">{{item.fname}} {{item.sname}}</option>
+                        <select v-model="selectCustomerID" name="customer-list" class="customer__select-list">
+                            <option  
+                                v-for="item in customers"
+                                :value="item.id"                                
+                            >
+                                {{ item.fname }} {{ item.sname }}
+                            </option>
                         </select>
+                        <span v-if="selectCustomerID">ID: {{ selectCustomerID }}</span>
                     </td>
                 </tr>
                 <tr>
@@ -179,13 +249,19 @@ Vue.component('edit-order', {
 new Vue({
     el: '#app',
     data: {
+        options: {
+            max_order_id: Number,
+        },
+
         now: Date,
-        logs: '',
+
         orders: [],
         products: [],
+        productsAll: [], 
         customers: [],
-        productName: '',
-        productPosition: Number,
+        product: {},
+        logs: '',
+
         showOrderModal: false,
     },
 
@@ -193,52 +269,85 @@ new Vue({
         closeModal() {
             this.showOrderModal = false;
         },
-        toEdit(item, index) {
-            this.productName = item.name;
-            this.productPosition = index;
+        toEdit(item) {
+            this.product = item;
+
             this.showOrderModal = true;
         },
         setOrder(order) {
-            this.orders.push(order);
-            //this.clearOrder();
-            this.products.splice(this.productPosition, 1);
+            this.setData('setOrder', order, response => {
+                console.log(response.data);
+                this.update();
+            });
+ 
             this.showOrderModal = false;
         },
         unset(item, index) {
             this.products.push(item);
             this.orders.splice(index, 1);
         },
+        update() {
+            this.getData(['getProducts', 'getOrders', 'getMaxOrderID', 'getClients', 'getLogs'], response => {
+                this.options = response.data.options;           
+                this.productsAll = response.data.products;
+                this.products = this.filterProducts(this.productsAll);
+                this.orders = response.data.orders;
+                this.customers = response.data.clients;
+                this.logs = response.data.logs;
+                console.log(response.data.options.max_order_id);          
+            })
+        },
+        filterProducts(arr) {
+            let result = [];
+
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i].active != 0) {
+                    result.push(arr[i]);
+                }
+            }
+
+            return result;
+        },
         getData(cmds, callback) {
             axios({
                 method: 'post',
-                url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
+                url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
                 data: {
                     cmds: cmds,
                 }
             })
             .then(callback)
         },
-        setData(cmds, value, callback) {
-
+        setData(cmd, value, callback) {
             axios({
                 method: 'post',
-                url: 'http://overhost.net/rental2/api_v1/ajax/request.php',
+                url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
                 data: {
-                    cmds: cmds,
+                    cmds: cmd,
                     value: value,
                 }
             })
             .then(callback)
+        },
+
+        test() {
+            data = {
+                id: '155',
+                order_id: '777',
+                product_id: '16',
+                bill: 0,
+                bill_no_sale: 0,
+                end_time: 0,
+            }
+
+            this.setData('getOrderID', '678', response => {
+                console.log(response.data)
+            })
         }
     },
     created() {
-        //Запрос данных для инициализации приложения
-        this.getData(['getProducts', 'getOrders', 'getLogs'], response => {
-            this.products = response.data.products;
-            this.orders = response.data.orders;
-            this.logs = response.data.logs;
-            // console.log(this.logs);
-        })
+        //Запрос данных для инициализации и обновления компонентов приложения
+        this.update();
 
         // Обновление таймеров
         setInterval(() => {this.now = new Date()}, 1000)

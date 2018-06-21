@@ -1,11 +1,37 @@
-.table {
-	width: 300px;
+.table td {
+	padding: 5px;
+	border: 1px solid lightgray;
+	box-sizing: border-box;
 }
+.table th {
+	text-align: center;
+}
+.ord__td-1 {
+	width: 25px;
+}
+.ord__td-2 {
+	width: 40px;
+}
+.ord__td-3 {
+	width: 25px;
+}
+.ord__td-4 {
+	width: 180px;
+}
+.ord__td-5 {
+	width: 120px;
+}
+.ord__td-6 {
+	width: 25px;
+}
+
 #app {
 	display: flex;
 	width: 960px;
 	margin: 100px auto 0;
 	padding-top: 20px;
+	display: flex;
+	justify-content: space-between;
 }
 .tmp {
 	outline: 1px solid lightgray;
@@ -42,4 +68,11 @@
 
 .customer__select-list {
 	width: 100%;
+}
+
+.snippet__products {
+	width: 200px;
+}
+.snippet__orders {
+	width: 400px;
 }
