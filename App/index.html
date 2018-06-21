@@ -11,15 +11,18 @@
 
 <div id="app" class="tmp">
     <product-list :products="products" @edit="toEdit"></product-list>
-    <order-list :orders="orders" :now="now"></order-list>
+    <order-list :orders="orders" :now="now" :products-all="productsAll"></order-list>
     <edit-order 
         v-show="showOrderModal" 
-        :product-name="productName" 
+        :product="product" 
+        :orders="orders"
         :customers="customers"
+        :options="options"
         @set="setOrder" 
         @close="closeModal"
         >
     </edit-order>
+    <button @click="test">test</button>
 </div> 
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
