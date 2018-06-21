@@ -286,6 +286,12 @@ class Request
     }
 
     private function stopOrder($order) {
+        /*
+        * 1. Устанавливаем стопордер
+        * 2. Пишем стоимость
+        * 3. Меняем статусы продуктов
+        * 4. Меняем статус ордера, если активных продуктов нет
+        */
         $setEndTime = function ($order) {
             $end_time = date("Y-m-d H:i:s", $order[end_time]);            
             $sql = '
@@ -334,6 +340,10 @@ class Request
         };
 
         $setOrderStatus = function ($order) {
+            /*
+            * 1. Выбираем по id продукты вместе с их временными стоп-метками
+            * 2. Если на всех продуктах стоят стоп-метки - меняем статус ордера
+            */
             $getProducts = function ($order) {
                 $sql = '
                     SELECT `order_id`, `end_time` 
@@ -341,12 +351,14 @@ class Request
                     WHERE `order_id` = ' . '\'' . $order[order_id] . '\''
                 ;
 
-                //$this->writeLog($this->pDB->get($sql, false, true));
                 return $this->pDB->get($sql, false, true);               
             };
 
             $changeStatus = function ($order, array $products) {
-                $this->writeLog($products);
+                /*
+                * 1. Перебираем все продуты ордера
+                * 2. Если среди них не нашлось активного продукта (end_time == null), меняем статус ордера
+                */
 
                 if (empty($products)) {
                     return;
