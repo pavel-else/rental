@@ -16,6 +16,7 @@
                         <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem)">x</td>
                     </tr>
                 </td>
+                <td class="ord__td-7 stop-order-all" @click="stopOrderAll(item)">x</td>
             </tr>
         </table>
     </div>
@@ -63,6 +64,10 @@
                 //console.log(order)
 
                 this.$store.dispatch('stopOrder', order)
+            },
+
+            stopOrderAll(item) {
+                console.log(item)
             }
         },
 
@@ -88,6 +93,14 @@
         opacity: 0;
     }
     .stop-order:hover {
+        opacity: 1;
+        cursor: pointer;
+        text-align: center;
+    }
+    .stop-order-all {
+        opacity: 0;
+    }
+    .stop-order-all:hover {
         opacity: 1;
         cursor: pointer;
         text-align: center;
