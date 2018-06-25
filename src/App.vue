@@ -1,17 +1,16 @@
 <template> 
     <div id="app">
+        <router-view></router-view>
         <adm-panel class="adm"></adm-panel>
-            <div class="container">
-                <product-list class="tmp"></product-list>
 
-                <new-order v-if="showNewOrder"></new-order>
+        
+        <div class="container">
+            <product-list class="tmp"></product-list>
 
-                <order-list class="tmp"></order-list>
-            </div>
+            <new-order v-if="showNewOrder"></new-order>
 
-            <history></history>
-
-
+            <order-list class="tmp"></order-list>
+        </div>
         
         <!--<test></test> -->
     </div>
@@ -24,7 +23,6 @@ import productList from './components/product-list'
 import editOrder from './components/edit-order'
 import orderList from './components/order-list'
 import newOrder from './components/new-order'
-import history from './components/history'
 import Test from './components/Test'
 
 export default {
@@ -36,7 +34,6 @@ export default {
         editOrder, 
         orderList,
         newOrder,
-        history,
         Test
     },
 

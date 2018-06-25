@@ -1,9 +1,9 @@
 <template>
-	<div class="history">history</div>	
+	<div class="history">historzxcfgzdfhzgdfzgbdfgbzdfbcvbxy</div>	
 </template>
+
 <script>
 	export default {
-		name: 'history',
 	}
 </script>
 
