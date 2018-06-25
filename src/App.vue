@@ -9,6 +9,8 @@
                 <order-list class="tmp"></order-list>
             </div>
 
+            <history></history>
+
 
         
         <!--<test></test> -->
@@ -22,6 +24,7 @@ import productList from './components/product-list'
 import editOrder from './components/edit-order'
 import orderList from './components/order-list'
 import newOrder from './components/new-order'
+import history from './components/history'
 import Test from './components/Test'
 
 export default {
@@ -33,6 +36,7 @@ export default {
         editOrder, 
         orderList,
         newOrder,
+        history,
         Test
     },
 
@@ -101,5 +105,9 @@ export default {
 
     .adm {
         position: relative;
+    }
+
+    .history {
+        position: absolute;
     }
 </style>
