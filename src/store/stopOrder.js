@@ -10,12 +10,14 @@ export default {
             * 4. Просчитываем стоимость с помощью фукции
             * 5. Инициируем отправку ордера с обновленными данными
             */
+
             const stopOrder = (order) => {
                 const gettTariffId = (product_id, products) => {
                     const product = products.find(p => p.id_rent == product_id)
 
                     return product.tariff_id ? product.tariff_id : null
                 }
+
                 const getBill = (h, tariff) => {
                     const min = 0.5
                     const min$ = 60
@@ -57,12 +59,10 @@ export default {
                 const time_diff_timestamp = order.end_time * 1000 - Date.parse(order.start_time)
                 const time_diff_h = (time_diff_timestamp / 1000 / 60 / 60).toFixed(2) //округл до сотых
 
-                const bill = Math.round(getBill(time_diff_h, tariff))
-
-                order.bill = bill
+                order.bill = Math.round(getBill(time_diff_h, tariff))
 
                 console.log(order)
-                this.state.sendToServer('stopOrder', order, {commit})
+                //this.state.sendToServer('stopOrder', order, {commit})
             }
 
             stopOrder(order)

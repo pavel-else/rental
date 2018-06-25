@@ -7,6 +7,7 @@ import customers from './customers'
 import orders from './orders'
 import newOrder from './newOrder'
 import stopOrder from './stopOrder'
+import stopOrderAll from './stopOrderAll'
 import options from './opt'
 import tariffs from './tariffs'
 
@@ -19,6 +20,7 @@ const store = new Vuex.Store({
         orders,
         newOrder,
         stopOrder,
+        stopOrderAll,
         options,
         tariffs
     },

@@ -59,6 +59,8 @@
             },
 
             stopOrder(item, subitem) {
+                // Время старта передается для расчета стоимости
+
                 const order = subitem
                 order.start_time = item.start_time
                 //console.log(order)
@@ -67,7 +69,11 @@
             },
 
             stopOrderAll(item) {
-                console.log(item)
+                //console.log(item.products)
+                const order_id = item.order_id
+                const products_id = item.products.map(p => p.product_id)
+
+                this.$store.dispatch('stopOrderAll', { order_id })
             }
         },
 
