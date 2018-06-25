@@ -52,7 +52,7 @@ export default {
 
                 product.bill = Math.round(getBill(time_diff_h, tariff))
 
-                console.log(product)
+                //console.log(product)
 
                 this.state.sendToServer('stopOrder', product, {commit})
             })

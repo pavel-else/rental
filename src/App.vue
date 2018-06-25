@@ -1,17 +1,23 @@
 <template> 
-    <div id="app" class="tmp">
-        <product-list class="tmp"></product-list>
+    <div id="app">
+        <adm-panel class="adm"></adm-panel>
+            <div class="container">
+                <product-list class="tmp"></product-list>
 
-        <new-order v-if="showNewOrder"></new-order>
+                <new-order v-if="showNewOrder"></new-order>
 
-        <order-list class="tmp"></order-list>
+                <order-list class="tmp"></order-list>
+            </div>
+
+
         
-<!--         <test></test> -->
+        <!--<test></test> -->
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import admPanel from './components/adm-panel'
 import productList from './components/product-list'
 import editOrder from './components/edit-order'
 import orderList from './components/order-list'
@@ -22,6 +28,7 @@ export default {
     name: 'app',
 
     components: {
+        admPanel,
         productList,
         editOrder, 
         orderList,
@@ -51,8 +58,14 @@ export default {
     #app {
         display: flex;
         width: 960px;
-        margin: 50px auto 0;
-        padding-top: 20px;
+        margin: 0 auto;
+        padding-top: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+    }
+    .container {
         display: flex;
         justify-content: center;
     }
@@ -85,7 +98,8 @@ export default {
         margin: 0 10px;
     }
 
-    a {
-        color: #42b983;
+
+    .adm {
+        position: relative;
     }
 </style>
