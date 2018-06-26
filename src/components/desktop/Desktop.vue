@@ -8,10 +8,10 @@
     </div>
 </template>
 <script>
-import productList from '../product-list'
-import editOrder from '../edit-order'
-import orderList from '../order-list'
-import newOrder from '../new-order'
+import productList from './product-list'
+import editOrder from './edit-order'
+import orderList from './order-list'
+import newOrder from './new-order'
 
     export default {
         name: 'Desctop',

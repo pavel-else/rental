@@ -7,12 +7,9 @@
 </template>
 
 <script>
-import axios from 'axios'
+
 import admPanel from './components/adm-panel'
-import productList from './components/product-list'
-import editOrder from './components/edit-order'
-import orderList from './components/order-list'
-import newOrder from './components/new-order'
+
 import Test from './components/Test'
 
 export default {
@@ -20,10 +17,6 @@ export default {
 
     components: {
         admPanel,
-        productList,
-        editOrder, 
-        orderList,
-        newOrder,
         Test
     },
 
