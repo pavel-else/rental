@@ -151,6 +151,12 @@ class Request
         return $this->pDB->get($sql, false, true); 
     }
 
+    private function getProductWithId($id) {
+        $sql = 'SELECT * FROM `products` WHERE `id_rent` =' .$id;
+
+        return $this->pDB->get($sql, false, true); 
+    }
+
     private function getClients() {
         $sql = 'SELECT * FROM `clients` WHERE `id_rental_org` = '.$this->app_id .' ORDER BY `clients`.`fname` ASC';
 
@@ -158,10 +164,16 @@ class Request
     }
 
     private function getHistory() {
-        $sql = 'SELECT * FROM `orders` WHERE `id_rental_org` = '.$this->app_id . ' ORDER BY `orders`.`order_id` DESC';
+        $sql = 'SELECT * FROM `orders` WHERE `id_rental_org` = '.$this->app_id . ' ORDER BY `orders`.`order_id` DESC';        
 
-        $this->writeLog('getHistory');
-        return $this->pDB->get($sql, false, true);
+        $orders = $this->pDB->get($sql, false, true);
+
+        foreach ($orders as $key => $order) {
+            $order[products] = $this->getOrderProducts($order[order_id]);            
+            $result[] = $order;
+        }
+
+        return $result;
     }
 
     private function getMaxOrderID() {
