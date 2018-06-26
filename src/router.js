@@ -3,13 +3,18 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+import Desktop from './components/desktop/Desktop'
 import History from './components/history'
 
 const routes = [
 	{
-		path: 'history',
+		path: '',
+		component: Desktop
+	},
+	{
+		path: '/history',
 		component: History
-	}
+	},
 ]
 
 export const router = new VueRouter({

@@ -1,20 +1,16 @@
 <template>
 	<div>
 		<ul class="adm_list">
-			<li><a href="#">Прокат</a></li>
-			<li><a href="#">Клиенты</a></li>
-			<li><a href="#" @click="openHistory">История</a></li>
-			<li><a href="#">Настройки</a></li>
-		</ul></div>
+			<li><router-link to="/">Home</router-link></li>
+			<li><router-link to="/customers">Клиенты</router-link></li>
+			<li><router-link to="/history">История</router-link></li>
+			<li><router-link to="/options">Настройки</router-link></li>
+		</ul>
+	</div>
 </template>
 <script>
 	export default {
 		name: 'admPanel',
-		methods: {
-			openHistory() {
-				console.log('open')
-			}
-		}
 	}
 </script>
 

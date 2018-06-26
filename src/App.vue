@@ -1,17 +1,7 @@
 <template> 
     <div id="app">
-        <router-view></router-view>
         <adm-panel class="adm"></adm-panel>
-
-        
-        <div class="container">
-            <product-list class="tmp"></product-list>
-
-            <new-order v-if="showNewOrder"></new-order>
-
-            <order-list class="tmp"></order-list>
-        </div>
-        
+        <router-view></router-view>        
         <!--<test></test> -->
     </div>
 </template>
@@ -35,12 +25,6 @@ export default {
         orderList,
         newOrder,
         Test
-    },
-
-    computed: {
-        showNewOrder() {
-            return this.$store.getters.showNewOrder
-        }
     },
 
     created() {
@@ -105,6 +89,6 @@ export default {
     }
 
     .history {
-        position: absolute;
+
     }
 </style>

@@ -1,12 +1,3 @@
 <template>
-	<div class="history">historzxcfgzdfhzgdfzgbdfgbzdfbcvbxy</div>	
+	<div class="history">История заказов</div>	
 </template>
-
-<script>
-	export default {
-	}
-</script>
-
-<style>
-	
-</style>
