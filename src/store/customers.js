@@ -5,6 +5,7 @@ export default {
 	mutations: {
 		setCustomers(state, customers) {
 			state.customers = customers
+			console.log('set customers')
 		}
 	},
 	getters: {

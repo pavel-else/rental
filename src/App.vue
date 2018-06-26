@@ -7,7 +7,7 @@
 </template>
 
 <script>
-
+    
 import admPanel from './components/adm-panel'
 
 import Test from './components/Test'

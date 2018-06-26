@@ -10,6 +10,7 @@ import stopOrder from './stopOrder'
 import stopOrderAll from './stopOrderAll'
 import options from './opt'
 import tariffs from './tariffs'
+import history from './history'
 
 Vue.use(Vuex)
 
@@ -22,7 +23,8 @@ const store = new Vuex.Store({
         stopOrder,
         stopOrderAll,
         options,
-        tariffs
+        tariffs,
+        history
     },
     state: {
         sendToServer(cmds, data, {commit}) {
@@ -40,7 +42,8 @@ const store = new Vuex.Store({
                 console.log(e)
             })
             .then(r => {
-                    console.log(r)
+                console.log(r)
+
                 axios({
                     method: 'post',
                     url,
@@ -53,12 +56,13 @@ const store = new Vuex.Store({
                     console.log(e)
                 })
                 .then(r => {
+                    console.log(r)
                     // Нужно организовать автоматический перебор приходящего массива
                     commit('setProducts', r.data.products)
                     commit('setCustomers', r.data.clients)
                     commit('setOpt', r.data.options)
                     commit('setOrders', {orders: r.data.orders, products: r.data.products})
-
+                    commit('setHistory', r.data.history)
                 })
                
             })
