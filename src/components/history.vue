@@ -11,7 +11,7 @@
                 <th>Стоимость</th>
                 <th>Статус</th>
             </tr>
-            <tr v-for="(item, index) in history">
+            <tr v-for="(item, index) in history" @click="showDetails(item)">
                 <td class="">{{ item.order_id }}</td>
                 <td class="">{{ item.customer_name }}</td>
                 <td class="">{{ item.start_time }}</td>
@@ -69,10 +69,12 @@
                     if (diff > max) max = diff                  
                 }
 
-
-
                 return this.timeFormat(diff)
             },
+
+            showDetails(item) {
+                console.log(item)
+            }
         },
         computed: {
             history() {
@@ -90,6 +92,11 @@
 </script>
 
 <style>
+    .history__table tr:not(:first-child):hover {
+        cursor: pointer;
+        box-shadow: 0px 0px 1px 0px;
+    }
+
     .history__table td {
         border: 1px solid lightgray;
     }
