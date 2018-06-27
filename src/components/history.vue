@@ -24,12 +24,19 @@
                 <td>{{ item.status }}</td>
             </tr>
         </table>
+
+        <Details></Details>
     </div>
   
 </template>
 
 <script>
+    import Details from './Details'
+
     export default {
+        components: {
+            Details
+        },
         methods: {
             timeFormat (ms/**number*/){
                 if (ms < 0) ms = 0;
@@ -73,7 +80,8 @@
             },
 
             showDetails(item) {
-                console.log(item)
+                this.$store.dispatch('showDetails', item)
+                //console.log(item)
             }
         },
         computed: {

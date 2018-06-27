@@ -18,7 +18,6 @@ export default {
                 }
 
                 order.bill = bill
-                order.countProducts = order.products.length
 
                 return order
             }) : []
