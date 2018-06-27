@@ -5,11 +5,16 @@ Vue.use(VueRouter)
 
 import Desktop from './components/desktop/Desktop'
 import History from './components/history'
+import Customers from './components/Customers/Customers'
 
 const routes = [
 	{
 		path: '',
 		component: Desktop
+	},
+	{
+		path: '/customers',
+		component: Customers
 	},
 	{
 		path: '/history',

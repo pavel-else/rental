@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import products from './products'
-import customers from './customers'
+import customers from './Customers/customers'
 import orders from './orders'
 import newOrder from './newOrder'
 import stopOrder from './stopOrder'

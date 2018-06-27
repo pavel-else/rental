@@ -80,8 +80,4 @@ export default {
     .adm {
         position: relative;
     }
-
-    .history {
-
-    }
 </style>
