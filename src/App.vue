@@ -1,38 +1,23 @@
 <template> 
-    <div id="app" class="tmp">
-        <product-list class="tmp"></product-list>
-
-        <new-order v-if="showNewOrder"></new-order>
-
-        <order-list class="tmp"></order-list>
-        
-<!--         <test></test> -->
+    <div id="app">
+        <adm-panel class="adm"></adm-panel>
+        <router-view></router-view>        
+        <!--<test></test> -->
     </div>
 </template>
 
 <script>
-import axios from 'axios'
-import productList from './components/product-list'
-import editOrder from './components/edit-order'
-import orderList from './components/order-list'
-import newOrder from './components/new-order'
+    
+import admPanel from './components/adm-panel'
+
 import Test from './components/Test'
 
 export default {
     name: 'app',
 
     components: {
-        productList,
-        editOrder, 
-        orderList,
-        newOrder,
+        admPanel,
         Test
-    },
-
-    computed: {
-        showNewOrder() {
-            return this.$store.getters.showNewOrder
-        }
     },
 
     created() {
@@ -51,8 +36,14 @@ export default {
     #app {
         display: flex;
         width: 960px;
-        margin: 50px auto 0;
-        padding-top: 20px;
+        margin: 0 auto;
+        padding-top: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+    }
+    .container {
         display: flex;
         justify-content: center;
     }
@@ -85,7 +76,12 @@ export default {
         margin: 0 10px;
     }
 
-    a {
-        color: #42b983;
+
+    .adm {
+        position: relative;
+    }
+
+    .history {
+
     }
 </style>

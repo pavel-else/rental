@@ -4,7 +4,6 @@ export default {
 	},
 	mutations: {
         setOrders(state, {orders, products}) {
-        	console.log('set Orders')
             /*
             * Запись активных ордеров в хранилище
             * Функция подмешивает в массив данные (название продукта) из таблицы Продукты
@@ -24,6 +23,8 @@ export default {
             }) : []
 
             state.orders = result
+            
+        	console.log('set Orders')
         },
 	},
 	getters: {

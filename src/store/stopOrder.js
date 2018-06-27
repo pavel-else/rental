@@ -11,58 +11,61 @@ export default {
             * 5. Инициируем отправку ордера с обновленными данными
             */
 
-            const gettTariffId = (product_id, products) => {
-                const product = products.find(p => p.id_rent == product_id)
+            const stopOrder = (order) => {
+                const gettTariffId = (product_id, products) => {
+                    const product = products.find(p => p.id_rent == product_id)
 
-                return product.tariff_id ? product.tariff_id : null
-            }
-            const getBill = (h, tariff) => {
-                const min = 0.5
-                const min$ = 60
-                const max = 500
-
-
-                let result = 0
-
-                if (h <= min) {
-                    return min$
+                    return product.tariff_id ? product.tariff_id : null
                 }
 
-                if (h < 1) {
-                    return h * tariff[1]
-                }
+                const getBill = (h, tariff) => {
+                    const min = 0.5
+                    const min$ = 60
+                    const max = 500
 
-                for (let i = 1; i <= h; i++) {
-                    result += tariff[i]
-                    if (result >= max) {
-                        return max
+
+                    let result = 0
+
+                    if (h <= min) {
+                        return min$
                     }
-                }
-                
-                const i = (h - Math.floor(h)).toFixed(2)
-                const bill_min = i * tariff[Math.ceil(h)]
 
-                return (result + bill_min) < max ? result + bill_min : max // return bill order in money
+                    if (h < 1) {
+                        return h * tariff[1]
+                    }
+
+                    for (let i = 1; i <= h; i++) {
+                        result += tariff[i]
+                        if (result >= max) {
+                            return max
+                        }
+                    }
+                    
+                    const i = (h - Math.floor(h)).toFixed(2)
+                    const bill_min = i * tariff[Math.ceil(h)]
+
+                    return (result + bill_min) < max ? result + bill_min : max // return bill order in money
+                }
+
+                const tariffs = this.getters.tariffs
+                const products = this.getters.products
+
+
+                const tariff_id = gettTariffId(order.product_id, products)
+                const tariff = tariffs[tariff_id]
+                
+                order.end_time = Math.floor(Date.now() / 1000)
+
+                const time_diff_timestamp = order.end_time * 1000 - Date.parse(order.start_time)
+                const time_diff_h = (time_diff_timestamp / 1000 / 60 / 60).toFixed(2) //округл до сотых
+
+                order.bill = Math.round(getBill(time_diff_h, tariff))
+
+                //console.log(order)
+                this.state.sendToServer('stopOrder', order, {commit})
             }
 
-            const tariffs = this.getters.tariffs
-            const products = this.getters.products
-
-
-            const tariff_id = gettTariffId(order.product_id, products)
-            const tariff = tariffs[tariff_id]
-            
-            order.end_time = Math.floor(Date.now() / 1000)
-
-            const time_diff_timestamp = order.end_time * 1000 - Date.parse(order.start_time)
-            const time_diff_h = (time_diff_timestamp / 1000 / 60 / 60).toFixed(2) //округл до сотых
-
-            const bill = Math.round(getBill(time_diff_h, tariff))
-
-            order.bill = bill
-
-            console.log(order)
-            this.state.sendToServer('stopOrder', order, {commit})
+            stopOrder(order)
         },
 	}
 }

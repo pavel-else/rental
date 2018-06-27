@@ -55,6 +55,9 @@ class Request
                 case 'getClients':
                     $this->response['clients'] = $this->getClients();
                 break;
+                case 'getHistory':
+                    $this->response['history'] = $this->getHistory($value);
+                break;
                 case 'getMaxOrderID':
                     $this->response['options']['max_order_id'] = $this->getMaxOrderID();
                     $this->response['options']['new_order_id'] = $this->getMaxOrderID() + 1;
@@ -148,10 +151,29 @@ class Request
         return $this->pDB->get($sql, false, true); 
     }
 
+    private function getProductWithId($id) {
+        $sql = 'SELECT * FROM `products` WHERE `id_rent` =' .$id;
+
+        return $this->pDB->get($sql, false, true); 
+    }
+
     private function getClients() {
         $sql = 'SELECT * FROM `clients` WHERE `id_rental_org` = '.$this->app_id .' ORDER BY `clients`.`fname` ASC';
 
         return $this->pDB->get($sql, false, true);
+    }
+
+    private function getHistory() {
+        $sql = 'SELECT * FROM `orders` WHERE `id_rental_org` = '.$this->app_id . ' ORDER BY `orders`.`order_id` DESC';        
+
+        $orders = $this->pDB->get($sql, false, true);
+
+        foreach ($orders as $key => $order) {
+            $order[products] = $this->getOrderProducts($order[order_id]);            
+            $result[] = $order;
+        }
+
+        return $result;
     }
 
     private function getMaxOrderID() {

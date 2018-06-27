@@ -16,6 +16,7 @@
                         <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem)">x</td>
                     </tr>
                 </td>
+                <td class="ord__td-7 stop-order-all" @click="stopOrderAll(item)">x</td>
             </tr>
         </table>
     </div>
@@ -58,11 +59,21 @@
             },
 
             stopOrder(item, subitem) {
+                // Время старта передается для расчета стоимости
+
                 const order = subitem
                 order.start_time = item.start_time
                 //console.log(order)
 
                 this.$store.dispatch('stopOrder', order)
+            },
+
+            stopOrderAll(item) {
+                //console.log(item.products)
+                const order_id = item.order_id
+                const products_id = item.products.map(p => p.product_id)
+
+                this.$store.dispatch('stopOrderAll', { order_id })
             }
         },
 
@@ -88,6 +99,14 @@
         opacity: 0;
     }
     .stop-order:hover {
+        opacity: 1;
+        cursor: pointer;
+        text-align: center;
+    }
+    .stop-order-all {
+        opacity: 0;
+    }
+    .stop-order-all:hover {
         opacity: 1;
         cursor: pointer;
         text-align: center;
