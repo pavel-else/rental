@@ -4,41 +4,47 @@
         <table>
             <tr>
                 <td>id</td>
-                <td>{{ customer.id_rent }}</td>
+                <td><input type="text" :value="customer.id_rent" disabled> </td>
             </tr>
             <tr>
                 <td>ФИО</td>
-                <td>{{ customer.fname }} {{ customer.sname }} {{ customer.tname }}</td>
+                <td>
+                    <input type="text" :value="customer.fname" >
+                    <input type="text" :value="customer.sname">
+                    <input type="text" :value="customer.tname">
+                </td>
             </tr>
             <tr>
                 <td>Телефон</td>
-                <td>{{ customer.phone }}</td>
+                <td><input @change="ch" type="text" :value="C.phone"></td>
             </tr>
             <tr>
                 <td>Паспорт</td>
-                <td>{{ customer.passport }}</td>                
+                <td><input type="text" :value="customer.passport"></td>                
             </tr>
             <tr>
                 <td>Адрес</td>                
-                <td>{{ customer.address }}</td>
+                <td><input type="text" :value="customer.address"></td>
             </tr>
             <tr>
                 <td>Дата рождения</td>                
-                <td>{{ customer.birth_date }}</td>
+                <td><input type="text" :value="customer.birth_date"></td>
             </tr>
             <tr>
                 <td>Скидка</td>                
-                <td>{{ customer.sale }}</td>
+                <td><input type="text" :value="customer.sale"></td>
             </tr>
             <tr>
                 <td>Баланс</td>                
-                <td>{{ customer.balance }}</td>
+                <td><input type="text" :value="customer.balance"></td>
             </tr>
             <tr>
                 <td>Примечание</td>                
-                <td>{{ customer.note }}</td>
+                <td><textarea name="" id="" cols="30" rows="10" v-model="customer.note"></textarea></td>
             </tr>
-        </table>       
+        </table>    
+        <button @click="save" :disabled="!change">Сохранить</button>
+        <button @click="close">Отмена</button>   
         
         <div class="details__close" @click="close"></div>    
     </div>
@@ -48,10 +54,31 @@
     export default {
         props: {
             customer: Object,
+            change: false
+        },
+        data() {
+            return {
+                C: {
+                    phone: this.customer.phone
+                }
+            }
         },
         methods: {
+            save() {
+                console.log(this.customer)
+
+                this.$store.dispatch('send', {
+                    cmd: 'setCustomer',
+                    value: this.customer
+                })
+
+                this.close()
+            },
             close() {
                 this.$emit('close')
+            },
+            ch() {
+                this.change = true
             }
         },
     }

@@ -1,7 +1,7 @@
 <template>
     <div class="customer">
         <Details :customer="customer" @close="onClose" v-if="show"></Details>
-        <table>
+        <table class="customer__table">
             <tr>
                 <th>id</th>
                 <th>ФИО</th>
@@ -52,7 +52,7 @@
     .customer td {
         padding: 5px;
     }
-    .customer tr:not(:first-child):hover {
+    .customer__table tr:not(:first-child):hover {
         cursor: pointer;
         box-shadow: 0px 0px 1px 0px;
     }
