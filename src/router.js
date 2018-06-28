@@ -4,7 +4,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 import Desktop from './components/desktop/Desktop'
-import History from './components/history'
+import History from './components/History/history'
 import Customers from './components/Customers/Customers'
 
 const routes = [

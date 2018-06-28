@@ -1,5 +1,5 @@
 <template>
-    <div class="details" v-if="show">        
+    <div class="details">        
         <table>
                 <tr>
                     <td>Заказ</td>
@@ -48,6 +48,9 @@
 
 <script>
     export default {
+        props: {
+            order: Object
+        },
         methods: {
             getTimePlay(item) {
                 const timeFormat = function (ms/**number*/) {
@@ -86,17 +89,9 @@
                 return timeFormat(diff)
             },
             close() {
-                this.$store.dispatch('closeDetails')
+                this.$emit('close')
             }
         },
-        computed: {
-            show() {
-                return this.$store.getters.show
-            },
-            order() {
-                return this.$store.getters.currentOrderDetails
-            }
-        }
     }
 </script>
 

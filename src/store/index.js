@@ -10,8 +10,7 @@ import stopOrder from './stopOrder'
 import stopOrderAll from './stopOrderAll'
 import options from './opt'
 import tariffs from './tariffs'
-import history from './history'
-import details from './details'
+import history from './History/history'
 
 Vue.use(Vuex)
 
@@ -26,7 +25,6 @@ const store = new Vuex.Store({
         options,
         tariffs,
         history,
-        details
     },
     state: {
         sendToServer(cmds, data, {commit}) {
