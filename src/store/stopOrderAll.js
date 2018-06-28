@@ -6,6 +6,7 @@ export default {
 
                 return product.tariff_id ? product.tariff_id : null
             }
+            
             const getBill = (h, tariff) => {
                 const min = 0.5
                 const min$ = 60

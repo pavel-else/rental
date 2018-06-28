@@ -13,21 +13,32 @@
                         <td class="ord__td-4">{{ subitem.name }}</td>
                         <td class="ord__td-6">{{ getTimePlay(item, subitem) }}</td>
                         <td v-if="subitem.bill > 0">{{subitem.bill}}р</td>
-                        <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem)">x</td>
+                        <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem)" v-if="!subitem.end_time">x</td>
                     </tr>
                 </td>
                 <td class="ord__td-7 stop-order-all" @click="stopOrderAll(item)">x</td>
             </tr>
         </table>
+        <Details :order="order" @close="onClose" v-if="show"></Details>
     </div>
 </template>
 
 <script>
+    import Details from './details'
+
     export default {
-        name: 'orderList',
+        components: {
+            Details
+        },
+        data() {
+            return {
+                order: {},
+                show: false
+            }
+        },
 
         methods: {
-            timeFormat (ms/**number*/){
+            timeFormat (ms/**number*/) {
                 if (ms < 0) ms = 0;
 
                 function num(val){
@@ -58,14 +69,30 @@
                 return this.timeFormat(diff)
             },
 
-            stopOrder(item, subitem) {
-                // Время старта передается для расчета стоимости
+            stopOrder(item, order) {
+                /*
+                * Функция закрывает позицию ордера 
+                * и выводит результаты если все позиции ордера закрыты
+                *
+                * 1. Если активных позиций ордера нет
+                *    или закрывается последняя позиция ордера,
+                *    то
+                * 2. открываем модальное окно
+                * 3. и передаем в него ордер (данные ордера обновятся автоматом, когда прийдет ответ с сервера)
+                * 4. Запускаем процедуру остановки ордера ($store.stopOrder.js)
+                */ 
+                console.log(item)
 
-                const order = subitem
-                order.start_time = item.start_time
-                //console.log(order)
+                if (item.products.filter(p => p.end_time == null).length <= 1) {
+                    this.show = true
+                    this.order = this.$store.getters.orders.find(o => o.order_id = order.order_id)
+                }
 
+                
+                order.start_time = item.start_time // Время старта передается для расчета стоимости
                 this.$store.dispatch('stopOrder', order)
+
+
             },
 
             stopOrderAll(item) {
@@ -74,7 +101,14 @@
                 const products_id = item.products.map(p => p.product_id)
 
                 this.$store.dispatch('stopOrderAll', { order_id })
+
+                this.order = item
+                this.show = true
+            },
+            onClose() {
+                this.show = false
             }
+
         },
 
         computed: {
