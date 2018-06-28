@@ -13,7 +13,7 @@
                     <td>Товары</td>
                     <td>
                         <ul>
-                            <li v-for="product in order.products">{{ product.name }}</li>
+                            <li v-for="product in order.products">{{ product.name }} - {{ product.bill }} р.</li>
                         </ul>
                     </td>
                 </tr>
@@ -87,6 +87,15 @@
                 }
 
                 return timeFormat(diff)
+            },
+            getBill(item, subitem) {
+                const obj = {
+                    start: item.start_time,
+                    end: subitem.end_time,
+                    product_id: subitem.product_id
+                }
+
+                return this.$store.state.F.getBill(obj)   
             },
             close() {
                 this.$emit('close')
