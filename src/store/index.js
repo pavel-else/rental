@@ -11,11 +11,13 @@ import stopOrderAll from './stopOrderAll'
 import options from './opt'
 import tariffs from './tariffs'
 import history from './History/history'
+import F from './F'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
     modules: {
+        F,
         products,
         customers,
         orders,

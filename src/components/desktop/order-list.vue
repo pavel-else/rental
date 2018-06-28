@@ -12,7 +12,7 @@
                         <td class="ord__td-3">{{ subitem.product_id }}</td>
                         <td class="ord__td-4">{{ subitem.name }}</td>
                         <td class="ord__td-6">{{ getTimePlay(item, subitem) }}</td>
-                        <td v-if="subitem.bill > 0">{{subitem.bill}}р</td>
+                        <td>{{getBill(item, subitem)}}р</td>
                         <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem)" v-if="!subitem.end_time">x</td>
                     </tr>
                 </td>
@@ -67,6 +67,16 @@
                 const diff = end_time ? end_time - start_time : now - start_time
 
                 return this.timeFormat(diff)
+            },
+
+            getBill(item, subitem) {
+                const obj = {
+                    start: item.start_time,
+                    end: subitem.end_time,
+                    product_id: subitem.product_id
+                }
+
+                return this.$store.state.F.getBill(obj)   
             },
 
             stopOrder(item, order) {
