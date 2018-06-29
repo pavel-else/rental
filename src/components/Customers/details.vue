@@ -1,50 +1,52 @@
 <template>
     <div class="details">
         <h3>Сведения о клиенте</h3>
-        <table>
-            <tr>
-                <td>id</td>
-                <td><input type="text" :value="customer.id_rent" disabled> </td>
-            </tr>
-            <tr>
-                <td>ФИО</td>
-                <td>
-                    <input type="text" :value="customer.fname" >
-                    <input type="text" :value="customer.sname">
-                    <input type="text" :value="customer.tname">
-                </td>
-            </tr>
-            <tr>
-                <td>Телефон</td>
-                <td><input @change="ch" type="text" :value="C.phone"></td>
-            </tr>
-            <tr>
-                <td>Паспорт</td>
-                <td><input type="text" :value="customer.passport"></td>                
-            </tr>
-            <tr>
-                <td>Адрес</td>                
-                <td><input type="text" :value="customer.address"></td>
-            </tr>
-            <tr>
-                <td>Дата рождения</td>                
-                <td><input type="text" :value="customer.birth_date"></td>
-            </tr>
-            <tr>
-                <td>Скидка</td>                
-                <td><input type="text" :value="customer.sale"></td>
-            </tr>
-            <tr>
-                <td>Баланс</td>                
-                <td><input type="text" :value="customer.balance"></td>
-            </tr>
-            <tr>
-                <td>Примечание</td>                
-                <td><textarea name="" id="" cols="30" rows="10" v-model="customer.note"></textarea></td>
-            </tr>
-        </table>    
-        <button @click="save" :disabled="!change">Сохранить</button>
-        <button @click="close">Отмена</button>   
+        <form @change="onChange">
+            <table>
+                <tr>
+                    <td>id</td>
+                    <td><input type="text" v-model="C.id_rent" disabled> </td>
+                </tr>
+                <tr>
+                    <td>ФИО</td>
+                    <td>
+                        <input type="text" v-model="C.fname" >
+                        <input type="text" v-model="C.sname">
+                        <input type="text" v-model="C.tname">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Телефон</td>
+                    <td><input type="text" v-model="C.phone"></td>
+                </tr>
+                <tr>
+                    <td>Паспорт</td>
+                    <td><input type="text" v-model="C.passport"></td>                
+                </tr>
+                <tr>
+                    <td>Адрес</td>                
+                    <td><input type="text" v-model="C.address"></td>
+                </tr>
+                <tr>
+                    <td>Дата рождения</td>                
+                    <td><input type="text" v-model="C.birth_date"></td>
+                </tr>
+                <tr>
+                    <td>Скидка</td>                
+                    <td><input type="text" v-model="C.sale"></td>
+                </tr>
+                <tr>
+                    <td>Баланс</td>                
+                    <td><input type="text" v-model="C.balance"></td>
+                </tr>
+                <tr>
+                    <td>Примечание</td>                
+                    <td><textarea name="" id="" cols="30" rows="10" v-model="customer.note"></textarea></td>
+                </tr>
+            </table>    
+            <button @click="save" :disabled="!change">Сохранить</button>
+            <button @click="close">Отмена</button>            
+        </form>
         
         <div class="details__close" @click="close"></div>    
     </div>
@@ -54,13 +56,11 @@
     export default {
         props: {
             customer: Object,
-            change: false
         },
         data() {
             return {
-                C: {
-                    phone: this.customer.phone
-                }
+                C: Object.assign({}, this.customer),
+                change: false
             }
         },
         methods: {
@@ -69,7 +69,7 @@
 
                 this.$store.dispatch('send', {
                     cmd: 'setCustomer',
-                    value: this.customer
+                    value: this.C
                 })
 
                 this.close()
@@ -77,8 +77,10 @@
             close() {
                 this.$emit('close')
             },
-            ch() {
-                this.change = true
+
+            onChange() {
+                this.change = true,
+                console.log('change')
             }
         },
     }
