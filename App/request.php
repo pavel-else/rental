@@ -322,11 +322,11 @@ class Request
         * Если нет - записываем нового пользователя
         */
 
-        if (empty($customer)) {
-            return false;
-        }
-
         $checkID = function ($id) {
+            if (!$id) {
+                return null;
+            }
+
             $sql = '
                 SELECT `id` 
                 FROM `clients` 
@@ -342,7 +342,6 @@ class Request
         };
 
         $update = function ($id, $customer) {
-
             $sql = '
                 UPDATE `clients` 
                 SET 
@@ -360,12 +359,13 @@ class Request
                 `updated` = :updated
 
                 WHERE `id` = :id
+                AND `id_rental_org` = :id_rental_org
             ';
 
-            $this->writeLog(date('Y-m-d H:i:s'));
             $d = array(
                 'id' =>             $id,
-                'id_rent' =>        $this->app_id,
+                'id_rental_org' =>  $this->app_id,
+                'id_rent' =>        $customer[id_rent],
                 'fname' =>          $customer[fname],
                 'sname' =>          $customer[sname],
                 'tname' =>          $customer[tname],
@@ -382,11 +382,112 @@ class Request
            return $this->pDB->set($sql, $d);
         };
 
+        $setCustomer = function ($customer) {
+            $this->writeLog($customer);
+
+            $sql = 'INSERT INTO `clients` (
+                `id`,
+                `id_rent`,
+                `id_rental_org`,
+                `fname`,
+                `sname`,
+                `tname`,
+                `phone`,
+                `passport`,
+                `address`,
+                `birth_date`,
+                `sale`,
+                `balance`,
+                `note`,
+                `updated`
+
+            ) VALUES (
+                NULL, 
+                :id_rent,
+                :id_rental_org, 
+                :fname,
+                :sname,
+                :tname,
+                :phone,
+                :passport,
+                :address,
+                :birth_date,
+                :sale,
+                :balance,
+                :note,
+                :updated
+            )';
+
+            $d = array(
+                'id_rent' =>        111, //$customer[id_rent],
+                'id_rental_org' =>  $this->app_id,
+                'fname' =>          $customer[fname],
+                'sname' =>          $customer[sname],
+                'tname' =>          $customer[tname],
+                'phone' =>          $customer[phone],
+                'passport' =>       $customer[passport],
+                'address' =>        $customer[address],
+                'birth_date' =>     $customer[birth_date],
+                'sale' =>           $customer[sale],
+                'balance' =>        $customer[balance],
+                'note' =>           $customer[note],
+                'updated' =>        date('Y-m-d H:i:s')
+            );
+            // $sql = 'INSERT INTO `clients` (
+            //     `id`,
+            //     `id_rent`,
+            //     `fname`,
+            //     `sname`,
+            //     `tname`,
+            //     `phone`,
+            //     `passport`,
+            //     `address`,
+            //     `birth_date`,
+            //     `sale`,
+            //     `balance`,
+            //     `note`,
+            //     `updated`
+            // ) VALUES (
+            //     NULL, 
+            //     :order_id, 
+            //     :id_rent,
+            //     :fname,
+            //     :sname,
+            //     :tname,
+            //     :phone,
+            //     :passport,
+            //     :address,
+            //     :birth_date,
+            //     :sale,
+            //     :balance,
+            //     :note,
+            //     :updated
+            // )';
+
+            // $d = array(
+            //     'id_rental_org' =>  $this->app_id,
+            //     'id_rent' =>        111, //$customer[id_rent],
+            //     'fname' =>          $customer[fname],
+            //     'sname' =>          $customer[sname],
+            //     'tname' =>          $customer[tname],
+            //     'phone' =>          $customer[phone],
+            //     'passport' =>       $customer[passport],
+            //     'address' =>        $customer[address],
+            //     'birth_date' =>     $customer[birth_date],
+            //     'sale' =>           $customer[sale],
+            //     'balance' =>        $customer[balance],
+            //     'note' =>           $customer[note],
+            //     'updated' =>        date('Y-m-d H:i:s')
+            // );
+
+            return $this->pDB->set($sql, $d);
+        };
+
         $id = $checkID($customer[id_rent]);
 
-        $log = $update($id, $customer);
+        $log = $id ? $update($id, $customer) : $setCustomer($customer);
 
-        $this->writeLog($log);
+        $this->writeLog($customer);
 
     }
 

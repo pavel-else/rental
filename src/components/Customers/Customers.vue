@@ -15,6 +15,9 @@
                 <td>{{ C.sale }}</td>
             </tr>
         </table>
+        <div class="customer_buttons">
+            <button @click="addCustomer">Добавить</button>
+        </div>
     </div>
 </template>
 
@@ -36,7 +39,12 @@
                 this.customer = customer
                 this.show = true
             },
+            addCustomer() {
+                this.show = true
+                this.customer = {}
+            },
             onClose() {
+                console.log('close')
                 this.show = false
             }           
         },
@@ -49,6 +57,12 @@
 </script>
 
 <style>
+    .customer {
+        display: flex;
+    }
+    .customer_buttons {
+        margin: 30px 20px;
+    }
     .customer td {
         padding: 5px;
     }

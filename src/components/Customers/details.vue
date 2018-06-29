@@ -1,52 +1,65 @@
 <template>
     <div class="details">
-        <h3>Сведения о клиенте</h3>
-        <form @change="onChange">
+        <h3>
+            <span v-if="customer.id">Сведения о клиенте</span>
+            <span v-else>Добавить нового клиента</span>
+        </h3>
+        <form @click="onChange">
             <table>
-                <tr>
+                <tr v-if="customer.id">
                     <td>id</td>
                     <td><input type="text" v-model="C.id_rent" disabled> </td>
                 </tr>
                 <tr>
-                    <td>ФИО</td>
+                    <td>Фамилия</td>
                     <td>
-                        <input type="text" v-model="C.fname" >
-                        <input type="text" v-model="C.sname">
-                        <input type="text" v-model="C.tname">
+                        <input type="text" v-model="C.fname" placeholder="Фамилия">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Имя</td>
+                    <td>
+                        <input type="text" v-model="C.sname" placeholder="Имя">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Отчество</td>
+                    <td>
+                        <input type="text" v-model="C.tname" placeholder="Отчество">
                     </td>
                 </tr>
                 <tr>
                     <td>Телефон</td>
-                    <td><input type="text" v-model="C.phone"></td>
+                    <td><input type="text" v-model="C.phone" placeholder="Номер мобильного телефона"></td>
                 </tr>
                 <tr>
                     <td>Паспорт</td>
-                    <td><input type="text" v-model="C.passport"></td>                
+                    <td><input type="text" v-model="C.passport" placeholder="Серия и номер паспорта"></td>                
                 </tr>
                 <tr>
                     <td>Адрес</td>                
-                    <td><input type="text" v-model="C.address"></td>
+                    <td><input type="text" v-model="C.address" placeholder="Адрес"></td>
                 </tr>
                 <tr>
                     <td>Дата рождения</td>                
-                    <td><input type="text" v-model="C.birth_date"></td>
+                    <td><input type="text" v-model="C.birth_date" placeholder="Дата рождения"></td>
                 </tr>
                 <tr>
                     <td>Скидка</td>                
-                    <td><input type="text" v-model="C.sale"></td>
+                    <td><input type="text" v-model="C.sale" placeholder="Скидка, %"></td>
                 </tr>
                 <tr>
                     <td>Баланс</td>                
-                    <td><input type="text" v-model="C.balance"></td>
+                    <td><input type="text" v-model="C.balance" placeholder="Текущий баланс, руб"></td>
                 </tr>
                 <tr>
                     <td>Примечание</td>                
-                    <td><textarea name="" id="" cols="30" rows="10" v-model="customer.note"></textarea></td>
+                    <td><textarea name="" id="" cols="30" rows="10" v-model="customer.note" placeholder="Дополнительные сведения о клиенте"></textarea></td>
                 </tr>
             </table>    
+        </form>
             <button @click="save" :disabled="!change">Сохранить</button>
             <button @click="close">Отмена</button>           
-        </form>
         
         <div class="details__close" @click="close"></div>    
     </div>
@@ -64,20 +77,15 @@
             }
         },
         methods: {
-            save(e) {
-                e.preventDefault(),
-
-                console.log(this.C)
+            save() {
                 this.$store.dispatch('send', {
                     cmd: 'setCustomer',
                     value: this.C
                 })
 
-                //this.close()
+                this.close()
             },
-            close(e) {
-                e.preventDefault(),
-
+            close() {
                 this.$emit('close')
             },
 
@@ -91,7 +99,7 @@
 
 <style scoped>
     .details {
-        position: absolute;
+        position: fixed;
         top: 100px;
         left: calc(50% - 150px);
         min-width: 300px;
