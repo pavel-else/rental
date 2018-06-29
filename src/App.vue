@@ -2,7 +2,7 @@
     <div id="app">
         <adm-panel class="adm"></adm-panel>
         <router-view></router-view>        
-        <!--<test></test> -->
+        <test></test> 
     </div>
 </template>
 

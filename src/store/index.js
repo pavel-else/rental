@@ -78,6 +78,7 @@ const store = new Vuex.Store({
             this.state.sendToServer(cmds, null, {commit})
         },
 
+        // Из компонентов обращаться так: this.$store.dispatch('send', 'setCustomer', {a: 'a'})
         send({commit}, {cmd, value}) {
             this.state.sendToServer(cmd, value, {commit})
         },

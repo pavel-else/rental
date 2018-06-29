@@ -68,12 +68,17 @@ class Request
                 case 'setOrder':
                     $this->setOrder($value);
                 break;
+                case 'setCustomer':
+                    $this->setCustomer($value);
+                break;
                 case 'stopOrder':
                     $this->stopOrder($value);
                 break;
                 case 'test':
                     $this->test($value);                    
                 break;
+                default:
+                    $this->writeLog('undefined methods' . $cmd .': ' . $value);
             } 
         };
 
@@ -91,6 +96,7 @@ class Request
 
     // Отправка данных клиенту
     private function send($data) {
+
         echo json_encode($data);
     }
     
@@ -110,10 +116,12 @@ class Request
     }
 
     private function writeLog($log) {
+
         $this->logs[] = $log;
     }
 
     private function getLogs() {
+
         $this->response['logs'] = $this->logs;
     }
 
@@ -146,7 +154,7 @@ class Request
     private function getOrderProducts($order_id) {
         $sql = 'SELECT * FROM `order_products` WHERE `order_id` =' .$order_id;
 
-        $this->writeLog("f.getOrderProducts completed");
+        //$this->writeLog("f.getOrderProducts completed");
 
         return $this->pDB->get($sql, false, true); 
     }
@@ -307,6 +315,81 @@ class Request
         return $result;
     }
 
+    private function setCustomer($customer) {
+        /*
+        * Проверяем, существует ли пользователь с указанным id.
+        * Если да - обновляем данные.
+        * Если нет - записываем нового пользователя
+        */
+
+        if (empty($customer)) {
+            return false;
+        }
+
+        $checkID = function ($id) {
+            $sql = '
+                SELECT `id` 
+                FROM `clients` 
+                WHERE `id_rent` = :id_rent
+            ';
+
+            $d = array(
+                'id_rent' => $id
+            );
+            
+            $result = $this->pDB->get($sql, false, $d);
+            return $result[0][id];
+        };
+
+        $update = function ($id, $customer) {
+
+            $sql = '
+                UPDATE `clients` 
+                SET 
+                `id_rent` = :id_rent,
+                `fname` = :fname,
+                `sname` = :sname,
+                `tname` = :tname,
+                `phone` = :phone,
+                `passport` = :passport,
+                `address` = :address,
+                `birth_date` = :birth_date,
+                `sale` = :sale,
+                `balance` = :balance,
+                `note` = :note,
+                `updated` = :updated
+
+                WHERE `id` = :id
+            ';
+
+            $this->writeLog(date('Y-m-d H:i:s'));
+            $d = array(
+                'id' =>             $id,
+                'id_rent' =>        $this->app_id,
+                'fname' =>          $customer[fname],
+                'sname' =>          $customer[sname],
+                'tname' =>          $customer[tname],
+                'phone' =>          $customer[phone],
+                'passport' =>       $customer[passport],
+                'address' =>        $customer[address],
+                'birth_date' =>     $customer[birth_date],
+                'sale' =>           $customer[sale],
+                'balance' =>        $customer[balance],
+                'note' =>           $customer[note],
+                'updated' =>        date('Y-m-d H:i:s')
+            );
+
+           return $this->pDB->set($sql, $d);
+        };
+
+        $id = $checkID($customer[id_rent]);
+
+        $log = $update($id, $customer);
+
+        $this->writeLog($log);
+
+    }
+
     private function stopOrder($order) {
         /*
         * 1. Устанавливаем стопордер
@@ -323,9 +406,9 @@ class Request
                 AND `product_id` = :product_id' 
             ;
             $d = array(
-                'end_time' => $end_time,
-                'order_id' => $order[order_id],
-                'product_id' => $order[product_id],
+                'end_time'      => $end_time,
+                'order_id'      => $order[order_id],
+                'product_id'    => $order[product_id],
             );
 
             return $this->pDB->set($sql, $d);

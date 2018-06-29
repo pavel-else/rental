@@ -45,7 +45,7 @@
                 </tr>
             </table>    
             <button @click="save" :disabled="!change">Сохранить</button>
-            <button @click="close">Отмена</button>            
+            <button @click="close">Отмена</button>           
         </form>
         
         <div class="details__close" @click="close"></div>    
@@ -64,24 +64,27 @@
             }
         },
         methods: {
-            save() {
-                console.log(this.customer)
+            save(e) {
+                e.preventDefault(),
 
+                console.log(this.C)
                 this.$store.dispatch('send', {
                     cmd: 'setCustomer',
                     value: this.C
                 })
 
-                this.close()
+                //this.close()
             },
-            close() {
+            close(e) {
+                e.preventDefault(),
+
                 this.$emit('close')
             },
 
             onChange() {
                 this.change = true,
                 console.log('change')
-            }
+            },
         },
     }
 </script>
