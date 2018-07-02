@@ -43,7 +43,7 @@
                     </tr>
                     <tr>
                         <td>Дата рождения</td>                
-                        <td><input type="text" v-model="C.birth_date" placeholder="Дата рождения"></td>
+                        <td><input type="date" v-model="C.birth_date" placeholder="Дата рождения"></td>
                     </tr>
                     <tr>
                         <td>Скидка</td>                
@@ -61,7 +61,8 @@
             </form>
                 <button @click="save" :disabled="!change">Сохранить</button>
                 <button @click="close">Отмена</button>           
-                <button @click="toDelete" v-if="customer.id">Удалить</button>           
+                <button @click="toDelete" v-if="customer.id">Удалить</button>
+
             
             <div class="details__close" @click="close"></div>       
         </div>        
@@ -81,6 +82,12 @@
         },
         methods: {
             save() {
+                if (!this.C.fname) {
+                    alert("Введите фамилию")
+
+                    return
+                }
+
                 this.$store.dispatch('send', {
                     cmd: 'setCustomer',
                     value: this.C
@@ -95,13 +102,14 @@
                 console.log(this.C)
                 const id = this.C.id_rent
 
-                this.$store.dispatch('send', {
-                    cmd: 'deleteCustomer',
-                    value: id
-                })
-
-                this.close()
-
+                if (confirm(`Вы действительно хотите удалить клиента #${id}?`)) {
+                    this.$store.dispatch('send', {
+                        cmd: 'deleteCustomer',
+                        value: id
+                    })
+                }
+                
+                this.close()                    
                 // console.log(id)
                 //deleteCustomer
             },
