@@ -1,67 +1,70 @@
 <template>
-    <div class="details">
-        <h3>
-            <span v-if="customer.id">Сведения о клиенте</span>
-            <span v-else>Добавить нового клиента</span>
-        </h3>
-        <form @click="onChange">
-            <table>
-                <tr v-if="customer.id">
-                    <td>id</td>
-                    <td><input type="text" v-model="C.id_rent" disabled> </td>
-                </tr>
-                <tr>
-                    <td>Фамилия</td>
-                    <td>
-                        <input type="text" v-model="C.fname" placeholder="Фамилия">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Имя</td>
-                    <td>
-                        <input type="text" v-model="C.sname" placeholder="Имя">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Отчество</td>
-                    <td>
-                        <input type="text" v-model="C.tname" placeholder="Отчество">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Телефон</td>
-                    <td><input type="text" v-model="C.phone" placeholder="Номер мобильного телефона"></td>
-                </tr>
-                <tr>
-                    <td>Паспорт</td>
-                    <td><input type="text" v-model="C.passport" placeholder="Серия и номер паспорта"></td>                
-                </tr>
-                <tr>
-                    <td>Адрес</td>                
-                    <td><input type="text" v-model="C.address" placeholder="Адрес"></td>
-                </tr>
-                <tr>
-                    <td>Дата рождения</td>                
-                    <td><input type="text" v-model="C.birth_date" placeholder="Дата рождения"></td>
-                </tr>
-                <tr>
-                    <td>Скидка</td>                
-                    <td><input type="text" v-model="C.sale" placeholder="Скидка, %"></td>
-                </tr>
-                <tr>
-                    <td>Баланс</td>                
-                    <td><input type="text" v-model="C.balance" placeholder="Текущий баланс, руб"></td>
-                </tr>
-                <tr>
-                    <td>Примечание</td>                
-                    <td><textarea name="" id="" cols="30" rows="10" v-model="customer.note" placeholder="Дополнительные сведения о клиенте"></textarea></td>
-                </tr>
-            </table>    
-        </form>
-            <button @click="save" :disabled="!change">Сохранить</button>
-            <button @click="close">Отмена</button>           
-        
-        <div class="details__close" @click="close"></div>    
+    <div class="canvas">
+        <div class="details">
+            <h3>
+                <span v-if="customer.id">Сведения о клиенте</span>
+                <span v-else>Добавить нового клиента</span>
+            </h3>
+            <form @click="onChange">
+                <table>
+                    <tr v-if="customer.id">
+                        <td>id</td>
+                        <td><input type="text" v-model="C.id_rent" disabled> </td>
+                    </tr>
+                    <tr>
+                        <td>Фамилия</td>
+                        <td>
+                            <input type="text" v-model="C.fname" placeholder="Фамилия">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Имя</td>
+                        <td>
+                            <input type="text" v-model="C.sname" placeholder="Имя">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Отчество</td>
+                        <td>
+                            <input type="text" v-model="C.tname" placeholder="Отчество">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Телефон</td>
+                        <td><input type="text" v-model="C.phone" placeholder="Номер мобильного телефона"></td>
+                    </tr>
+                    <tr>
+                        <td>Паспорт</td>
+                        <td><input type="text" v-model="C.passport" placeholder="Серия и номер паспорта"></td>                
+                    </tr>
+                    <tr>
+                        <td>Адрес</td>                
+                        <td><input type="text" v-model="C.address" placeholder="Адрес"></td>
+                    </tr>
+                    <tr>
+                        <td>Дата рождения</td>                
+                        <td><input type="text" v-model="C.birth_date" placeholder="Дата рождения"></td>
+                    </tr>
+                    <tr>
+                        <td>Скидка</td>                
+                        <td><input type="text" v-model="C.sale" placeholder="Скидка, %"></td>
+                    </tr>
+                    <tr>
+                        <td>Баланс</td>                
+                        <td><input type="text" v-model="C.balance" placeholder="Текущий баланс, руб"></td>
+                    </tr>
+                    <tr>
+                        <td>Примечание</td>                
+                        <td><textarea name="" id="" cols="30" rows="10" v-model="C.note" placeholder="Дополнительные сведения о клиенте"></textarea></td>
+                    </tr>
+                </table>    
+            </form>
+                <button @click="save" :disabled="!change">Сохранить</button>
+                <button @click="close">Отмена</button>           
+                <button @click="toDelete">Удалить</button>           
+            
+            <div class="details__close" @click="close"></div>       
+        </div>        
     </div>
 </template>
 
@@ -82,11 +85,25 @@
                     cmd: 'setCustomer',
                     value: this.C
                 })
-
+                console.log(this.C)
                 this.close()
             },
             close() {
                 this.$emit('close')
+            },
+            toDelete() {
+                console.log(this.C)
+                const id = this.C.id_rent
+
+                this.$store.dispatch('send', {
+                    cmd: 'deleteCustomer',
+                    value: id
+                })
+
+                this.close()
+                
+                // console.log(id)
+                //deleteCustomer
             },
 
             onChange() {
@@ -99,9 +116,6 @@
 
 <style scoped>
     .details {
-        position: fixed;
-        top: 100px;
-        left: calc(50% - 150px);
         min-width: 300px;
         padding: 5px 10px;
 

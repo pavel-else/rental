@@ -71,6 +71,9 @@ class Request
                 case 'setCustomer':
                     $this->setCustomer($value);
                 break;
+                case 'deleteCustomer':
+                    $this->deleteCustomer($value);
+                break;
                 case 'stopOrder':
                     $this->stopOrder($value);
                 break;
@@ -433,52 +436,6 @@ class Request
                 'note' =>           $customer[note],
                 'updated' =>        date('Y-m-d H:i:s')
             );
-            // $sql = 'INSERT INTO `clients` (
-            //     `id`,
-            //     `id_rent`,
-            //     `fname`,
-            //     `sname`,
-            //     `tname`,
-            //     `phone`,
-            //     `passport`,
-            //     `address`,
-            //     `birth_date`,
-            //     `sale`,
-            //     `balance`,
-            //     `note`,
-            //     `updated`
-            // ) VALUES (
-            //     NULL, 
-            //     :order_id, 
-            //     :id_rent,
-            //     :fname,
-            //     :sname,
-            //     :tname,
-            //     :phone,
-            //     :passport,
-            //     :address,
-            //     :birth_date,
-            //     :sale,
-            //     :balance,
-            //     :note,
-            //     :updated
-            // )';
-
-            // $d = array(
-            //     'id_rental_org' =>  $this->app_id,
-            //     'id_rent' =>        111, //$customer[id_rent],
-            //     'fname' =>          $customer[fname],
-            //     'sname' =>          $customer[sname],
-            //     'tname' =>          $customer[tname],
-            //     'phone' =>          $customer[phone],
-            //     'passport' =>       $customer[passport],
-            //     'address' =>        $customer[address],
-            //     'birth_date' =>     $customer[birth_date],
-            //     'sale' =>           $customer[sale],
-            //     'balance' =>        $customer[balance],
-            //     'note' =>           $customer[note],
-            //     'updated' =>        date('Y-m-d H:i:s')
-            // );
 
             return $this->pDB->set($sql, $d);
         };
@@ -488,7 +445,55 @@ class Request
         $log = $id ? $update($id, $customer) : $setCustomer($customer);
 
         $this->writeLog($customer);
+    }
 
+    private function deleteCustomer($id) {
+        $this->writeLog('delete customer');
+
+        $checkID = function ($id) {
+            if (!$id) {
+                $this->writeLog('function Delete did not complete its work. Undefined id');
+                return null;
+            }
+
+            $sql = '
+                SELECT `id` 
+                FROM `clients` 
+                WHERE `id_rent` = :id_rent
+                AND `id_rental_org` = :id_rental_org
+            ';
+
+            $d = array(
+                'id_rent' => $id,
+                'id_rental_org' => $this->app_id
+            );
+            
+            $result = $this->pDB->get($sql, false, $d);
+
+            return $result[0][id];
+        };
+
+        $delete = function ($id) {
+            $sql = '
+                DELETE 
+                FROM `clients` 
+                WHERE `id` = :id
+            ';
+
+            $d = array(
+                'id' => $id
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+        $result = $delete($checkID($id));
+
+        if ($result) {
+            $this->writeLog("function Delete successfully completed. Client id($id) was deleted");
+        } else {
+            $this->writeLog("function Delete failed. Client id($id) was not deleted");
+        }
     }
 
     private function stopOrder($order) {
