@@ -382,11 +382,37 @@ class Request
                 'updated' =>        date('Y-m-d H:i:s')
             );
 
-           return $this->pDB->set($sql, $d);
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog("function SetCustomer successfully completed. Client id($id) was updated");
+            } else {
+                $this->writeLog("function SetCustomer failed. Client id($id) was not updated");
+            }
+
+            return $result;
         };
 
         $setCustomer = function ($customer) {
-            $this->writeLog($customer);
+            $getIncMaxID = function () {
+                $sql = '
+                    SELECT `id_rent` 
+                    FROM `clients` 
+                    WHERE `id_rental_org` = :id_rental_org 
+                    ORDER BY `id_rent`
+                    DESC LIMIT 1
+                ';
+
+                $d = array(
+                    'id_rental_org' => $this->app_id
+                );
+
+                $result = $this->pDB->get($sql, false, $d);
+
+                return ++$result[0][id_rent];
+            };
+
+            $this->writeLog($getIncMaxID());
 
             $sql = 'INSERT INTO `clients` (
                 `id`,
@@ -422,7 +448,7 @@ class Request
             )';
 
             $d = array(
-                'id_rent' =>        111, //$customer[id_rent],
+                'id_rent' =>        $getIncMaxID(),
                 'id_rental_org' =>  $this->app_id,
                 'fname' =>          $customer[fname],
                 'sname' =>          $customer[sname],
@@ -437,14 +463,20 @@ class Request
                 'updated' =>        date('Y-m-d H:i:s')
             );
 
-            return $this->pDB->set($sql, $d);
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog("function SetCustomer successfully completed. Client is stored in DB");
+            } else {
+                $this->writeLog("function SetCustomer failed. Client is not stored in DB");
+            }
+
+            return $result;
         };
 
         $id = $checkID($customer[id_rent]);
 
-        $log = $id ? $update($id, $customer) : $setCustomer($customer);
-
-        $this->writeLog($customer);
+        return $id ? $update($id, $customer) : $setCustomer($customer);
     }
 
     private function deleteCustomer($id) {

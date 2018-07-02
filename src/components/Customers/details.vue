@@ -61,7 +61,7 @@
             </form>
                 <button @click="save" :disabled="!change">Сохранить</button>
                 <button @click="close">Отмена</button>           
-                <button @click="toDelete">Удалить</button>           
+                <button @click="toDelete" v-if="customer.id">Удалить</button>           
             
             <div class="details__close" @click="close"></div>       
         </div>        
@@ -101,7 +101,7 @@
                 })
 
                 this.close()
-                
+
                 // console.log(id)
                 //deleteCustomer
             },
