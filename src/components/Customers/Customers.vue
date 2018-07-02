@@ -1,6 +1,5 @@
 <template>
     <div class="customer">
-        <Details :customer="customer" @close="onClose" v-if="show"></Details>
         <table class="customer__table">
             <tr>
                 <th>id</th>
@@ -18,6 +17,8 @@
         <div class="customer_buttons">
             <button @click="addCustomer">Добавить</button>
         </div>
+        
+        <Details :customer="customer" @close="onClose" v-if="show"></Details>
     </div>
 </template>
 

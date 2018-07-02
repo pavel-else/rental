@@ -6,7 +6,7 @@
                 <th>№</th>
                 <th>Товар</th>
             </tr>
-            <tr v-for="(item, index) in filterProducts" @click="toEdit(item)" class="products__product">
+            <tr v-for="(item, index) in filterProducts" @click="onClick(item)" class="products__product">
                 <td>{{ index + 1 }}</td>
                 <td>{{ item.name }}</td>
             </tr>
@@ -20,6 +20,9 @@
             toEdit(item, index) {
                 this.$store.dispatch('newOrder', item)
                 this.$store.dispatch('showNewOrder', true)
+            },
+            onClick(item) {
+                this.$emit('addOrder', item)
             }
         },
         computed: {

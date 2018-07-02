@@ -92,7 +92,9 @@
                     cmd: 'setCustomer',
                     value: this.C
                 })
+
                 console.log(this.C)
+                
                 this.close()
             },
             close() {
