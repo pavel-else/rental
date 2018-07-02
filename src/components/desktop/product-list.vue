@@ -16,8 +16,6 @@
 
 <script>
     export default {
-        name: 'productList',
-
         methods: {
             toEdit(item, index) {
                 this.$store.dispatch('newOrder', item)

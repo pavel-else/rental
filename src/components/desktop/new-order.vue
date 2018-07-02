@@ -1,33 +1,35 @@
 <template>
-    <div class="new-order">
-        <h2>Добавление нового ордера заказа</h2>
-        <table>
-            <tr>
-                <td>Товар</td>
-                <td>{{ product.name }}</td>
-            </tr>
-            <tr>
-                <td>ID</td>
-                <td><customer-id></customer-id></td>
-            </tr>
-            <tr>
-                <td>Клиент</td>
-                <td>
-                    <select name="" id="" @change="selectClient" v-model="client">
-                        <option value="">Выбрать</option>
-                        <option 
-                            v-for="customer in customers"
-                            :value="customer" 
-                        >
-                            {{ customer.fname + ' ' + customer.sname  + ' ' + customer.tname }}
-                        </option>
-                    </select>
-                </td>
-            </tr>
-        </table> 
-        <div class="buttons">
-            <button @click="setOrder">OK</button>
-            <button @click="close">Отмена</button>
+    <div class="canvas">
+        <div class="details new-order">        
+            <h2>Добавление нового ордера заказа</h2>
+            <table>
+                <tr>
+                    <td>Товар</td>
+                    <td>{{ product.name }}</td>
+                </tr>
+                <tr>
+                    <td>ID</td>
+                    <td><customer-id></customer-id></td>
+                </tr>
+                <tr>
+                    <td>Клиент</td>
+                    <td>
+                        <select name="" id="" @change="selectClient" v-model="client">
+                            <option value="">Выбрать</option>
+                            <option 
+                                v-for="customer in customers"
+                                :value="customer" 
+                            >
+                                {{ customer.fname + ' ' + customer.sname  + ' ' + customer.tname }}
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+            </table> 
+            <div class="buttons">
+                <button @click="setOrder">OK</button>
+                <button @click="close">Отмена</button>
+            </div>
         </div>
     </div>
 </template>
@@ -80,13 +82,7 @@
 <style>
     .new-order {
         width: 400px;
-        border: 1px solid lightgray;
-        box-sizing: border-box;
-        position: absolute;
-        left: calc(50% - 200px);
-        top: 110px;
-        background-color: #fff;
-        padding: 10px 15px;
+
         display: flex;
         flex-direction: column;
         justify-content: center;
