@@ -6,22 +6,22 @@
 
         <order-list class="tmp"></order-list>
 
-        <addOrder v-if="show" :product="selectProduct"></addOrder>
+        <addOrder v-if="show" :product="selectProduct" @close="onClose"></addOrder>
     </div>
 </template>
 
 <script>
 import productList from './product-list'
 import orderList from './order-list'
-import newOrder from './new-order'
-import addOrder from './addOrder'
+//import newOrder from './new-order'
+import addOrder from './addOrder/addOrder'
 
     export default {
         name: 'Desctop',
         components: {
             productList,
             orderList,
-            newOrder,
+            // newOrder,
             addOrder
         },
         data() {
@@ -34,6 +34,9 @@ import addOrder from './addOrder'
             addOrder(product) {
                 this.selectProduct = product
                 this.show = true
+            },
+            onClose() {
+                this.show = false
             }
         },
         computed: {

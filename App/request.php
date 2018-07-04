@@ -258,7 +258,7 @@ class Request
             $order_data = array(
                 'order_id' =>               $order[order_id],
                 'order_id_position' =>      $order[order_id_position],
-                'id_rental_org' =>          $order[id_rental_org],//$this->app_id,
+                'id_rental_org' =>          $this->app_id,
                 'status' =>                 $order[status],
                 'order_customer_id' =>      $order[customer_id],
                 'order_customer_name' =>    $order[customer_name],
