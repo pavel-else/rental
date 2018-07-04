@@ -20,7 +20,7 @@
                 <tr>
                     <td>Клиент</td>
                     <td>
-                        <select name="" id="" @change="setClient" v-model="select.customer">
+                        <select @change="setClient" v-model="select.customer">
                             <option value="">Выбрать</option>
                             <option 
                                 v-for="customer in customers"
@@ -33,7 +33,17 @@
                 </tr>
                 <tr>
                     <td>Залог</td>
-                    <td></td>
+                    <td>
+                        <select v-model="select.deposit" @change="setDeposit">
+                            <option value="">Выбрать</option>
+                            <option 
+                                :value="deposit"
+                                v-for="deposit in depositList"
+                            >
+                                {{ deposit }}
+                            </option>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td>Примечание</td>
@@ -81,8 +91,8 @@
 
                 select: {
                     customer: null,
-                    order_id: null
-                }
+                    deposit: null
+                },
             }
         },
         methods: {
@@ -125,6 +135,10 @@
 
                 //console.log($event)
             },
+            setDeposit() {
+                this.order.deposit = this.select.deposit
+                //console.log(this.order)
+            }
         },
         computed: {
             customers() {
@@ -132,6 +146,9 @@
             },
             freeId() {
                 return this.getFreeId()
+            },
+            depositList() {
+                return this.$store.getters.depositList
             }
         }
 
