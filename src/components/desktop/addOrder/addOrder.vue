@@ -24,7 +24,7 @@
                             <option value="">Выбрать</option>
                             <option 
                                 v-for="customer in customers"
-                                :value="customer" 
+                                :value="customer"
                             >
                                 {{ customer.fname + ' ' + customer.sname  + ' ' + customer.tname }}
                             </option>
@@ -47,7 +47,9 @@
                 </tr>
                 <tr>
                     <td>Примечание</td>
-                    <td></td>
+                    <td>
+                        <textarea name="" id="" cols="30" rows="3"></textarea>
+                    </td>
                 </tr>
                 <tr>
                     <td>Акция</td>
