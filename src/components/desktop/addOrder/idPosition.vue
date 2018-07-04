@@ -36,11 +36,11 @@
 
                 this.select = order_id_position
                 
-                this.$emit('setPosition', {order_id_position, order_id})
+                this.$emit('setPosition', {order_id, order_id_position})
 
                 this.show = false
 
-                //console.log(item.order_id)
+                //console.log(order_id_position)
             }
         },
 

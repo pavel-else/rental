@@ -1,12 +1,21 @@
 <template>
     <div class="canvas">
         <div class="details">
-            <h3>Новый ордер</h3>
+            <h3>Новый ордер<span> - #{{ order.order_id }}</span></h3>
+
 
             <table>
                 <tr>
                     <td>Товар</td>
                     <td>{{ product.name }}</td>
+                </tr>
+                <tr>
+                    <td>ID заказа</td>
+                    <td><Position :free="freeId" @setPosition="setPosition($event)"></Position></td>
+                </tr>
+                <tr>
+                    <td>Аванс</td>
+                    <td><input type="text" v-model="order.advance" placeholder="0 руб"></td>
                 </tr>
                 <tr>
                     <td>Клиент</td>
@@ -23,14 +32,25 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>ID</td>
-                    <td><Position :free="freeId" @setPosition="setPosition($event)"></Position></td>
+                    <td>Залог</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Примечание</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Акция</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Аксессуары</td>
+                    <td></td>
                 </tr>
             </table>
 
                 <button @click="save">Готово</button>
                 <button @click="close">Отмена</button>
-                <button @click="test">test</button>
         </div>
     </div>
 </template>
@@ -55,7 +75,8 @@
                     ], 
                     start_time: Math.floor(Date.now() / 1000),
                     order_id: this.$store.getters.options.new_order_id,
-                    order_id_position: this.getFreeId() // or setPosition($event)             
+                    order_id_position: this.getFreeId(), // or setPosition($event) 
+                    advance: null,            
                 },
 
                 select: {
@@ -99,15 +120,11 @@
                 return iter(count)
             },
             setPosition($event) {
-                this.order.order_id_position = $event.position
+                this.order.order_id_position = $event.order_id_position
                 this.order.order_id = $event.order_id
 
-                //console.log(this.order)
+                //console.log($event)
             },
-
-            test() {
-                console.log(this.select.order_id)
-            }
         },
         computed: {
             customers() {
