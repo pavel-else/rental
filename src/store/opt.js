@@ -16,7 +16,21 @@ export default {
             7: 'Студентческий',
             8: 'Удостоверение',
             9: 'Другое',
-        }
+        },
+
+        promotions: [
+            {
+                id: 1,
+                name: '30%',
+                discount: 30
+            },
+            {
+                id: 2,
+                name: 'Студент - 10%',
+                discount: 10
+            }
+        ],
+
     },
     mutations: {
         setOpt(state, opt) {
@@ -43,6 +57,9 @@ export default {
         },
         depositList(state) {
             return state.depositList
+        },
+        promotions(state) {
+            return state.promotions
         }
     }
 }

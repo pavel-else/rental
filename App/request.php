@@ -239,7 +239,8 @@ class Request
                 `advance_hold`,
                 `deposit`,
                 `sale_id`,
-                `note`
+                `note`,
+                `promotion`
             ) VALUES (
                 NULL, 
                 :order_id, 
@@ -254,7 +255,8 @@ class Request
                 :order_advance_hold,
                 :deposit, 
                 :order_sale_id, 
-                :order_note
+                :order_note,
+                :promotion
             )';
 
             $order_data = array(
@@ -271,6 +273,7 @@ class Request
                 'deposit' =>                $order[deposit],
                 'order_sale_id' =>          $order[sale_id],
                 'order_note' =>             $order[note],
+                'promotion' =>              $order[promotion]
             );
 
             return $this->pDB->set($sql, $order_data);

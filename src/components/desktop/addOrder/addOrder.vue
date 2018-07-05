@@ -53,7 +53,16 @@
                 </tr>
                 <tr>
                     <td>Акция</td>
-                    <td></td>
+                    <td>
+                        <select v-model="select.promotion" @change="setPromotion">
+                            <option 
+                                :value="promo"
+                                v-for="promo in promotions"
+                            >
+                                {{ promo.name }}
+                            </option>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td>Аксессуары</td>
@@ -89,12 +98,14 @@
                     order_id: this.$store.getters.options.new_order_id,
                     order_id_position: this.getFreeId(), // or setPosition($event) 
                     advance: null,
-                    note: null,          
+                    note: null,
+                    promotion: null        
                 },
 
                 select: {
                     customer: null,
-                    deposit: null
+                    deposit: null,
+                    promotion: null
                 },
             }
         },
@@ -140,7 +151,10 @@
             },
             setDeposit() {
                 this.order.deposit = this.select.deposit
-                //console.log(this.order)
+            },
+            setPromotion() {
+                this.order.promotion = this.select.promotion.id
+                console.log(this.order)
             }
         },
         computed: {
@@ -152,6 +166,9 @@
             },
             depositList() {
                 return this.$store.getters.depositList
+            },
+            promotions() {
+                return this.$store.getters.promotions
             }
         }
 
