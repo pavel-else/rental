@@ -70,24 +70,17 @@
                     return num(hours) + ":" + num(minutes) + ":" + num(seconds);
                 }
 
-                const now = this.$store.getters.now
-
-                const products = item.products
+                const start = Date.parse(item.start_time)
                 
-                let max = null
-                let end_time = null
-                let diff = null 
-                const start_time = Date.parse(item.start_time)
+                const end = item.products.reduce((acc, p) => {
+                    return acc = acc < p.end_time ? p.end_time : acc
+                }, 0)
 
-                for (let i = 0; i < products.length; i++) {
-                    end_time = products[i].end_time ? Date.parse(products[i].end_time) : null
-                    diff = end_time ? end_time - start_time : now - start_time
-
-                    if (diff > max) max = diff                  
-                }
+                const diff = end * 1000 - start
 
                 return timeFormat(diff)
             },
+
             close() {
                 this.$emit('close')
             }

@@ -12,14 +12,14 @@
                         <td class="ord__td-3">{{ subitem.product_id }}</td>
                         <td class="ord__td-4">{{ subitem.name }}</td>
                         <td class="ord__td-6">{{ getTimePlay(item, subitem) }}</td>
-                        <td>{{getBill(item, subitem)}}р</td>
+                        <td>{{ getBill(item, subitem) }} р</td>
                         <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem.product_id)" v-if="!subitem.end_time">x</td>
                     </tr>
                 </td>
                 <td class="ord__td-7 stop-order-all" @click="stopOrder(item)">x</td>
             </tr>
         </table>
-        <Details :order="order" @close="onClose" v-if="show"></Details>
+        <Details :order="order" @close="onClose" v-if="order"></Details>
     </div>
 </template>
 
@@ -32,8 +32,7 @@
         },
         data() {
             return {
-                order: {},
-                show: false
+                order: null,
             }
         },
 
@@ -108,13 +107,13 @@
                         stop(p.product_id)
                     })
                 }
-
+                this.order = order
                 return product_id ? stop(product_id) : stopAll()
                 
             },
 
             onClose() {
-                this.show = false
+                this.order = null
             }
 
         },
