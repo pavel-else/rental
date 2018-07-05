@@ -237,6 +237,7 @@ class Request
                 `advance_time`,
                 `advance`,
                 `advance_hold`,
+                `deposit`,
                 `sale_id`,
                 `note`
             ) VALUES (
@@ -250,7 +251,8 @@ class Request
                 :order_start_time, 
                 :order_advance_time, 
                 :order_advance, 
-                :order_advance_hold, 
+                :order_advance_hold,
+                :deposit, 
                 :order_sale_id, 
                 :order_note
             )';
@@ -263,9 +265,10 @@ class Request
                 'order_customer_id' =>      $order[customer_id],
                 'order_customer_name' =>    $order[customer_name],
                 'order_start_time' =>       date("Y-m-d H:i:s", $order[start_time]),
-                'order_advance_time' =>     $order[advance_time],
-                'order_advance' =>          $order[advance],
+                'order_advance_time' =>     $order[advance_time], //?
+                'order_advance' =>          $order[advance] === NULL ? 0 : $order[advance],
                 'order_advance_hold' =>     $order[advance_hold],
+                'deposit' =>                $order[deposit],
                 'order_sale_id' =>          $order[sale_id],
                 'order_note' =>             $order[note],
             );

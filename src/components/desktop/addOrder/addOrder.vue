@@ -48,7 +48,7 @@
                 <tr>
                     <td>Примечание</td>
                     <td>
-                        <textarea name="" id="" cols="30" rows="3"></textarea>
+                        <textarea name="" id="" cols="30" rows="3" v-model="order.note"></textarea>
                     </td>
                 </tr>
                 <tr>
@@ -88,7 +88,8 @@
                     start_time: Math.floor(Date.now() / 1000),
                     order_id: this.$store.getters.options.new_order_id,
                     order_id_position: this.getFreeId(), // or setPosition($event) 
-                    advance: null,            
+                    advance: null,
+                    note: null,          
                 },
 
                 select: {

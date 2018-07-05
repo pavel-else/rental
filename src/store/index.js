@@ -5,7 +5,6 @@ import axios from 'axios'
 import products from './products'
 import customers from './Customers/customers'
 import orders from './orders'
-import newOrder from './newOrder'
 import stopOrder from './stopOrder'
 import stopOrderAll from './stopOrderAll'
 import options from './opt'
@@ -21,7 +20,6 @@ const store = new Vuex.Store({
         products,
         customers,
         orders,
-        newOrder,
         stopOrder,
         stopOrderAll,
         options,

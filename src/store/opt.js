@@ -5,6 +5,18 @@ export default {
         now: new Date(),
         max_order_id: Number,
         new_order_id: Number,
+
+        depositList: {
+            1: 'Паспорт',
+            2: 'Водительское',
+            3: 'Военный билет',
+            4: 'Загран. паспорт',
+            5: 'Мед. полис',
+            6: 'Снилс',
+            7: 'Студентческий',
+            8: 'Удостоверение',
+            9: 'Другое',
+        }
     },
     mutations: {
         setOpt(state, opt) {
@@ -29,5 +41,8 @@ export default {
         options(state) {
             return state
         },
+        depositList(state) {
+            return state.depositList
+        }
     }
 }
