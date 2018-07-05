@@ -3,7 +3,6 @@
         <div class="details">
             <h3>Новый ордер<span> - #{{ order.order_id }}</span></h3>
 
-
             <table>
                 <tr>
                     <td>Товар</td>
@@ -66,7 +65,16 @@
                 </tr>
                 <tr>
                     <td>Аксессуары</td>
-                    <td></td>
+                    <td>
+                        <select v-model="select.accessories" @change="setAccessories">
+                            <option 
+                                :value="item"
+                                v-for="item in accessories"
+                            >
+                                {{ item.name }}
+                            </option>
+                        </select>
+                    </td>
                 </tr>
             </table>
 
@@ -99,13 +107,15 @@
                     order_id_position: this.getFreeId(), // or setPosition($event) 
                     advance: null,
                     note: null,
-                    promotion: null        
+                    promotion: null,
+                    accessories: null       
                 },
 
                 select: {
                     customer: null,
                     deposit: null,
-                    promotion: null
+                    promotion: null,
+                    accessories: null
                 },
             }
         },
@@ -154,6 +164,9 @@
             },
             setPromotion() {
                 this.order.promotion = this.select.promotion.id
+            },
+            setAccessories() {
+                this.order.accessories = this.select.accessories.id
                 console.log(this.order)
             }
         },
@@ -169,6 +182,9 @@
             },
             promotions() {
                 return this.$store.getters.promotions
+            },
+            accessories() {
+                return this.$store.getters.accessories
             }
         }
 
