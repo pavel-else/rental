@@ -234,11 +234,11 @@ class Request
                 `customer_id`,
                 `customer_name`,
                 `start_time`,
-                `advance_time`,
+
                 `advance`,
-                `advance_hold`,
+
                 `deposit`,
-                `sale_id`,
+
                 `note`,
                 `promotion`,
                 `accessories`
@@ -251,11 +251,11 @@ class Request
                 :order_customer_id, 
                 :order_customer_name, 
                 :order_start_time, 
-                :order_advance_time, 
+
                 :order_advance, 
-                :order_advance_hold,
+
                 :deposit, 
-                :order_sale_id, 
+ 
                 :order_note,
                 :promotion,
                 :accessories
@@ -269,11 +269,11 @@ class Request
                 'order_customer_id' =>      $order[customer_id],
                 'order_customer_name' =>    $order[customer_name],
                 'order_start_time' =>       date("Y-m-d H:i:s", $order[start_time]),
-                'order_advance_time' =>     $order[advance_time], //?
+
                 'order_advance' =>          $order[advance] === NULL ? 0 : $order[advance],
-                'order_advance_hold' =>     $order[advance_hold],
+
                 'deposit' =>                $order[deposit],
-                'order_sale_id' =>          $order[sale_id],
+
                 'order_note' =>             $order[note],
                 'promotion' =>              $order[promotion],
                 'accessories' =>            $order[accessories]
@@ -537,15 +537,18 @@ class Request
         }
     }
 
-    private function stopOrder($order) {
+    private function stopOrder($product) {
         /*
-        * 1. Устанавливаем стопордер
+        * Функция принимает 1 Товар и записывает в БД информацию о стопе
+        *
+        * 1. Ставим временнУю метку стопа
         * 2. Пишем стоимость
-        * 3. Меняем статусы продуктов
+        * 3. Меняем статус продукта
         * 4. Меняем статус ордера, если активных продуктов нет
         */
-        $setEndTime = function ($order) {
-            $end_time = date("Y-m-d H:i:s", $order[end_time]);            
+
+        $setEndTime = function ($product) {
+            $end_time = date("Y-m-d H:i:s", $product[end_time]);            
             $sql = '
                 UPDATE `order_products` 
                 SET `end_time` = :end_time 
@@ -554,14 +557,22 @@ class Request
             ;
             $d = array(
                 'end_time'      => $end_time,
-                'order_id'      => $order[order_id],
-                'product_id'    => $order[product_id],
+                'order_id'      => $product[order_id],
+                'product_id'    => $product[product_id],
             );
 
-            return $this->pDB->set($sql, $d);
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog('stopOrder: setEndTime completed');
+            } else {
+                $this->writeLog('stopOrder: setEndTime error');
+            }
+
+            return $result;
         };
 
-        $setBill = function ($order) {
+        $setBill = function ($product) {
             $sql = '
                 UPDATE `order_products` 
                 SET `bill` = :bill 
@@ -569,15 +580,23 @@ class Request
                 AND `product_id` = :product_id' 
             ;
             $d = array(
-                'bill' => $order[bill],
-                'order_id' => $order[order_id],
-                'product_id' => $order[product_id],
+                'bill' => $product[bill],
+                'order_id' => $product[order_id],
+                'product_id' => $product[product_id],
             );
 
-            return $this->pDB->set($sql, $d);
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog('stopOrder: setBill completed');
+            } else {
+                $this->writeLog('stopOrder: setBill error');
+            }
+
+            return $result;
         };
 
-        $setProductStatus = function ($order) {
+        $setProductStatus = function ($product) {
             $sql = '
                 UPDATE `products` 
                 SET `active` = :active 
@@ -585,28 +604,36 @@ class Request
             ;
             $d = array(
                 'active' => 1,
-                'id_rent' => $order[product_id],
+                'id_rent' => $product[product_id],
             );
 
-            return $this->pDB->set($sql, $d);
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog('stopOrder: setProductStatus completed');
+            } else {
+                $this->writeLog('stopOrder: setProductStatus error');
+            }
+
+            return $result;
         };
 
-        $setOrderStatus = function ($order) {
+        $setOrderStatus = function ($product) {
             /*
             * 1. Выбираем по id продукты вместе с их временными стоп-метками
             * 2. Если на всех продуктах стоят стоп-метки - меняем статус ордера
             */
-            $getProducts = function ($order) {
+            $getProducts = function ($order_id) {
                 $sql = '
                     SELECT `order_id`, `end_time` 
                     FROM `order_products`
-                    WHERE `order_id` = ' . '\'' . $order[order_id] . '\''
+                    WHERE `order_id` = ' . '\'' . $order_id . '\''
                 ;
 
                 return $this->pDB->get($sql, false, true);               
             };
 
-            $changeStatus = function ($order, array $products) {
+            $changeStatus = function ($order_id, array $products) {
                 /*
                 * 1. Перебираем все продуты ордера
                 * 2. Если среди них не нашлось активного продукта (end_time == null), меняем статус ордера
@@ -631,28 +658,30 @@ class Request
                         WHERE `order_id` = :order_id
                     ';
                     $d = array(
-                        'order_id' => $order[order_id],
+                        'order_id' => $order_id,
                         'status' => 'END'
                     );
 
                     return $this->pDB->set($sql, $d);
                 } 
             };
+            
+            $result = $changeStatus($product[order_id], $getProducts($product[order_id]));
 
-            return $changeStatus($order, $getProducts($order));
+            if ($result) {
+                $this->writeLog('stopOrder: setOrderStatus completed');
+            } else {
+                $this->writeLog('stopOrder: setOrderStatus error');
+            }
+
+            return $result;
         };
 
-        if (empty($order)) {
-            $this->writeLog('function stopOrder failed with error: empty order');
-            return;
-        }
 
-        $log['end_time'] = $setEndTime($order);
-        $log['bill'] = $setBill($order);
-        $log['product_status'] = $setProductStatus($order);
-        $log['change_order_status'] = $setOrderStatus($order);
-
-        $this->writeLog($log);
+        $setEndTime($product);
+        $setBill($product);
+        $setProductStatus($product);
+        $setOrderStatus($product);
     }
 
     private function test($value) {

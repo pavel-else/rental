@@ -41,7 +41,9 @@ export default {
                 const i = (h - Math.floor(h)).toFixed(2)
                 const bill_min = i * tariff[Math.ceil(h)]
 
-                return (result + bill_min) < max ? result + bill_min : max // return bill order in money
+                let result_formated = (result + bill_min) < max ? result + bill_min : max // return bill order in money
+                
+                return Math.floor(result_formated)
             }
 
             const tariff = Tariffs.state.tariffs[product.tariff_id]
