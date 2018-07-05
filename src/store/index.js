@@ -5,23 +5,19 @@ import axios from 'axios'
 import products from './products'
 import customers from './Customers/customers'
 import orders from './orders'
-import stopOrder from './stopOrder'
-import stopOrderAll from './stopOrderAll'
 import options from './opt'
 import tariffs from './tariffs'
 import history from './History/history'
-import F from './F'
+import getBill from './getBill'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
     modules: {
-        F,
+        getBill,
         products,
         customers,
         orders,
-        stopOrder,
-        stopOrderAll,
         options,
         tariffs,
         history,

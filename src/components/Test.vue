@@ -17,10 +17,12 @@
 
         methods: {
             onClick() {
-                const cmd = this.h
-                const value = {id_rent: 178}
+                // const cmd = this.h
+                // const value = {id_rent: 178}
 
-                this.$store.dispatch('send', {cmd, value})
+                // this.$store.dispatch('send', {cmd, value})
+
+
             },                              
         },
     }
