@@ -76,10 +76,21 @@
                         </select>
                     </td>
                 </tr>
+                <tr>
+                    <td>Тарифный план</td>
+                    <td><select name="" id="">
+                        <option value="">Т1-130 (почасовой)</option>
+                        <option value="">Т1-80 (почасовой)</option>
+                        <option value="">Утро-360</option>
+                        <option value="">Сутки-800</option>
+                        <option value="">Указать</option>
+                    </select></td>
+                </tr>
             </table>
-
-                <button @click="save">Готово</button>
-                <button @click="close">Отмена</button>
+                <div class="btn-group">
+                    <button @click="save">Готово</button>
+                    <button @click="close">Отмена</button>
+                </div>
         </div>
     </div>
 </template>
@@ -190,3 +201,9 @@
 
     }
 </script>
+
+<style>
+    .btn-group {
+        margin-top: 20px;
+    }
+</style>
