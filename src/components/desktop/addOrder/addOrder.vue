@@ -78,13 +78,16 @@
                 </tr>
                 <tr>
                     <td>Тарифный план</td>
-                    <td><select name="" id="">
-                        <option value="">Т1-130 (почасовой)</option>
-                        <option value="">Т1-80 (почасовой)</option>
-                        <option value="">Утро-360</option>
-                        <option value="">Сутки-800</option>
-                        <option value="">Указать</option>
-                    </select></td>
+                    <td>
+                        <select v-model="select.tariff" @change="setTariff">
+                            <option 
+                                v-for="tariff in tariffs"
+                                :value="tariff"
+                            >
+                                {{ tariff.id }} {{ tariff.name }}
+                            </option>
+                        </select>
+                    </td>
                 </tr>
             </table>
                 <div class="btn-group">
@@ -126,7 +129,8 @@
                     customer: null,
                     deposit: null,
                     promotion: null,
-                    accessories: null
+                    accessories: null,
+                    tariff: null
                 },
             }
         },
@@ -179,6 +183,9 @@
             setAccessories() {
                 this.order.accessories = this.select.accessories.id
                 console.log(this.order)
+            },
+            setTariff() {
+                this.order.tariff = this.select.tariff
             }
         },
         computed: {
@@ -196,6 +203,24 @@
             },
             accessories() {
                 return this.$store.getters.accessories
+            },
+            tariffs() {
+                //need filter
+                const products = this.$store.getters.products
+                const product_id = this.order.products[0]
+                const product = products.find(p => p.id_rent == product_id)
+                const tariff_id_list = product.tariff_id.split(',')
+
+                const tariffs = this.$store.getters.tariffsList
+
+                const result = tariff_id_list.reduce((acc, item) => {
+                    acc.push(tariffs.find(t => t.id == item))
+                    return acc
+                }, [])
+
+                console.log(result)
+
+                return result
             }
         }
 

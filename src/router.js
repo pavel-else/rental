@@ -7,7 +7,6 @@ import Desktop from './components/desktop/Desktop'
 import History from './components/History/history'
 import Customers from './components/Customers/Customers'
 import Options from './components/Options/Options'
-    import Tariffs from './components/Options/Tariffs'
 
 const routes = [
     {
@@ -26,10 +25,6 @@ const routes = [
         path: '/options',
         component: Options
     },
-    {
-        path: '/tariffs',
-        component: Tariffs
-    }
 ]
 
 export const router = new VueRouter({

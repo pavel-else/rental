@@ -5,8 +5,8 @@ export default {
             2: [0, 80,  80,  80, 80, 80, 80],
         },
 
-        tariffs_new: {
-            1: {
+        tariffs_new: [
+            {
                 id: 1,
                 type: 'h',
                 name: 'T-120',
@@ -21,7 +21,7 @@ export default {
                 max: 500,
                 note: 'Почасовой'
             },
-            2: {
+            {
                 id: 2,
                 type: 'd',
                 name: 'd-800',
@@ -30,7 +30,7 @@ export default {
                 max: 800,
                 note: 'Сутки'
             },
-            3: {
+            {
                 id: 3,
                 type: 'f',
                 name: 'Утро',
@@ -39,14 +39,14 @@ export default {
                 max: 300,
                 note: 'C 8-00 до 11-00'
             },
-        }
+        ]    
     },
     getters: {
         tariffs(state) {
             return state.tariffs
         },
-        tariffs_new(state) {
-            return state,tariffs_new
+        tariffsList(state) {
+            return state.tariffs_new
         }
     }
 }
