@@ -34,7 +34,6 @@ class Request
         $this->response  = [];
         $this->pDB = $this->rent_connect_DB();
         
-
         $cmds = $this->dataJSON['cmds'];
         $value = $this->dataJSON['value'];
 
@@ -57,6 +56,9 @@ class Request
                 break;
                 case 'getHistory':
                     $this->response['history'] = $this->getHistory($value);
+                break;
+                case 'getTariffs':
+                    $this->response['tariffs'] = $this->getTariffs();
                 break;
                 case 'getMaxOrderID':
                     $this->response['options']['max_order_id'] = $this->getMaxOrderID();
@@ -182,6 +184,29 @@ class Request
         foreach ($orders as $key => $order) {
             $order[products] = $this->getOrderProducts($order[order_id]);            
             $result[] = $order;
+        }
+
+        return $result;
+    }
+
+    private function getTariffs() {
+        $sql = '
+            SELECT * 
+            FROM `tariffs` 
+            WHERE `id_rental_org` = :id_rental_org
+        ';
+
+        $d = array(
+            'id_rental_org' => $this->app_id
+        );
+
+
+        $result = $this->pDB->get($sql, false, $d);
+
+        foreach ($result as $key => $value) {
+            if ($value[h]) {
+                $result[$key][h] = explode(',', $value[h]);
+            }
         }
 
         return $result;

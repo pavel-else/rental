@@ -55,13 +55,13 @@
         data() {
             return {
                 newTariff: {
-                    id: this.tariff.id,
-                    name: this.tariff.name,
-                    type: this.tariff.type,
-                    h: this.tariff.h,
-                    min: this.tariff.min,
-                    max: this.tariff.max,
-                    note: this.tariff.note
+                    id:     this.tariff.id,
+                    name:   this.tariff.name,
+                    type:   this.tariff.type,
+                    h:      this.tariff.h,
+                    min:    this.tariff.min,
+                    max:    this.tariff.max,
+                    note:   this.tariff.note
                 }
             }
         },
