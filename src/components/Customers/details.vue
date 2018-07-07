@@ -59,9 +59,10 @@
                     </tr>
                 </table>    
             </form>
-                <button @click="save" :disabled="!change">Сохранить</button>
-                <button @click="close">Отмена</button>           
-                <button @click="toDelete" v-if="customer.id">Удалить</button>
+            
+            <button @click="save" :disabled="!change">Сохранить</button>
+            <button @click="close">Отмена</button>           
+            <button @click="toDelete" v-if="customer.id">Удалить</button>
 
             
             <div class="details__close" @click="close"></div>       

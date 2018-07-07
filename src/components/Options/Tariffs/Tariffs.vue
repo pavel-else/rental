@@ -10,7 +10,7 @@
                 <th>Макс</th>
                 <th>Примечание</th>
             </tr>
-            <tr v-for="tariff in tariffs">
+            <tr v-for="tariff in tariffs" @click="onClick(tariff)">
                 <td>{{ tariff.id }}</td>
                 <td>{{ tariff.name }}</td>
                 <td>{{ tariff.type }}</td>
@@ -20,11 +20,30 @@
                 <td>{{ tariff.note }}</td>
             </tr>
         </table>
+        <Details :tariff="tariff" @close="onClose" v-if="show"></Details>
     </div>
 </template>
 <script>
+    import Details from './Details'
     export default {
+        components: {
+            Details
+        },
+        data() {
+            return {
+                tariff: {},
+                show: false
+            }
+        },
         methods: {
+            onClick(tariff) {
+                this.show = true
+                this.tariff = tariff
+            },
+            onClose() {
+                this.show = false
+                this.tariff = {}
+            },
             h(tariff) {
                 const h = tariff.h
 
@@ -53,6 +72,10 @@
     }
     th {
         text-align: left;
+    }
+    tr:hover {
+        cursor: pointer;
+        outline: 1px solid rgba(0,0,0,0.2);
     }
     
 </style>

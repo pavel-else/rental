@@ -14,7 +14,7 @@
     </div>
 </template>
 <script>
-    import Tariffs from './Tariffs'
+    import Tariffs from './Tariffs/Tariffs'
     import General from './General'
     import Products from './Products'
 
