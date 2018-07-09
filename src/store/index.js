@@ -59,6 +59,7 @@ const store = new Vuex.Store({
                     commit('setOpt', r.data.options)
                     commit('setOrders', {orders: r.data.orders, products: r.data.products})
                     commit('setHistory', r.data.history)
+                    commit('setTariffs', r.data.tariffs)
                 })
                
             })

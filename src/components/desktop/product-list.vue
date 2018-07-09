@@ -17,10 +17,6 @@
 <script>
     export default {
         methods: {
-            toEdit(item, index) {
-                this.$store.dispatch('newOrder', item)
-                this.$store.dispatch('showNewOrder', true)
-            },
             onClick(item) {
                 this.$emit('addOrder', item)
             }

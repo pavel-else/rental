@@ -16,14 +16,16 @@
                     <td><input type="text" v-model="newTariff.type"></td>
                 </tr>
                 <tr v-if="newTariff.type == 'h'">
-                    <td>Расчасовка</td>
+                    <td>Расчасовка,<br>руб</td>
                     <td>
-                        <ul>
-                            <li v-for="(h, index) in tariff.h">
-                                <div class="h__caption">{{ index }} </div>
-                                <div><input type="text" v-model="tariff.h[index]" class="h__input"> </div>
-                            </li>
-                        </ul>
+                        <table>
+                            <tr v-for="(item, index) in newTariff.h">
+                                <td>{{ index + 1}}<span v-if="newTariff.h.length === index + 1">+</span> час</td>
+                                <td><input v-model="newTariff.h[index]" ></td>
+                            </tr>
+                        </table>
+                        <button @click="addH">+</button>
+                        <button @click="rmH">-</button>
                     </td>
                 </tr>
                 <tr>
@@ -48,29 +50,36 @@
 </template>
 
 <script>
+    import H from './h'
     export default {
         props: {
-            tariff: Object
+            tariff: null
+        },
+        components: {
+            H
         },
         data() {
             return {
-                newTariff: {
-                    id:     this.tariff.id,
-                    name:   this.tariff.name,
-                    type:   this.tariff.type,
-                    h:      this.tariff.h,
-                    min:    this.tariff.min,
-                    max:    this.tariff.max,
-                    note:   this.tariff.note
-                }
+                newTariff: JSON.parse(JSON.stringify(this.tariff)) //Да, да, да... А как по-другому?!
             }
         },
         methods: {
             save() {
+                const filter = this.newTariff.h.filter(h => {
+                    if (h) return h
+                })
+                this.newTariff.h = filter
 
+                this.$emit('save', this.newTariff)
             },
             close() {
                 this.$emit('close')
+            },
+            addH() {
+                this.newTariff.h.push('')
+            },
+            rmH() {
+                this.newTariff.h.pop()
             }
         },
     }
