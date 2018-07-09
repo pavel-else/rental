@@ -11,7 +11,7 @@
                 <th>Примечание</th>
             </tr>
             <tr v-for="tariff in tariffs" @click="onClick(tariff)">
-                <td>{{ tariff.id }}</td>
+                <td>{{ tariff.id_rent }}</td>
                 <td>{{ tariff.name }}</td>
                 <td>{{ tariff.type }}</td>
                 <td>{{ getH(tariff.h) }}</td>
@@ -58,7 +58,7 @@
             },
             setTariff(tariff) {
                 this.tariff = tariff
-                
+
                 console.log(tariff)
 
                 this.$store.dispatch('send', {

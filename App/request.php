@@ -79,6 +79,9 @@ class Request
                 case 'stopOrder':
                     $this->stopOrder($value);
                 break;
+                case 'setTariff':
+                    $this->setTariff($value);
+                break;
                 case 'test':
                     $this->test($value);                    
                 break;
@@ -707,6 +710,86 @@ class Request
         $setBill($product);
         $setProductStatus($product);
         $setOrderStatus($product);
+    }
+
+    private function setTariff($tariff) {
+        $this->writeLog($tariff);
+
+        $checkID = function ($id) {
+            if (!$id) {
+                return null;
+            }
+
+            $sql = '
+                SELECT `id` 
+                FROM `tariffs` 
+                WHERE `id_rent` = :id_rent
+                AND `id_rental_org` = :id_rental_org
+            ';
+
+            $d = array(
+                'id_rent' => $id,
+                'id_rental_org' => $this->app_id
+            );
+            
+            $result = $this->pDB->get($sql, false, $d);
+
+            $log = $result? 'setTariff.checkID compleated' : 'setTariff.checkID failed';
+
+            $this->writeLog($log);
+
+            return $result ? $result[0][id] : null;
+        };
+
+        $update = function ($id, $tariff) {
+            $getString = function ($h) {
+                if (!$h) {
+                    return '';
+                }
+                $this->writeLog(implode('', $h));
+                return implode(',', $h);
+            };
+
+            $sql = '
+                UPDATE `tariffs` 
+                SET 
+                `id_rent` = :id_rent, 
+                `type` = :type, 
+                `name` = :name, 
+                `h` = :h, 
+                `max` = :max, 
+                `min` = :min, 
+                `note` = :note 
+                WHERE `id` = :id 
+            ';
+
+            $d = array(
+                'id'            => $id,
+                'id_rent'       => $tariff[id_rent],
+                'type'          => $tariff[type],
+                'name'          => $tariff[name],
+                'h'             => $getString($tariff[h]),
+                'max'           => $tariff[max],
+                'min'           => $tariff[min],
+                'note'          => $tariff[note]
+            );
+
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog("function setTariff successfully completed. Tariff id($id) updated");
+            } else {
+                $this->writeLog("function setTariff failed. Tariff id($id) was not updated");
+            }
+
+            return $result;
+        };
+
+        $id = $checkID($tariff[id_rent]);
+
+        if ($id) {
+            $update($id, $tariff);
+        }
     }
 
     private function test($value) {

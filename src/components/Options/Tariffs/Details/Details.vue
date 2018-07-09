@@ -71,6 +71,7 @@
                 this.newTariff.h = filter
 
                 this.$emit('save', this.newTariff)
+                this.close()
             },
             close() {
                 this.$emit('close')
