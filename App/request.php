@@ -85,6 +85,9 @@ class Request
                 case 'setTariff':
                     $this->setTariff($value);
                 break;
+                case 'deleteTariff':
+                    $this->deleteTariff($value);
+                break;
                 case 'test':
                     $this->test($value);                    
                 break;
@@ -489,8 +492,6 @@ class Request
                 return ++$result[0][id_rent];
             };
 
-            $this->writeLog($getIncMaxID());
-
             $sql = 'INSERT INTO `clients` (
                 `id`,
                 `id_rent`,
@@ -557,7 +558,6 @@ class Request
     }
 
     private function deleteCustomer($id) {
-        $this->writeLog('delete customer');
 
         $checkID = function ($id) {
             if (!$id) {
@@ -783,10 +783,11 @@ class Request
 
         $update = function ($id, $tariff) {
             $getString = function ($h) {
+                // Функция складывает массив Часов в стороковое представление
                 if (!$h) {
                     return '';
                 }
-                $this->writeLog(implode('', $h));
+
                 return implode(',', $h);
             };
 
@@ -825,10 +826,127 @@ class Request
             return $result;
         };
 
+        $setTariff = function ($tariff) {
+            $getIncMaxID = function () {
+                $sql = '
+                    SELECT `id_rent` 
+                    FROM `tariffs` 
+                    WHERE `id_rental_org` = :id_rental_org 
+                    ORDER BY `id_rent`
+                    DESC LIMIT 1
+                ';
+
+                $d = array(
+                    'id_rental_org' => $this->app_id
+                );
+
+                $result = $this->pDB->get($sql, false, $d);
+
+                return ++$result[0][id_rent];
+            };
+
+            $getString = function ($h) {
+                // Функция складывает массив Часов в стороковое представление
+                if (!$h) {
+                    return '';
+                }
+
+                return implode(',', $h);
+            };
+
+            $sql = 'INSERT INTO `tariffs` (
+                `id`,
+                `id_rent`,
+                `id_rental_org`,
+                `type`, 
+                `name`,
+                `h`,
+                `max`,
+                `min`,
+                `note`
+            ) VALUES (
+                NULL,
+                :id_rent,
+                :id_rental_org,
+                :type,
+                :name,
+                :h,
+                :max,
+                :min,
+                :note
+            )';
+
+            $d = array(
+                'id_rent'       => $getIncMaxID(),
+                'id_rental_org' => $this->app_id,
+                'type'          => $tariff[type],
+                'name'          => $tariff[name],
+                'h'             => $getString($tariff[h]),
+                'max'           => $tariff[max],
+                'min'           => $tariff[min],
+                'note'          => $tariff[note]
+            );
+
+            $result = $this->pDB->set($sql, $d);
+
+            $log = $result ? 
+                'function setTariff successfully completed!  New tariff is saved':
+                'function setTariff failed!  New tariff is`t saved';            
+
+            $this->writeLog($log);
+
+            return $result;
+        };
+
         $id = $checkID($tariff[id_rent]);
 
-        if ($id) {
-            $update($id, $tariff);
+        return $id ? $update($id, $tariff) : $setTariff($tariff);
+    }
+
+    private function deleteTariff ($id) {
+        $checkID = function ($id) {
+            if (!$id) {
+                $this->writeLog('function Delete did not complete its work. Empty id');
+                return null;
+            }
+
+            $sql = '
+                SELECT `id` 
+                FROM `tariffs` 
+                WHERE `id_rent` = :id_rent
+                AND `id_rental_org` = :id_rental_org
+            ';
+
+            $d = array(
+                'id_rent' => $id,
+                'id_rental_org' => $this->app_id
+            );
+            
+            $result = $this->pDB->get($sql, false, $d);
+
+            return $result[0][id];
+        };
+
+        $delete = function ($id) {
+            $sql = '
+                DELETE 
+                FROM `tariffs` 
+                WHERE `id` = :id
+            ';
+
+            $d = array(
+                'id' => $id
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+        $result = $delete($checkID($id));
+
+        if ($result) {
+            $this->writeLog("function Delete successfully completed. Tariff id($id) was deleted");
+        } else {
+            $this->writeLog("function Delete failed. Tariff id($id) was not deleted");
         }
     }
 

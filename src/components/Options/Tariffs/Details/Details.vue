@@ -1,7 +1,10 @@
 <template>
     <div class="canvas">
         <div class="details">
-            <h3>Редактирование тарифа</h3>
+            <h3>
+                <span v-if="tariff.id_rent">Редактирование тарифа</span>
+                <span v-else>Новый тариф</span>
+            </h3>
             <form @input="onChange">
                 <table>
                     <tr>
@@ -46,7 +49,8 @@
             </form>     
 
             <button @click="save" :disabled="!change">Сохранить</button>
-            <button @click="close">Отмена</button>           
+            <button @click="close">Отмена</button>
+            <button @click="remove" v-if="tariff.id_rent">Удалить</button>      
 
             <div class="details__close" @click="close"></div>     
         </div>
@@ -91,10 +95,22 @@
                     this.$emit('close')
                 }
             },
-            addH() {
+            remove() {
+                if (confirm(`Вы действительно хотите удалить тариф '${this.newTariff.name}'?`)) {
+                    this.$store.dispatch('send', {
+                        cmd: 'deleteTariff',
+                        value: this.newTariff.id_rent
+                    })
+                    this.$emit('close')
+                }
+
+            },
+            addH(e) {
+                e.preventDefault()
                 this.newTariff.h.push('')
             },
-            rmH() {
+            rmH(e) {
+                e.preventDefault()
                 this.newTariff.h.pop()
             },
             onChange(e) {

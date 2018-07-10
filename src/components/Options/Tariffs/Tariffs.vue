@@ -57,11 +57,12 @@
                 }, '')
             },
             addTariff() {
-                const id_rent = this.$store.getters.options.max_tariff_id + 1
-
+                //const id_rent = this.$store.getters.options.max_tariff_id + 1
                 this.show = true
+
+                // значения по умолчанию
                 this.tariff = {
-                    id_rent,
+                    id_rent: null,
                     type: 'h',
                     name: '',
                     h: [0],
