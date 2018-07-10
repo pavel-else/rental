@@ -14,7 +14,7 @@
                 <td>{{ tariff.id_rent }}</td>
                 <td>{{ tariff.name }}</td>
                 <td>{{ tariff.type }}</td>
-                <td>{{ getH(tariff.h) }}</td>
+                <td>{{ getHours(tariff.h) }}</td>
                 <td>{{ tariff.min }}</td>
                 <td>{{ tariff.max }}</td>
                 <td>{{ tariff.note }}</td>
@@ -23,7 +23,7 @@
 
         <button class="tariff__button tariff__button--add" @click="addTariff">Добавить</button>
 
-        <Details :tariff="tariff" @save="setTariff($event)" @close="onClose" v-if="show"></Details>
+        <Details :tariff="tariff"  @close="onClose" v-if="show"></Details>
     </div>
 </template>
 <script>
@@ -47,27 +47,14 @@
                 this.show = false
                 this.tariff = {}
             },
-            getH(h) {
+            getHours(h) {
                 if (!h) return null
-                if (Object.keys(h).length === 0) return null
 
-                let result = ''
+                const hours = Object.values(h);
 
-                for (let i in h) {
-                    result = result + `${h[i]} `
-                }
-
-                return result
-            },
-            setTariff(tariff) {
-                this.tariff = tariff
-
-                console.log(tariff)
-
-                this.$store.dispatch('send', {
-                    cmd: 'setTariff',
-                    value: this.tariff
-                })
+                return h.reduce((acc, item) => {
+                    return acc = acc + ` ${item}`   
+                }, '')
             },
             addTariff() {
                 const id_rent = this.$store.getters.options.max_tariff_id + 1

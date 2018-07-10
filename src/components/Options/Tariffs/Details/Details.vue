@@ -1,47 +1,51 @@
 <template>
     <div class="canvas">
         <div class="details">
-            <h3>Редактирование тарифа</h3>      
-            <table>
-                <tr>
-                    <td>id</td>
-                    <td><input type="text" :value="newTariff.id_rent" disabled></td>
-                </tr>
-                <tr>
-                    <td>Название</td>
-                    <td><input type="text" v-model="newTariff.name"></td>
-                </tr>
-                <tr>
-                    <td>Тип</td>
-                    <td><input type="text" v-model="newTariff.type"></td>
-                </tr>
-                <tr v-if="newTariff.type == 'h'">
-                    <td>Расчасовка,<br>руб</td>
-                    <td>
-                        <table>
-                            <tr v-for="(item, index) in newTariff.h">
-                                <td>{{ index + 1}}<span v-if="newTariff.h.length === index + 1">+</span> час</td>
-                                <td><input v-model="newTariff.h[index]" ></td>
-                            </tr>
-                        </table>
-                        <button @click="addH">+</button>
-                        <button @click="rmH">-</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Мин</td>
-                    <td><input type="text" v-model="newTariff.min"></td>
-                </tr>
-                <tr>
-                    <td>Макс</td>
-                    <td><input type="text" v-model="newTariff.max"></td>
-                </tr>
-                    <td>Примечание</td>
-                    <td><input type="text" v-model="newTariff.note"></td>
-                </tr>
-            </table>
+            <h3>Редактирование тарифа</h3>
+            <form @input="onChange">
+                <table>
+                    <tr>
+                        <td>id</td>
+                        <td><input :value="newTariff.id_rent" disabled></td>
+                    </tr>
+                    <tr>
+                        <td>Название</td>
+                        <td><input v-model="newTariff.name"></td>
+                    </tr>
+                    <tr>
+                        <td>Тип</td>
+                        <td><input v-model="newTariff.type"></td>
+                    </tr>
+                    <tr v-if="newTariff.type == 'h'">
+                        <td>Расчасовка,<br>руб</td>
+                        <td>
+                            <table>
+                                <tr v-for="(item, index) in newTariff.h">
+                                    <td>
+                                        {{ index + 1}}<span v-if="newTariff.h.length === index + 1">+</span> час
+                                    </td>
+                                    <td><input v-model="newTariff.h[index]"></td>
+                                </tr>
+                            </table>
+                            <button @click="addH">+</button>
+                            <button @click="rmH">-</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Мин</td>
+                        <td><input v-model="newTariff.min"></td>
+                    </tr>
+                    <tr>
+                        <td>Макс</td>
+                        <td><input v-model="newTariff.max"></td>
+                    </tr>
+                        <td>Примечание</td>
+                        <td><input v-model="newTariff.note"></td>
+                    </tr>
+                </table>
+            </form>     
 
-            <button @click="save">Сохранить</button>
+            <button @click="save" :disabled="!change">Сохранить</button>
             <button @click="close">Отмена</button>           
 
             <div class="details__close" @click="close"></div>     
@@ -50,39 +54,53 @@
 </template>
 
 <script>
-    import H from './h'
     export default {
         props: {
-            tariff: null
-        },
-        components: {
-            H
+            tariff: Object
         },
         data() {
             return {
                 // Не смог по-нормальному скопировать объект без геттеров, поэтому так
-                newTariff: JSON.parse(JSON.stringify(this.tariff)) 
+                newTariff: JSON.parse(JSON.stringify(this.tariff)),
+                change: false
             }
         },
         methods: {
             save() {
-                const filter = this.newTariff.h ? this.newTariff.h.filter(h => {
+                // Предобработка, удаление пустых полей
+                this.newTariff.h = this.newTariff.h ? this.newTariff.h.filter(h => {
                     if (h) return h
                 }) : ''
 
-                this.newTariff.h = filter
+                console.log(this.newTariff)
 
-                this.$emit('save', this.newTariff)
-                this.close()
-            },
-            close() {
+                this.$store.dispatch('send', {
+                    cmd: 'setTariff',
+                    value: this.newTariff
+                })
+
                 this.$emit('close')
+            },
+            close() {                
+                if (!this.change) {
+                    this.$emit('close')
+                    return
+                }
+
+                if (confirm('Изменения не сохранены. Вы уверены, что хотите выйти?')) {
+                    this.$emit('close')
+                }
             },
             addH() {
                 this.newTariff.h.push('')
             },
             rmH() {
                 this.newTariff.h.pop()
+            },
+            onChange(e) {
+                e.preventDefault()
+                console.log('change')
+                this.change = true
             }
         },
     }
