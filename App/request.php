@@ -64,6 +64,9 @@ class Request
                     $this->response['options']['max_order_id'] = $this->getMaxOrderID();
                     $this->response['options']['new_order_id'] = $this->getMaxOrderID() + 1;
                 break;
+                case 'getMaxTariffID':
+                    $this->response['options']['max_tariff_id'] = $this->getMaxTariffID();
+                break;
                 case 'getOrderID':
                     $this->response['options']['get_order_id'] = $this->getOrderID($value);
                 break;
@@ -194,7 +197,14 @@ class Request
 
     private function getTariffs() {
         $sql = '
-            SELECT * 
+            SELECT 
+            `id_rent`, 
+            `name`, 
+            `type`, 
+            `h`, 
+            `min`, 
+            `max`, 
+            `note` 
             FROM `tariffs` 
             WHERE `id_rental_org` = :id_rental_org
         ';
@@ -208,7 +218,11 @@ class Request
 
         foreach ($result as $key => $value) {
             if ($value[h]) {
-                $result[$key][h] = explode(',', $value[h]);
+                $array = explode(',', $value[h]);
+
+                $result[$key][h] = array_map(function ($item) {
+                    return (int) $item;
+                }, $array);
             }
         }
 
@@ -230,6 +244,32 @@ class Request
 
             return 0;
         }
+    }
+
+    private function getMaxTariffID() {
+        /*
+        * Функция возвращает максимальный rent_id из таблицы Тарифов
+        */
+
+        $sql = '
+            SELECT `id_rent` 
+            FROM `tariffs` 
+            WHERE `id_rental_org` = :id_rental_org 
+            ORDER BY `id_rent` 
+            DESC LIMIT 1
+        ';
+
+        $d = array(
+            'id_rental_org' => $this->app_id
+        );
+        
+        $result = $this->pDB->get($sql, false, $d);
+
+        $log = $result ? 'getMaxTariffID compleated success' : 'getMaxTariffID failed';
+
+        $this->writeLog($log);
+
+        return (int) $result[0][id_rent];
     }
 
     private function getOrderID ($id) {

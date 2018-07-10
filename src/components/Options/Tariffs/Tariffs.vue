@@ -20,6 +20,9 @@
                 <td>{{ tariff.note }}</td>
             </tr>
         </table>
+
+        <button class="tariff__button tariff__button--add" @click="addTariff">Добавить</button>
+
         <Details :tariff="tariff" @save="setTariff($event)" @close="onClose" v-if="show"></Details>
     </div>
 </template>
@@ -65,6 +68,20 @@
                     cmd: 'setTariff',
                     value: this.tariff
                 })
+            },
+            addTariff() {
+                const id_rent = this.$store.getters.options.max_tariff_id + 1
+
+                this.show = true
+                this.tariff = {
+                    id_rent,
+                    type: 'h',
+                    name: '',
+                    h: [0],
+                    max: null,
+                    min: null,
+                    note: ''
+                }
             }
 
         },
@@ -77,13 +94,21 @@
     }
 </script>
 <style scoped>
+    .option-tariffs {
+        display: flex;
+    }
+    .tariff__button--add {
+        align-self: flex-start;
+
+        margin-top: 20px;
+    }
     td, th {
         padding: 10px;
     }
     th {
         text-align: left;
     }
-    tr:hover {
+    tr:not(:first-child):hover {
         cursor: pointer;
         outline: 1px solid rgba(0,0,0,0.2);
     }

@@ -5,7 +5,7 @@
             <table>
                 <tr>
                     <td>id</td>
-                    <td><input type="text" :value="newTariff.id" disabled></td>
+                    <td><input type="text" :value="newTariff.id_rent" disabled></td>
                 </tr>
                 <tr>
                     <td>Название</td>
@@ -60,14 +60,16 @@
         },
         data() {
             return {
-                newTariff: JSON.parse(JSON.stringify(this.tariff)) //Да, да, да... А как по-другому?!
+                // Не смог по-нормальному скопировать объект без геттеров, поэтому так
+                newTariff: JSON.parse(JSON.stringify(this.tariff)) 
             }
         },
         methods: {
             save() {
-                const filter = this.newTariff.h.filter(h => {
+                const filter = this.newTariff.h ? this.newTariff.h.filter(h => {
                     if (h) return h
-                })
+                }) : ''
+
                 this.newTariff.h = filter
 
                 this.$emit('save', this.newTariff)
