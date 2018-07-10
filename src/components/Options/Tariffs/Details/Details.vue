@@ -17,7 +17,13 @@
                     </tr>
                     <tr>
                         <td>Тип</td>
-                        <td><input v-model="newTariff.type"></td>
+                        <td>
+                            <select v-model="newTariff.type" @change="setType">
+                                <option value="h">h</option>
+                                <option value="d">d</option>
+                                <option value="f">f</option>
+                            </select>
+                        </td>
                     </tr>
                     <tr v-if="newTariff.type == 'h'">
                         <td>Расчасовка,<br>руб</td>
@@ -108,15 +114,22 @@
             addH(e) {
                 e.preventDefault()
                 this.newTariff.h.push('')
+                this.change = true
             },
             rmH(e) {
                 e.preventDefault()
                 this.newTariff.h.pop()
+                this.change = true
             },
             onChange(e) {
                 e.preventDefault()
-                console.log('change')
+                console.log(this.newTariff)
                 this.change = true
+            },
+            setType() {
+                if (this.newTariff.type !== 'h') {
+                    this.newTariff.h = []
+                }
             }
         },
     }
