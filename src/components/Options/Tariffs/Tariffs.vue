@@ -63,7 +63,7 @@
                 // значения по умолчанию
                 this.tariff = {
                     id_rent: null,
-                    type: 'h',
+                    type: 'hours',
                     name: '',
                     h: [0],
                     max: null,
