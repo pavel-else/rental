@@ -904,51 +904,55 @@ class Request
         return $id ? $update($id, $tariff) : $setTariff($tariff);
     }
 
-    private function deleteTariff ($id) {
-        $checkID = function ($id) {
-            if (!$id) {
-                $this->writeLog('function Delete did not complete its work. Empty id');
-                return null;
-            }
+    private function deleteTariff ($id_rent) {
 
-            $sql = '
-                SELECT `id` 
-                FROM `tariffs` 
-                WHERE `id_rent` = :id_rent
-                AND `id_rental_org` = :id_rental_org
-            ';
+        // Необходим жизненно рефакторинг кода
+        
+        $tableList = ['tariffs_h', 'tariffs_d', 'tariffs_f'];
 
-            $d = array(
-                'id_rent' => $id,
-                'id_rental_org' => $this->app_id
-            );
-            
-            $result = $this->pDB->get($sql, false, $d);
 
-            return $result[0][id];
+        $search = function($tableList, $id_rent) {
+            $checkID = function ($table, $id_rent) {
+                // Функция возвращает id тарифа в таблице
+
+                if (!$id_rent) {
+                    $this->writeLog('function Delete did not complete its work. Empty id');
+                    return null;
+                }
+
+                $sql = 'SELECT id FROM ' . $table . ' WHERE id_rental_org = ' . $this->app_id . ' AND id_rent = ' . $id_rent;
+                
+                $result = $this->pDB->get($sql, 0, 1);
+
+                return $result ? $result[0][id] : false;
+            };
+
+            return array_reduce($tableList, function ($acc, $table) use ($id_rent, $checkID) {
+                $check = $checkID($table, $id_rent);
+
+                if ($check) {
+                    return array(
+                        'table' => $table,
+                        'id' => $check
+                    );
+                }
+            }, null);
         };
 
-        $delete = function ($id) {
-            $sql = '
-                DELETE 
-                FROM `tariffs` 
-                WHERE `id` = :id
-            ';
+        $delete = function ($search) {
+            $sql = 'DELETE FROM ' . $search[table] . ' WHERE `id` = ' . $search[id];
 
-            $d = array(
-                'id' => $id
-            );
-
-            return $this->pDB->set($sql, $d);
+            return $this->pDB->set($sql, 1);
         };
 
-        $result = $delete($checkID($id));
+        $this->writeLog($search($tableList, $id_rent));
+        // if ($result) {
+        //     $this->writeLog("function Delete successfully completed. Tariff id($id) was deleted");
+        // } else {
+        //     $this->writeLog("function Delete failed. Tariff id($id) was not deleted");
+        // }
 
-        if ($result) {
-            $this->writeLog("function Delete successfully completed. Tariff id($id) was deleted");
-        } else {
-            $this->writeLog("function Delete failed. Tariff id($id) was not deleted");
-        }
+       return $delete($search($tableList, $id_rent));        
     }
 
     private function test($value) {

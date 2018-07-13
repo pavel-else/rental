@@ -17,14 +17,6 @@
                     </tr>
                     <tr>
                         <td>Тип</td>
-<!--                         <td>
-                            <select v-model="newTariff.type">
-                                <option value="h">h</option>
-                                <option value="d">d</option>
-                                <option value="f">f</option>
-                            </select>
-                        </td> -->
-
                         <td>
                             <input class="tariff__type" name="tariff__type" type="radio" id="tariff_type--h" value="hours" v-model="newTariff.type" :checked="newTariff.type == 'hours'">
                             <label for="tariff_type--h" class="tariff__type-label">Почасовой</label>

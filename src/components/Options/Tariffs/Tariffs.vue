@@ -8,6 +8,7 @@
                 <th>Расчасовка</th>
                 <th>Мин</th>
                 <th>Макс</th>
+                <th>Стоим.</th>
                 <th>Примечание</th>
             </tr>
             <tr v-for="tariff in tariffs" @click="onClick(tariff)">
@@ -17,6 +18,7 @@
                 <td>{{ getHours(tariff.h) }}</td>
                 <td>{{ tariff.min }}</td>
                 <td>{{ tariff.max }}</td>
+                <td>{{ tariff.cost }}</td>
                 <td>{{ tariff.note }}</td>
             </tr>
         </table>
@@ -75,7 +77,7 @@
         },
         computed: {
             tariffs() {
-                console.log(this.$store.getters.tariffsList.map(i=>i))
+                console.log(this.$store.getters.tariffsList)
                 return this.$store.getters.tariffsList
             },
         }
