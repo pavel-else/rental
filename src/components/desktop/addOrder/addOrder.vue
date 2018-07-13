@@ -79,14 +79,14 @@
                 <tr>
                     <td>Тарифный план</td>
                     <td>
-                        <select v-model="select.tariff" @change="setTariff">
+<!--                         <select v-model="select.tariff" @change="setTariff">
                             <option 
                                 v-for="tariff in tariffs"
                                 :value="tariff"
                             >
                                 {{ tariff.id }} {{ tariff.name }}
                             </option>
-                        </select>
+                        </select> -->
                     </td>
                 </tr>
             </table>

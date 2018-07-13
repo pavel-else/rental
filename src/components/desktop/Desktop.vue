@@ -34,6 +34,7 @@ import addOrder from './addOrder/addOrder'
             addOrder(product) {
                 this.selectProduct = product
                 this.show = true
+                console.log(product)
             },
             onClose() {
                 this.show = false

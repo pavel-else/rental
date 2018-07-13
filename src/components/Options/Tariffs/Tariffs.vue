@@ -75,6 +75,7 @@
         },
         computed: {
             tariffs() {
+                console.log(this.$store.getters.tariffsList.map(i=>i))
                 return this.$store.getters.tariffsList
             },
         }

@@ -199,37 +199,38 @@ class Request
     }
 
     private function getTariffs() {
-        $sql = '
-            SELECT 
-            `id_rent`, 
-            `name`, 
-            `type`, 
-            `h`, 
-            `min`, 
-            `max`, 
-            `note` 
-            FROM `tariffs` 
-            WHERE `id_rental_org` = :id_rental_org
-        ';
+        /*
+        * Тарифы хранятся в БД в трех таблицах (разделены по типам)
+        * Функция подготавливает SQL запросы к  этим таблицам
+        * Выбирает тарифы из БД
+        * Корректирует вывод для поседующей работы на клиенте
+        */
 
-        $d = array(
-            'id_rental_org' => $this->app_id
-        );
+        $typeList = ['h', 'd', 'f'];
 
+        $makeSQL = function (array $typeList) {
+            // Возвращаем массив с sql-запросами
+            return array_map(function ($type) {
+                return 'SELECT * FROM tariffs_' . $type . ' WHERE id_rental_org = ' . $this->app_id;
+            }, $typeList);            
+        };
 
-        $result = $this->pDB->get($sql, false, $d);
+        $request = function ($list) {
+            // Возвращаем из БД массив с тарифами в перемешку
+            return array_reduce($list, function ($acc, $sql) {
+                return array_merge($acc, $this->pDB->get($sql, 0, 1));
+            }, []);
+        };
 
-        foreach ($result as $key => $value) {
-            if ($value[h]) {
-                $array = explode(',', $value[h]);
+        $filter = function ($tariffs) {
+            // Видоизменяем расчасовку (из строки в массив)
+            return array_map(function ($tariff) {
+                $tariff[h] = $tariff[h] ? explode(',', $tariff[h]) : [];
+                return $tariff;
+            }, $tariffs);
+        };
 
-                $result[$key][h] = array_map(function ($item) {
-                    return (int) $item;
-                }, $array);
-            }
-        }
-
-        return $result;
+        return $filter($request($makeSQL($typeList)));
     }
 
     private function getMaxOrderID() {
@@ -256,7 +257,7 @@ class Request
 
         $sql = '
             SELECT `id_rent` 
-            FROM `tariffs` 
+            FROM `tariffs_h` 
             WHERE `id_rental_org` = :id_rental_org 
             ORDER BY `id_rent` 
             DESC LIMIT 1
