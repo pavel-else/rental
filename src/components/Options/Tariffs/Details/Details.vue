@@ -15,18 +15,45 @@
                         <td>Название</td>
                         <td><input v-model="newTariff.name"></td>
                     </tr>
-                    <tr>
+                    <tr class="details__tr details__tr--type">
                         <td>Тип</td>
                         <td>
-                            <input class="tariff__type" name="tariff__type" type="radio" id="tariff_type--h" value="hours" v-model="newTariff.type" :checked="newTariff.type == 'hours'">
+                            <input 
+                                class="tariff__type" 
+                                name="tariff__type" 
+                                type="radio" 
+                                id="tariff_type--h" 
+                                value="h" 
+                                v-model="newTariff.type" 
+                                :checked="newTariff.type == 'h'"
+                            >
                             <label for="tariff_type--h" class="tariff__type-label">Почасовой</label>
 
-                            <input class="tariff__type" name="tariff__type" type="radio" id="tariff_type--f" value="fix" v-model="newTariff.type" :checked="newTariff.type == 'fix'">
+                            <input 
+                                class="tariff__type" 
+                                name="tariff__type" 
+                                type="radio" 
+                                id="tariff_type--f" 
+                                value="f" 
+                                v-model="newTariff.type" 
+                                :checked="newTariff.type == 'f'"
+                            >
                             <label for="tariff_type--f" class="tariff__type-label">Фиксированный</label>
+                        
+                            <input 
+                                class="tariff__type" 
+                                name="tariff__type" 
+                                type="radio" 
+                                id="tariff_type--d" 
+                                value="d" 
+                                v-model="newTariff.type" 
+                                :checked="newTariff.type == 'd'"
+                            >
+                            <label for="tariff_type--d" class="tariff__type-label">Посуточный</label>
                         </td>
 
                     </tr>
-                    <tr v-if="newTariff.type == 'hours'">
+                    <tr v-if="newTariff.type == 'h'">
                         <td>Расчасовка,<br>руб</td>
                         <td>
                             <table>
@@ -41,26 +68,17 @@
                             <button @click="rmH">-</button>
                         </td>
                     </tr>
-                    <tr v-if="newTariff.type == 'fix'">
-                        <td colspan="2">
-                            <Tarification></Tarification>
-
-
-
-<!--                                 <div><input type="checkbox">Повторять ежедневно</div>
-                                <hr>
-
-                                <div><input type="checkbox">Не учитывать время после завершения проката, с <input type="time" value="18:00"> до <input type="time" value="08:00"> </div> -->                      
-                        </td>
-
-                    </tr>
-                    <tr>
+                    <tr v-if="newTariff.type == 'h'">
                         <td>Мин</td>
                         <td><input v-model="newTariff.min"></td>
                     </tr>
-                    <tr>
+                    <tr v-if="newTariff.type == 'h'">
                         <td>Макс</td>
                         <td><input v-model="newTariff.max"></td>
+                    </tr>
+                    <tr v-if="newTariff.type != 'h'">
+                        <td>Стоимость</td>
+                        <td><input v-model="newTariff.cost"></td>
                     </tr>
                         <td>Примечание</td>
                         <td><input v-model="newTariff.note"></td>
@@ -103,7 +121,7 @@
                 }) : ''
 
                 // Предобработка, расчасовки если тип поменялся
-                this.newTariff.h = this.newTariff.type === 'hours' ? this.newTariff.h : null
+                this.newTariff.h = this.newTariff.type === 'h' ? this.newTariff.h : null
 
                 console.log(this.newTariff)
 
@@ -171,6 +189,9 @@
         width: 400px;
         margin-top: 120px;
     }
+    input {
+        width: 100%;
+    }
     td {
         padding: 5px;
     }
@@ -189,6 +210,10 @@
         display: none;
     }
 
+    .details__tr--type td {
+        padding-bottom: 20px;
+    }
+
     .tariff__type:checked + .tariff__type-label {
         outline: 1px solid red;
         opacity: 1;
@@ -197,6 +222,8 @@
     .tariff__type-label {
         padding: 5px;
         opacity: 0.2;
+        font-size: 12px;
+        font-weight: bold;
     }
     .tariff__type-label:hover {
         cursor: pointer;
