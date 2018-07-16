@@ -69,6 +69,8 @@
             },
 
             getBill(order, product) {
+                return null // заглушка
+
                 const getBill = this.$store.getters.getBill()
 
                 return getBill(order, product.product_id)   

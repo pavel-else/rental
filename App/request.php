@@ -906,14 +906,28 @@ class Request
 
     private function deleteTariff ($id_rent) {
 
-        // Необходим жизненно рефакторинг кода
+        /*
+        * Функция принимает id_rent тарифа
+        * Находит нужную таблицу и id тарифа в ней
+        * Производит удаление тарифа из таблицы БД
+        *
+        * id_rent !== id
+        */
         
+        // Названия таблиц для поиска id
         $tableList = ['tariffs_h', 'tariffs_d', 'tariffs_f'];
 
 
         $search = function($tableList, $id_rent) {
+            /*
+            * Функция принимает список названий таблиц и id_rent таблицы
+            * Далее следует перебор списка поэлементо
+            * В каждой итерации проверяется факт существования rent_id в проверяемой таблице
+            * Если rent_id находится, возвращается название таблицы и id тарифа в ней
+            */
+
             $checkID = function ($table, $id_rent) {
-                // Функция возвращает id тарифа в таблице
+                // Функция делает запрос к указанной таблице БД и возвращает id тарифа в этой таблице
 
                 if (!$id_rent) {
                     $this->writeLog('function Delete did not complete its work. Empty id');
@@ -945,14 +959,14 @@ class Request
             return $this->pDB->set($sql, 1);
         };
 
-        $this->writeLog($search($tableList, $id_rent));
-        // if ($result) {
-        //     $this->writeLog("function Delete successfully completed. Tariff id($id) was deleted");
-        // } else {
-        //     $this->writeLog("function Delete failed. Tariff id($id) was not deleted");
-        // }
 
-       return $delete($search($tableList, $id_rent));        
+        $result = $delete($search($tableList, $id_rent));    
+           
+        if ($result) {
+            $this->writeLog("deleteTariff completed.");
+        } else {
+            $this->writeLog("deleteTariff failed.");
+        }
     }
 
     private function test($value) {
