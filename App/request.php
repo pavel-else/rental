@@ -754,76 +754,53 @@ class Request
     }
 
     private function setTariff($tariff) {
+        /*
+        * Функция принимает тариф с клиентской стороны и
+        * Записывает в БД новый тариф (или обновляет существующий в БД)
+        *
+        * 1. Проверка id_rent на существование в БД, и в зависимости от этого
+        * 2. Запись нового тарифа
+        * 3. или Обновление существующего
+        */
         
-        $checkID = function ($id_rent, $type) {
-            if (!$id_rent) {
+        $checkID = function ($id_rent) {
+
+            // Функция проверяет существование id_rent в таблицах тарифов
+            // возвращает результат поиска - id, либо null
+
+            if (empty($id_rent)) {
+                $this->writeLog("SetTarif->checkID: empty id_rent");
+
                 return null;
             }
 
-            $sql = '
-                SELECT `id` 
-                FROM `tariffs_' . $type .'` 
-                WHERE `id_rent` = :id_rent 
-                AND `id_rental_org` = :id_rental_org 
-            ';
+            $types = ['h', 'f', 'd'];
 
-            $d = array(
-                'id_rent' => $id_rent,
-                'id_rental_org' => $this->app_id
-            );
-            
-            $result = $this->pDB->get($sql, false, $d);
+            $result = array_reduce($types, function ($acc, $type) use ($id_rent) {                
+                $sql = '
+                    SELECT `id` 
+                    FROM `tariffs_' . $type .'` 
+                    WHERE `id_rent` = :id_rent 
+                    AND `id_rental_org` = :id_rental_org 
+                ';
+                $d = array(
+                    'id_rent' => $id_rent,
+                    'id_rental_org' => $this->app_id
+                );
 
-            $log = $result? 'setTariff.checkID compleated' : 'setTariff.checkID failed';
+                $result = $this->pDB->get($sql, false, $d);
+                $acc = empty($result) ? $acc : $result;
+
+                return $acc;
+            }, null);
+
+            $log = $result? 
+                'setTariff->checkID compleated. id_rent = ' . $id_rent : 
+                'setTariff.checkID failed. id_rent = ' . $id_rent . ' not found';
 
             $this->writeLog($log);
 
             return $result ? $result[0][id] : null;
-        };
-
-        $update = function ($id, $tariff) {
-            $getString = function ($h) {
-                // Функция складывает массив Часов в стороковое представление
-                if (!$h) {
-                    return '';
-                }
-
-                return implode(',', $h);
-            };
-
-            $sql = '
-                UPDATE `tariffs` 
-                SET 
-                `id_rent` = :id_rent, 
-                `type` = :type, 
-                `name` = :name, 
-                `h` = :h, 
-                `max` = :max, 
-                `min` = :min, 
-                `note` = :note 
-                WHERE `id` = :id 
-            ';
-
-            $d = array(
-                'id'            => $id,
-                'id_rent'       => $tariff[id_rent],
-                'type'          => $tariff[type],
-                'name'          => $tariff[name],
-                'h'             => $getString($tariff[h]),
-                'max'           => $tariff[max],
-                'min'           => $tariff[min],
-                'note'          => $tariff[note]
-            );
-
-            $result = $this->pDB->set($sql, $d);
-
-            if ($result) {
-                $this->writeLog("function setTariff successfully completed. Tariff id($id) updated");
-            } else {
-                $this->writeLog("function setTariff failed. Tariff id($id) was not updated");
-            }
-
-            return $result;
         };
 
         $newTariff = function($tariff) {
@@ -833,6 +810,8 @@ class Request
             */
             
             $getIdRent = function ($type) {
+                // Запрос БД на максимальный id_rent. Если таблица пуста - возвр 1 как стартовый id
+
                 $sql = '
                     SELECT `id_rent` 
                     FROM `tariffs_' . $type . '` 
@@ -847,7 +826,9 @@ class Request
 
                 $result = $this->pDB->get($sql, false, $d);
 
-                return $result ? ++$result[0][id_rent] : false;
+                $this->writeLog("getid = " . $result);
+
+                return $result ? ++$result[0][id_rent] : 1;
             };
 
             // Если id_rent определен, оставляем как есть. Если нет - берем максимальный в таблице
@@ -967,12 +948,32 @@ class Request
             $this->writeLog($tariff);
         };
 
-        $id = $checkID($tariff[id_rent], $tariff[type]);
+        $update = function ($id, $tariff) use ($newTariff) {
+            /*
+            * Вместо трудозатратной функции обновления записи
+            * здесь используется уже имеющийся функционал удаления и записи нового тарифа
+            *
+            * Это решение может создать проблемы, т.к. транзакция обновления может быть не завершена
+            */
+             
 
-        $this->writeLog($id);
+            if ($this->deleteTariff($tariff[id_rent])) {
+                $result = $newTariff($tariff);
+            }
 
-        return $id ? $update($tariff, $id) : $newTariff($tariff);
+            if ($result) {
+                $this->writeLog("setTariff.update completed.");
+            } else {
+                $this->writeLog("setTariff.update failed.");
+            }
 
+            return $result;
+        };
+
+
+        $id = $checkID($tariff[id_rent]);
+
+        return $id ? $update($id, $tariff) : $newTariff($tariff);
     }
 
     private function deleteTariff ($id_rent) {
@@ -1037,6 +1038,8 @@ class Request
         } else {
             $this->writeLog("deleteTariff failed.");
         }
+
+        return $result;
     }
 
     private function test($value) {
