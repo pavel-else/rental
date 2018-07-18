@@ -1,0 +1,111 @@
+<template>
+    <div class="canvas">
+        <div class="details">
+            <h3>
+                <span v-if="product.id_rent">Редактирование тарифа</span>
+                <span v-else>Новый товар</span>
+            </h3>
+            <form @input="onChange">
+
+                <table>
+                    <tr>
+                        <td>id</td>
+                        <td><input :value="product.id_rent" disabled></td>
+                    </tr>
+                    <tr>
+                        <td>Название</td>
+                        <td><input v-model="product.name"></td>
+                    </tr>
+                    <tr>
+                        <td>Стоимость</td>
+                        <td><input v-model="product.cost"></td>
+                    </tr>
+                    <tr>
+                        <td>Тарифы</td>
+                        <td><input v-model="product.tariff_id"></td>
+                    </tr>
+                    <tr>
+                        <td>Статус</td>
+                        <td><input v-model="product.active"></td>
+                    </tr>
+                </table>
+            </form>     
+            
+            <div class="btn-group">
+                <button @click="save" :disabled="!change">Сохранить</button>
+                <button @click="close">Отмена</button>
+                <button @click="remove" v-if="product.id_rent">Удалить</button>      
+            </div>
+
+            <div class="details__close" @click="close"></div>     
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        props: {
+            data: Object
+        },
+        data() {
+            return {
+                // Не смог по-нормальному скопировать объект без геттеров, поэтому так
+                product: JSON.parse(JSON.stringify(this.data)),
+                change: false
+            }
+        },
+        methods: {
+            save() {
+                console.log(this.product)
+
+                this.$store.dispatch('send', {
+                    cmd: 'setProduct',
+                    value: this.product
+                })
+
+                this.$emit('close')
+            },
+            close() {                
+                if (!this.change) {
+                    this.$emit('close')
+                    return
+                }
+
+                if (confirm('Изменения не сохранены. Вы уверены, что хотите выйти?')) {
+                    this.$emit('close')
+                }
+            },
+            remove() {
+                if (confirm(`Вы действительно хотите удалить тариф '${this.product.name}'?`)) {
+                    this.$store.dispatch('send', {
+                        cmd: 'deleteProduct',
+                        value: this.product.id_rent
+                    })
+                    this.$emit('close')
+                }
+
+            },
+
+            onChange(e) {
+                e.preventDefault()
+
+                this.change = true
+
+                console.log(this.product)
+            },
+        },
+    }
+</script>
+
+<style scoped>
+    .details {
+        width: 400px;
+        margin-top: 120px;
+    }
+    input {
+        width: 100%;
+    }
+    td {
+        padding: 5px;
+    }
+</style>

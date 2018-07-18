@@ -9,7 +9,7 @@
                 <th>Статус</th>
                 <th>Изменено</th>
             </tr>
-            <tr v-for="product in products">
+            <tr v-for="product in products" @click="onClick(product)">
                 <td>{{ product.id_rent }}</td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.cost }}</td>
@@ -18,10 +18,33 @@
                 <td>{{ product.updated }}</td>
             </tr>
         </table>
+
+        <Details :data="product" @close="onClose" v-if="show"></Details>
     </div>
 </template>
 <script>
+    import Details from './Details'
     export default {
+        components: {
+            Details
+        },
+        data() {
+            return {
+                show: false,
+                product: {}
+            }
+        },
+        methods: {
+            onClose() {
+                this.product = {}
+                this.show = false
+            },
+            onClick(product) {
+                this.product = product
+                this.show = true
+                console.log(product)
+            }
+        },
         computed: {
             products() {
                 return this.$store.getters.products
@@ -33,5 +56,10 @@
 <style scoped>
     td, th {
         padding-left: 10px;
+    }
+
+    tr:not(:first-child):hover {
+        cursor: pointer;
+        outline: 1px solid rgba(0,0,0,0.2);
     }
 </style>
