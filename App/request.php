@@ -953,15 +953,8 @@ class Request
             return $this->pDB->set($sql, $d);
         };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if (empty($rent_id)) {
-=======
+
         if (empty($id_rent)) {
->>>>>>> dev
-=======
-        if (empty($id_rent)) {
->>>>>>> dev
             return false;
         }
 

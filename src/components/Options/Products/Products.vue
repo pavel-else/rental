@@ -9,7 +9,11 @@
                 <th>Статус</th>
                 <th>Изменено</th>
             </tr>
+<<<<<<< HEAD
             <tr v-for="product in products" @click="onClick(product)">
+=======
+            <tr v-for="product in products">
+>>>>>>> dev
                 <td>{{ product.id_rent }}</td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.cost }}</td>
@@ -18,6 +22,7 @@
                 <td>{{ product.updated }}</td>
             </tr>
         </table>
+<<<<<<< HEAD
 
         <Details :data="product" @close="onClose" v-if="show"></Details>
     </div>
@@ -47,6 +52,12 @@
             }
 
         },
+=======
+    </div>
+</template>
+<script>
+    export default {
+>>>>>>> dev
         computed: {
             products() {
                 return this.$store.getters.products
