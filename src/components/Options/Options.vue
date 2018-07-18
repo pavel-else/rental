@@ -16,11 +16,7 @@
 <script>
     import Tariffs from './Tariffs/Tariffs'
     import General from './General'
-<<<<<<< HEAD
-    import Products from './Products'
-=======
     import Products from './Products/Products'
->>>>>>> dev
 
     export default {
         components: {

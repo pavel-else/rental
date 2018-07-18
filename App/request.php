@@ -954,7 +954,11 @@ class Request
         };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (empty($rent_id)) {
+=======
+        if (empty($id_rent)) {
+>>>>>>> dev
 =======
         if (empty($id_rent)) {
 >>>>>>> dev
