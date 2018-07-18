@@ -200,37 +200,31 @@ class Request
 
     private function getTariffs() {
         /*
-        * Тарифы хранятся в БД в трех таблицах (разделены по типам)
-        * Функция подготавливает SQL запросы к  этим таблицам
-        * Выбирает тарифы из БД
+        * Функция Выбирает тарифы из БД
         * Корректирует вывод для поседующей работы на клиенте
         */
 
-        $typeList = ['h', 'd', 'f'];
+        $sql = '
+            SELECT *
+            FROM `tariffs` 
+            WHERE `id_rental_org` = :id_rental_org
+        ';
 
-        $makeSQL = function (array $typeList) {
-            // Возвращаем массив с sql-запросами
-            return array_map(function ($type) {
-                return 'SELECT * FROM tariffs_' . $type . ' WHERE id_rental_org = ' . $this->app_id;
-            }, $typeList);            
-        };
+        $d = array(
+            'id_rental_org' => $this->app_id
+        );
 
-        $request = function ($list) {
-            // Возвращаем из БД массив с тарифами в перемешку
-            return array_reduce($list, function ($acc, $sql) {
-                return array_merge($acc, $this->pDB->get($sql, 0, 1));
-            }, []);
-        };
-
+        // Вспомогательная функция
         $filter = function ($tariffs) {
+            
             // Видоизменяем расчасовку (из строки в массив)
             return array_map(function ($tariff) {
-                $tariff[h] = $tariff[h] ? explode(',', $tariff[h]) : [];
+                $tariff[_h_h] = $tariff[_h_h] ? explode(',', $tariff[_h_h]) : [];
                 return $tariff;
             }, $tariffs);
         };
 
-        return $filter($request($makeSQL($typeList)));
+        return $filter($this->pDB->get($sql, 0, $d));
     }
 
     private function getMaxOrderID() {
@@ -758,49 +752,29 @@ class Request
         * Функция принимает тариф с клиентской стороны и
         * Записывает в БД новый тариф (или обновляет существующий в БД)
         *
+        * Последовательность:
         * 1. Проверка id_rent на существование в БД, и в зависимости от этого
         * 2. Запись нового тарифа
         * 3. или Обновление существующего
         */
         
+
         $checkID = function ($id_rent) {
+            $sql = '
+                SELECT `id` 
+                FROM `tariffs` 
+                WHERE `id_rental_org` = :id_rental_org
+                AND `id_rent` = :id_rent
+            ';
 
-            // Функция проверяет существование id_rent в таблицах тарифов
-            // возвращает результат поиска - id, либо null
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'id_rent' => $id_rent
+            );
 
-            if (empty($id_rent)) {
-                $this->writeLog("SetTarif->checkID: empty id_rent");
+            $result = $this->pDB->get($sql, 0, $d);
 
-                return null;
-            }
-
-            $types = ['h', 'f', 'd'];
-
-            $result = array_reduce($types, function ($acc, $type) use ($id_rent) {                
-                $sql = '
-                    SELECT `id` 
-                    FROM `tariffs_' . $type .'` 
-                    WHERE `id_rent` = :id_rent 
-                    AND `id_rental_org` = :id_rental_org 
-                ';
-                $d = array(
-                    'id_rent' => $id_rent,
-                    'id_rental_org' => $this->app_id
-                );
-
-                $result = $this->pDB->get($sql, false, $d);
-                $acc = empty($result) ? $acc : $result;
-
-                return $acc;
-            }, null);
-
-            $log = $result? 
-                'setTariff->checkID compleated. id_rent = ' . $id_rent : 
-                'setTariff.checkID failed. id_rent = ' . $id_rent . ' not found';
-
-            $this->writeLog($log);
-
-            return $result ? $result[0][id] : null;
+            return $result[0][id];
         };
 
         $newTariff = function($tariff) {
@@ -809,12 +783,13 @@ class Request
             * и делает запись нового тарифа в БД 
             */
             
-            $getIdRent = function ($type) {
-                // Запрос БД на максимальный id_rent. Если таблица пуста - возвр 1 как стартовый id
+            $getIdRent = function () {
+                // Запрос БД на максимальный id_rent.
+                // Возвращает увеличенный id_rent или 1 если таблица пуста 
 
                 $sql = '
                     SELECT `id_rent` 
-                    FROM `tariffs_' . $type . '` 
+                    FROM `tariffs` 
                     WHERE `id_rental_org` = :id_rental_org 
                     ORDER BY `id_rent`
                     DESC LIMIT 1
@@ -824,116 +799,55 @@ class Request
                     'id_rental_org' => $this->app_id
                 );
 
-                $result = $this->pDB->get($sql, false, $d);
+                $result = $this->pDB->get($sql, 0, $d);
 
-                $this->writeLog("getid = " . $result);
+                //$this->writeLog("getid = " . $result);
 
                 return $result ? ++$result[0][id_rent] : 1;
             };
 
-            // Если id_rent определен, оставляем как есть. Если нет - берем максимальный в таблице
-            $tariff[id_rent] = $tariff[id_rent] ? $tariff[id_rent] : $getIdRent($tariff[type]);
+            $sql = '
+                INSERT INTO `tariffs` (
+                `id`,
+                `id_rent`,
+                `id_rental_org`,
+                `type`, 
+                `name`,
+                `_h_h`,
+                `_h_max`,
+                `_h_min`,
+                `_d_before`,
+                `_d_after`,
+                `cost`,
+                `note`
+            ) VALUES (
+                NULL,
+                :id_rent,
+                :id_rental_org,
+                :type,
+                :name,
+                :_h_h,
+                :_h_max,
+                :_h_min,
+                :_d_before,
+                :_d_after,
+                :cost,
+                :note
+            )';
 
-            switch ($tariff[type]) {
-                case 'h':
-                    $sql = 'INSERT INTO `tariffs_h` (
-                        `id`,
-                        `id_rent`,
-                        `id_rental_org`,
-                        `type`, 
-                        `name`,
-                        `h`,
-                        `max`,
-                        `min`,
-                        `note`
-                    ) VALUES (
-                        NULL,
-                        :id_rent,
-                        :id_rental_org,
-                        :type,
-                        :name,
-                        :h,
-                        :max,
-                        :min,
-                        :note
-                    )';
-
-                    $d = array(
-                        'id_rent'       => $tariff[id_rent],
-                        'id_rental_org' => $this->app_id,
-                        'type'          => $tariff[type],
-                        'name'          => $tariff[name],
-                        'h'             => $tariff[h] ? implode(',', $tariff[h]) : '',
-                        'max'           => $tariff[max],
-                        'min'           => $tariff[min],
-                        'note'          => $tariff[note]
-                    );
-                break;
-                case 'f':
-                    $sql = 'INSERT INTO `tariffs_f` (
-                        `id`,
-                        `id_rent`,
-                        `id_rental_org`,
-                        `type`, 
-                        `name`,
-                        `cost`,
-                        `note`
-                    ) VALUES (
-                        NULL,
-                        :id_rent,
-                        :id_rental_org,
-                        :type,
-                        :name,
-                        :cost,
-                        :note
-                    )';
-
-                    $d = array(
-                        'id_rent'       => $tariff[id_rent],
-                        'id_rental_org' => $this->app_id,
-                        'type'          => $tariff[type],
-                        'name'          => $tariff[name],
-
-                        'cost'          => $tariff[cost],
-                        'note'          => $tariff[note]
-                    );
-                break;
-                case 'd':
-                    $sql = 'INSERT INTO `tariffs_d` (
-                        `id`,
-                        `id_rent`,
-                        `id_rental_org`,
-                        `type`, 
-                        `name`,
-                        `cost`,
-                        `before`,
-                        `after`,
-                        `note`
-                    ) VALUES (
-                        NULL,
-                        :id_rent,
-                        :id_rental_org,
-                        :type,
-                        :name,
-                        :cost,
-                        :before,
-                        :after,
-                        :note
-                    )';
-
-                    $d = array(
-                        'id_rent'       => $tariff[id_rent],
-                        'id_rental_org' => $this->app_id,
-                        'type'          => $tariff[type],
-                        'name'          => $tariff[name],
-
-                        'cost'          => $tariff[cost],
-                        'before'        => $tariff[before],
-                        'after'         => $tariff[after],
-                        'note'          => $tariff[note]
-                    );
-                break;
-            }
+            $d = array(
+                'id_rent'       => $tariff[id_rent] ? $tariff[id_rent] : $getIdRent(),
+                'id_rental_org' => $this->app_id,
+                'type'          => $tariff[type],
+                'name'          => $tariff[name],
+                '_h_h'          => $tariff[_h_h] ? implode(',', $tariff[_h_h]) : '',
+                '_h_max'        => $tariff[_h_max],
+                '_h_min'        => $tariff[_h_min],
+                '_d_before'     => $tariff[_d_before],
+                '_d_after'      => $tariff[_d_after],
+                'cost'          => $tariff[cost],
+                'note'          => $tariff[note]
+            );
             
             $result = $this->pDB->set($sql, $d);
 
@@ -948,18 +862,42 @@ class Request
             $this->writeLog($tariff);
         };
 
-        $update = function ($id, $tariff) use ($newTariff) {
-            /*
-            * Вместо трудозатратной функции обновления записи
-            * здесь используется уже имеющийся функционал удаления и записи нового тарифа
-            *
-            * Это решение может создать проблемы, т.к. транзакция обновления может быть не завершена
-            */
-             
+        $update = function ($id, $tariff) {
+            // Функция по id обновляет соотв. запись в таблице
+            
+            $sql = '
+                UPDATE `tariffs` 
+                SET 
+                    `id_rent`       = :id_rent,
+                    `id_rental_org` = :id_rental_org,
+                    `type`          = :type, 
+                    `name`          = :name,
+                    `_h_h`          = :_h_h,
+                    `_h_max`        = :_h_max,
+                    `_h_min`        = :_h_min,
+                    `_d_before`     = :_d_before,
+                    `_d_after`      = :_d_after,
+                    `cost`          = :cost,
+                    `note`          = :note 
+                WHERE `id` = :id
+            ';
 
-            if ($this->deleteTariff($tariff[id_rent])) {
-                $result = $newTariff($tariff);
-            }
+            $d = array(
+                'id'            => $id,
+                'id_rent'       => $tariff[id_rent],
+                'id_rental_org' => $this->app_id,
+                'type'          => $tariff[type],
+                'name'          => $tariff[name],
+                '_h_h'          => $tariff[_h_h] ? implode(',', $tariff[_h_h]) : '',
+                '_h_max'        => $tariff[_h_max],
+                '_h_min'        => $tariff[_h_min],
+                '_d_before'     => $tariff[_d_before],
+                '_d_after'      => $tariff[_d_after],
+                'cost'          => $tariff[cost],
+                'note'          => $tariff[note]
+            );
+
+            $result = $this->pDB->set($sql, $d);
 
             if ($result) {
                 $this->writeLog("setTariff.update completed.");
@@ -970,66 +908,54 @@ class Request
             return $result;
         };
 
-
         $id = $checkID($tariff[id_rent]);
 
         return $id ? $update($id, $tariff) : $newTariff($tariff);
     }
 
     private function deleteTariff ($id_rent) {
-
         /*
         * Функция принимает id_rent тарифа
-        * Находит нужную таблицу и id тарифа в ней
+        * Находит id тарифа в таблицe
         * Производит удаление тарифа из таблицы БД
         *
         * id_rent !== id
         */
-        
-        $search = function($id_rent) {
-            /*
-            * Функция принимает id_rent таблицы
-            * Далее следует перебор списка названий таблиц тарифов поэлементо
-            * В каждой итерации проверяется факт существования rent_id в проверяемой таблице
-            * Если rent_id находится, возвращается название таблицы и id тарифа в ней
-            */
+       
+        $search = function ($id_rent) {
+            $sql = '
+                SELECT `id` 
+                FROM `tariffs` 
+                WHERE `id_rental_org` = :id_rental_org 
+                AND `id_rent` = :id_rent
+            ';
 
-            $checkID = function ($table, $id_rent) {
-                // Функция делает запрос к указанной таблице БД и возвращает id тарифа в этой таблице
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'id_rent' => $id_rent
+            );
 
-                if (!$id_rent) {
-                    $this->writeLog('function Delete did not complete its work. Empty id');
-                    return null;
-                }
+            $result = $this->pDB->get($sql, 0, $d);
 
-                $sql = 'SELECT id FROM ' . $table . ' WHERE id_rental_org = ' . $this->app_id . ' AND id_rent = ' . $id_rent;
-                
-                $result = $this->pDB->get($sql, 0, 1);
-
-                return $result ? $result[0][id] : false;
-            };
-
-            $tableList = ['tariffs_h', 'tariffs_d', 'tariffs_f'];
-
-            return array_reduce($tableList, function ($acc, $table) use ($id_rent, $checkID) {
-                $check = $checkID($table, $id_rent);
-
-                if ($check) {
-                    $acc =  array(
-                        'table' => $table,
-                        'id' => $check
-                    );
-                }
-
-                return $acc;
-            }, null);
+            return $result[0][id];
         };
 
-        $delete = function ($search) {
-            $sql = 'DELETE FROM ' . $search[table] . ' WHERE `id` = ' . $search[id];
+        $delete = function ($id) {
+            $sql = '
+                DELETE FROM `tariffs` 
+                WHERE `id` = :id
+            ';
 
-            return $this->pDB->set($sql, 1);
+            $d = array(
+                'id' => $id
+            );
+
+            return $this->pDB->set($sql, $d);
         };
+
+        if (empty($rent_id)) {
+            return false;
+        }
 
         $result = $delete($search($id_rent));    
            

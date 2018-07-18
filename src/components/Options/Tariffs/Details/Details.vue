@@ -57,11 +57,11 @@
                         <td>Расчасовка,<br>руб</td>
                         <td>
                             <table>
-                                <tr v-for="(item, index) in newTariff.h">
+                                <tr v-for="(item, index) in newTariff._h_h">
                                     <td>
-                                        {{ index + 1}}<span v-if="newTariff.h.length === index + 1">+</span> час
+                                        {{ index + 1}}<span v-if="newTariff._h_h.length === index + 1">+</span> час
                                     </td>
-                                    <td><input v-model="newTariff.h[index]"></td>
+                                    <td><input v-model="newTariff._h_h[index]"></td>
                                 </tr>
                             </table>
                             <button @click="addH">+</button>
@@ -70,11 +70,11 @@
                     </tr>
                     <tr v-if="newTariff.type == 'h'">
                         <td>Мин</td>
-                        <td><input v-model="newTariff.min"></td>
+                        <td><input v-model="newTariff._h_min"></td>
                     </tr>
                     <tr v-if="newTariff.type == 'h'">
                         <td>Макс</td>
-                        <td><input v-model="newTariff.max"></td>
+                        <td><input v-model="newTariff._h_max"></td>
                     </tr>
                     <tr v-if="newTariff.type != 'h'">
                         <td>Стоимость</td>
@@ -116,12 +116,15 @@
         methods: {
             save() {
                 // Предобработка, удаление пустых полей
-                this.newTariff.h = this.newTariff.h ? this.newTariff.h.filter(h => {
+                this.newTariff._h_h = this.newTariff._h_h ? this.newTariff._h_h.filter(h => {
                     if (h) return h
                 }) : ''
 
-                // Предобработка, расчасовки если тип поменялся
-                this.newTariff.h = this.newTariff.type === 'h' ? this.newTariff.h : null
+                // При переключении типа тариф некоторые поля следует отчищать
+                this.newTariff._h_h = this.newTariff.type === 'h' ? this.newTariff._h_h : null
+                this.newTariff.cost = this.newTariff.type === 'h' ? null : this.newTariff.cost
+                this.newTariff._d_min = this.newTariff.type !== 'h' ? null : this.newTariff._d_min
+                this.newTariff._d_max = this.newTariff.type !== 'h' ? null : this.newTariff._d_max
 
                 console.log(this.newTariff)
 
@@ -156,21 +159,21 @@
                 e.preventDefault()
 
                 // Если расчасовка пустая, подменим ее на пустой массив, чтобы пуш сработал
-                if (!this.newTariff.h) {
-                    this.newTariff.h = []
+                if (!this.newTariff._h_h) {
+                    this.newTariff._h_h = []
                 }
 
-                this.newTariff.h.push('')
+                this.newTariff._h_h.push('')
                 this.change = true
             },
             rmH(e) {
                 e.preventDefault()
 
-                if (!this.newTariff.h) {
+                if (!this.newTariff._h_h) {
                     return
                 }
 
-                this.newTariff.h.pop()
+                this.newTariff._h_h.pop()
                 this.change = true
             },
             onChange(e) {

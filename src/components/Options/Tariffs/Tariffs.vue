@@ -15,9 +15,9 @@
                 <td>{{ tariff.id_rent }}</td>
                 <td>{{ tariff.name }}</td>
                 <td>{{ tariff.type }}</td>
-                <td>{{ getHours(tariff.h) }}</td>
-                <td>{{ tariff.min }}</td>
-                <td>{{ tariff.max }}</td>
+                <td>{{ getHours(tariff._h_h) }}</td>
+                <td>{{ tariff._h_min }}</td>
+                <td>{{ tariff._h_max }}</td>
                 <td>{{ tariff.cost }}</td>
                 <td>{{ tariff.note }}</td>
             </tr>
@@ -67,9 +67,12 @@
                     id_rent: null,
                     type: 'h',
                     name: '',
-                    h: [0],
-                    max: null,
-                    min: null,
+                    _h_h: [0],
+                    _h_max: null,
+                    _h_min: null,
+                    _d_before: null,
+                    _d_after: null,
+                    cost: null,
                     note: ''
                 }
             }
