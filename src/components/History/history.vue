@@ -11,7 +11,7 @@
                 <th>Стоимость</th>
                 <th>Статус</th>
             </tr>
-            <tr v-for="(item, index) in history" @click="showDetails(item)">
+            <tr v-for="(item, index) in history" @click="onClick(item)">
                 <td class="">{{ item.order_id }}</td>
                 <td class="">{{ item.customer_name }}</td>
                 <td class="">{{ item.start_time }}</td>
@@ -25,7 +25,7 @@
             </tr>
         </table>
 
-        <Details></Details>
+        <Details :order="order" @close="onClose" v-if="show"></Details>
     </div>
   
 </template>
@@ -37,29 +37,31 @@
         components: {
             Details
         },
+        data() {
+            return {
+                order: {},
+                show: false
+            }
+        },
         methods: {
-            timeFormat (ms/**number*/){
-                if (ms < 0) ms = 0;
-
-                function num(val){
-                    val = Math.floor(val);
-                    return val < 10 ? '0' + val : val;
-                }
-                
-                var sec = ms / 1000
-                  , hours = sec / 3600  % 24
-                  , minutes = sec / 60 % 60
-                  , seconds = sec % 60
-                ;
-
-                return num(hours) + ":" + num(minutes) + ":" + num(seconds);
-            },
-
             getTimePlay(item) {
-                /*
-                * Если время стопордера существует, вернем разницу времени стоп - старт,
-                * если стопа еще не было, возвращаем разницу текущее время - старт
-                */
+                const timeFormat = function (ms/**number*/) {
+                    if (ms < 0) ms = 0;
+
+                    function num(val){
+                        val = Math.floor(val);
+                        return val < 10 ? '0' + val : val;
+                    }
+                    
+                    var sec = ms / 1000
+                      , hours = sec / 3600  % 24
+                      , minutes = sec / 60 % 60
+                      , seconds = sec % 60
+                    ;
+
+                    return num(hours) + ":" + num(minutes) + ":" + num(seconds);
+                }
+
                 const now = this.$store.getters.now
 
                 const products = item.products
@@ -76,12 +78,16 @@
                     if (diff > max) max = diff                  
                 }
 
-                return this.timeFormat(diff)
+                return timeFormat(diff)
             },
 
-            showDetails(item) {
-                this.$store.dispatch('showDetails', item)
+            onClick(order) {
                 //console.log(item)
+                this.order = order
+                this.show = true
+            },
+            onClose() {
+                this.show = false
             }
         },
         computed: {
@@ -89,7 +95,6 @@
                 const history = this.$store.getters.history
                 console.log(history)
                 //if (typeof(history) !== 'array') return {}
-
 
                 const result = history.filter(o => o.order_id > 780)
 

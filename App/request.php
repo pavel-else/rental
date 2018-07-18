@@ -34,7 +34,6 @@ class Request
         $this->response  = [];
         $this->pDB = $this->rent_connect_DB();
         
-
         $cmds = $this->dataJSON['cmds'];
         $value = $this->dataJSON['value'];
 
@@ -58,9 +57,15 @@ class Request
                 case 'getHistory':
                     $this->response['history'] = $this->getHistory($value);
                 break;
+                case 'getTariffs':
+                    $this->response['tariffs'] = $this->getTariffs();
+                break;
                 case 'getMaxOrderID':
                     $this->response['options']['max_order_id'] = $this->getMaxOrderID();
                     $this->response['options']['new_order_id'] = $this->getMaxOrderID() + 1;
+                break;
+                case 'getMaxTariffID':
+                    $this->response['options']['max_tariff_id'] = $this->getMaxTariffID();
                 break;
                 case 'getOrderID':
                     $this->response['options']['get_order_id'] = $this->getOrderID($value);
@@ -68,12 +73,26 @@ class Request
                 case 'setOrder':
                     $this->setOrder($value);
                 break;
+                case 'setCustomer':
+                    $this->setCustomer($value);
+                break;
+                case 'deleteCustomer':
+                    $this->deleteCustomer($value);
+                break;
                 case 'stopOrder':
                     $this->stopOrder($value);
+                break;
+                case 'setTariff':
+                    $this->setTariff($value);
+                break;
+                case 'deleteTariff':
+                    $this->deleteTariff($value);
                 break;
                 case 'test':
                     $this->test($value);                    
                 break;
+                default:
+                    $this->writeLog('undefined methods' . $cmd .': ' . $value);
             } 
         };
 
@@ -91,6 +110,7 @@ class Request
 
     // Отправка данных клиенту
     private function send($data) {
+
         echo json_encode($data);
     }
     
@@ -110,10 +130,12 @@ class Request
     }
 
     private function writeLog($log) {
+
         $this->logs[] = $log;
     }
 
     private function getLogs() {
+
         $this->response['logs'] = $this->logs;
     }
 
@@ -146,7 +168,7 @@ class Request
     private function getOrderProducts($order_id) {
         $sql = 'SELECT * FROM `order_products` WHERE `order_id` =' .$order_id;
 
-        $this->writeLog("f.getOrderProducts completed");
+        //$this->writeLog("f.getOrderProducts completed");
 
         return $this->pDB->get($sql, false, true); 
     }
@@ -176,6 +198,35 @@ class Request
         return $result;
     }
 
+    private function getTariffs() {
+        /*
+        * Функция Выбирает тарифы из БД
+        * Корректирует вывод для поседующей работы на клиенте
+        */
+
+        $sql = '
+            SELECT *
+            FROM `tariffs` 
+            WHERE `id_rental_org` = :id_rental_org
+        ';
+
+        $d = array(
+            'id_rental_org' => $this->app_id
+        );
+
+        // Вспомогательная функция
+        $filter = function ($tariffs) {
+            
+            // Видоизменяем расчасовку (из строки в массив)
+            return array_map(function ($tariff) {
+                $tariff[_h_h] = $tariff[_h_h] ? explode(',', $tariff[_h_h]) : [];
+                return $tariff;
+            }, $tariffs);
+        };
+
+        return $filter($this->pDB->get($sql, 0, $d));
+    }
+
     private function getMaxOrderID() {
         $sql = 'SELECT `order_id` FROM `orders` WHERE `id_rental_org` = '. $this->app_id .' ORDER BY `order_id` DESC LIMIT 1';
         $result = $this->pDB->get($sql, false, true);
@@ -191,6 +242,32 @@ class Request
 
             return 0;
         }
+    }
+
+    private function getMaxTariffID() {
+        /*
+        * Функция возвращает максимальный rent_id из таблицы Тарифов
+        */
+
+        $sql = '
+            SELECT `id_rent` 
+            FROM `tariffs_h` 
+            WHERE `id_rental_org` = :id_rental_org 
+            ORDER BY `id_rent` 
+            DESC LIMIT 1
+        ';
+
+        $d = array(
+            'id_rental_org' => $this->app_id
+        );
+        
+        $result = $this->pDB->get($sql, false, $d);
+
+        $log = $result ? 'getMaxTariffID compleated success' : 'getMaxTariffID failed';
+
+        $this->writeLog($log);
+
+        return (int) $result[0][id_rent];
     }
 
     private function getOrderID ($id) {
@@ -223,11 +300,14 @@ class Request
                 `customer_id`,
                 `customer_name`,
                 `start_time`,
-                `advance_time`,
+
                 `advance`,
-                `advance_hold`,
-                `sale_id`,
-                `note`
+
+                `deposit`,
+
+                `note`,
+                `promotion`,
+                `accessories`
             ) VALUES (
                 NULL, 
                 :order_id, 
@@ -237,26 +317,32 @@ class Request
                 :order_customer_id, 
                 :order_customer_name, 
                 :order_start_time, 
-                :order_advance_time, 
+
                 :order_advance, 
-                :order_advance_hold, 
-                :order_sale_id, 
-                :order_note
+
+                :deposit, 
+ 
+                :order_note,
+                :promotion,
+                :accessories
             )';
 
             $order_data = array(
                 'order_id' =>               $order[order_id],
                 'order_id_position' =>      $order[order_id_position],
-                'id_rental_org' =>          $order[id_rental_org],//$this->app_id,
+                'id_rental_org' =>          $this->app_id,
                 'status' =>                 $order[status],
                 'order_customer_id' =>      $order[customer_id],
                 'order_customer_name' =>    $order[customer_name],
                 'order_start_time' =>       date("Y-m-d H:i:s", $order[start_time]),
-                'order_advance_time' =>     $order[advance_time],
-                'order_advance' =>          $order[advance],
-                'order_advance_hold' =>     $order[advance_hold],
-                'order_sale_id' =>          $order[sale_id],
+
+                'order_advance' =>          $order[advance] === NULL ? 0 : $order[advance],
+
+                'deposit' =>                $order[deposit],
+
                 'order_note' =>             $order[note],
+                'promotion' =>              $order[promotion],
+                'accessories' =>            $order[accessories]
             );
 
             return $this->pDB->set($sql, $order_data);
@@ -307,15 +393,225 @@ class Request
         return $result;
     }
 
-    private function stopOrder($order) {
+    private function setCustomer($customer) {
         /*
-        * 1. Устанавливаем стопордер
+        * Проверяем, существует ли пользователь с указанным id.
+        * Если да - обновляем данные.
+        * Если нет - записываем нового пользователя
+        */
+
+        $checkID = function ($id) {
+            if (!$id) {
+                return null;
+            }
+
+            $sql = '
+                SELECT `id` 
+                FROM `clients` 
+                WHERE `id_rent` = :id_rent
+            ';
+
+            $d = array(
+                'id_rent' => $id
+            );
+            
+            $result = $this->pDB->get($sql, false, $d);
+            return $result[0][id];
+        };
+
+        $update = function ($id, $customer) {
+            $sql = '
+                UPDATE `clients` 
+                SET 
+                `id_rent` = :id_rent,
+                `fname` = :fname,
+                `sname` = :sname,
+                `tname` = :tname,
+                `phone` = :phone,
+                `passport` = :passport,
+                `address` = :address,
+                `birth_date` = :birth_date,
+                `sale` = :sale,
+                `balance` = :balance,
+                `note` = :note,
+                `updated` = :updated
+
+                WHERE `id` = :id
+                AND `id_rental_org` = :id_rental_org
+            ';
+
+            $d = array(
+                'id' =>             $id,
+                'id_rental_org' =>  $this->app_id,
+                'id_rent' =>        $customer[id_rent],
+                'fname' =>          $customer[fname],
+                'sname' =>          $customer[sname],
+                'tname' =>          $customer[tname],
+                'phone' =>          $customer[phone],
+                'passport' =>       $customer[passport],
+                'address' =>        $customer[address],
+                'birth_date' =>     $customer[birth_date],
+                'sale' =>           $customer[sale],
+                'balance' =>        $customer[balance],
+                'note' =>           $customer[note],
+                'updated' =>        date('Y-m-d H:i:s')
+            );
+
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog("function SetCustomer successfully completed. Client id($id) was updated");
+            } else {
+                $this->writeLog("function SetCustomer failed. Client id($id) was not updated");
+            }
+
+            return $result;
+        };
+
+        $setCustomer = function ($customer) {
+            $getIncMaxID = function () {
+                $sql = '
+                    SELECT `id_rent` 
+                    FROM `clients` 
+                    WHERE `id_rental_org` = :id_rental_org 
+                    ORDER BY `id_rent`
+                    DESC LIMIT 1
+                ';
+
+                $d = array(
+                    'id_rental_org' => $this->app_id
+                );
+
+                $result = $this->pDB->get($sql, false, $d);
+
+                return ++$result[0][id_rent];
+            };
+
+            $sql = 'INSERT INTO `clients` (
+                `id`,
+                `id_rent`,
+                `id_rental_org`,
+                `fname`,
+                `sname`,
+                `tname`,
+                `phone`,
+                `passport`,
+                `address`,
+                `birth_date`,
+                `sale`,
+                `balance`,
+                `note`,
+                `updated`
+
+            ) VALUES (
+                NULL, 
+                :id_rent,
+                :id_rental_org, 
+                :fname,
+                :sname,
+                :tname,
+                :phone,
+                :passport,
+                :address,
+                :birth_date,
+                :sale,
+                :balance,
+                :note,
+                :updated
+            )';
+
+            $d = array(
+                'id_rent' =>        $getIncMaxID(),
+                'id_rental_org' =>  $this->app_id,
+                'fname' =>          $customer[fname],
+                'sname' =>          $customer[sname],
+                'tname' =>          $customer[tname],
+                'phone' =>          $customer[phone],
+                'passport' =>       $customer[passport],
+                'address' =>        $customer[address],
+                'birth_date' =>     $customer[birth_date],
+                'sale' =>           $customer[sale],
+                'balance' =>        $customer[balance],
+                'note' =>           $customer[note],
+                'updated' =>        date('Y-m-d H:i:s')
+            );
+
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog("function SetCustomer successfully completed. Client is stored in DB");
+            } else {
+                $this->writeLog("function SetCustomer failed. Client is not stored in DB");
+            }
+
+            return $result;
+        };
+
+        $id = $checkID($customer[id_rent]);
+
+        return $id ? $update($id, $customer) : $setCustomer($customer);
+    }
+
+    private function deleteCustomer($id) {
+
+        $checkID = function ($id) {
+            if (!$id) {
+                $this->writeLog('function Delete did not complete its work. Undefined id');
+                return null;
+            }
+
+            $sql = '
+                SELECT `id` 
+                FROM `clients` 
+                WHERE `id_rent` = :id_rent
+                AND `id_rental_org` = :id_rental_org
+            ';
+
+            $d = array(
+                'id_rent' => $id,
+                'id_rental_org' => $this->app_id
+            );
+            
+            $result = $this->pDB->get($sql, false, $d);
+
+            return $result[0][id];
+        };
+
+        $delete = function ($id) {
+            $sql = '
+                DELETE 
+                FROM `clients` 
+                WHERE `id` = :id
+            ';
+
+            $d = array(
+                'id' => $id
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+        $result = $delete($checkID($id));
+
+        if ($result) {
+            $this->writeLog("function Delete successfully completed. Client id($id) was deleted");
+        } else {
+            $this->writeLog("function Delete failed. Client id($id) was not deleted");
+        }
+    }
+
+    private function stopOrder($product) {
+        /*
+        * Функция принимает 1 Товар и записывает в БД информацию о стопе
+        *
+        * 1. Ставим временнУю метку стопа
         * 2. Пишем стоимость
-        * 3. Меняем статусы продуктов
+        * 3. Меняем статус продукта
         * 4. Меняем статус ордера, если активных продуктов нет
         */
-        $setEndTime = function ($order) {
-            $end_time = date("Y-m-d H:i:s", $order[end_time]);            
+
+        $setEndTime = function ($product) {
+            $end_time = date("Y-m-d H:i:s", $product[end_time]);            
             $sql = '
                 UPDATE `order_products` 
                 SET `end_time` = :end_time 
@@ -323,15 +619,23 @@ class Request
                 AND `product_id` = :product_id' 
             ;
             $d = array(
-                'end_time' => $end_time,
-                'order_id' => $order[order_id],
-                'product_id' => $order[product_id],
+                'end_time'      => $end_time,
+                'order_id'      => $product[order_id],
+                'product_id'    => $product[product_id],
             );
 
-            return $this->pDB->set($sql, $d);
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog('stopOrder: setEndTime completed');
+            } else {
+                $this->writeLog('stopOrder: setEndTime error');
+            }
+
+            return $result;
         };
 
-        $setBill = function ($order) {
+        $setBill = function ($product) {
             $sql = '
                 UPDATE `order_products` 
                 SET `bill` = :bill 
@@ -339,15 +643,23 @@ class Request
                 AND `product_id` = :product_id' 
             ;
             $d = array(
-                'bill' => $order[bill],
-                'order_id' => $order[order_id],
-                'product_id' => $order[product_id],
+                'bill' => $product[bill],
+                'order_id' => $product[order_id],
+                'product_id' => $product[product_id],
             );
 
-            return $this->pDB->set($sql, $d);
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog('stopOrder: setBill completed');
+            } else {
+                $this->writeLog('stopOrder: setBill error');
+            }
+
+            return $result;
         };
 
-        $setProductStatus = function ($order) {
+        $setProductStatus = function ($product) {
             $sql = '
                 UPDATE `products` 
                 SET `active` = :active 
@@ -355,28 +667,36 @@ class Request
             ;
             $d = array(
                 'active' => 1,
-                'id_rent' => $order[product_id],
+                'id_rent' => $product[product_id],
             );
 
-            return $this->pDB->set($sql, $d);
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog('stopOrder: setProductStatus completed');
+            } else {
+                $this->writeLog('stopOrder: setProductStatus error');
+            }
+
+            return $result;
         };
 
-        $setOrderStatus = function ($order) {
+        $setOrderStatus = function ($product) {
             /*
             * 1. Выбираем по id продукты вместе с их временными стоп-метками
             * 2. Если на всех продуктах стоят стоп-метки - меняем статус ордера
             */
-            $getProducts = function ($order) {
+            $getProducts = function ($order_id) {
                 $sql = '
                     SELECT `order_id`, `end_time` 
                     FROM `order_products`
-                    WHERE `order_id` = ' . '\'' . $order[order_id] . '\''
+                    WHERE `order_id` = ' . '\'' . $order_id . '\''
                 ;
 
                 return $this->pDB->get($sql, false, true);               
             };
 
-            $changeStatus = function ($order, array $products) {
+            $changeStatus = function ($order_id, array $products) {
                 /*
                 * 1. Перебираем все продуты ордера
                 * 2. Если среди них не нашлось активного продукта (end_time == null), меняем статус ордера
@@ -401,28 +721,255 @@ class Request
                         WHERE `order_id` = :order_id
                     ';
                     $d = array(
-                        'order_id' => $order[order_id],
+                        'order_id' => $order_id,
                         'status' => 'END'
                     );
 
                     return $this->pDB->set($sql, $d);
                 } 
             };
+            
+            $result = $changeStatus($product[order_id], $getProducts($product[order_id]));
 
-            return $changeStatus($order, $getProducts($order));
+            if ($result) {
+                $this->writeLog('stopOrder: setOrderStatus completed');
+            } else {
+                $this->writeLog('stopOrder: setOrderStatus error');
+            }
+
+            return $result;
         };
 
-        if (empty($order)) {
-            $this->writeLog('function stopOrder failed with error: empty order');
-            return;
+
+        $setEndTime($product);
+        $setBill($product);
+        $setProductStatus($product);
+        $setOrderStatus($product);
+    }
+
+    private function setTariff($tariff) {
+        /*
+        * Функция принимает тариф с клиентской стороны и
+        * Записывает в БД новый тариф (или обновляет существующий в БД)
+        *
+        * Последовательность:
+        * 1. Проверка id_rent на существование в БД, и в зависимости от этого
+        * 2. Запись нового тарифа
+        * 3. или Обновление существующего
+        */
+        
+
+        $checkID = function ($id_rent) {
+            $sql = '
+                SELECT `id` 
+                FROM `tariffs` 
+                WHERE `id_rental_org` = :id_rental_org
+                AND `id_rent` = :id_rent
+            ';
+
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'id_rent' => $id_rent
+            );
+
+            $result = $this->pDB->get($sql, 0, $d);
+
+            return $result[0][id];
+        };
+
+        $newTariff = function($tariff) {
+            /*
+            * Функция в зависимости от типа тарифа готовит Sql 
+            * и делает запись нового тарифа в БД 
+            */
+            
+            $getIdRent = function () {
+                // Запрос БД на максимальный id_rent.
+                // Возвращает увеличенный id_rent или 1 если таблица пуста 
+
+                $sql = '
+                    SELECT `id_rent` 
+                    FROM `tariffs` 
+                    WHERE `id_rental_org` = :id_rental_org 
+                    ORDER BY `id_rent`
+                    DESC LIMIT 1
+                ';
+
+                $d = array(
+                    'id_rental_org' => $this->app_id
+                );
+
+                $result = $this->pDB->get($sql, 0, $d);
+
+                //$this->writeLog("getid = " . $result);
+
+                return $result ? ++$result[0][id_rent] : 1;
+            };
+
+            $sql = '
+                INSERT INTO `tariffs` (
+                `id`,
+                `id_rent`,
+                `id_rental_org`,
+                `type`, 
+                `name`,
+                `_h_h`,
+                `_h_max`,
+                `_h_min`,
+                `_d_before`,
+                `_d_after`,
+                `cost`,
+                `note`
+            ) VALUES (
+                NULL,
+                :id_rent,
+                :id_rental_org,
+                :type,
+                :name,
+                :_h_h,
+                :_h_max,
+                :_h_min,
+                :_d_before,
+                :_d_after,
+                :cost,
+                :note
+            )';
+
+            $d = array(
+                'id_rent'       => $tariff[id_rent] ? $tariff[id_rent] : $getIdRent(),
+                'id_rental_org' => $this->app_id,
+                'type'          => $tariff[type],
+                'name'          => $tariff[name],
+                '_h_h'          => $tariff[_h_h] ? implode(',', $tariff[_h_h]) : '',
+                '_h_max'        => $tariff[_h_max],
+                '_h_min'        => $tariff[_h_min],
+                '_d_before'     => $tariff[_d_before],
+                '_d_after'      => $tariff[_d_after],
+                'cost'          => $tariff[cost],
+                'note'          => $tariff[note]
+            );
+            
+            $result = $this->pDB->set($sql, $d);
+
+            $log = $result ? 
+                'function setTariff successfully completed!  New tariff is saved':
+                'function setTariff failed!  New tariff is`t saved';            
+
+            $this->writeLog($log);
+
+            return $result;
+
+            $this->writeLog($tariff);
+        };
+
+        $update = function ($id, $tariff) {
+            // Функция по id обновляет соотв. запись в таблице
+            
+            $sql = '
+                UPDATE `tariffs` 
+                SET 
+                    `id_rent`       = :id_rent,
+                    `id_rental_org` = :id_rental_org,
+                    `type`          = :type, 
+                    `name`          = :name,
+                    `_h_h`          = :_h_h,
+                    `_h_max`        = :_h_max,
+                    `_h_min`        = :_h_min,
+                    `_d_before`     = :_d_before,
+                    `_d_after`      = :_d_after,
+                    `cost`          = :cost,
+                    `note`          = :note 
+                WHERE `id` = :id
+            ';
+
+            $d = array(
+                'id'            => $id,
+                'id_rent'       => $tariff[id_rent],
+                'id_rental_org' => $this->app_id,
+                'type'          => $tariff[type],
+                'name'          => $tariff[name],
+                '_h_h'          => $tariff[_h_h] ? implode(',', $tariff[_h_h]) : '',
+                '_h_max'        => $tariff[_h_max],
+                '_h_min'        => $tariff[_h_min],
+                '_d_before'     => $tariff[_d_before],
+                '_d_after'      => $tariff[_d_after],
+                'cost'          => $tariff[cost],
+                'note'          => $tariff[note]
+            );
+
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog("setTariff.update completed.");
+            } else {
+                $this->writeLog("setTariff.update failed.");
+            }
+
+            return $result;
+        };
+
+        $id = $checkID($tariff[id_rent]);
+
+        return $id ? $update($id, $tariff) : $newTariff($tariff);
+    }
+
+    private function deleteTariff ($id_rent) {
+        /*
+        * Функция принимает id_rent тарифа
+        * Находит id тарифа в таблицe
+        * Производит удаление тарифа из таблицы БД
+        *
+        * id_rent !== id
+        */
+       
+        $search = function ($id_rent) {
+            $sql = '
+                SELECT `id` 
+                FROM `tariffs` 
+                WHERE `id_rental_org` = :id_rental_org 
+                AND `id_rent` = :id_rent
+            ';
+
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'id_rent' => $id_rent
+            );
+
+            $result = $this->pDB->get($sql, 0, $d);
+
+            return $result[0][id];
+        };
+
+        $delete = function ($id) {
+            $sql = '
+                DELETE FROM `tariffs` 
+                WHERE `id` = :id
+            ';
+
+            $d = array(
+                'id' => $id
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+<<<<<<< HEAD
+        if (empty($rent_id)) {
+=======
+        if (empty($id_rent)) {
+>>>>>>> dev
+            return false;
         }
 
-        $log['end_time'] = $setEndTime($order);
-        $log['bill'] = $setBill($order);
-        $log['product_status'] = $setProductStatus($order);
-        $log['change_order_status'] = $setOrderStatus($order);
+        $result = $delete($search($id_rent));    
+           
+        if ($result) {
+            $this->writeLog("deleteTariff completed.");
+        } else {
+            $this->writeLog("deleteTariff failed.");
+        }
 
-        $this->writeLog($log);
+        return $result;
     }
 
     private function test($value) {

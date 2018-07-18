@@ -1,0 +1,110 @@
+<template>
+    <div class="option option-tariffs">
+        <table>
+            <tr>
+                <th>id</th>
+                <th>Название</th>
+                <th>Тип</th>
+                <th>Расчасовка</th>
+                <th>Мин</th>
+                <th>Макс</th>
+                <th>Стоим.</th>
+                <th>Примечание</th>
+            </tr>
+            <tr v-for="tariff in tariffs" @click="onClick(tariff)">
+                <td>{{ tariff.id_rent }}</td>
+                <td>{{ tariff.name }}</td>
+                <td>{{ tariff.type }}</td>
+                <td>{{ getHours(tariff._h_h) }}</td>
+                <td>{{ tariff._h_min }}</td>
+                <td>{{ tariff._h_max }}</td>
+                <td>{{ tariff.cost }}</td>
+                <td>{{ tariff.note }}</td>
+            </tr>
+        </table>
+
+        <button class="tariff__button tariff__button--add" @click="addTariff">Добавить</button>
+
+        <Details :tariff="tariff"  @close="onClose" v-if="show"></Details>
+    </div>
+</template>
+<script>
+    import Details from './Details/Details'
+    export default {
+        components: {
+            Details
+        },
+        data() {
+            return {
+                tariff: {},
+                show: false
+            }
+        },
+        methods: {
+            onClick(tariff) {
+                this.show = true
+                this.tariff = tariff
+            },
+            onClose() {
+                this.show = false
+                this.tariff = {}
+            },
+            getHours(h) {
+                if (!h) return null
+
+                const hours = Object.values(h);
+
+                return h.reduce((acc, item) => {
+                    return acc = acc + ` ${item}`   
+                }, '')
+            },
+            addTariff() {
+                //const id_rent = this.$store.getters.options.max_tariff_id + 1
+                this.show = true
+
+                // значения по умолчанию
+                this.tariff = {
+                    id_rent: null,
+                    type: 'h',
+                    name: '',
+                    _h_h: [0],
+                    _h_max: null,
+                    _h_min: null,
+                    _d_before: null,
+                    _d_after: null,
+                    cost: null,
+                    note: ''
+                }
+            }
+
+        },
+        computed: {
+            tariffs() {
+                console.log(this.$store.getters.tariffsList)
+                return this.$store.getters.tariffsList
+            },
+        }
+        
+    }
+</script>
+<style scoped>
+    .option-tariffs {
+        display: flex;
+    }
+    .tariff__button--add {
+        align-self: flex-start;
+
+        margin-top: 20px;
+    }
+    td, th {
+        padding: 10px;
+    }
+    th {
+        text-align: left;
+    }
+    tr:not(:first-child):hover {
+        cursor: pointer;
+        outline: 1px solid rgba(0,0,0,0.2);
+    }
+    
+</style>

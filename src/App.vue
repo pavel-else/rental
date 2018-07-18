@@ -2,7 +2,7 @@
     <div id="app">
         <adm-panel class="adm"></adm-panel>
         <router-view></router-view>        
-        <!--<test></test> -->
+        <!-- <test></test> --> 
     </div>
 </template>
 
@@ -52,6 +52,61 @@ export default {
         outline: 1px solid lightgray;
     }
 
+    .canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+
+        background-color: rgba(255, 255, 255, 0.7);
+    }
+    .details {
+        position: relative;
+        min-width: 300px;
+        padding: 5px 10px;
+
+        border: 1px solid lightgray;
+        background-color: #fff;
+        box-shadow: 0 2px 5px 0px;  
+    }
+    .details__close {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 1px solid lightgray;
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        opacity: 0.5;
+    }
+    .details__close:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
+    .details__close::after,
+    .details__close::before {
+        display: block;
+        position: absolute;
+        content: '';
+        width: 80%;
+        height: 2px;
+        top: 9px;
+        left: 2px;
+        background-color: lightgray;
+    }
+    .details__close::after {
+        transform: rotate(45deg);
+    }
+    .details__close::before {
+        transform: rotate(-45deg);
+    }
+
+
     .snippet {
         padding: 20px;
     }
@@ -79,9 +134,5 @@ export default {
 
     .adm {
         position: relative;
-    }
-
-    .history {
-
     }
 </style>

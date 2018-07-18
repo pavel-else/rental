@@ -71,7 +71,6 @@ define('_DB_charset', 'UTF8');
 			}
 
 			return false;
-
 		}
 
 		/**

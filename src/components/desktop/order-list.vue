@@ -12,22 +12,32 @@
                         <td class="ord__td-3">{{ subitem.product_id }}</td>
                         <td class="ord__td-4">{{ subitem.name }}</td>
                         <td class="ord__td-6">{{ getTimePlay(item, subitem) }}</td>
-                        <td v-if="subitem.bill > 0">{{subitem.bill}}р</td>
-                        <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem)">x</td>
+                        <td>{{ getBill(item, subitem) }} р</td>
+                        <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem.product_id)" v-if="!subitem.end_time">x</td>
                     </tr>
                 </td>
-                <td class="ord__td-7 stop-order-all" @click="stopOrderAll(item)">x</td>
+                <td class="ord__td-7 stop-order-all" @click="stopOrder(item)">x</td>
             </tr>
         </table>
+        <Details :order="order" @close="onClose" v-if="order"></Details>
     </div>
 </template>
 
 <script>
+    import Details from './details'
+
     export default {
-        name: 'orderList',
+        components: {
+            Details
+        },
+        data() {
+            return {
+                order: null,
+            }
+        },
 
         methods: {
-            timeFormat (ms/**number*/){
+            timeFormat (ms/**number*/) {
                 if (ms < 0) ms = 0;
 
                 function num(val){
@@ -58,23 +68,56 @@
                 return this.timeFormat(diff)
             },
 
-            stopOrder(item, subitem) {
-                // Время старта передается для расчета стоимости
+            getBill(order, product) {
+                return null // заглушка
 
-                const order = subitem
-                order.start_time = item.start_time
-                //console.log(order)
+                const getBill = this.$store.getters.getBill()
 
-                this.$store.dispatch('stopOrder', order)
+                return getBill(order, product.product_id)   
             },
 
-            stopOrderAll(item) {
-                //console.log(item.products)
-                const order_id = item.order_id
-                const products_id = item.products.map(p => p.product_id)
+            stopOrder(order, product_id) {
+                /*
+                * Функция принимает ордер и id продукта, ставит временную метку стопа,
+                * прописывает стоимость и отправляет на сервер.
+                * Если id продукта не указан, то функция остановки применяется для всех активных ордеров
+                */
 
-                this.$store.dispatch('stopOrderAll', { order_id })
+                if (!order) console.log('stopOrder: empty order')
+                if (!product_id) console.log('stopOrder: empty product_id')
+                // сервер принимает 1шт продукт
+
+                const stop = (product_id) => {
+                    const product = order.products.find(p => p.product_id == product_id)
+
+                    product.end_time = Math.floor(Date.now() / 1000)
+
+                    const getBill = this.$store.getters.getBill()
+
+                    product.bill = getBill(order, product_id)
+
+                    this.$store.dispatch('send', {
+                        cmd: 'stopOrder',
+                        value: product
+                    })
+                }
+
+                const stopAll = () => {
+                    const products = order.products.filter(p => p.end_time == null)
+
+                    products.map(p => {
+                        stop(p.product_id)
+                    })
+                }
+                this.order = order
+                return product_id ? stop(product_id) : stopAll()
+                
+            },
+
+            onClose() {
+                this.order = null
             }
+
         },
 
         computed: {

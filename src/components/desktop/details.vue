@@ -1,5 +1,5 @@
 <template>
-    <div class="details" v-if="show">        
+    <div class="details">        
         <table>
                 <tr>
                     <td>Заказ</td>
@@ -13,7 +13,7 @@
                     <td>Товары</td>
                     <td>
                         <ul>
-                            <li v-for="product in order.products">{{ product.name }}</li>
+                            <li v-for="product in order.products">{{ product.name }} - {{ product.bill }} р.</li>
                         </ul>
                     </td>
                 </tr>
@@ -39,7 +39,7 @@
                 </tr>
                 <tr class="details__bill">
                     <td>К оплате</td>
-                    <td>{{ order.bill }} р.</td>
+                    <td>{{ bill }} р.</td>
                 </tr>
         </table>
         <div class="details__close" @click="close"></div>     
@@ -48,6 +48,9 @@
 
 <script>
     export default {
+        props: {
+            order: Object
+        },
         methods: {
             getTimePlay(item) {
                 const timeFormat = function (ms/**number*/) {
@@ -67,34 +70,26 @@
                     return num(hours) + ":" + num(minutes) + ":" + num(seconds);
                 }
 
-                const now = this.$store.getters.now
-
-                const products = item.products
+                const start = Date.parse(item.start_time)
                 
-                let max = null
-                let end_time = null
-                let diff = null 
-                const start_time = Date.parse(item.start_time)
+                const end = item.products.reduce((acc, p) => {
+                    return acc = acc < p.end_time ? p.end_time : acc
+                }, 0)
 
-                for (let i = 0; i < products.length; i++) {
-                    end_time = products[i].end_time ? Date.parse(products[i].end_time) : null
-                    diff = end_time ? end_time - start_time : now - start_time
-
-                    if (diff > max) max = diff                  
-                }
+                const diff = end * 1000 - start
 
                 return timeFormat(diff)
             },
+
             close() {
-                this.$store.dispatch('closeDetails')
+                this.$emit('close')
             }
         },
         computed: {
-            show() {
-                return this.$store.getters.show
-            },
-            order() {
-                return this.$store.getters.currentOrderDetails
+            bill() {
+                return this.order.products.reduce((acc, product) => {
+                    return acc + +product.bill
+                }, 0)
             }
         }
     }
