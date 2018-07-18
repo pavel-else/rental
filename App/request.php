@@ -88,6 +88,12 @@ class Request
                 case 'deleteTariff':
                     $this->deleteTariff($value);
                 break;
+                case 'setProduct':
+                    $this->setProduct($value);
+                break;
+                case 'deleteProduct':
+                    $this->deleteProduct($value);
+                break;
                 case 'test':
                     $this->test($value);                    
                 break;
@@ -913,7 +919,7 @@ class Request
         return $id ? $update($id, $tariff) : $newTariff($tariff);
     }
 
-    private function deleteTariff ($id_rent) {
+    private function deleteTariff($id_rent) {
         /*
         * Функция принимает id_rent тарифа
         * Находит id тарифа в таблицe
@@ -966,6 +972,141 @@ class Request
         }
 
         return $result;
+    }
+
+    private function setProduct($product) {
+
+        $checkID = function ($id_rent) {
+            $sql = '
+                SELECT `id` 
+                FROM `products` 
+                WHERE `id_rental_org` = :id_rental_org
+                AND `id_rent` = :id_rent
+            ';
+
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'id_rent' => $id_rent
+            );
+
+            $result = $this->pDB->get($sql, 0, $d);
+
+            return $result[0][id];
+        };
+
+        $newProduct = function($product) {
+            /*
+            * Функция в зависимости от типа тарифа готовит Sql 
+            * и делает запись нового тарифа в БД 
+            */
+            
+            $getIdRent = function () {
+                // Запрос БД на максимальный id_rent.
+                // Возвращает увеличенный id_rent или 1 если таблица пуста 
+
+                $sql = '
+                    SELECT `id_rent` 
+                    FROM `products` 
+                    WHERE `id_rental_org` = :id_rental_org 
+                    ORDER BY `id_rent`
+                    DESC LIMIT 1
+                ';
+
+                $d = array(
+                    'id_rental_org' => $this->app_id
+                );
+
+                $result = $this->pDB->get($sql, 0, $d);
+
+                //$this->writeLog("getid = " . $result);
+
+                return $result ? ++$result[0][id_rent] : 1;
+            };
+
+            $sql = '
+                INSERT INTO `products` (
+                `id`,
+                `id_rent`,
+                `id_rental_org`,
+                `name`
+            ) VALUES (
+                NULL,
+                :id_rent,
+                :id_rental_org,
+                :name
+            )';
+
+            $d = array(
+                'id_rent'       => $product[id_rent] ? $product[id_rent] : $getIdRent(),
+                'id_rental_org' => $this->app_id,
+                'name'          => $product[name]
+            );
+            
+            $result = $this->pDB->set($sql, $d);
+
+            $log = $result ? 
+                'function setTariff successfully completed!  New tariff is saved':
+                'function setTariff failed!  New tariff is`t saved';            
+
+            $this->writeLog($log);
+
+            return $result;
+
+            $this->writeLog($tariff);
+        };
+
+        $update = function ($id, $tariff) {
+            // Функция по id обновляет соотв. запись в таблице
+            
+            $sql = '
+                UPDATE `tariffs` 
+                SET 
+                    `id_rent`       = :id_rent,
+                    `id_rental_org` = :id_rental_org,
+                    `type`          = :type, 
+                    `name`          = :name,
+                    `_h_h`          = :_h_h,
+                    `_h_max`        = :_h_max,
+                    `_h_min`        = :_h_min,
+                    `_d_before`     = :_d_before,
+                    `_d_after`      = :_d_after,
+                    `cost`          = :cost,
+                    `note`          = :note 
+                WHERE `id` = :id
+            ';
+
+            $d = array(
+                'id'            => $id,
+                'id_rent'       => $tariff[id_rent],
+                'id_rental_org' => $this->app_id,
+                'type'          => $tariff[type],
+                'name'          => $tariff[name],
+                '_h_h'          => $tariff[_h_h] ? implode(',', $tariff[_h_h]) : '',
+                '_h_max'        => $tariff[_h_max],
+                '_h_min'        => $tariff[_h_min],
+                '_d_before'     => $tariff[_d_before],
+                '_d_after'      => $tariff[_d_after],
+                'cost'          => $tariff[cost],
+                'note'          => $tariff[note]
+            );
+
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog("setTariff.update completed.");
+            } else {
+                $this->writeLog("setTariff.update failed.");
+            }
+
+            return $result;
+        };
+
+        $id = $checkID($product[id_rent]);
+
+        return $id ? $update($id, $tariff) : $newProduct($product);       
+    }
+
+    private function deleteProduct($id_rent) {
     }
 
     private function test($value) {

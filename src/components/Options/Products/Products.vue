@@ -1,5 +1,5 @@
 <template>
-    <div class="option option-tariffs">
+    <div class="option option-products">
         <table>
             <tr>
                 <th>id</th>
@@ -18,6 +18,8 @@
                 <td>{{ product.updated }}</td>
             </tr>
         </table>
+        
+        <button class="products__button products__button--add" @click="newProduct">Добавить</button>
 
         <Details :data="product" @close="onClose" v-if="show"></Details>
     </div>
@@ -43,6 +45,10 @@
                 this.product = product
                 this.show = true
                 console.log(product)
+            },
+            newProduct() {
+                this.show = true
+                this.product = {}
             }
         },
         computed: {
@@ -62,4 +68,14 @@
         cursor: pointer;
         outline: 1px solid rgba(0,0,0,0.2);
     }
+
+    .option-products {
+        display: flex;
+    }
+
+    .products__button--add {
+        align-self: flex-start;
+        margin-top: 20px;
+    }
+
 </style>

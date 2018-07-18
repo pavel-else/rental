@@ -108,4 +108,8 @@
     td {
         padding: 5px;
     }
+
+    .btn-group {
+    	margin-top: 10px;
+    }
 </style>
