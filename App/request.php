@@ -953,7 +953,7 @@ class Request
             return $this->pDB->set($sql, $d);
         };
 
-        if (empty($rent_id)) {
+        if (empty($id_rent)) {
             return false;
         }
 
