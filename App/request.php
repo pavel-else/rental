@@ -1107,6 +1107,51 @@ class Request
     }
 
     private function deleteProduct($id_rent) {
+
+        $search = function ($id_rent) {
+            $sql = '
+                SELECT `id` 
+                FROM `products` 
+                WHERE `id_rental_org` = :id_rental_org 
+                AND `id_rent` = :id_rent
+            ';
+
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'id_rent' => $id_rent
+            );
+
+            $result = $this->pDB->get($sql, 0, $d);
+
+            return $result[0][id];
+        };
+
+        $delete = function ($id) {
+            $sql = '
+                DELETE FROM `products` 
+                WHERE `id` = :id
+            ';
+
+            $d = array(
+                'id' => $id
+            );
+
+            return $this->pDB->set($sql, $d);
+        };
+
+        if (empty($id_rent)) {
+            return false;
+        }
+
+        $result = $delete($search($id_rent));    
+           
+        if ($result) {
+            $this->writeLog("deleteProduct completed.");
+        } else {
+            $this->writeLog("deleteProduct failed.");
+        }
+
+        return $result;       
     }
 
     private function test($value) {
