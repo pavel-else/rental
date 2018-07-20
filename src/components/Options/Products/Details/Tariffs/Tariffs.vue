@@ -3,19 +3,32 @@
 		<ul>
 			<li v-for="tariff in tariffs">{{ tariff.name }}</li>
 		</ul>
-
-		<button>Добавить</button>
+		
+		<List :data="tariffs" v-if="list"></List>
+		<button @click="onEdit">Редактировать</button>
 	</div>
 </template>
 
 <script>
+	import List from './List'
 	export default {
 		props: {
 			data: String
 		},
+		components: {
+			List
+		},
 		data() {
 			return {
-				ids: this.data.split(',')
+				ids: this.data.split(','),
+				list: false
+			}
+		},
+		methods: {
+			onEdit(e) {
+				e.preventDefault()
+				
+				this.list = true
 			}
 		},
 		computed: {

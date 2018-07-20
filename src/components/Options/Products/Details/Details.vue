@@ -2,7 +2,7 @@
     <div class="canvas">
         <div class="details">
             <h3>
-                <span v-if="product.id_rent">Редактирование тарифа</span>
+                <span v-if="product.id_rent">Редактирование товара</span>
                 <span v-else>Новый товар</span>
             </h3>
             <form @input="onChange">
@@ -31,7 +31,6 @@
                         <td><input v-model="product.active"></td>
                     </tr>
                 </table>
-                {{ tariffs }}
             </form>     
             
             <div class="btn-group">
@@ -46,7 +45,7 @@
 </template>
 
 <script>
-    import Tariffs from './Tariffs'
+    import Tariffs from './Tariffs/Tariffs'
     export default {
         props: {
             data: Object
@@ -113,7 +112,7 @@
 
 <style scoped>
     .details {
-        width: 400px;
+        width: 300px;
         margin-top: 120px;
     }
     input {
