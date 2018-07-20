@@ -20,15 +20,18 @@
                         <td>Стоимость</td>
                         <td><input v-model="product.cost"></td>
                     </tr>
-                    <tr>
+                    <tr class="products_tr--tariffs">
                         <td>Тарифы</td>
-                        <td><input v-model="product.tariff_id"></td>
+                        <td>
+                           <Tariffs :data="product.tariff_id"></Tariffs>                            
+                        </td>
                     </tr>
                     <tr>
                         <td>Статус</td>
                         <td><input v-model="product.active"></td>
                     </tr>
                 </table>
+                {{ tariffs }}
             </form>     
             
             <div class="btn-group">
@@ -43,9 +46,13 @@
 </template>
 
 <script>
+    import Tariffs from './Tariffs'
     export default {
         props: {
             data: Object
+        },
+        components: {
+            Tariffs
         },
         data() {
             return {
@@ -56,7 +63,10 @@
         },
         methods: {
             save() {
+                this.product.updated = Math.floor(Date.now() / 1000)
+
                 console.log(this.product)
+
 
                 this.$store.dispatch('send', {
                     cmd: 'setProduct',
@@ -83,7 +93,6 @@
                     })
                     this.$emit('close')
                 }
-
             },
 
             onChange(e) {
@@ -94,6 +103,11 @@
                 console.log(this.product)
             },
         },
+        computed: {
+            tariffs() {
+                return this.$store.getters.tariffs
+            }
+        }
     }
 </script>
 
@@ -111,5 +125,9 @@
 
     .btn-group {
     	margin-top: 10px;
+    }
+
+    .products_tr--tariffs li {
+
     }
 </style>

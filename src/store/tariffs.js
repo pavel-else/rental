@@ -21,7 +21,7 @@ export default {
     },
     getters: {
         tariffs(state) {
-            return state.tariffs
+            return state.tariffs_new
         },
         tariffsList(state) {
             return state.tariffs_new

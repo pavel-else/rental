@@ -25,7 +25,7 @@
     </div>
 </template>
 <script>
-    import Details from './Details'
+    import Details from './Details/Details'
     export default {
         components: {
             Details

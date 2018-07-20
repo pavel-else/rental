@@ -334,21 +334,18 @@ class Request
             )';
 
             $order_data = array(
-                'order_id' =>               $order[order_id],
-                'order_id_position' =>      $order[order_id_position],
-                'id_rental_org' =>          $this->app_id,
-                'status' =>                 $order[status],
-                'order_customer_id' =>      $order[customer_id],
-                'order_customer_name' =>    $order[customer_name],
-                'order_start_time' =>       date("Y-m-d H:i:s", $order[start_time]),
-
-                'order_advance' =>          $order[advance] === NULL ? 0 : $order[advance],
-
-                'deposit' =>                $order[deposit],
-
-                'order_note' =>             $order[note],
-                'promotion' =>              $order[promotion],
-                'accessories' =>            $order[accessories]
+                'order_id'            => $order[order_id],
+                'order_id_position'   => $order[order_id_position],
+                'id_rental_org'       => $this->app_id,
+                'status'              => $order[status],
+                'order_customer_id'   => $order[customer_id],
+                'order_customer_name' => $order[customer_name],
+                'order_start_time'    => date("Y-m-d H:i:s", $order[start_time]),
+                'order_advance'       => $order[advance] === NULL ? 0 : $order[advance],
+                'deposit'             => $order[deposit],
+                'order_note'          => $order[note],
+                'promotion'           => $order[promotion],
+                'accessories'         => $order[accessories]
             );
 
             return $this->pDB->set($sql, $order_data);
@@ -1028,18 +1025,30 @@ class Request
                 `id`,
                 `id_rent`,
                 `id_rental_org`,
-                `name`
+                `name`,
+                `cost`,
+                `active`,
+                `tariff_id`,
+                `updated`
             ) VALUES (
                 NULL,
                 :id_rent,
                 :id_rental_org,
-                :name
+                :name,
+                :cost,
+                :active,
+                :tariff_id,
+                :updated
             )';
 
             $d = array(
                 'id_rent'       => $product[id_rent] ? $product[id_rent] : $getIdRent(),
                 'id_rental_org' => $this->app_id,
-                'name'          => $product[name]
+                'name'          => $product[name],
+                'cost'          => $product[cost],
+                'active'        => $product[active],
+                'tariff_id'     => $product[tariff_id],
+                'updated'       => date("Y-m-d H:i:s", $product[updated]),
             );
             
             $result = $this->pDB->set($sql, $d);
@@ -1059,7 +1068,7 @@ class Request
             // Функция по id обновляет соотв. запись в таблице
             
             $sql = '
-                UPDATE `tariffs` 
+                UPDATE `products` 
                 SET 
                     `id_rent`       = :id_rent,
                     `id_rental_org` = :id_rental_org,
