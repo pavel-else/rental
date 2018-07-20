@@ -17,7 +17,6 @@ import orderList from './order-list'
 import addOrder from './addOrder/addOrder'
 
     export default {
-        name: 'Desctop',
         components: {
             productList,
             orderList,

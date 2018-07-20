@@ -23,7 +23,7 @@
                     <tr class="products_tr--tariffs">
                         <td>Тарифы</td>
                         <td>
-                           <Tariffs :data="product.tariff_id"></Tariffs>                            
+                           <Tariffs :data="product.tariff_id" @setTariffs="setTariffs($event)"></Tariffs>                            
                         </td>
                     </tr>
                     <tr>
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-    import Tariffs from './Tariffs/Tariffs'
+    import Tariffs from './Products__tariffs/Products__tariffs'
     export default {
         props: {
             data: Object
@@ -101,6 +101,9 @@
 
                 console.log(this.product)
             },
+            setTariffs(ids) {
+                this.product.tariff_id = ids
+            }
         },
         computed: {
             tariffs() {
@@ -124,9 +127,5 @@
 
     .btn-group {
     	margin-top: 10px;
-    }
-
-    .products_tr--tariffs li {
-
     }
 </style>

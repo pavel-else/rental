@@ -1,11 +1,11 @@
-<template>
+<template> 
 	<div class="tariffs">
-		<ul>
-			<li v-for="tariff in tariffs">{{ tariff.name }}</li>
+		<ul v-if="!list">
+			<li v-for="tariff in tariffs">{{ tariff.id_rent }}. {{ tariff.name }}</li>
 		</ul>
 		
-		<List :data="tariffs" v-if="list"></List>
-		<button @click="onEdit">Редактировать</button>
+		<List :data="ids" v-if="list" @onSet="onSet($event)"></List>
+		<button v-if="!list" @click="onEdit">Редактировать</button>
 	</div>
 </template>
 
@@ -13,14 +13,14 @@
 	import List from './List'
 	export default {
 		props: {
-			data: String
+			data: String //tariff_ids
 		},
 		components: {
 			List
 		},
 		data() {
 			return {
-				ids: this.data.split(','),
+				ids: this.data ? this.data.split(',') : [],
 				list: false
 			}
 		},
@@ -29,6 +29,13 @@
 				e.preventDefault()
 				
 				this.list = true
+			},
+			onSet(ids) {
+				console.log(ids)
+				this.ids = ids
+				this.list = false
+
+				this.$emit('setTariffs', ids.join())
 			}
 		},
 		computed: {
@@ -50,7 +57,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	li {
 		display: block;
         border-bottom: 1px solid lightgray;
