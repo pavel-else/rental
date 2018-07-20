@@ -1,6 +1,6 @@
 <template>
     <div class="snippet snippet__orders">
-        <h3>В прокате</h3>
+        <h3>В прокате {{getBill(111)}}</h3>
         <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
         <table class="table table-bordered">
             <tr v-for="(item, index) in orders">
@@ -25,6 +25,7 @@
 
 <script>
     import Details from './details'
+    import func_getBill from '../../functions/getBill'
 
     export default {
         components: {
@@ -37,6 +38,8 @@
         },
 
         methods: {
+            getBill: func_getBill,
+
             timeFormat (ms/**number*/) {
                 if (ms < 0) ms = 0;
 
@@ -68,13 +71,6 @@
                 return this.timeFormat(diff)
             },
 
-            getBill(order, product) {
-                return null // заглушка
-
-                const getBill = this.$store.getters.getBill()
-
-                return getBill(order, product.product_id)   
-            },
 
             stopOrder(order, product_id) {
                 /*

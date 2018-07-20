@@ -1,5 +1,6 @@
 <template>        
     <div class="container">
+
         <product-list class="tmp" @addOrder="addOrder($event)"></product-list>
 
         <new-order v-if="showNewOrder"></new-order>
@@ -26,7 +27,7 @@ import addOrder from './addOrder/addOrder'
         data() {
             return {
                 show: false,
-                selectProduct: {}
+                selectProduct: {},
             }
         },
         methods: {
