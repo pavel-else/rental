@@ -356,6 +356,7 @@ class Request
                 `id`, 
                 `order_id`, 
                 `product_id`,
+                `tariff_id`,
                 `bill`,
                 `bill_no_sale`,
                 `end_time`
@@ -363,6 +364,7 @@ class Request
                 NULL, 
                 :order_id, 
                 :product_id,
+                :tariff_id,
                 :bill,
                 :bill_no_sale,
                 :end_time
@@ -371,6 +373,7 @@ class Request
             $product_data = array(
                 'order_id' => $orderID,
                 'product_id' => '',
+                'tariff_id' => $order[tariff],
                 'bill' => 0,
                 'bill_no_sale' => 0,
                 'end_time' => $order[end_time] ? date("Y-m-d H:i:s", $order[end_time]) : NULL
@@ -387,7 +390,7 @@ class Request
 
         if ($this->getOrderID($order[order_id])) {
             $setOrderProducts($products, $orderID);
-            $result = true;
+             $result = true;
         } else if ($setOrder($order)) {
             $setOrderProducts($products, $orderID);
             $result = true;

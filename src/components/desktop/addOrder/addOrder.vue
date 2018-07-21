@@ -1,3 +1,4 @@
+# asdfsdf
 <template>
     <div class="canvas">
         <div class="details">
@@ -69,6 +70,7 @@
                         <select v-model="select.accessories" @change="setAccessories">
                             <option 
                                 :value="item"
+
                                 v-for="item in accessories"
                             >
                                 {{ item.name }}
@@ -79,14 +81,14 @@
                 <tr>
                     <td>Тарифный план</td>
                     <td>
-<!--                         <select v-model="select.tariff" @change="setTariff">
+                        <select v-model="select.tariff" @change="setTariff">
                             <option 
                                 v-for="tariff in tariffs"
-                                :value="tariff"
+                                :value="tariff.id_rent"
                             >
                                 {{ tariff.id }} {{ tariff.name }}
                             </option>
-                        </select> -->
+                        </select>
                     </td>
                 </tr>
             </table>
@@ -115,7 +117,7 @@
 
                     products: [
                         this.product.id_rent,
-                    ], 
+                    ],
                     start_time: Math.floor(Date.now() / 1000),
                     order_id: this.$store.getters.options.new_order_id,
                     order_id_position: this.getFreeId(), // or setPosition($event) 
@@ -132,6 +134,12 @@
                     accessories: null,
                     tariff: null
                 },
+
+                tariffs: this.product.tariff_id ? this.product.tariff_id.split(',').map(id => {
+                    id = this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
+
+                    return id
+                }): []
             }
         },
         methods: {
@@ -204,24 +212,24 @@
             accessories() {
                 return this.$store.getters.accessories
             },
-            tariffs() {
-                //need filter
-                const products = this.$store.getters.products
-                const product_id = this.order.products[0]
-                const product = products.find(p => p.id_rent == product_id)
-                const tariff_id_list = product.tariff_id.split(',')
+            // tariffs() {
+            //     //need filter
+            //     const products = this.$store.getters.products
+            //     const product_id = this.order.products[0]
+            //     const product = products.find(p => p.id_rent == product_id)
+            //     const tariff_id_list = product.tariff_id.split(',')
 
-                const tariffs = this.$store.getters.tariffsList
+            //     const tariffs = this.$store.getters.tariffsList
 
-                const result = tariff_id_list.reduce((acc, item) => {
-                    acc.push(tariffs.find(t => t.id == item))
-                    return acc
-                }, [])
+            //     const result = tariff_id_list.reduce((acc, item) => {
+            //         acc.push(tariffs.find(t => t.id == item))
+            //         return acc
+            //     }, [])
 
-                console.log(result)
+            //     console.log(result)
 
-                return result
-            }
+            //     return result
+            // }
         }
 
     }
