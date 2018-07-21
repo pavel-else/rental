@@ -25,7 +25,7 @@
 
 <script>
     import Details from './details'
-    import func_getBill from '../../functions/getBill'
+    import _getBill from '../../functions/getBill'
 
     export default {
         components: {
@@ -38,7 +38,7 @@
         },
 
         methods: {
-            getBill: func_getBill,
+            getBill: _getBill,
 
             timeFormat (ms/**number*/) {
                 if (ms < 0) ms = 0;
@@ -113,13 +113,9 @@
             onClose() {
                 this.order = null
             }
-
         },
 
         computed: {
-            sd() {
-                //return this.$store.getters.options
-            },
             orders() {
                 return this.$store.getters.orders
             },

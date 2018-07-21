@@ -1,0 +1,1 @@
+export const getBill = (num) => num * num
