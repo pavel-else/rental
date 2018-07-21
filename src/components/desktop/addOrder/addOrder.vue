@@ -86,7 +86,7 @@
                                 v-for="tariff in tariffs"
                                 :value="tariff.id_rent"
                             >
-                                {{ tariff.id }} {{ tariff.name }}
+                                {{ tariff.id_rent }}. {{ tariff.name }}
                             </option>
                         </select>
                     </td>

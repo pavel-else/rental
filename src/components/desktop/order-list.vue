@@ -1,6 +1,6 @@
 <template>
     <div class="snippet snippet__orders">
-        <h3>В прокате {{getBill(111)}}</h3>
+        <h3>В прокате</h3>
         <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
         <table class="table table-bordered">
             <tr v-for="(item, index) in orders">
@@ -11,8 +11,8 @@
                     <tr v-for="(subitem, index) in item.products">
                         <td class="ord__td-3">{{ subitem.product_id }}</td>
                         <td class="ord__td-4">{{ subitem.name }}</td>
-                        <td class="ord__td-6">{{ getTimePlay(item, subitem) }}</td>
-                        <td>{{ getBill(item, subitem) }} р</td>
+                        <td class="ord__td-6">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
+                        <td>{{ getBill(item, subitem.tariff_id) }} р</td>
                         <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem.product_id)" v-if="!subitem.end_time">x</td>
                     </tr>
                 </td>
@@ -24,8 +24,11 @@
 </template>
 
 <script>
-    import Details from './details'
-    import _getBill from '../../functions/getBill'
+    import Details      from './details'
+
+    import _getBill     from '../../functions/getBill'
+    import _timeFormat  from '../../functions/timeFormat'
+    import * as getTime from '../../functions/getTime'
 
     export default {
         components: {
@@ -38,39 +41,14 @@
         },
 
         methods: {
-            getBill: _getBill,
+            getBill:     _getBill,
+            timeFormat:  _timeFormat,
 
-            timeFormat (ms/**number*/) {
-                if (ms < 0) ms = 0;
+            getTimePlay(start, end) {
+                return getTime(123, 321)
 
-                function num(val){
-                    val = Math.floor(val);
-                    return val < 10 ? '0' + val : val;
-                }
-                
-                var sec = ms / 1000
-                  , hours = sec / 3600  % 24
-                  , minutes = sec / 60 % 60
-                  , seconds = sec % 60
-                ;
-
-                return num(hours) + ":" + num(minutes) + ":" + num(seconds);
+                //return this.timeFormat(this.getTime(start, end))
             },
-
-            getTimePlay(item, subitem) {
-                /*
-                * Если время стопордера существует, вернем разницу времени стоп - старт,
-                * если стопа еще не было, возвращаем разницу текущее время - старт
-                */
-                const now = this.$store.getters.now
-
-                const start_time = Date.parse(item.start_time)
-                const end_time = subitem.end_time ? Date.parse(subitem.end_time) : null
-                const diff = end_time ? end_time - start_time : now - start_time
-
-                return this.timeFormat(diff)
-            },
-
 
             stopOrder(order, product_id) {
                 /*
