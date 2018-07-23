@@ -45,7 +45,7 @@
             timeFormat:  _timeFormat,
 
             getTimePlay(start, end) {
-                return getTime(123, 321)
+                return 
 
                 //return this.timeFormat(this.getTime(start, end))
             },

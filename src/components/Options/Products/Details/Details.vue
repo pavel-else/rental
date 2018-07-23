@@ -64,7 +64,7 @@
             save() {
                 this.product.updated = Math.floor(Date.now() / 1000)
 
-                console.log(this.product)
+                //console.log(this.product)
 
 
                 this.$store.dispatch('send', {
@@ -99,7 +99,7 @@
 
                 this.change = true
 
-                console.log(this.product)
+                //console.log(this.product)
             },
             setTariffs(ids) {
                 this.product.tariff_id = ids

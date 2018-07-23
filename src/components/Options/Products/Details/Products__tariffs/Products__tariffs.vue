@@ -1,65 +1,48 @@
 <template> 
-	<div class="tariffs">
-		<ul v-if="!list">
-			<li v-for="tariff in tariffs">{{ tariff.id_rent }}. {{ tariff.name }}</li>
-		</ul>
-		
-		<List :data="ids" v-if="list" @onSet="onSet($event)"></List>
-		<button v-if="!list" @click="onEdit">Редактировать</button>
-	</div>
+    <div class="tariffs">
+        <table>
+            <tr v-for="tariff in tariffs">
+                <td>
+                    <input type="checkbox" v-model="tariff.check" @change="onSet">
+                </td>
+                <td>{{ tariff.name }}</td>
+            </tr>
+        </table>        
+    </div>
 </template>
 
 <script>
-	import List from './List'
-	export default {
-		props: {
-			data: String //tariff_ids
-		},
-		components: {
-			List
-		},
-		data() {
-			return {
-				ids: this.data ? this.data.split(',') : [],
-				list: false
-			}
-		},
-		methods: {
-			onEdit(e) {
-				e.preventDefault()
-				
-				this.list = true
-			},
-			onSet(ids) {
-				console.log(ids)
-				this.ids = ids
-				this.list = false
+    export default {
+        props: {
+            data: String //tariff_ids
+        },
+        data() {
+            return {
+                tariffs: this.$store.getters.tariffs.map(tariff => {
+                    const ids = this.data ? this.data.split(',') : []
 
-				this.$emit('setTariffs', ids.join())
-			}
-		},
-		computed: {
-			tariffs() {
-				const tariffs = this.$store.getters.tariffs
+                    // Поле check нужно для отображения чекбоксов
+                    tariff.check = ids.find(id => id === tariff.id_rent) ? true : false
 
-                return this.ids.reduce((acc, id) => {
-                    const tariff = tariffs.find(tariff => tariff.id_rent === id)
-
-                    if (tariff) {
-                        acc.push(tariff)
-                    }
-
-                    return acc
-                }, [])               
+                    return tariff
+                })
             }
-		}
+        },
+        methods: {
+            onSet() {
+                const filter = this.tariffs.filter(tariff => tariff.check == true)
+                const ids = filter.map(tariff => tariff.id_rent)
 
-	}
+                this.$emit('setTariffs', ids.join())
+            }
+        }
+
+    }
 </script>
 
 <style scoped>
-	li {
-		display: block;
+    li {
+        display: block;
         border-bottom: 1px solid lightgray;
-	}
+    }
 </style>
