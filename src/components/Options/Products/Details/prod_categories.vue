@@ -3,10 +3,12 @@
         <ul>
             <li 
                 class="categories__li" 
-                v-for="category in categories"
+                v-for="(category) in categories"
+                v-if="category.show"
+                @click="onClick(category)"
             >
                 <input type="checkbox" v-model="category.check">
-                {{ category }}
+                {{ category.name }}
             </li>
         </ul>
     </div>
@@ -19,24 +21,41 @@
         },
         data() {
             return {
-                categories: (() => {
-                    const categories = this.$store.getters.categories
+                categories: this.$store.getters.categories.map(cat => {
+                    //this.$set(cat, 'check',false)
+                    cat.show = cat.parent == null ? true : false
 
-                    const sort = () => {
-                        const acc = []
+                    return cat
+                })
+                    // Классическая реализация сортировки списка "пузырьком"                    
+                    /*                    const sort = (acc) => {
+                        if (!acc) {
+                            return false
+                        }
 
-                        return (cat) => acc.push(cat)
-                    }
+                        let tmp = null
 
-                    const f = sort()
+                        for (let i = 0; i < acc.length; i++) {
+                            for (let j = 1; j < acc.length; j++) {
+                                if (acc[j].parent < acc[j - 1].parent) {
+                                    tmp = acc[j]
+                                    acc[j] = acc[j - 1]
+                                    acc[j - 1] = tmp
+                                }
+                            }
+                        }
 
-
-                    categories.map(cat => f(cat))
-
-                    console.log()
-                })()
+                        return acc
+                    }*/
             }
         },
+
+        methods: {
+            onClick(category) {
+                console.log(this.categories)
+            },
+
+        }
     }
 </script>
 
