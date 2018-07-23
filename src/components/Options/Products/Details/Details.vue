@@ -27,6 +27,12 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Категории</td>
+                        <td>
+                            <Categories :data="product.categories"></Categories>                       
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Статус</td>
                         <td><input v-model="product.active"></td>
                     </tr>
@@ -45,13 +51,15 @@
 </template>
 
 <script>
-    import Tariffs from './Products__tariffs/Products__tariffs'
+    import Tariffs from './prod_tariffs'
+    import Categories from './prod_categories'
     export default {
         props: {
             data: Object
         },
         components: {
-            Tariffs
+            Tariffs,
+            Categories
         },
         data() {
             return {
@@ -108,6 +116,9 @@
         computed: {
             tariffs() {
                 return this.$store.getters.tariffs
+            },
+            categories() {
+                return this.$store.getters.categories
             }
         }
     }

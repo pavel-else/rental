@@ -6,6 +6,7 @@
                 <th>Название</th>
                 <th>Стоимость</th>
                 <th>Тариф</th>
+                <th>Категория</th>
                 <th>Статус</th>
                 <th>Изменено</th>
             </tr>
@@ -14,6 +15,7 @@
                 <td>{{ product.name }}</td>
                 <td>{{ product.cost }}</td>
                 <td>{{ product.tariff_id }}</td>
+                <td>{{ product.categories }}</td>
                 <td>{{ product.active }}</td>
                 <td>{{ product.updated }}</td>
             </tr>
@@ -44,7 +46,7 @@
             onClick(product) {
                 this.product = product
                 this.show = true
-                console.log(product)
+                //console.log(product)
             },
             newProduct() {
                 this.show = true
