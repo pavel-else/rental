@@ -135,9 +135,12 @@
                     tariff: null
                 },
 
-                tariffs: this.product.tariff_id ? this.product.tariff_id.split(',').map(id => {
-                    id = this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
 
+                tariffs: this.product.tariff_id ? this.product.tariff_id.split(',').map(id => {
+                    // id = this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
+                    console.log(this.$store.getters.tariffs)
+
+                    return []
                     return id
                 }): []
             }

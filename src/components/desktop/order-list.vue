@@ -41,8 +41,9 @@
         },
 
         methods: {
-            getBill:     _getBill,
-            timeFormat:  _timeFormat,
+            getBill() {
+                return 0
+            },
 
             getTimePlay(start, end) {
                 return 
