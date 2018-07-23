@@ -36,7 +36,6 @@
                 this.$emit('setTariffs', ids.join())
             }
         }
-
     }
 </script>
 
