@@ -1,4 +1,3 @@
-# asdfsdf
 <template>
     <div class="canvas">
         <div class="details">

@@ -4,10 +4,9 @@
             <li 
                 class="categories__li" 
                 v-for="(category) in categories"
-                v-if="category.show"
-                @click="onClick(category)"
+                v-if="category.parent == null"
             >
-                <input type="checkbox" v-model="category.check">
+                <input type="checkbox" v-model="category.check" @change="onClick(category)">
                 {{ category.name }}
             </li>
         </ul>
@@ -21,39 +20,35 @@
         },
         data() {
             return {
-                categories: this.$store.getters.categories.map(cat => {
-                    //this.$set(cat, 'check',false)
-                    cat.show = cat.parent == null ? true : false
+                categories: this.$store.getters.categories,
 
-                    return cat
-                })
-                    // Классическая реализация сортировки списка "пузырьком"                    
-                    /*                    const sort = (acc) => {
-                        if (!acc) {
-                            return false
-                        }
-
-                        let tmp = null
-
-                        for (let i = 0; i < acc.length; i++) {
-                            for (let j = 1; j < acc.length; j++) {
-                                if (acc[j].parent < acc[j - 1].parent) {
-                                    tmp = acc[j]
-                                    acc[j] = acc[j - 1]
-                                    acc[j - 1] = tmp
-                                }
-                            }
-                        }
-
-                        return acc
-                    }*/
+                map: [[1, [4, [5, 6, 7]]], [2, [3]]]
             }
         },
 
         methods: {
             onClick(category) {
-                console.log(this.categories)
-            },
+                const map = this.map
+
+                const ul = (fill) => {
+                    return '<ul>' + fill + '</ul>'
+                }
+
+                const li = (fill) => {
+                    return '<li>' + fill + '</li>'
+                }
+
+                const gen = (map) => {
+                    return ul(map.map(item => {
+                        return typeof(item) === 'object' ? li(gen(item)) :  li(item)
+                    }))
+
+                }
+
+                console.log(gen(map))
+            }
+        },
+        computed: {
 
         }
     }
