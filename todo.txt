@@ -22,3 +22,6 @@ todo
 
 	Клиенты
 		1. Добавить статистику
+
+
+http://insbor.ru/vuejs-multi-select
