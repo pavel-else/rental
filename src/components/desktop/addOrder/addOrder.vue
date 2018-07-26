@@ -80,15 +80,15 @@
                 <tr>
                     <td>Тарифный план</td>
                     <td>
-                        <Select :data="tariffs"></Select>
-<!--                         <select v-model="select.tariff" @change="setTariff">
+<!--                         <Select :data="tariffs"></Select> -->
+                        <select v-model="select.tariff" @change="setTariff">
                             <option 
                                 v-for="tariff in tariffs"
                                 :value="tariff.id_rent"
                             >
                                 {{ tariff.id_rent }}. {{ tariff.name }}
                             </option>
-                        </select> -->
+                        </select>
                     </td>
                 </tr>
             </table>

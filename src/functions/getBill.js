@@ -1,6 +1,9 @@
 import roundBill from './roundBill'
 export default {
     getBill(tariff_id, time /**ms*/) {
+        if (!tariff_id || !time) {
+            return 0
+        }
         
         const tariff = this.$store.getters.tariffs.find(tariff => tariff.id_rent === tariff_id)
 
