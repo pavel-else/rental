@@ -12,7 +12,7 @@
                         <td class="ord__td-3">{{ subitem.product_id }}</td>
                         <td class="ord__td-4">{{ subitem.name }}</td>
                         <td class="ord__td-6">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
-                        <td>{{ getBill(item, subitem.tariff_id) }} р</td>
+                        <td>{{ getBill(subitem.tariff_id, getTime(item.start_time, item.end_time)) }} р</td>
                         <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem.product_id)" v-if="!subitem.end_time">x</td>
                     </tr>
                 </td>
@@ -24,11 +24,11 @@
 </template>
 
 <script>
-    import Details      from './details'
+    import Details    from './details'
 
-    import getBill      from '../../functions/getBill'
-    import _timeFormat  from '../../functions/timeFormat'
-    import * as getTime from '../../functions/getTime'
+    import getBill    from '../../functions/getBill'
+    import timeFormat from '../../functions/timeFormat'
+    import getTime    from '../../functions/getTime'
 
     export default {
         components: {
@@ -42,12 +42,14 @@
 
         methods: {
             ...getBill,
+            ...getTime,
+            ...timeFormat,
 
             getTimePlay(start, end) {
-                return 
-
-                //return this.timeFormat(this.getTime(start, end))
+                const time = this.getTime(start, end)
+                return this.timeFormat(time)
             },
+
 
             stopOrder(order, product_id) {
                 /*

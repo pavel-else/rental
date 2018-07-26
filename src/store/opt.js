@@ -12,10 +12,13 @@ export default {
             'getCategories', 
             'getLogs'
         ],
+
         now: new Date(),
         max_order_id: Number,
         new_order_id: Number,
         max_tariff_id: Number,
+
+        rent_min_time: 30 * 60 * 1000, //min to ms
 
         depositList: {
             1: 'Паспорт',
@@ -67,7 +70,7 @@ export default {
     },
     actions: {
         startTimer({commit}) {
-            setInterval(() => {commit('now', new Date())}, 1000)
+            setInterval(() => {commit('now', new Date())}, 3000)
         }
     },
     getters: {
@@ -85,6 +88,9 @@ export default {
         },
         accessories(state) {
             return state.accessories
+        },
+        rentMinTime(state) {
+            return state.rent_min_time
         }
     }
 }

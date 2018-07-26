@@ -25,8 +25,6 @@ export default {
         this.$store.dispatch('upd')
 
         // Обновление таймеров
-        setInterval(() => {this.now = new Date()}, 1000)
-
         this.$store.dispatch('startTimer')
     },
 }
