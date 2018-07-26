@@ -1,6 +1,6 @@
 <template>
     <div class="canvas">
-        <div class="details">
+        <div class="add-order details">
             <h3>Новый ордер<span> - #{{ order.order_id }}</span></h3>
 
             <table>
@@ -80,14 +80,15 @@
                 <tr>
                     <td>Тарифный план</td>
                     <td>
-                        <select v-model="select.tariff" @change="setTariff">
+                        <Select :data="tariffs"></Select>
+<!--                         <select v-model="select.tariff" @change="setTariff">
                             <option 
                                 v-for="tariff in tariffs"
                                 :value="tariff.id_rent"
                             >
                                 {{ tariff.id_rent }}. {{ tariff.name }}
                             </option>
-                        </select>
+                        </select> -->
                     </td>
                 </tr>
             </table>
@@ -101,13 +102,15 @@
 
 <script>
     import Position from './idPosition'
+    import Select from '../../share/Select.vue'
 
     export default {
         props: {
             product: Object
         },
         components: {
-            Position
+            Position,
+            Select
         },
         data() {
             return {
@@ -236,6 +239,9 @@
 </script>
 
 <style>
+    .add-order {
+        margin-top: 80px;
+    }
     .btn-group {
         margin-top: 20px;
     }
