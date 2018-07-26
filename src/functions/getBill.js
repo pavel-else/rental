@@ -38,9 +38,16 @@ export default {
             return result < tariff._h_max ? roundBill(result) : tariff._h_max
         }
 
+        const d = (tariff, time) => {
+            const days = time / 1000 / (3600 * 24)
+            const ceil = Math.ceil(days)
+
+            return ceil * tariff.cost
+        }
+
         switch (tariff.type) {
             case 'd':
-                return tariff.cost
+                return d(tariff, time)
             break
             case 'f':
                 return tariff.cost
@@ -51,7 +58,3 @@ export default {
         }
     }    
 }
-
-// time - start - end
-// tariff
-// return bill

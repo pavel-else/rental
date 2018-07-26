@@ -50,7 +50,6 @@
                 return this.timeFormat(time)
             },
 
-
             stopOrder(order, product_id) {
                 /*
                 * Функция принимает ордер и id продукта, ставит временную метку стопа,
@@ -58,18 +57,16 @@
                 * Если id продукта не указан, то функция остановки применяется для всех активных ордеров
                 */
 
-                if (!order) console.log('stopOrder: empty order')
-                if (!product_id) console.log('stopOrder: empty product_id')
-                // сервер принимает 1шт продукт
+                if (!order) {
+                    console.log('stopOrder: empty order')
+                    return false
+                }
 
                 const stop = (product_id) => {
                     const product = order.products.find(p => p.product_id == product_id)
 
                     product.end_time = Math.floor(Date.now() / 1000)
-
-                    const getBill = this.$store.getters.getBill()
-
-                    product.bill = getBill(order, product_id)
+                    product.bill = this.getBill(product.tariff_id, this.getTime(order.start_time, product.end_time))
 
                     this.$store.dispatch('send', {
                         cmd: 'stopOrder',
@@ -84,9 +81,9 @@
                         stop(p.product_id)
                     })
                 }
+
                 this.order = order
-                return product_id ? stop(product_id) : stopAll()
-                
+                return product_id ? stop(product_id) : stopAll()                
             },
 
             onClose() {
