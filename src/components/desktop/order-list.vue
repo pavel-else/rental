@@ -26,7 +26,7 @@
 <script>
     import Details      from './details'
 
-    import _getBill     from '../../functions/getBill'
+    import getBill      from '../../functions/getBill'
     import _timeFormat  from '../../functions/timeFormat'
     import * as getTime from '../../functions/getTime'
 
@@ -41,9 +41,7 @@
         },
 
         methods: {
-            getBill() {
-                return 0
-            },
+            ...getBill,
 
             getTimePlay(start, end) {
                 return 
