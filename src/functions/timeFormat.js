@@ -8,12 +8,14 @@ export default {
             return val < 10 ? '0' + val : val
         }
 
-        var sec = ms / 1000
+        let sec = ms / 1000
         , day = sec / (3600 * 24)
         , hours = sec / 3600  % 24
         , minutes = sec / 60 % 60
         , seconds = sec % 60
 
-        return `${num(day)} дн. ${num(hours)}:${num(minutes)}:${num(seconds)}`
+        let str = Math.floor(day) ? `${num(day)} дн. ` : ''
+
+        return `${str}${num(hours)}:${num(minutes)}:${num(seconds)}`
     }
 }

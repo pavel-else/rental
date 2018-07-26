@@ -15,7 +15,7 @@
                 <td class="">{{ item.order_id }}</td>
                 <td class="">{{ item.customer_name }}</td>
                 <td class="">{{ item.start_time }}</td>
-                <td>{{ getTimePlay(item) }}</td>
+                <td class="history__td history__td--time">{{ getTimePlay(item) }}</td>
                 <td>
                     {{ item.products[0].name }}
                     <span v-if="item.products.length > 1"> и еще {{ item.products.length - 1 }} шт</span>
@@ -96,5 +96,9 @@
 
     .history__table td {
         border: 1px solid lightgray;
+        padding: 2px;
+    }
+    .history__td--time {
+        text-align: right;
     }
 </style>
