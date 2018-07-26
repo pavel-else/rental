@@ -29,7 +29,7 @@
                     <tr>
                         <td>Категории</td>
                         <td>
-                            <Categories :data="product.categories"></Categories>                       
+                            <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>                       
                         </td>
                     </tr>
                     <tr>
@@ -74,7 +74,7 @@
 
                 //console.log(this.product)
 
-
+                console.log(this.product)
                 this.$store.dispatch('send', {
                     cmd: 'setProduct',
                     value: this.product
@@ -111,6 +111,10 @@
             },
             setTariffs(ids) {
                 this.product.tariff_id = ids
+            },
+            setCategories(ids) {
+                console.log(ids)
+                this.product.categories = ids
             }
         },
         computed: {

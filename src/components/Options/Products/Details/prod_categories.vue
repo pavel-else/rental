@@ -4,9 +4,8 @@
             <li 
                 class="categories__li" 
                 v-for="(category) in categories"
-                v-if="category.parent == null"
             >
-                <input type="checkbox" v-model="category.check" @change="onClick(category)">
+                <input type="checkbox" v-model="category.check" @change="onSet(category)">
                 {{ category.name }}
             </li>
         </ul>
@@ -20,37 +19,27 @@
         },
         data() {
             return {
-                categories: this.$store.getters.categories,
+                categories: this.$store.getters.categories.map(category => {
+                    const ids = this.data ? this.data.split(',') : []
+
+                    // Поле check нужно для отображения чекбоксов
+                    category.check = ids.find(id => id === category.id_rent) ? true : false
+
+                    return category
+                }),
 
                 map: [[1, [4, [5, 6, 7]]], [2, [3]]]
             }
         },
 
         methods: {
-            onClick(category) {
-                const map = this.map
+            onSet(category) {
+                const filter = this.categories.filter(category => category.check == true)
+                const ids = filter.map(category => category.id_rent)
 
-                const ul = (fill) => {
-                    return '<ul>' + fill + '</ul>'
-                }
-
-                const li = (fill) => {
-                    return '<li>' + fill + '</li>'
-                }
-
-                const gen = (map) => {
-                    return ul(map.map(item => {
-                        return typeof(item) === 'object' ? li(gen(item)) :  li(item)
-                    }))
-
-                }
-
-                console.log(gen(map))
+                this.$emit('setCategories', ids.join())
             }
         },
-        computed: {
-
-        }
     }
 </script>
 
