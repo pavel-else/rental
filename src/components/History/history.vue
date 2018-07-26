@@ -32,6 +32,8 @@
 
 <script>
     import Details from './Details'
+    import getTime from '../../functions/getTime'
+    import timeFormat from '../../functions/timeFormat'
 
     export default {
         components: {
@@ -44,41 +46,23 @@
             }
         },
         methods: {
-            getTimePlay(item) {
-                const timeFormat = function (ms/**number*/) {
-                    if (ms < 0) ms = 0;
+            ...getTime,
+            ...timeFormat,
 
-                    function num(val){
-                        val = Math.floor(val);
-                        return val < 10 ? '0' + val : val;
-                    }
-                    
-                    var sec = ms / 1000
-                      , hours = sec / 3600  % 24
-                      , minutes = sec / 60 % 60
-                      , seconds = sec % 60
-                    ;
+            getTimePlay(order) {
+                const start = order.start_time
 
-                    return num(hours) + ":" + num(minutes) + ":" + num(seconds);
-                }
+                const end = order.products.reduce((acc, product) => {
+                    const end = Date.parse(product.end_time)
 
-                const now = this.$store.getters.now
+                    acc = acc < end ? end : acc
 
-                const products = item.products
-                
-                let max = null
-                let end_time = null
-                let diff = null 
-                const start_time = Date.parse(item.start_time)
+                    return acc
+                }, null)
 
-                for (let i = 0; i < products.length; i++) {
-                    end_time = products[i].end_time ? Date.parse(products[i].end_time) : null
-                    diff = end_time ? end_time - start_time : now - start_time
+                const time = this.getTime(start, new Date(end))
 
-                    if (diff > max) max = diff                  
-                }
-
-                return timeFormat(diff)
+                return this.timeFormat(time)
             },
 
             onClick(order) {
