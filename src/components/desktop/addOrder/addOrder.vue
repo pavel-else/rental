@@ -89,6 +89,7 @@
                                 {{ tariff.id_rent }}. {{ tariff.name }}
                             </option>
                         </select>
+                        <Multiselect :data="{}"></Multiselect>
                     </td>
                 </tr>
             </table>
@@ -101,8 +102,10 @@
 </template>
 
 <script>
+    import Multiselect from './Multiselect'
+
     import Position from './idPosition'
-    import Select from '../../share/Select.vue'
+    //import Select from '../../share/Select.vue'
 
     export default {
         props: {
@@ -110,7 +113,7 @@
         },
         components: {
             Position,
-            Select
+            Multiselect
         },
         data() {
             return {
@@ -139,12 +142,14 @@
                     tariff: null
                 },
 
-
                 tariffs: this.product.tariff_id ? this.product.tariff_id.split(',').map(id => {
                     id = this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
 
                     return id
-                }): []
+                }) : [],
+
+                value: this.$store.getters.tariffs[0].name,
+                options: this.$store.getters.tariffs.map(i=>i.name),
             }
         },
         methods: {

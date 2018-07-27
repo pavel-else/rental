@@ -4,9 +4,9 @@ todo
 		1. Рефакторинг кода - БД - id_rental_org type
 		1. Рефакторинг кода - addOrder
 		2. LocalStorage
-		3. Переработать функцию просчета стоимости
+
 		4. Продумать логику обработки Аксессуаров, их влияния на стоимость.
-		5. Вынести timeFormat в общую функцию
+
 
 	БД
 		1. добавить таблицу Акции
@@ -25,3 +25,4 @@ todo
 
 
 http://insbor.ru/vuejs-multi-select
+https://vue-multiselect.js.org/
