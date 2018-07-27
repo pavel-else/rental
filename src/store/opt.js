@@ -24,9 +24,6 @@ export default {
         new_order_id: Number,
         max_tariff_id: Number,
 
-        rent_min_time: 0, //ms
-        rent_round_bill: 0,
-
         depositList: {
             1: 'Паспорт',
             2: 'Водительское',

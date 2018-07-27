@@ -277,7 +277,6 @@ class Request
             $sql = '
                 UPDATE `options` 
                 SET 
-                    `id_rent` = :id_rent,
                     `value`   = :value 
                 WHERE `id` = :id
                 AND `id_rental_org` = :id_rental_org

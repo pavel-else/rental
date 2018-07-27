@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul class="adm_list">
-            <li><router-link to="/">Home</router-link></li>
+            <li><router-link to="/">Прокат</router-link></li>
             <li><router-link to="/customers">Клиенты</router-link></li>
             <li><router-link to="/history">История</router-link></li>
             <li><router-link to="/options">Настройки</router-link></li>
