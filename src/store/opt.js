@@ -14,6 +14,11 @@ export default {
             'getLogs'
         ],
 
+        options: {
+            rent_min_time: 0, //ms
+            rent_round_bill: 0,          
+        },
+
         now: new Date(),
         max_order_id: Number,
         new_order_id: Number,
@@ -60,10 +65,11 @@ export default {
 
     },
     mutations: {
-        setOpt(state, opt) {
-            for (let prop in opt) {
-                state[prop] = opt[prop]
-            }
+        setOpt(state, options) {
+            options.map(opt => {
+                state.options[opt.name] = opt.value
+            })
+
             console.log('set options')
         },
         now(state, date) {
@@ -94,7 +100,7 @@ export default {
             return state.now
         },
         options(state) {
-            return state
+            return state.options
         },
         depositList(state) {
             return state.depositList
@@ -106,10 +112,10 @@ export default {
             return state.accessories
         },
         rentMinTime(state) {
-            return state.rent_min_time
+            return state.options.rent_min_time
         },
         rent_round_bill(state) {
-            return state.rent_round_bill
+            return state.options.rent_round_bill
         }
     }
 }

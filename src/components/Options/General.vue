@@ -3,7 +3,7 @@
         <table>
             <tr>
                 <td>Округление (руб)</td>
-                <td><input v-model="rent_round_bill"></td>
+                <td><input v-model="options.rent_round_bill"></td>
             </tr>
             <tr>
                 <td>Округление (мин)</td>
@@ -11,7 +11,7 @@
             </tr>
             <tr>
                 <td>Порог минимальной стоимости (мин)</td>
-                <td><input v-model="rentMinTime"></td>
+                <td><input v-model="options.rent_min_time"></td>
             </tr>
             <tr>
                 <td>Время на оформление</td>
@@ -26,6 +26,7 @@
                 <td><input type="password" value="123123"></td>
             </tr>
         </table>
+
         <button class="option-general__button" @click="onSet">Применить</button>
     </div>
 </template>
@@ -33,16 +34,20 @@
     export default {
         data() {
             return {
-                rentMinTime: this.$store.getters.rentMinTime / 60 / 1000,
-                rent_round_bill: this.$store.getters.rent_round_bill
+                options: this.$store.getters.options,
+                change: false
             }
         },
         methods: {
             onSet() {
-                this.$store.dispatch('rent_round_bill', this.rent_round_bill)
-                this.$store.dispatch('rent_min_time', this.rentMinTime)
+                console.log(this.options)
+                
+                this.$store.dispatch('send', {
+                    cmd: 'setOptions',
+                    value: this.options
+                })
             }
-        }
+        },
     }
 </script>
 <style scoped>
