@@ -18,7 +18,8 @@ export default {
         new_order_id: Number,
         max_tariff_id: Number,
 
-        rent_min_time: 30 * 60 * 1000, //min to ms
+        rent_min_time: 0, //ms
+        rent_round_bill: 0,
 
         depositList: {
             1: 'Паспорт',
@@ -66,11 +67,25 @@ export default {
         },
         now(state, date) {
             state.now = date
+        },
+        rent_min_time(state, time) {
+            state.rent_min_time = time * 60 * 1000
+        },
+
+        rent_round_bill(state, round) {
+            state.rent_round_bill = round
         }
+
     },
     actions: {
         startTimer({commit}) {
             setInterval(() => {commit('now', new Date())}, 3000)
+        },
+        rent_min_time({commit}, time) {
+            commit('rent_min_time', time)
+        },
+        rent_round_bill({commit}, round) {
+            commit('rent_round_bill', round)
         }
     },
     getters: {
@@ -91,6 +106,9 @@ export default {
         },
         rentMinTime(state) {
             return state.rent_min_time
+        },
+        rent_round_bill(state) {
+            return state.rent_round_bill
         }
     }
 }

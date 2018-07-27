@@ -9,13 +9,11 @@ import options from './opt'
 import tariffs from './tariffs'
 import categories from './categories'
 import history from './History/history'
-import getBill from './getBill'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
     modules: {
-        getBill,
         products,
         customers,
         orders,
