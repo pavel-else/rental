@@ -1,11 +1,15 @@
 import roundBill from './roundBill'
+
 export default {
     getBill(tariff_id, time /**ms*/) {
         if (!tariff_id || !time) {
             return 0
         }
-        
-        const tariff = this.$store.getters.tariffs.find(tariff => tariff.id_rent === tariff_id)
+
+        const tariff = this.$store.getters.tariffs.find(tariff => tariff.id_rent == tariff_id)
+        if (!tariff) {
+            return 0
+        }
 
         // Функция для просчета расчасовки
         const h = (tariff, time) => {
@@ -20,7 +24,7 @@ export default {
             // Алиасы
             const minTime = this.$store.getters.rentMinTime // Порог минималки, 30 min
             const hh = tariff._h_h // расчасовка
-            const last_h = +tariff._h_h[tariff._h_h.length - 1]// Последний и последующие часы, 80р
+            let last_h = +tariff._h_h[0]
             
             if (time < minTime) {
                 return tariff._h_min
@@ -28,8 +32,10 @@ export default {
 
             let result = 0
             let h = time / 1000 / 3600
+
             for (let i = 0; i < Math.floor(h); i++) {
                 result += hh[i] ? +hh[i] : last_h
+                last_h = hh[i] ? +hh[i] : last_h
 
                 if (result > tariff._h_max) {
                     return tariff._h_max
@@ -38,7 +44,14 @@ export default {
 
             result += last_h * (h - Math.floor(h))
 
-            return result < tariff._h_max ? roundBill(result) : tariff._h_max
+            if (result > tariff._h_max) {
+                result = tariff._h_max
+            } else if (result < tariff._h_min) {
+                result = tariff._h_min
+            }
+                
+            return roundBill(result) 
+            
         }
 
         const d = (tariff, time) => {
