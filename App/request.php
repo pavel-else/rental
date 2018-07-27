@@ -63,6 +63,9 @@ class Request
                 case 'getCategories':
                     $this->response['categories'] = $this->getCategories();
                 break;
+                case 'getOptions':
+                    $this->response['options'] = $this->getOptions();
+                break;
                 case 'getMaxOrderID':
                     $this->response['options']['max_order_id'] = $this->getMaxOrderID();
                     $this->response['options']['new_order_id'] = $this->getMaxOrderID() + 1;
@@ -215,6 +218,24 @@ class Request
         $sql = '
             SELECT * 
             FROM `categories` 
+            WHERE `id_rental_org` = :id_rental_org
+        ';
+
+        $d = array(
+            'id_rental_org' => $this->app_id
+        );
+
+        return $this->pDB->get($sql, 0, $d);
+    }
+
+    private function getOptions() {
+        /*
+        * Функция Выбирает Настройки из БД
+        */
+
+        $sql = '
+            SELECT `id_rent`, `name`, `value`  
+            FROM `options` 
             WHERE `id_rental_org` = :id_rental_org
         ';
 

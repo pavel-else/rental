@@ -121,7 +121,9 @@
                         this.product.id_rent,
                     ],
                     start_time: Math.floor(Date.now() / 1000),
-                    order_id: this.$store.getters.options.new_order_id,
+
+                    order_id: Math.max(...this.$store.getters.history.map(o => +o.order_id)) + 1,
+
                     order_id_position: this.getFreeId(), // or setPosition($event) 
                     advance: null,
                     note: null,

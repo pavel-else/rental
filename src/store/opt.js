@@ -4,12 +4,13 @@ export default {
         cmds: [
             'getProducts',
             'getOrders', 
-            'getMaxOrderID', 
-            'getMaxTariffID', 
+            //'getMaxOrderID', 
+            //'getMaxTariffID', 
             'getClients', 
             'getHistory', 
             'getTariffs', 
             'getCategories', 
+            'getOptions', 
             'getLogs'
         ],
 
