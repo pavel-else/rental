@@ -14,7 +14,7 @@
                 </tr>
                 <tr>
                     <td>Аванс</td>
-                    <td><input type="text" v-model="order.advance" placeholder="0 руб"></td>
+                    <td><input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб"></td>
                 </tr>
                 <tr>
                     <td>Клиент</td>
@@ -29,22 +29,13 @@
                 <tr>
                     <td>Залог</td>
                     <td>
-<!--                         <select v-model="select.deposit" @change="setDeposit">
-                            <option value="">Выбрать</option>
-                            <option 
-                                :value="deposit"
-                                v-for="deposit in depositList"
-                            >
-                                {{ deposit }}
-                            </option>
-                        </select> -->
                         <SelectDeposit :data="deposits" @setDeposit="setDeposit($event)"></SelectDeposit>
                     </td>
                 </tr>
                 <tr>
                     <td>Примечание</td>
                     <td>
-                        <textarea name="" id="" cols="30" rows="3" v-model="order.note"></textarea>
+                        <textarea class="add-order__input--note" cols="30" rows="3" v-model="order.note"></textarea>
                     </td>
                 </tr>
                 <tr>
@@ -80,12 +71,12 @@
 </template>
 
 <script>
-    import Position     from './IdPosition'
-    import SelectCustomer       from './SelectCustomer'
+    import Position          from './IdPosition'
+    import SelectCustomer    from './SelectCustomer'
     import SelectAccessories from './SelectAccessories'
-    import SelectTariff from './SelectTariff'
-    import SelectPromotion from './SelectPromotion'
-    import SelectDeposit from './SelectDeposit'
+    import SelectTariff      from './SelectTariff'
+    import SelectPromotion   from './SelectPromotion'
+    import SelectDeposit     from './SelectDeposit'
 
     export default {
         props: {
@@ -200,8 +191,25 @@
     .add-order {
         width: 400px;
         margin-top: 80px;
+        padding: 10px 20px;
+    }
+
+    .add-order td {
+        padding: 5px 0;
     }
     .btn-group {
         margin-top: 20px;
+    }
+    .add-order__input {
+        width: 300px;
+        min-height: 40px;
+        border-radius: 5px;
+        border: 1px solid #e8e8e8;
+    }
+    .add-order__input--note {
+        resize: vertical;
+        width: 98%;
+        border-radius: 5px;
+        border-color: #e8e8e8;
     }
 </style>
