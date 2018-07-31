@@ -4,8 +4,6 @@ export default {
         cmds: [
             'getProducts',
             'getOrders', 
-            //'getMaxOrderID', 
-            //'getMaxTariffID', 
             'getClients', 
             'getHistory', 
             'getTariffs', 
@@ -24,17 +22,44 @@ export default {
         new_order_id: Number,
         max_tariff_id: Number,
 
-        depositList: {
-            1: 'Паспорт',
-            2: 'Водительское',
-            3: 'Военный билет',
-            4: 'Загран. паспорт',
-            5: 'Мед. полис',
-            6: 'Снилс',
-            7: 'Студентческий',
-            8: 'Удостоверение',
-            9: 'Другое',
-        },
+        depositList: [
+            {
+                id: 1,
+                name: 'Паспорт'
+            },
+            {
+                id: 2,
+                name: 'Водительское'
+            },
+            {
+                id: 3,
+                name: 'Военный билет'
+            },
+            {
+                id: 4,
+                name: 'Загран. паспорт'
+            },
+            {
+                id: 5,
+                name: 'Мед. полис'
+            },
+            {
+                id: 6,
+                name: 'Снилс'
+            },
+            {
+                id: 7,
+                name: 'Студентческий'
+            },
+            {
+                id: 8,
+                name: 'Водительское'
+            },
+            {
+                id: 9,
+                name: 'Другое'
+            }
+        ],
 
         promotions: [
             {

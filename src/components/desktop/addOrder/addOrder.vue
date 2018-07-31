@@ -29,7 +29,7 @@
                 <tr>
                     <td>Залог</td>
                     <td>
-                        <select v-model="select.deposit" @change="setDeposit">
+<!--                         <select v-model="select.deposit" @change="setDeposit">
                             <option value="">Выбрать</option>
                             <option 
                                 :value="deposit"
@@ -37,7 +37,8 @@
                             >
                                 {{ deposit }}
                             </option>
-                        </select>
+                        </select> -->
+                        <SelectDeposit :data="deposits" @setDeposit="setDeposit($event)"></SelectDeposit>
                     </td>
                 </tr>
                 <tr>
@@ -49,14 +50,6 @@
                 <tr>
                     <td>Акция</td>
                     <td>
-<!--                         <select v-model="select.promotion" @change="setPromotion">
-                            <option 
-                                :value="promo"
-                                v-for="promo in promotions"
-                            >
-                                {{ promo.name }}
-                            </option>
-                        </select> -->
                         <SelectPromotion :data="promotions" @setPromotion="setPromotion($event)"></SelectPromotion>
                     </td>
                 </tr>
@@ -92,6 +85,7 @@
     import SelectAccessories from './SelectAccessories'
     import SelectTariff from './SelectTariff'
     import SelectPromotion from './SelectPromotion'
+    import SelectDeposit from './SelectDeposit'
 
     export default {
         props: {
@@ -103,6 +97,7 @@
             SelectAccessories,
             SelectTariff,
             SelectPromotion,
+            SelectDeposit,
         },
         data() {
             return {
@@ -123,13 +118,6 @@
                     accessories: null,
                     tariff: this.product.tariff_default,
                     customer: null     
-                },
-
-                select: {
-                    customer: null,
-                    deposit: null,
-                    promotion: null,
-                    accessories: null,
                 },
 
                 tariffs: this.product.tariff_id ? this.product.tariff_id.split(',').map(id => {
@@ -174,8 +162,8 @@
 
                 //console.log($event)
             },
-            setDeposit() {
-                this.order.deposit = this.select.deposit
+            setDeposit(deposit) {
+                this.order.deposit = deposit.id
             },
             setPromotion(promotion) {
                 this.order.promotion = promotion.id
@@ -195,7 +183,7 @@
             freeId() {
                 return this.getFreeId()
             },
-            depositList() {
+            deposits() {
                 return this.$store.getters.depositList
             },
             promotions() {
