@@ -3,10 +3,10 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-import Desktop from './components/desktop/Desktop'
-import History from './components/History/history'
+import Desktop   from './components/desktop/Desktop'
+import History   from './components/History/history'
 import Customers from './components/Customers/Customers'
-import Options from './components/Options/Options'
+import Options   from './components/Options/Options'
 
 const routes = [
     {

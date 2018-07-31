@@ -77,7 +77,6 @@
         computed: {
             history() {
                 const history = this.$store.getters.history
-                console.log(history)
                 //if (typeof(history) !== 'array') return {}
 
                 const result = history.filter(o => o.order_id > 780)

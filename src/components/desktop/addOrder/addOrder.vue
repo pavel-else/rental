@@ -19,15 +19,11 @@
                 <tr>
                     <td>Клиент</td>
                     <td>
-                        <select @change="setClient" v-model="select.customer">
-                            <option value="">Выбрать</option>
-                            <option 
-                                v-for="customer in customers"
-                                :value="customer"
-                            >
-                                {{ customer.fname + ' ' + customer.sname  + ' ' + customer.tname }}
-                            </option>
-                        </select>
+                        <SelectCustomer 
+                            :data="customers"
+                            @setCustomer="setCustomer($event)" 
+                        >
+                        </SelectCustomer>
                     </td>
                 </tr>
                 <tr>
@@ -53,39 +49,32 @@
                 <tr>
                     <td>Акция</td>
                     <td>
-                        <select v-model="select.promotion" @change="setPromotion">
+<!--                         <select v-model="select.promotion" @change="setPromotion">
                             <option 
                                 :value="promo"
                                 v-for="promo in promotions"
                             >
                                 {{ promo.name }}
                             </option>
-                        </select>
+                        </select> -->
+                        <SelectPromotion :data="promotions" @setPromotion="setPromotion($event)"></SelectPromotion>
                     </td>
                 </tr>
                 <tr>
                     <td>Аксессуары</td>
                     <td>
-                        <select v-model="select.accessories" @change="setAccessories">
-                            <option 
-                                :value="item"
-
-                                v-for="item in accessories"
-                            >
-                                {{ item.name }}
-                            </option>
-                        </select>
+                        <SelectAccessories :data="accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
                     </td>
                 </tr>
                 <tr>
                     <td>Тарифный план</td>
                     <td>
-                        <Multiselect 
+                        <SelectTariff 
                             :data-tariffs="tariffs" 
                             :data-tariff-default="product.tariff_default" 
                             @setTariff="setTariff($event)"
                         >
-                        </Multiselect>
+                        </SelectTariff>
                     </td>
                 </tr>
             </table>
@@ -98,10 +87,11 @@
 </template>
 
 <script>
-    import Multiselect from './Multiselect'
-
-    import Position from './idPosition'
-    //import Select from '../../share/Select.vue'
+    import Position     from './IdPosition'
+    import SelectCustomer       from './SelectCustomer'
+    import SelectAccessories from './SelectAccessories'
+    import SelectTariff from './SelectTariff'
+    import SelectPromotion from './SelectPromotion'
 
     export default {
         props: {
@@ -109,7 +99,10 @@
         },
         components: {
             Position,
-            Multiselect
+            SelectCustomer,
+            SelectAccessories,
+            SelectTariff,
+            SelectPromotion,
         },
         data() {
             return {
@@ -128,7 +121,8 @@
                     note: null,
                     promotion: null,
                     accessories: null,
-                    tariff: this.product.tariff_default       
+                    tariff: this.product.tariff_default,
+                    customer: null     
                 },
 
                 select: {
@@ -141,9 +135,6 @@
                 tariffs: this.product.tariff_id ? this.product.tariff_id.split(',').map(id => {
                     return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
                 }) : [],
-
-                value: this.$store.getters.tariffs[0].name,
-                options: this.$store.getters.tariffs.map(i=>i.name),
             }
         },
         methods: {
@@ -152,6 +143,7 @@
             },
             save() {
                 console.log(this.order)
+
                 this.$store.dispatch('send', {
                     cmd: 'setOrder',
                     value: this.order
@@ -159,13 +151,9 @@
 
                 this.close()
             },
-            setClient() {
-                const client = this.select.customer
-
-                this.order.customer_id = client.id_rent
-                this.order.customer_name = `${client.fname} ${client.sname} ${client.tname}`
-
-                console.log(this.order.customer_id)
+            setCustomer(customer) {
+                this.order.customer_id = customer.id_rent
+                this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
             },
             getFreeId() {
                 const orders = this.$store.getters.orders
@@ -189,15 +177,16 @@
             setDeposit() {
                 this.order.deposit = this.select.deposit
             },
-            setPromotion() {
-                this.order.promotion = this.select.promotion.id
+            setPromotion(promotion) {
+                this.order.promotion = promotion.id
             },
-            setAccessories() {
-                this.order.accessories = this.select.accessories.id
+            setAccessories(accessories) {
+                console.log(accessories)
+                this.order.accessories = accessories
             },
             setTariff(tariff) {
                 this.order.tariff = tariff.id_rent
-            }
+            },
         },
         computed: {
             customers() {
@@ -221,6 +210,7 @@
 
 <style>
     .add-order {
+        width: 400px;
         margin-top: 80px;
     }
     .btn-group {
