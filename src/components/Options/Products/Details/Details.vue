@@ -21,9 +21,14 @@
                         <td><input v-model="product.cost"></td>
                     </tr>
                     <tr class="products_tr--tariffs">
-                        <td>Тарифы</td>
+                        <td>Тарифы,<br>по умолчанию</td>
                         <td>
-                           <Tariffs :data="product.tariff_id" @setTariffs="setTariffs($event)"></Tariffs>                            
+                            <Tariffs 
+                                :data="product" 
+                                @setTariffs="setTariffs($event)"
+                                @setTariffDefault="setTariffDefault($event)"
+                            >
+                            </Tariffs>                            
                         </td>
                     </tr>
                     <tr>
@@ -107,13 +112,15 @@
 
                 this.change = true
 
-                //console.log(this.product)
+                console.log(this.product)
             },
             setTariffs(ids) {
                 this.product.tariff_id = ids
             },
+            setTariffDefault(id) {
+                this.product.tariff_default = id
+            },
             setCategories(ids) {
-                console.log(ids)
                 this.product.categories = ids
             }
         },

@@ -80,16 +80,12 @@
                 <tr>
                     <td>Тарифный план</td>
                     <td>
-<!--                         <Select :data="tariffs"></Select> -->
-                        <select v-model="select.tariff" @change="setTariff">
-                            <option 
-                                v-for="tariff in tariffs"
-                                :value="tariff.id_rent"
-                            >
-                                {{ tariff.id_rent }}. {{ tariff.name }}
-                            </option>
-                        </select>
-                        <Multiselect :data="{}"></Multiselect>
+                        <Multiselect 
+                            :data-tariffs="tariffs" 
+                            :data-tariff-default="product.tariff_default" 
+                            @setTariff="setTariff($event)"
+                        >
+                        </Multiselect>
                     </td>
                 </tr>
             </table>
@@ -131,7 +127,8 @@
                     advance: null,
                     note: null,
                     promotion: null,
-                    accessories: null       
+                    accessories: null,
+                    tariff: this.product.tariff_default       
                 },
 
                 select: {
@@ -139,13 +136,10 @@
                     deposit: null,
                     promotion: null,
                     accessories: null,
-                    tariff: null
                 },
 
                 tariffs: this.product.tariff_id ? this.product.tariff_id.split(',').map(id => {
-                    id = this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
-
-                    return id
+                    return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
                 }) : [],
 
                 value: this.$store.getters.tariffs[0].name,
@@ -200,10 +194,9 @@
             },
             setAccessories() {
                 this.order.accessories = this.select.accessories.id
-                console.log(this.order)
             },
-            setTariff() {
-                this.order.tariff = this.select.tariff
+            setTariff(tariff) {
+                this.order.tariff = tariff.id_rent
             }
         },
         computed: {
@@ -222,26 +215,7 @@
             accessories() {
                 return this.$store.getters.accessories
             },
-            // tariffs() {
-            //     //need filter
-            //     const products = this.$store.getters.products
-            //     const product_id = this.order.products[0]
-            //     const product = products.find(p => p.id_rent == product_id)
-            //     const tariff_id_list = product.tariff_id.split(',')
-
-            //     const tariffs = this.$store.getters.tariffsList
-
-            //     const result = tariff_id_list.reduce((acc, item) => {
-            //         acc.push(tariffs.find(t => t.id == item))
-            //         return acc
-            //     }, [])
-
-            //     console.log(result)
-
-            //     return result
-            // }
         }
-
     }
 </script>
 
