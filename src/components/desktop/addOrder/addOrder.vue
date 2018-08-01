@@ -10,7 +10,9 @@
                 </tr>
                 <tr>
                     <td>ID заказа</td>
-                    <td><Position :free="freeId" @setPosition="setPosition($event)"></Position></td>
+                    <td>
+                        <Position :free="getPosition()" @setPosition="setPosition($event)"></Position>
+                    </td>
                 </tr>
                 <tr>
                     <td>Аванс</td>
@@ -71,7 +73,8 @@
 </template>
 
 <script>
-    import Position          from './IdPosition'
+    import getOrderId        from '../../../functions/getOrderId'
+    import Position          from './IdPosition/IdPosition'
     import SelectCustomer    from './SelectCustomer'
     import SelectAccessories from './SelectAccessories'
     import SelectTariff      from './SelectTariff'
@@ -100,9 +103,9 @@
                     ],
                     start_time: Math.floor(Date.now() / 1000),
 
-                    order_id: Math.max(...this.$store.getters.history.map(o => +o.order_id)) + 1,
+                    order_id: this.getOrderId(),
 
-                    order_id_position: this.getFreeId(), // or setPosition($event) 
+                    order_id_position: this.getPosition(), // or setPosition($event) 
                     advance: null,
                     note: null,
                     promotion: null,
@@ -110,13 +113,11 @@
                     tariff: this.product.tariff_default,
                     customer: null     
                 },
-
-                tariffs: this.product.tariff_id ? this.product.tariff_id.split(',').map(id => {
-                    return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
-                }) : [],
             }
         },
         methods: {
+            ...getOrderId,
+
             close() {
                 this.$emit('close')
             },
@@ -134,7 +135,7 @@
                 this.order.customer_id = customer.id_rent
                 this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
             },
-            getFreeId() {
+            getPosition() {
                 const orders = this.$store.getters.orders
                 const count = 15
                 let id = null
@@ -150,8 +151,6 @@
             setPosition($event) {
                 this.order.order_id_position = $event.order_id_position
                 this.order.order_id = $event.order_id
-
-                //console.log($event)
             },
             setDeposit(deposit) {
                 this.order.deposit = deposit.id
@@ -160,20 +159,30 @@
                 this.order.promotion = promotion.id
             },
             setAccessories(accessories) {
-                console.log(accessories)
                 this.order.accessories = accessories
             },
             setTariff(tariff) {
                 this.order.tariff = tariff.id_rent
             },
         },
+
         computed: {
             customers() {
                 return this.$store.getters.customers
             },
-            freeId() {
-                return this.getFreeId()
+
+            tariffs() {
+                if (!this.product.tariff_id) {
+                    return []
+                }
+
+                const ids = this.product.tariff_id.split(',')
+
+                return ids.map(id => {
+                    return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
+                })
             },
+
             deposits() {
                 return this.$store.getters.depositList
             },
