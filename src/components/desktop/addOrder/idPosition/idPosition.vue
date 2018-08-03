@@ -9,13 +9,16 @@
             <div 
                 v-for="(item, index) in btns"
                 class="btn"
-                :class="item.class"
+                
                 @click="onClick(item, index)"
             >
+                <div class="icon" :class="item.class">
+                    <div v-show="!item.position" class="fill"></div>                    
+                </div>
                 {{item.position}}
             </div>
         </div>
-        <div class="btn" :class="selectIcon" v-else @click="show = true">{{ select }}</div>
+        <div class="btn" :class="selectIcon" v-else @click="show = true"><!-- {{ select }} --></div>
     </div>
 </template>
 
@@ -31,10 +34,6 @@
                 show: false,
                 select: this.free,
                 selectIcon: 'd' + this.free,
-                icons: {
-                    0: './img/star-green.svg',
-                    3: './img/star-green.svg',
-                }
             }
         },
         methods: {
@@ -73,8 +72,7 @@
                     result[num] = {
                         position: order ? num : null,
                         order_id: order ? order.order_id : newId,
-                        class: 'd' + num
-                            
+                        class: 'd' + num                          
                     }
 
                     return num < 1 ? result : iter(num - 1)
@@ -111,6 +109,16 @@
     }
     .select {
         background-color: #aaa;
+    }
+
+    .icon {
+        width: 100%;
+        height: 100%;       
+    }
+    .fill {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(256,256,256,0.8);
     }
 
     .d0 {
