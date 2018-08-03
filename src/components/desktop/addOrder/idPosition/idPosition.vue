@@ -1,37 +1,38 @@
 <template>
     <div class="customer-id">
-        <div class="btns tmp" v-if="show">
-            <!-- 
-                Перебираем массив (матица 4х4) 
-                Если в ячейке находится существующий ордер, выделяем его.
-                Выбираемая ячейка выделяется также
-            -->
+        <div class="btns tmp" v-if="open">
             <div 
-                v-for="(item, index) in btns"
                 class="btn"
-                
+                v-for="(item, index) in btns"
                 @click="onClick(item, index)"
             >
-                <div class="icon" :class="item.class">
-                    <div v-show="!item.position" class="fill"></div>                    
-                </div>
-                {{item.position}}
+                <Icon 
+                    :id="index" 
+                    :show="select == index || typeof(item.position) == 'number'" 
+                    :select="select == index">
+                </Icon>
             </div>
         </div>
-        <div class="btn" :class="selectIcon" v-else @click="show = true"><!-- {{ select }} --></div>
+        <div class="btn" v-else @click="open = true">
+            <Icon :id="select" :show="true" :select="false"></Icon>
+        </div>
     </div>
 </template>
 
 <script>
     import getOrderId from '../../../../functions/getOrderId'
+    import Icon from '../../Icon/Icon'
 
     export default {
         props: {
             free: Number
         },
+        components: {
+            Icon
+        },
         data() {
             return {
-                show: false,
+                open: false,
                 select: this.free,
                 selectIcon: 'd' + this.free,
             }
@@ -47,7 +48,7 @@
                 
                 this.$emit('setPosition', {order_id, order_id_position})
 
-                this.show = false
+                this.open = false
 
                 //console.log(order_id_position)
             }
@@ -101,76 +102,19 @@
         text-align: center;
     }
     .btn:hover {
-        outline: 1px solid red;
+        outline: 1px solid lightgray;
         cursor: pointer;
     }
     .active {
         outline: 1px solid red;
     }
     .select {
-        background-color: #aaa;
+        outline: 1px solid red;
     }
 
     .icon {
         width: 100%;
         height: 100%;       
-    }
-    .fill {
-        width: 100%;
-        height: 100%;
-        background-color: rgba(256,256,256,0.8);
-    }
-
-    .d0 {
-        background-image: url('./img/star-green.svg');
-    }
-    .d1 {
-        background-image: url('./img/star-yellow.svg');
-    }
-    .d2 {
-        background-image: url('./img/star-purpur.svg');
-    }
-    .d3 {
-        background-image: url('./img/star-red.svg');
-    }
-
-    .d4 {
-        background-image: url('./img/circle-green.svg');
-    }
-    .d5 {
-        background-image: url('./img/circle-yellow.svg');
-    }
-    .d6 {
-        background-image: url('./img/circle-purpur.svg');
-    }
-    .d7 {
-        background-image: url('./img/circle-red.svg');
-    }
-
-    .d8 {
-        background-image: url('./img/triangle-green.svg');
-    }
-    .d9 {
-        background-image: url('./img/triangle-yellow.svg');
-    }
-    .d10 {
-        background-image: url('./img/triangle-purpur.svg');
-    }
-    .d11 {
-        background-image: url('./img/triangle-red.svg');
-    }
-
-    .d12 {
-        background-image: url('./img/rect-green.svg');
-    }
-    .d13 {
-        background-image: url('./img/circle-yellow.svg');
-    }
-    .d14 {
-        background-image: url('./img/circle-purpur.svg');
-    }
-    .d15 {
-        background-image: url('./img/circle-red.svg');
     }
 
 

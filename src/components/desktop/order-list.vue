@@ -2,10 +2,12 @@
     <div class="snippet snippet__orders">
         <h3>В прокате</h3>
         <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
-        <table class="table table-bordered">
-            <tr v-for="(item, index) in orders">
-                <td class="ord__td-1">{{ index + 1 }}</td>
-                <td class="ord__td-2">{{ item.order_id_position }}</td>
+
+        <table cellspacing="0" class="table">
+            <tr class="table-tr" v-for="(item, index) in orders">
+                <td class="ord__td-2">
+                    <Icon :id="item.order_id_position" :show="true"></Icon>
+                </td>
                 <td class="ord__td-5">{{ item.start_time }}</td>
                 <td>
                     <tr v-for="(subitem, index) in item.products">
@@ -25,14 +27,17 @@
 
 <script>
     import Details    from './details'
+    import Icon      from  './Icon/Icon'
 
     import getBill    from '../../functions/getBill'
     import timeFormat from '../../functions/timeFormat'
     import getTime    from '../../functions/getTime'
 
     export default {
+        name: 'orderlist',
         components: {
-            Details
+            Details,
+            Icon
         },
         data() {
             return {
@@ -125,8 +130,15 @@
 
     .table td {
         padding: 5px;
-        border: 1px solid lightgray;
         box-sizing: border-box;
+        border-collapse: collapse;
+        border: none;
+        margin: 0;
+    }
+
+    .table-tr:nth-child(2n - 1) {
+        background-color: rgba(0,0,0,0.02);
+
     }
     .table th {
         text-align: center;
@@ -145,6 +157,7 @@
     }
     .ord__td-5 {
         width: 120px;
+        text-align: center;
     }
     .ord__td-6 {
         width: 25px;
