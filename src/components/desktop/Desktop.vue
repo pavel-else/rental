@@ -7,27 +7,28 @@
 
         <order-list class="tmp"></order-list>
 
-        <addOrder v-if="show" :product="selectProduct" @close="onClose"></addOrder>
+        <!-- <addOrder v-if="show" :product="selectProduct" @close="onClose"></addOrder> -->
+
+        <DetailsOrder v-if="show" :data-product="selectProduct" :data-order="order" @close="onClose"></DetailsOrder>
     </div>
 </template>
 
 <script>
 import productList from './product-list'
 import orderList from './order-list'
-//import newOrder from './new-order'
-import addOrder from './addOrder/addOrder'
+import DetailsOrder from './DetailsOrder/DetailsOrder'
 
     export default {
         components: {
             productList,
             orderList,
-            // newOrder,
-            addOrder
+            DetailsOrder
         },
         data() {
             return {
-                show: false,
                 selectProduct: {},
+                order: {},
+                show: false,
             }
         },
         methods: {

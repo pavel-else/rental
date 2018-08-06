@@ -5,6 +5,3 @@ export default  function roundBill(bill) {
 
     return round > 1 ? Math.round(bill / round) * round : Math.round(bill)
 }
-
-
-

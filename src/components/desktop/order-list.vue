@@ -4,15 +4,20 @@
         <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
 
         <table cellspacing="0" class="table">
-            <tr class="table-tr" v-for="(item, index) in orders">
+            <tr 
+                class="table-tr" 
+                v-for="(item, index) in orders"
+                :key="item.order_id"
+            >
                 <td class="ord__td-2">
                     <Icon :id="item.order_id_position" :show="true"></Icon>
                 </td>
                 <td class="ord__td-5">{{ item.start_time }}</td>
                 <td>
                     <tr v-for="(subitem, index) in item.products">
-                        <td class="ord__td-3">{{ subitem.product_id }}</td>
-                        <td class="ord__td-4">{{ subitem.name }}</td>
+                        <!-- <td class="ord__td-3">{{ subitem.product_id }}</td> -->
+                        <td class="ord__td-4 product_name" @click="changeProduct(subitem, item)">{{ subitem.name }}</td>
+
                         <td class="ord__td-6">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
                         <td>{{ getBill(subitem.tariff_id, getTime(item.start_time, item.end_time)) }} р</td>
                         <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem.product_id)" v-if="!subitem.end_time">x</td>
@@ -21,13 +26,15 @@
                 <td class="ord__td-7 stop-order-all" @click="stopOrder(item)">x</td>
             </tr>
         </table>
-        <Details :order="order" @close="onClose" v-if="order"></Details>
+        <DetailsOrder v-if="showDetails" :data-product="product" :data-order="order" @close="closeDetails"></DetailsOrder>
+        <Resume :order="order" @close="onClose" v-if="showResume"></Resume>
     </div>
 </template>
 
 <script>
-    import Details    from './details'
-    import Icon      from  './Icon/Icon'
+    import Resume       from './Resume'
+    import DetailsOrder from  './DetailsOrder/DetailsOrder'
+    import Icon         from  './Icon/Icon'
 
     import getBill    from '../../functions/getBill'
     import timeFormat from '../../functions/timeFormat'
@@ -36,12 +43,17 @@
     export default {
         name: 'orderlist',
         components: {
-            Details,
+            Resume,
+            DetailsOrder,
             Icon
         },
         data() {
             return {
                 order: null,
+                product: null,
+
+                showDetails: false,
+                showResume: false,
             }
         },
 
@@ -49,6 +61,19 @@
             ...getBill,
             ...getTime,
             ...timeFormat,
+
+            changeProduct(product, order) {
+                console.log(product)
+
+                this.showDetails = true
+                this.product = product
+                this.order = order
+            },
+            closeDetails() {
+                this.product = null
+                this.order = null
+                this.showDetails = false
+            },
 
             getTimePlay(start, end) {
                 const time = this.getTime(start, end)
@@ -93,7 +118,9 @@
 
             onClose() {
                 this.order = null
-            }
+                this.showResume = false
+            },
+
         },
 
         computed: {
@@ -144,7 +171,7 @@
         text-align: center;
     }
     .ord__td-1 {
-        width: 25px;
+        width: 20px;
     }
     .ord__td-2 {
         width: 40px;
@@ -164,5 +191,10 @@
     }
     .ord__td-7 {
         width: 25px;
+    }
+
+    .product_name:hover {
+        text-decoration: underline;
+        cursor: pointer;
     }
 </style>

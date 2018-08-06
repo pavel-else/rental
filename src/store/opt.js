@@ -124,7 +124,12 @@ export default {
         options(state) {
             return state.options
         },
+
+        //depricated
         depositList(state) {
+            return state.depositList
+        },
+        deposits(state) {
             return state.depositList
         },
         promotions(state) {
