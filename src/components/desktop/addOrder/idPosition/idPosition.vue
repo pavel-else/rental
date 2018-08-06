@@ -25,7 +25,7 @@
 
     export default {
         props: {
-            free: Number
+            free: null
         },
         components: {
             Icon

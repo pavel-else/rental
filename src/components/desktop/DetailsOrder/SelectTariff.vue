@@ -24,7 +24,7 @@
     export default {
         props: {
             dataTariffs: Array,
-            dataTariffDefault: String
+            dataTariffDefault: null
         },
         components: { Multiselect },
         data () {

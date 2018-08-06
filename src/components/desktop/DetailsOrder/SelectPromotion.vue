@@ -20,7 +20,7 @@
     export default {
         props: {
             data: Array,
-            default: String
+            default: null
         },
         components: { Multiselect },
         data () {

@@ -17,7 +17,7 @@
                 <td class="">{{ item.start_time }}</td>
                 <td class="history__td history__td--time">{{ getTimePlay(item) }}</td>
                 <td>
-                    {{ item.products[0].name }}
+                    {{getName(item)}}
                     <span v-if="item.products.length > 1"> и еще {{ item.products.length - 1 }} шт</span>
                 </td>
                 <td>{{ item.bill }}</td>
@@ -65,6 +65,10 @@
                 return this.timeFormat(time)
             },
 
+            getName(item) {
+                return item.products[0] ? item.products[0].name : ''
+            },
+
             onClick(order) {
                 //console.log(item)
                 this.order = order
@@ -82,7 +86,7 @@
                 const result = history.filter(o => o.order_id > 780)
 
                 return result
-            }
+            },
         }
     }
 </script>

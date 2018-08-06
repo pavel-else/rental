@@ -16,7 +16,7 @@
                 <td>
                     <tr v-for="(subitem, index) in item.products">
                         <!-- <td class="ord__td-3">{{ subitem.product_id }}</td> -->
-                        <td class="ord__td-4 product_name" @click="changeProduct(subitem, item)">{{ subitem.name }}</td>
+                        <td class="ord__td-4 product_name" @click="changeOrder(item, subitem)">{{ subitem.name }}</td>
 
                         <td class="ord__td-6">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
                         <td>{{ getBill(subitem.tariff_id, getTime(item.start_time, item.end_time)) }} р</td>
@@ -41,7 +41,6 @@
     import getTime    from '../../functions/getTime'
 
     export default {
-        name: 'orderlist',
         components: {
             Resume,
             DetailsOrder,
@@ -62,7 +61,7 @@
             ...getTime,
             ...timeFormat,
 
-            changeProduct(product, order) {
+            changeOrder(order, product) {
                 console.log(product)
 
                 this.showDetails = true

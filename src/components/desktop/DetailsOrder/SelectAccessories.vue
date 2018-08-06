@@ -28,7 +28,7 @@
     export default {
         props: {
             data: Array, //accessories
-            default: String
+            default: null
         },
         components: { Multiselect },
         data () {

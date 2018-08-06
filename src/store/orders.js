@@ -16,7 +16,9 @@ export default {
 
             const result = orders ? orders.map(order => {
                 for (var i = 0; i < order.products.length; i++) {
-                    order.products[i].name = products.find(p => p.id_rent == order.products[i].product_id).name
+                    const product = products.find(p => p.id_rent == order.products[i].product_id)
+
+                    order.products[i].name = product ? product.name : ''
                 }
 
                 return order

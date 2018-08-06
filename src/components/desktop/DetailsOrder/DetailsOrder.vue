@@ -86,7 +86,6 @@
 
     export default {
         props: {
-            dataProduct: Object,
             dataOrder: Object
         },
         components: {
@@ -100,7 +99,6 @@
         data() {
             return {
                 order: this.copyObject(this.dataOrder),
-                product: this.copyObject(this.dataProduct)
             }
         },
         methods: {
@@ -126,6 +124,10 @@
             },
             getPosition() {
                 // Возвращает id текущей позиции ордера или новую позицию
+
+                if (this.order.order_id_position) {
+                    return this.order.order_id_position
+                }
                
                 const orders = this.$store.getters.orders
                 const count = 15
@@ -137,7 +139,10 @@
                     return num < 1 ? id : iter(num - 1)
                 }
 
-                return this.order.order_id_position ? +this.order.order_id_position : iter(count)
+                const result = iter(count)
+                this.order.order_id_position = result
+
+                return +result
             },
             setPosition($event) {
                 this.order.order_id_position = $event.order_id_position

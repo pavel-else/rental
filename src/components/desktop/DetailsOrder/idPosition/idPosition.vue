@@ -25,7 +25,7 @@
 
     export default {
         props: {
-            position: Number
+            position: null
         },
         components: {
             Icon
