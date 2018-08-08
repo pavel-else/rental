@@ -19,6 +19,7 @@
         methods: {
             onClick(item) {
                 this.$emit('addOrder', item)
+                //console.log(item)
             }
         },
         computed: {

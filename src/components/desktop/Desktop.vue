@@ -1,48 +1,63 @@
 <template>        
     <div class="container">
+
         <product-list class="tmp" @addOrder="addOrder($event)"></product-list>
 
-        <new-order v-if="showNewOrder"></new-order>
-
+        
         <order-list class="tmp"></order-list>
 
-        <addOrder v-if="show" :product="selectProduct" @close="onClose"></addOrder>
+        <!-- <addOrder v-if="show" :product="selectProduct" @close="onClose"></addOrder> -->
+
+        <DetailsOrder v-if="show" :data-product="product"  @close="onClose"></DetailsOrder>
     </div>
 </template>
 
 <script>
+import getOrderId from '../../functions/getOrderId'
 import productList from './product-list'
 import orderList from './order-list'
-//import newOrder from './new-order'
-import addOrder from './addOrder/addOrder'
+import DetailsOrder from './DetailsOrder/DetailsOrder'
 
     export default {
-        name: 'Desctop',
         components: {
             productList,
             orderList,
-            // newOrder,
-            addOrder
+            DetailsOrder
         },
         data() {
             return {
+                product: {},
+                order: {},
                 show: false,
-                selectProduct: {}
             }
         },
         methods: {
+            ...getOrderId,
+
+
             addOrder(product) {
-                this.selectProduct = product
+                this.product = product
+
+                this.order = {
+                    status:             'ACTIVE',
+                    start_time:         Math.floor(Date.now() / 1000),
+                    order_id:           this.getOrderId(),
+                    order_id_position:  null,
+                    advance:            null,
+                    note:               null,
+                    promotion:          null,
+                    accessories:        null,
+                    customer:           null,
+                    deposit:            null, 
+
+                    // product: this.product.id_rent,
+                    // tariff: this.product.tariff_default,
+                },
+
                 this.show = true
-                console.log(product)
             },
             onClose() {
                 this.show = false
-            }
-        },
-        computed: {
-            showNewOrder() {
-                return this.$store.getters.showNewOrder
             }
         },
     }

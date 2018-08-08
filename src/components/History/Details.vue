@@ -107,6 +107,9 @@
 </script>
 
 <style scoped>
+    .details {
+        margin-top: 120px;
+    }
     td {
         padding: 5px;
     }

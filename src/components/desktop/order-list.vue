@@ -2,78 +2,83 @@
     <div class="snippet snippet__orders">
         <h3>В прокате</h3>
         <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
-        <table class="table table-bordered">
-            <tr v-for="(item, index) in orders">
-                <td class="ord__td-1">{{ index + 1 }}</td>
-                <td class="ord__td-2">{{ item.order_id_position }}</td>
+
+        <table cellspacing="0" class="table">
+            <tr 
+                class="table-tr" 
+                v-for="(item, index) in orders"
+                :key="item.order_id"
+            >
+                <td class="ord__td-2">
+                    <Icon :id="item.order_id_position" :show="true"></Icon>
+                </td>
                 <td class="ord__td-5">{{ item.start_time }}</td>
                 <td>
                     <tr v-for="(subitem, index) in item.products">
-                        <td class="ord__td-3">{{ subitem.product_id }}</td>
-                        <td class="ord__td-4">{{ subitem.name }}</td>
-                        <td class="ord__td-6">{{ getTimePlay(item, subitem) }}</td>
-                        <td>{{ getBill(item, subitem) }} р</td>
+                        <!-- <td class="ord__td-3">{{ subitem.product_id }}</td> -->
+                        <td class="ord__td-4 product_name" @click="changeOrder(item, subitem)">{{ subitem.name }}</td>
+
+                        <td class="ord__td-6">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
+                        <td>{{ getBill(subitem.tariff_id, getTime(item.start_time, item.end_time)) }} р</td>
                         <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem.product_id)" v-if="!subitem.end_time">x</td>
                     </tr>
                 </td>
                 <td class="ord__td-7 stop-order-all" @click="stopOrder(item)">x</td>
             </tr>
         </table>
-        <Details :order="order" @close="onClose" v-if="order"></Details>
+
+        <DetailsOrder v-if="showDetails" :data-product="product" :data-order="order" @close="closeDetails"></DetailsOrder>
+        <Resume :order="order" @close="onClose" v-if="showResume"></Resume>
     </div>
 </template>
 
 <script>
-    import Details from './details'
+    import Resume       from './Resume'
+    import DetailsOrder from  './DetailsOrder/DetailsOrder'
+    import Icon         from  './Icon/Icon'
+
+    import getBill    from '../../functions/getBill'
+    import timeFormat from '../../functions/timeFormat'
+    import getTime    from '../../functions/getTime'
 
     export default {
         components: {
-            Details
+            Resume,
+            DetailsOrder,
+            Icon
         },
         data() {
             return {
                 order: null,
+                product: null,
+
+                showDetails: false,
+                showResume: false,
             }
         },
 
         methods: {
-            timeFormat (ms/**number*/) {
-                if (ms < 0) ms = 0;
+            ...getBill,
+            ...getTime,
+            ...timeFormat,
 
-                function num(val){
-                    val = Math.floor(val);
-                    return val < 10 ? '0' + val : val;
-                }
+            changeOrder(order, product) {
+                this.product = product
+                console.log(product)
+
+                this.showDetails = true
                 
-                var sec = ms / 1000
-                  , hours = sec / 3600  % 24
-                  , minutes = sec / 60 % 60
-                  , seconds = sec % 60
-                ;
-
-                return num(hours) + ":" + num(minutes) + ":" + num(seconds);
+                this.order = order
+            },
+            closeDetails() {
+                this.product = null
+                this.order = null
+                this.showDetails = false
             },
 
-            getTimePlay(item, subitem) {
-                /*
-                * Если время стопордера существует, вернем разницу времени стоп - старт,
-                * если стопа еще не было, возвращаем разницу текущее время - старт
-                */
-                const now = this.$store.getters.now
-
-                const start_time = Date.parse(item.start_time)
-                const end_time = subitem.end_time ? Date.parse(subitem.end_time) : null
-                const diff = end_time ? end_time - start_time : now - start_time
-
-                return this.timeFormat(diff)
-            },
-
-            getBill(order, product) {
-                return null // заглушка
-
-                const getBill = this.$store.getters.getBill()
-
-                return getBill(order, product.product_id)   
+            getTimePlay(start, end) {
+                const time = this.getTime(start, end)
+                return this.timeFormat(time)
             },
 
             stopOrder(order, product_id) {
@@ -83,18 +88,16 @@
                 * Если id продукта не указан, то функция остановки применяется для всех активных ордеров
                 */
 
-                if (!order) console.log('stopOrder: empty order')
-                if (!product_id) console.log('stopOrder: empty product_id')
-                // сервер принимает 1шт продукт
+                if (!order) {
+                    console.log('stopOrder: empty order')
+                    return false
+                }
 
                 const stop = (product_id) => {
                     const product = order.products.find(p => p.product_id == product_id)
 
                     product.end_time = Math.floor(Date.now() / 1000)
-
-                    const getBill = this.$store.getters.getBill()
-
-                    product.bill = getBill(order, product_id)
+                    product.bill = this.getBill(product.tariff_id, this.getTime(order.start_time, product.end_time))
 
                     this.$store.dispatch('send', {
                         cmd: 'stopOrder',
@@ -109,21 +112,19 @@
                         stop(p.product_id)
                     })
                 }
+
                 this.order = order
-                return product_id ? stop(product_id) : stopAll()
-                
+                return product_id ? stop(product_id) : stopAll()                
             },
 
             onClose() {
                 this.order = null
-            }
+                this.showResume = false
+            },
 
         },
 
         computed: {
-            sd() {
-                //return this.$store.getters.options
-            },
             orders() {
                 return this.$store.getters.orders
             },
@@ -157,14 +158,21 @@
 
     .table td {
         padding: 5px;
-        border: 1px solid lightgray;
         box-sizing: border-box;
+        border-collapse: collapse;
+        border: none;
+        margin: 0;
+    }
+
+    .table-tr:nth-child(2n - 1) {
+        background-color: rgba(0,0,0,0.02);
+
     }
     .table th {
         text-align: center;
     }
     .ord__td-1 {
-        width: 25px;
+        width: 20px;
     }
     .ord__td-2 {
         width: 40px;
@@ -177,11 +185,17 @@
     }
     .ord__td-5 {
         width: 120px;
+        text-align: center;
     }
     .ord__td-6 {
         width: 25px;
     }
     .ord__td-7 {
         width: 25px;
+    }
+
+    .product_name:hover {
+        text-decoration: underline;
+        cursor: pointer;
     }
 </style>
