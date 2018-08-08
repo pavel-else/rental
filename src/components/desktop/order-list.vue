@@ -26,6 +26,7 @@
                 <td class="ord__td-7 stop-order-all" @click="stopOrder(item)">x</td>
             </tr>
         </table>
+
         <DetailsOrder v-if="showDetails" :data-product="product" :data-order="order" @close="closeDetails"></DetailsOrder>
         <Resume :order="order" @close="onClose" v-if="showResume"></Resume>
     </div>
@@ -62,10 +63,11 @@
             ...timeFormat,
 
             changeOrder(order, product) {
+                this.product = product
                 console.log(product)
 
                 this.showDetails = true
-                this.product = product
+                
                 this.order = order
             },
             closeDetails() {

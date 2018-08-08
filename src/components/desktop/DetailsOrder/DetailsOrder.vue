@@ -86,7 +86,8 @@
 
     export default {
         props: {
-            dataOrder: Object
+            dataOrder: null,
+            dataProduct: null
         },
         components: {
             Position,
@@ -98,19 +99,56 @@
         },
         data() {
             return {
-                order: this.copyObject(this.dataOrder),
+                order: null,
+                product: null,
+
+                changeID: false,
+                changeOrder: false,
+                changeProduct: false
             }
         },
+
+        beforeMount() {
+            const order = this.dataOrder
+            const product = this.dataProduct
+
+            this.order = {
+                status:             order ? order.status : 'ACTIVE',
+                start_time:         order ? Date.parse(order.start_time) / 1000 : Math.floor(Date.now() / 1000),
+                order_id:           order ? order.order_id : this.getOrderId(),
+                order_id_position:  order ? order.order_id_position : null,
+                advance:            order ? order.advance : null,
+                note:               order ? order.note : null,
+                promotion:          order ? order.promotion : null,
+                accessories:        order ? order.accessories : null,
+                customer:           order ? order.customer : null,
+                deposit:            order ? order.deposit : null, 
+            }
+
+            this.product = {
+                name:         product.name,
+                order_id:     this.order.order_id,
+                id_rent:      product.id_rent || product.product_id,
+                tariff_id:    product.tariff_id,
+                bill:         null,
+                bill_no_sale: null,
+                end_time:     null                
+            }
+        },
+
         methods: {
             ...copyObject,
             ...getOrderId,
+
 
             close() {
                 this.$emit('close')
             },
             save() {
-                console.log(this.order)
 
+                this.order.product = this.product
+                console.log(this.order)
+                
                 this.$store.dispatch('send', {
                     cmd: 'setOrder',
                     value: this.order
@@ -118,10 +156,7 @@
 
                 this.close()
             },
-            setCustomer(customer) {
-                this.order.customer_id = customer.id_rent
-                this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
-            },
+
             getPosition() {
                 // Возвращает id текущей позиции ордера или новую позицию
 
@@ -148,6 +183,10 @@
                 this.order.order_id_position = $event.order_id_position
                 this.order.order_id = $event.order_id
             },
+            setCustomer(customer) {
+                this.order.customer_id = customer.id_rent
+                this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
+            },
             setDeposit(deposit) {
                 this.order.deposit = deposit.id
             },
@@ -158,7 +197,7 @@
                 this.order.accessories = accessories
             },
             setTariff(tariff) {
-                this.order.tariff = tariff.id_rent
+                this.product.tariff = tariff.id_rent
             },
         },
 
@@ -168,11 +207,11 @@
             },
 
             tariffs() {
-                if (!this.product.tariff_id) {
+                if (!this.dataProduct.tariff_id) {
                     return []
                 }
 
-                const ids = this.product.tariff_id.split(',')
+                const ids = this.dataProduct.tariff_id.split(',')
 
                 return ids.map(id => {
                     return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
@@ -188,7 +227,8 @@
             accessories() {
                 return this.$store.getters.accessories
             },
-        }
+        },
+
     }
 </script>
 

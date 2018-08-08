@@ -8,7 +8,7 @@
 
         <!-- <addOrder v-if="show" :product="selectProduct" @close="onClose"></addOrder> -->
 
-        <DetailsOrder v-if="show"   :data-order="order" @close="onClose"></DetailsOrder>
+        <DetailsOrder v-if="show" :data-product="product"  @close="onClose"></DetailsOrder>
     </div>
 </template>
 
@@ -39,32 +39,25 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
                 this.product = product
 
                 this.order = {
-                    status: 'ACTIVE',
-                    products: [
-                        this.product.id_rent,
-                    ],
-                    start_time: Math.floor(Date.now() / 1000),
+                    status:             'ACTIVE',
+                    start_time:         Math.floor(Date.now() / 1000),
+                    order_id:           this.getOrderId(),
+                    order_id_position:  null,
+                    advance:            null,
+                    note:               null,
+                    promotion:          null,
+                    accessories:        null,
+                    customer:           null,
+                    deposit:            null, 
 
-                    order_id: this.getOrderId(),
-
-                    order_id_position: null,
-                    advance: null,
-                    note: null,
-                    promotion: null,
-                    accessories: null,
-                    tariff: this.product.tariff_default,
-                    customer: null     
+                    // product: this.product.id_rent,
+                    // tariff: this.product.tariff_default,
                 },
 
                 this.show = true
             },
             onClose() {
                 this.show = false
-            }
-        },
-        computed: {
-            showNewOrder() {
-                return this.$store.getters.showNewOrder
             }
         },
     }
