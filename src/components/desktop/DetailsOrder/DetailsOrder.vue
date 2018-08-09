@@ -10,9 +10,9 @@
                 </tr>
                 <tr>
                     <td>ID заказа</td>
-                    <td>
+                    <!-- <td>
                         <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
-                    </td>
+                    </td> -->
                 </tr>
                 <tr>
                     <td>Аванс</td>
@@ -78,7 +78,7 @@
     import getOrderId        from '../../../functions/getOrderId'
     import makeOrder         from '../../../functions/makeOrder'
 
-    import Position          from './IdPosition/IdPosition'
+    import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
     import SelectAccessories from './SelectAccessories'
     import SelectTariff      from './SelectTariff'
@@ -91,7 +91,7 @@
             dataProduct: null
         },
         components: {
-            Position,
+           // Position,
             SelectCustomer,
             SelectAccessories,
             SelectTariff,
