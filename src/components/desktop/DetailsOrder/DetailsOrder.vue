@@ -146,7 +146,7 @@
             },
             save() {
 
-                this.order.product = this.product
+                this.order.products = [this.product]
                 console.log(this.order)
                 
                 this.$store.dispatch('send', {

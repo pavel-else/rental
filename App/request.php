@@ -449,17 +449,6 @@ class Request
     }
 
     private function setOrder($order) {
-        /*
-        * Определены 2 функции: для записи ордера и записи продуктов к ордеру
-        * Если ордер с указанным order_id уже существует, то просто добавляем продукты к ордеру.
-        * Если не существует - записываем новый ордер и продукты к нему.
-        * Функция возвращает TRUE, если запись прошла успешено.
-        */
-
-        $products = $order['products'];
-        $orderID = $order[order_id];
-        $result = false;
-
         $checkID = function ($order_id) {
             $sql = '
                 SELECT `id` 
@@ -478,8 +467,7 @@ class Request
             return $result[0][id];
         };
 
-        $newOrder = function ($order){
-            $this->writeLog($order[order_id]);
+        $newOrder = function ($order) {           
 
             $sql = 'INSERT INTO `orders` (
                 `id`,
@@ -526,25 +514,84 @@ class Request
                 'accessories'         => $order[accessories]
             );
 
-            if ($this->addOrderProduct($order[product])) {
-                return $this->pDB->set($sql, $d);                
-            }
+            $this->pDB->set($sql, $d);
+            $this->setOrderProducts($order[order_id], $order[products]);
         };
 
         $update = function($id, $order) {
+            $sql = '
+                UPDATE `orders` 
+                SET 
+                `order_id`          = :order_id,
+                `order_id_position` = :order_id_position,
+                `id_rental_org`     = :id_rental_org,
+                `status`            = :status,
+                `customer_id`       = :customer_id,
+                `customer_name`     = :customer_name,
+                `start_time`        = :start_time,
+                `advance`           = :advane,
+                `deposit`           = :deposit,      
+                `note`              = :note,     
+                `promotion`         = :promotion,        
+                `accessories`       = :accessories
 
+                WHERE `id` = :id
+                AND `id_rental_org` = :id_rental_org
+            ';
+
+            $d = array(
+                'id'            => $id,
+                'order_id'      => $order[order_id],
+                'id_rental_org' => $this->app_id,
+                'id_rental_org' => $order[id_rental_org],
+                'status'        => $order[status],
+                'customer_id'   => $order[customer_id],
+                'customer_name' => $order[customer_name],
+                'start_time'    => $order[start_time],
+                'advance'       => $order[advane],
+                'deposit'       => $order[deposit],      
+                'note'          => $order[note],     
+                'promotion'     => $order[promotion],        
+                'accessories'   => $order[accessories]
+            );
+
+            $result = $this->pDB->set($sql, $d);
+
+            if ($result) {
+                $this->writeLog("function SetCustomer successfully completed. Client id($id) was updated" . '\n');
+            } else {
+                $this->writeLog("function SetCustomer failed. Client id($id) was not updated" . '\n');
+            }
+
+            $this->setOrderProducts($order[order_id], $order[products]);
+
+            return $result;
         };
 
 
         $id = $checkID($order[order_id]);
 
-
-        //return $id ? $update($id, $order) : $newOrder($order);
-        $newOrder($order);  
-
+        return $id ? $update($id, $order) : $newOrder($order);
     }
 
-    private function addOrderProduct ($product) {
+    private function setOrderProducts ($order_id, $products) {
+
+        $delete = function ($order_id) {
+            $sql = '
+                DELETE FROM `order_products` 
+                WHERE `id_rental_org` = :id_rental_org 
+                AND `order_id` = :order_id
+            ';
+
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'order_id'      => $order_id
+            );
+
+            return $this->pDB->set($sql, $d) ? 'delete products' : 'delete products failed';
+        };
+
+        $set = function ($order_id, $products) {
 
             $sql = 'INSERT INTO `order_products` (
                 `id`, 
@@ -557,8 +604,8 @@ class Request
                 `end_time`
             ) VALUES (
                 NULL, 
-                :id_rental_org, 
                 :order_id, 
+                :id_rental_org, 
                 :product_id,
                 :tariff_id,
                 :bill,
@@ -566,19 +613,27 @@ class Request
                 :end_time
             )';
 
-            $d = array(
-                'id_rental_org' => $this->app_id,
-                'order_id'      => $product[order_id],
-                'product_id'    => $product[id_rent],
-                'tariff_id'     => $product[tariff],
-                'bill'          => 0,
-                'bill_no_sale'  => 0,
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
-            );
+            
+            foreach ($products as $key => $product) {
+                $this->writeLog($order_id);
 
-            $this->deleteOrderProduct($product[id_rent]);
+                $d = array(
+                    'id_rental_org' => $this->app_id,
+                    'order_id'      => $order_id,
+                    'product_id'    => $product[id_rent],
+                    'tariff_id'     => $product[tariff],
+                    'bill'          => 0,
+                    'bill_no_sale'  => 0,
+                    'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
+                );
 
-            return $this->pDB->set($sql, $d);
+                $this->pDB->set($sql, $d);
+            }
+        };
+
+
+        $this->writeLog($delete($order_id));
+        $set($order_id, $products);
     }
 
     private function deleteOrder($order_id) {
@@ -629,7 +684,7 @@ class Request
         return $result;        
     }
 
-    private function deleteOrderProduct($product_id) {
+    private function deleteOrderProducts($product_id) {
         
             $search = function ($product_id) {
                 $sql = '

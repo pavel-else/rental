@@ -16,7 +16,7 @@ export default {
             rent_min_time: 0, //ms
             rent_round_bill: 0,          
         },
-
+    
         now: new Date(),
         max_order_id: Number,
         new_order_id: Number,
@@ -97,25 +97,14 @@ export default {
         now(state, date) {
             state.now = date
         },
-        rent_min_time(state, time) {
-            state.rent_min_time = time * 60 * 1000
-        },
 
-        rent_round_bill(state, round) {
-            state.rent_round_bill = round
-        }
 
     },
     actions: {
         startTimer({commit}) {
             setInterval(() => {commit('now', new Date())}, 3000)
         },
-        rent_min_time({commit}, time) {
-            commit('rent_min_time', time)
-        },
-        rent_round_bill({commit}, round) {
-            commit('rent_round_bill', round)
-        }
+
     },
     getters: {
         now(state) {
@@ -138,11 +127,5 @@ export default {
         accessories(state) {
             return state.accessories
         },
-        rentMinTime(state) {
-            return state.options.rent_min_time
-        },
-        rent_round_bill(state) {
-            return state.options.rent_round_bill
-        }
     }
 }

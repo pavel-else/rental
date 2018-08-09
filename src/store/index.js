@@ -66,9 +66,7 @@ const store = new Vuex.Store({
             })
         },
     },
-    mutations: {
-    },
-
+    
     actions: {
         upd({commit}, cmds) {           
             this.state.sendToServer(cmds, null, {commit})
