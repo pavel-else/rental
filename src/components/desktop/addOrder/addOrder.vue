@@ -1,6 +1,6 @@
 <template>
     <div class="canvas">
-        <div class="details">
+        <div class="add-order details">
             <h3>Новый ордер<span> - #{{ order.order_id }}</span></h3>
 
             <table>
@@ -10,84 +10,57 @@
                 </tr>
                 <tr>
                     <td>ID заказа</td>
-                    <td><Position :free="freeId" @setPosition="setPosition($event)"></Position></td>
+                    <td>
+                        <Position :free="getPosition()" @setPosition="setPosition($event)"></Position>
+                    </td>
                 </tr>
                 <tr>
                     <td>Аванс</td>
-                    <td><input type="text" v-model="order.advance" placeholder="0 руб"></td>
+                    <td><input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб"></td>
                 </tr>
                 <tr>
                     <td>Клиент</td>
                     <td>
-                        <select @change="setClient" v-model="select.customer">
-                            <option value="">Выбрать</option>
-                            <option 
-                                v-for="customer in customers"
-                                :value="customer"
-                            >
-                                {{ customer.fname + ' ' + customer.sname  + ' ' + customer.tname }}
-                            </option>
-                        </select>
+                        <SelectCustomer 
+                            :data="customers"
+                            @setCustomer="setCustomer($event)" 
+                        >
+                        </SelectCustomer>
                     </td>
                 </tr>
                 <tr>
                     <td>Залог</td>
                     <td>
-                        <select v-model="select.deposit" @change="setDeposit">
-                            <option value="">Выбрать</option>
-                            <option 
-                                :value="deposit"
-                                v-for="deposit in depositList"
-                            >
-                                {{ deposit }}
-                            </option>
-                        </select>
+                        <SelectDeposit :data="deposits" @setDeposit="setDeposit($event)"></SelectDeposit>
                     </td>
                 </tr>
                 <tr>
                     <td>Примечание</td>
                     <td>
-                        <textarea name="" id="" cols="30" rows="3" v-model="order.note"></textarea>
+                        <textarea class="add-order__input--note" cols="30" rows="3" v-model="order.note"></textarea>
                     </td>
                 </tr>
                 <tr>
                     <td>Акция</td>
                     <td>
-                        <select v-model="select.promotion" @change="setPromotion">
-                            <option 
-                                :value="promo"
-                                v-for="promo in promotions"
-                            >
-                                {{ promo.name }}
-                            </option>
-                        </select>
+                        <SelectPromotion :data="promotions" @setPromotion="setPromotion($event)"></SelectPromotion>
                     </td>
                 </tr>
                 <tr>
                     <td>Аксессуары</td>
                     <td>
-                        <select v-model="select.accessories" @change="setAccessories">
-                            <option 
-                                :value="item"
-
-                                v-for="item in accessories"
-                            >
-                                {{ item.name }}
-                            </option>
-                        </select>
+                        <SelectAccessories :data="accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
                     </td>
                 </tr>
                 <tr>
                     <td>Тарифный план</td>
                     <td>
-                        <select v-model="select.tariff" @change="setTariff">
-                            <option 
-                                v-for="tariff in tariffs"
-                                :value="tariff.id_rent"
-                            >
-                                {{ tariff.id_rent }}. {{ tariff.name }}
-                            </option>
-                        </select>
+                        <SelectTariff 
+                            :data-tariffs="tariffs" 
+                            :data-tariff-default="product.tariff_default" 
+                            @setTariff="setTariff($event)"
+                        >
+                        </SelectTariff>
                     </td>
                 </tr>
             </table>
@@ -100,14 +73,25 @@
 </template>
 
 <script>
-    import Position from './idPosition'
+    import getOrderId        from '../../../functions/getOrderId'
+    import Position          from './IdPosition/IdPosition'
+    import SelectCustomer    from './SelectCustomer'
+    import SelectAccessories from './SelectAccessories'
+    import SelectTariff      from './SelectTariff'
+    import SelectPromotion   from './SelectPromotion'
+    import SelectDeposit     from './SelectDeposit'
 
     export default {
         props: {
             product: Object
         },
         components: {
-            Position
+            Position,
+            SelectCustomer,
+            SelectAccessories,
+            SelectTariff,
+            SelectPromotion,
+            SelectDeposit,
         },
         data() {
             return {
@@ -118,36 +102,28 @@
                         this.product.id_rent,
                     ],
                     start_time: Math.floor(Date.now() / 1000),
-                    order_id: this.$store.getters.options.new_order_id,
-                    order_id_position: this.getFreeId(), // or setPosition($event) 
+
+                    order_id: this.getOrderId(),
+
+                    order_id_position: this.getPosition(), // or setPosition($event) 
                     advance: null,
                     note: null,
                     promotion: null,
-                    accessories: null       
-                },
-
-                select: {
-                    customer: null,
-                    deposit: null,
-                    promotion: null,
                     accessories: null,
-                    tariff: null
+                    tariff: this.product.tariff_default,
+                    customer: null     
                 },
-
-
-                tariffs: this.product.tariff_id ? this.product.tariff_id.split(',').map(id => {
-                    id = this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
-
-                    return id
-                }): []
             }
         },
         methods: {
+            ...getOrderId,
+
             close() {
                 this.$emit('close')
             },
             save() {
                 console.log(this.order)
+
                 this.$store.dispatch('send', {
                     cmd: 'setOrder',
                     value: this.order
@@ -155,15 +131,11 @@
 
                 this.close()
             },
-            setClient() {
-                const client = this.select.customer
-
-                this.order.customer_id = client.id_rent
-                this.order.customer_name = `${client.fname} ${client.sname} ${client.tname}`
-
-                console.log(this.order.customer_id)
+            setCustomer(customer) {
+                this.order.customer_id = customer.id_rent
+                this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
             },
-            getFreeId() {
+            getPosition() {
                 const orders = this.$store.getters.orders
                 const count = 15
                 let id = null
@@ -179,31 +151,39 @@
             setPosition($event) {
                 this.order.order_id_position = $event.order_id_position
                 this.order.order_id = $event.order_id
-
-                //console.log($event)
             },
-            setDeposit() {
-                this.order.deposit = this.select.deposit
+            setDeposit(deposit) {
+                this.order.deposit = deposit.id
             },
-            setPromotion() {
-                this.order.promotion = this.select.promotion.id
+            setPromotion(promotion) {
+                this.order.promotion = promotion.id
             },
-            setAccessories() {
-                this.order.accessories = this.select.accessories.id
-                console.log(this.order)
+            setAccessories(accessories) {
+                this.order.accessories = accessories
             },
-            setTariff() {
-                this.order.tariff = this.select.tariff
-            }
+            setTariff(tariff) {
+                this.order.tariff = tariff.id_rent
+            },
         },
+
         computed: {
             customers() {
                 return this.$store.getters.customers
             },
-            freeId() {
-                return this.getFreeId()
+
+            tariffs() {
+                if (!this.product.tariff_id) {
+                    return []
+                }
+
+                const ids = this.product.tariff_id.split(',')
+
+                return ids.map(id => {
+                    return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
+                })
             },
-            depositList() {
+
+            deposits() {
                 return this.$store.getters.depositList
             },
             promotions() {
@@ -212,31 +192,33 @@
             accessories() {
                 return this.$store.getters.accessories
             },
-            // tariffs() {
-            //     //need filter
-            //     const products = this.$store.getters.products
-            //     const product_id = this.order.products[0]
-            //     const product = products.find(p => p.id_rent == product_id)
-            //     const tariff_id_list = product.tariff_id.split(',')
-
-            //     const tariffs = this.$store.getters.tariffsList
-
-            //     const result = tariff_id_list.reduce((acc, item) => {
-            //         acc.push(tariffs.find(t => t.id == item))
-            //         return acc
-            //     }, [])
-
-            //     console.log(result)
-
-            //     return result
-            // }
         }
-
     }
 </script>
 
 <style>
+    .add-order {
+        width: 400px;
+        margin-top: 80px;
+        padding: 10px 20px;
+    }
+
+    .add-order td {
+        padding: 5px 0;
+    }
     .btn-group {
         margin-top: 20px;
+    }
+    .add-order__input {
+        width: 300px;
+        min-height: 40px;
+        border-radius: 5px;
+        border: 1px solid #e8e8e8;
+    }
+    .add-order__input--note {
+        resize: vertical;
+        width: 98%;
+        border-radius: 5px;
+        border-color: #e8e8e8;
     }
 </style>

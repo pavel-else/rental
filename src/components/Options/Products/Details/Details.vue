@@ -21,15 +21,20 @@
                         <td><input v-model="product.cost"></td>
                     </tr>
                     <tr class="products_tr--tariffs">
-                        <td>Тарифы</td>
+                        <td>Тарифы,<br>по умолчанию</td>
                         <td>
-                           <Tariffs :data="product.tariff_id" @setTariffs="setTariffs($event)"></Tariffs>                            
+                            <Tariffs 
+                                :data="product" 
+                                @setTariffs="setTariffs($event)"
+                                @setTariffDefault="setTariffDefault($event)"
+                            >
+                            </Tariffs>                            
                         </td>
                     </tr>
                     <tr>
                         <td>Категории</td>
                         <td>
-                            <Categories :data="product.categories"></Categories>                       
+                            <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>                       
                         </td>
                     </tr>
                     <tr>
@@ -74,7 +79,7 @@
 
                 //console.log(this.product)
 
-
+                console.log(this.product)
                 this.$store.dispatch('send', {
                     cmd: 'setProduct',
                     value: this.product
@@ -107,10 +112,16 @@
 
                 this.change = true
 
-                //console.log(this.product)
+                console.log(this.product)
             },
             setTariffs(ids) {
                 this.product.tariff_id = ids
+            },
+            setTariffDefault(id) {
+                this.product.tariff_default = id
+            },
+            setCategories(ids) {
+                this.product.categories = ids
             }
         },
         computed: {
