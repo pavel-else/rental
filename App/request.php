@@ -566,13 +566,13 @@ class Request
                 `customer_id`       = :customer_id,
                 `customer_name`     = :customer_name,
                 `start_time`        = :start_time,
-                `advance`           = :advane,
+                `advance`           = :advance,
                 `deposit`           = :deposit,      
                 `note`              = :note,     
                 `promotion`         = :promotion,        
                 `accessories`       = :accessories
 
-                WHERE `id` = :id
+                WHERE `id` = :id 
                 AND `id_rental_org` = :id_rental_org
             ';
 
@@ -585,7 +585,7 @@ class Request
                 'customer_id'       => $order[customer_id],
                 'customer_name'     => $order[customer_name],
                 'start_time'        => date("Y-m-d H:i:s", $order[start_time]),
-                'advance'           => $order[advane],
+                'advance'           => $order[advance],
                 'deposit'           => $order[deposit],      
                 'note'              => $order[note],     
                 'promotion'         => $order[promotion],        

@@ -10,9 +10,9 @@
                 </tr>
                 <tr>
                     <td>ID заказа</td>
-                    <!-- <td>
+                    <td>
                         <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
-                    </td> -->
+                    </td>
                 </tr>
                 <tr>
                     <td>Аванс</td>
@@ -91,7 +91,7 @@
             dataProduct: null
         },
         components: {
-           // Position,
+            Position,
             SelectCustomer,
             SelectAccessories,
             SelectTariff,
