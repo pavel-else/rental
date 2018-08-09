@@ -149,7 +149,7 @@
             },
             save() {
                 const order = this.order
-                console.log(order)
+                console.log(this.product)
                 
                 // this.$store.dispatch('send', {
                 //     cmd: 'changeOrder',
@@ -184,6 +184,7 @@
             setPosition($event) {
                 this.order.order_id_position = $event.order_id_position
                 this.order.order_id = $event.order_id
+                this.product.order_id = $event.order_id
             },
             setCustomer(customer) {
                 this.order.customer_id = customer.id_rent
@@ -209,12 +210,9 @@
             },
 
             tariffs() {
-                if (!this.dataProduct.tariff_id) {
-                    return []
-                }
+                const id = this.dataProduct.id_rent ||this.dataProduct.product_id
 
-                const product = this.$store.getters.products.find(i => i.id_rent == this.dataProduct.product_id)
-                console.log(product)
+                const product = this.$store.getters.products.find(i => i.id_rent == id)
 
                 const ids = product.tariff_id.split(',')
 

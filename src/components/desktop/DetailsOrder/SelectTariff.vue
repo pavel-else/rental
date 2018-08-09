@@ -29,9 +29,6 @@
         components: { Multiselect },
         data () {
             return {
-                //value: 'qwertty',
-                //options: ['list', 'of', 'options']
-
                 value: this.dataTariffs.find(tariff => tariff.id_rent == this.dataTariffDefault),                    
                 options: this.dataTariffs
             }
