@@ -79,8 +79,14 @@ class Request
                 case 'getOrderID':
                     $this->response['options']['get_order_id'] = $this->getOrderID($value);
                 break;
-                case 'setOrder':
-                    $this->setOrder($value);
+                case 'addOrder':
+                    $this->addOrder($value);
+                break;
+                case 'changeOrder':
+                    $this->changeOrder($value);
+                break;
+                case 'deleteOrder':
+                    $this->deleteOrder($value);
                 break;
                 case 'addOrderProduct':
                     $this->addOrderProduct($value);
@@ -448,7 +454,7 @@ class Request
         return $result ? true : false;
     }
 
-    private function setOrder($order) {
+    private function addOrder($order) {
         $checkID = function ($order_id) {
             $sql = '
                 SELECT `id` 
@@ -514,11 +520,42 @@ class Request
                 'accessories'         => $order[accessories]
             );
 
-            $this->pDB->set($sql, $d);
-            $this->setOrderProducts($order[order_id], $order[products]);
+            return $this->pDB->set($sql, $d);
+        };
+
+        $result =  !$checkID($order[order_id]) ? $newOrder($order) : false;
+
+        if ($result) {
+            $this->writeLog('setOrder completed');
+        } else {
+            $this->writeLog('setOrder failed');
+        }
+
+        return $result;
+    }
+
+    private function changeOrder($order) {
+        
+        $checkID = function ($order_id) {
+            $sql = '
+                SELECT `id` 
+                FROM `orders` 
+                WHERE `id_rental_org` = :id_rental_org
+                AND `order_id` = :order_id
+            ';
+
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'order_id' => $order_id
+            );
+
+            $result = $this->pDB->get($sql, 0, $d);
+
+            return $result[0][id];
         };
 
         $update = function($id, $order) {
+
             $sql = '
                 UPDATE `orders` 
                 SET 
@@ -540,100 +577,33 @@ class Request
             ';
 
             $d = array(
-                'id'            => $id,
-                'order_id'      => $order[order_id],
-                'id_rental_org' => $this->app_id,
-                'id_rental_org' => $order[id_rental_org],
-                'status'        => $order[status],
-                'customer_id'   => $order[customer_id],
-                'customer_name' => $order[customer_name],
-                'start_time'    => $order[start_time],
-                'advance'       => $order[advane],
-                'deposit'       => $order[deposit],      
-                'note'          => $order[note],     
-                'promotion'     => $order[promotion],        
-                'accessories'   => $order[accessories]
+                'id'                => $id,
+                'order_id'          => $order[order_id],
+                'order_id_position' => $order[order_id_position],
+                'id_rental_org'     => $this->app_id,
+                'status'            => $order[status],
+                'customer_id'       => $order[customer_id],
+                'customer_name'     => $order[customer_name],
+                'start_time'        => date("Y-m-d H:i:s", $order[start_time]),
+                'advance'           => $order[advane],
+                'deposit'           => $order[deposit],      
+                'note'              => $order[note],     
+                'promotion'         => $order[promotion],        
+                'accessories'       => $order[accessories]
             );
 
-            $result = $this->pDB->set($sql, $d);
-
-            if ($result) {
-                $this->writeLog("function SetCustomer successfully completed. Client id($id) was updated" . '\n');
-            } else {
-                $this->writeLog("function SetCustomer failed. Client id($id) was not updated" . '\n');
-            }
-
-            $this->setOrderProducts($order[order_id], $order[products]);
-
-            return $result;
+            return $this->pDB->set($sql, $d);
         };
-
 
         $id = $checkID($order[order_id]);
 
-        return $id ? $update($id, $order) : $newOrder($order);
-    }
+        $result = $id ? $update($id, $order) : false;
 
-    private function setOrderProducts ($order_id, $products) {
+        $log = $result ? 'changeOrder completed' : 'changeOrder failed';
 
-        $delete = function ($order_id) {
-            $sql = '
-                DELETE FROM `order_products` 
-                WHERE `id_rental_org` = :id_rental_org 
-                AND `order_id` = :order_id
-            ';
+        $this->writeLog($log);
 
-            $d = array(
-                'id_rental_org' => $this->app_id,
-                'order_id'      => $order_id
-            );
-
-            return $this->pDB->set($sql, $d) ? 'delete products' : 'delete products failed';
-        };
-
-        $set = function ($order_id, $products) {
-
-            $sql = 'INSERT INTO `order_products` (
-                `id`, 
-                `order_id`, 
-                `id_rental_org`, 
-                `product_id`,
-                `tariff_id`,
-                `bill`,
-                `bill_no_sale`,
-                `end_time`
-            ) VALUES (
-                NULL, 
-                :order_id, 
-                :id_rental_org, 
-                :product_id,
-                :tariff_id,
-                :bill,
-                :bill_no_sale,
-                :end_time
-            )';
-
-            
-            foreach ($products as $key => $product) {
-                $this->writeLog($order_id);
-
-                $d = array(
-                    'id_rental_org' => $this->app_id,
-                    'order_id'      => $order_id,
-                    'product_id'    => $product[id_rent],
-                    'tariff_id'     => $product[tariff],
-                    'bill'          => 0,
-                    'bill_no_sale'  => 0,
-                    'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
-                );
-
-                $this->pDB->set($sql, $d);
-            }
-        };
-
-
-        $this->writeLog($delete($order_id));
-        $set($order_id, $products);
+        return $result;
     }
 
     private function deleteOrder($order_id) {
@@ -683,6 +653,70 @@ class Request
 
         return $result;        
     }
+
+    private function setOrderProducts ($order_id, $products) {
+
+        $delete = function ($order_id) {
+            $sql = '
+                DELETE FROM `order_products` 
+                WHERE `id_rental_org` = :id_rental_org 
+                AND `order_id` = :order_id
+            ';
+
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'order_id'      => $order_id
+            );
+
+            return $this->pDB->set($sql, $d) ? 'delete products' : 'delete products failed';
+        };
+
+        $set = function ($order_id, $products) {
+
+            $sql = 'INSERT INTO `order_products` (
+                `id`, 
+                `order_id`, 
+                `id_rental_org`, 
+                `product_id`,
+                `tariff_id`,
+                `bill`,
+                `bill_no_sale`,
+                `end_time`
+            ) VALUES (
+                NULL, 
+                :order_id, 
+                :id_rental_org, 
+                :product_id,
+                :tariff_id,
+                :bill,
+                :bill_no_sale,
+                :end_time
+            )';
+
+            
+            foreach ($products as $key => $product) {
+                $this->writeLog($order_id);
+
+                $d = array(
+                    'id_rental_org' => $this->app_id,
+                    'order_id'      => $order_id,
+                    'product_id'    => $product[product_id],
+                    'tariff_id'     => $product[tariff],
+                    'bill'          => 0,
+                    'bill_no_sale'  => 0,
+                    'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
+                );
+
+                $this->pDB->set($sql, $d);
+            }
+        };
+
+
+        $this->writeLog($delete($order_id));
+        $set($order_id, $products);
+    }
+
+
 
     private function deleteOrderProducts($product_id) {
         

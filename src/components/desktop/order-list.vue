@@ -64,7 +64,7 @@
 
             changeOrder(order, product) {
                 this.product = product
-                console.log(product)
+                //console.log(product)
 
                 this.showDetails = true
                 

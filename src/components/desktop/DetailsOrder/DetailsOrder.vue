@@ -76,6 +76,7 @@
 <script>
     import copyObject        from '../../../functions/copyObject'
     import getOrderId        from '../../../functions/getOrderId'
+    import makeOrder         from '../../../functions/makeOrder'
 
     import Position          from './IdPosition/IdPosition'
     import SelectCustomer    from './SelectCustomer'
@@ -119,6 +120,7 @@
                 order_id_position:  order ? order.order_id_position : null,
                 advance:            order ? order.advance : null,
                 note:               order ? order.note : null,
+                products:           order ? order.products : [],
                 promotion:          order ? order.promotion : null,
                 accessories:        order ? order.accessories : null,
                 customer:           order ? order.customer : null,
@@ -128,7 +130,7 @@
             this.product = {
                 name:         product.name,
                 order_id:     this.order.order_id,
-                id_rent:      product.id_rent || product.product_id,
+                product_id:   product.id_rent || product.product_id,
                 tariff_id:    product.tariff_id,
                 bill:         null,
                 bill_no_sale: null,
@@ -139,19 +141,19 @@
         methods: {
             ...copyObject,
             ...getOrderId,
+            ...makeOrder,
 
 
             close() {
                 this.$emit('close')
             },
             save() {
-
-                this.order.products = [this.product]
-                console.log(this.order)
+                const order = this.order
+                console.log(order)
                 
                 this.$store.dispatch('send', {
-                    cmd: 'setOrder',
-                    value: this.order
+                    cmd: 'changeOrder',
+                    value: order
                 })
 
                 this.close()

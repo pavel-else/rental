@@ -45,6 +45,7 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
                     order_id_position:  null,
                     advance:            null,
                     note:               null,
+                    products:           [],
                     promotion:          null,
                     accessories:        null,
                     customer:           null,
