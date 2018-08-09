@@ -123,7 +123,7 @@
                 products:           order ? order.products : [],
                 promotion:          order ? order.promotion : null,
                 accessories:        order ? order.accessories : null,
-                customer:           order ? order.customer : null,
+                customer_id:        order ? order.customer_id : null,
                 deposit:            order ? order.deposit : null, 
             }
 
@@ -151,10 +151,10 @@
                 const order = this.order
                 console.log(order)
                 
-                this.$store.dispatch('send', {
-                    cmd: 'changeOrder',
-                    value: order
-                })
+                // this.$store.dispatch('send', {
+                //     cmd: 'changeOrder',
+                //     value: order
+                // })
 
                 this.close()
             },
@@ -213,7 +213,10 @@
                     return []
                 }
 
-                const ids = this.dataProduct.tariff_id.split(',')
+                const product = this.$store.getters.products.find(i => i.id_rent == this.dataProduct.product_id)
+                console.log(product)
+
+                const ids = product.tariff_id.split(',')
 
                 return ids.map(id => {
                     return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
@@ -237,7 +240,7 @@
 <style>
     .add-order {
         width: 400px;
-        margin-top: 80px;
+        margin-top: 50px;
         padding: 10px 20px;
     }
 

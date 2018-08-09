@@ -28,7 +28,7 @@
                 //deprecated
                 // Должен приходить id/
                 // Переделать, как будет готова таблица в БД
-                value: this.data.find(d => d.name == this.default), 
+                value: this.data.find(d => d.id_rent == this.default), 
                                  
                 options: this.data
             }

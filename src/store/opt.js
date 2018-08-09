@@ -24,39 +24,39 @@ export default {
 
         depositList: [
             {
-                id: 1,
+                id_rent: 1,
                 name: 'Паспорт'
             },
             {
-                id: 2,
+                id_rent: 2,
                 name: 'Водительское'
             },
             {
-                id: 3,
+                id_rent: 3,
                 name: 'Военный билет'
             },
             {
-                id: 4,
+                id_rent: 4,
                 name: 'Загран. паспорт'
             },
             {
-                id: 5,
+                id_rent: 5,
                 name: 'Мед. полис'
             },
             {
-                id: 6,
+                id_rent: 6,
                 name: 'Снилс'
             },
             {
-                id: 7,
+                id_rent: 7,
                 name: 'Студентческий'
             },
             {
-                id: 8,
+                id_rent: 8,
                 name: 'Водительское'
             },
             {
-                id: 9,
+                id_rent: 9,
                 name: 'Другое'
             }
         ],
