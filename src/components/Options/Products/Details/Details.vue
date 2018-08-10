@@ -39,7 +39,7 @@
                     </tr>
                     <tr>
                         <td>Статус</td>
-                        <td><input v-model="product.active"></td>
+                        <td><input v-model="product.status"></td>
                     </tr>
                 </table>
             </form>     
@@ -56,8 +56,11 @@
 </template>
 
 <script>
-    import Tariffs from './prod_tariffs'
+    import copyObject from '../../../../functions/copyObject'
+
+    import Tariffs    from './prod_tariffs'
     import Categories from './prod_categories'
+
     export default {
         props: {
             data: Object
@@ -69,11 +72,13 @@
         data() {
             return {
                 // Не смог по-нормальному скопировать объект без геттеров, поэтому так
-                product: JSON.parse(JSON.stringify(this.data)),
+                product: this.copyObject(this.data),
                 change: false
             }
         },
         methods: {
+            ...copyObject,
+
             save() {
                 this.product.updated = Math.floor(Date.now() / 1000)
 

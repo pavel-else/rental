@@ -26,7 +26,7 @@
             filterProducts() {
                 const list = this.$store.getters.products
 
-                return list ? list.filter(item => item.active != 0) : []
+                return list ? list.filter(item => item.status == 'free') : []
             },
         }
 

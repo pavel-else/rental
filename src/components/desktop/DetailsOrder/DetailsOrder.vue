@@ -158,11 +158,18 @@
             },
             addOrder() {
                 console.log(this.order)
-                
+                console.log(this.product)                
+
                 this.$store.dispatch('send', {
                     cmd: 'addOrder',
                     value: this.order
                 })
+                setTimeout(() => {
+                    this.$store.dispatch('send', {
+                        cmd: 'addOrderProduct',
+                        value: this.product
+                    })                    
+                }, 500)
 
                 this.close()
             },

@@ -16,7 +16,7 @@
                 <td>{{ product.cost }}</td>
                 <td>{{ product.tariff_ids }}</td>
                 <td>{{ product.categories }}</td>
-                <td>{{ product.active }}</td>
+                <td>{{ product.status }}</td>
                 <td>{{ product.updated }}</td>
             </tr>
         </table>

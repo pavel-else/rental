@@ -739,7 +739,7 @@ class Request
                 'id_rental_org' => $this->app_id,
                 'order_id'      => $product[order_id],
                 'product_id'    => $product[product_id],
-                'tariff_id'     => $product[tariff],
+                'tariff_id'     => $product[tariff_id],
                 'bill'          => $product[bill],
                 'bill_no_sale'  => $product[bill_no_sale],
                 'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
@@ -751,6 +751,23 @@ class Request
             $log = $result ? 'addOrderProduct complete' : 'addOrderProduct failed';
 
             $this->writeLog($log);
+
+            $subsql = ' UPDATE `products` 
+                SET 
+                    `status` = :status 
+                WHERE 
+                    `id_rental_org` = :id_rental_org 
+                AND 
+                    `id_rent` = :id_rent
+            ';
+
+            $subD = array(
+                'id_rent'       => $product[product_id],
+                'id_rental_org' => $this->app_id,
+                'status'        => 'busy'
+            );
+
+            $this->pDB->set($subsql, $subD);
 
             return $result;
         };
@@ -1548,7 +1565,7 @@ class Request
                 `id_rental_org`,
                 `name`,
                 `cost`,
-                `active`,
+                `status`,
                 `tariff_ids`,
                 `tariff_default`,
                 `updated`
@@ -1558,7 +1575,7 @@ class Request
                 :id_rental_org,
                 :name,
                 :cost,
-                :active,
+                :status,
                 :tariff_ids,
                 :tariff_default,
                 :updated
@@ -1569,7 +1586,7 @@ class Request
                 'id_rental_org' => $this->app_id,
                 'name'          => $product[name],
                 'cost'          => $product[cost],
-                'active'        => $product[active],
+                'status'        => $product[status],
                 'tariff_ids'    => $product[tariff_ids],
                 'tariff_default'=> $product[tariff_default],
                 'updated'       => date("Y-m-d H:i:s", $product[updated]),
@@ -1596,7 +1613,7 @@ class Request
                     `id_rental_org` = :id_rental_org,
                     `name`          = :name,
                     `cost`          = :cost,
-                    `active`        = :active,
+                    `status`        = :status,
                     `tariff_ids`    = :tariff_ids,
                     `tariff_default`= :tariff_default,
                     `categories`    = :categories,
@@ -1610,7 +1627,7 @@ class Request
                 'id_rental_org' => $this->app_id,
                 'name'          => $product[name],
                 'cost'          => $product[cost],
-                'active'        => $product[active],
+                'status'        => $product[status],
                 'tariff_ids'    => $product[tariff_ids],
                 'tariff_default'=> $product[tariff_default],
                 'categories'    => $product[categories],
