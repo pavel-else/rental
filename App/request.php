@@ -658,6 +658,13 @@ class Request
     }
 
     private function addOrderProduct($product) {
+        $log = $this->scanProduct($product);
+
+        if ($log) {
+            $this->writeLog($log);
+
+            return false;
+        }
 
         $search = function ($order_id, $product_id) {
             // Запись не будет проведена если товар уже в прокате или ордера не существует
@@ -729,7 +736,38 @@ class Request
         return !$find ? $set($product) : $this->writeLog('addOrderProduct failed. Duble products or empty order');
     }
 
+    private function scanProduct($product) {
+        $log = [];
+
+        if (empty($product)) {
+            $log[] = "empty product";
+
+            return $log; // все последующие не имеют смысла
+        }
+
+        if (!$product[order_id]) {
+            $log[] = "empty order_id";
+        }
+
+        if (!$product[product_id]) {
+            $log[] = "empty product_id";
+        }
+
+        if (!$product[tariff_id]) {
+            $log[] = "empty tariff_id";
+        }
+
+        return $log ? $log : false;
+    }
+
     private function changeOrderProduct($product) {
+        $log = $this->scanProduct($product);
+
+        if ($log) {
+            $this->writeLog($log);
+
+            return false;
+        }
 
         $search = function ($order_id, $product_id) {
             $sql = '
@@ -793,7 +831,7 @@ class Request
         $id = $search($product[order_id], $product[product_id]);
 
 
-        return $id ? $update($id, $product) : $this->writeLog('changeOrderProduct failed. Product not define');
+        return $id ? $update($id, $product) : $this->writeLog('changeOrderProduct failed. Product not define in DB');
     }
 
     private function deleteOrderProducts($product_id) {
