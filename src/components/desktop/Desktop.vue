@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import getOrderId from '../../functions/getOrderId'
-import productList from './product-list'
-import orderList from './order-list'
+import getOrderId   from '../../functions/getOrderId'
+import productList  from './product-list'
+import orderList    from './order-list'
 import DetailsOrder from './DetailsOrder/DetailsOrder'
 
     export default {

@@ -131,7 +131,7 @@
                 name:         product.name,
                 order_id:     this.order.order_id,
                 product_id:   product.id_rent || product.product_id,
-                tariff_id:    product.tariff_id,
+                tariff_id:    product.tariff_default || product.tariff_id,
                 bill:         null,
                 bill_no_sale: null,
                 end_time:     null                
@@ -214,7 +214,7 @@
 
                 const product = this.$store.getters.products.find(i => i.id_rent == id)
 
-                const ids = product.tariff_id.split(',')
+                const ids = product.tariff_ids.split(',')
 
                 return ids.map(id => {
                     return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
