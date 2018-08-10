@@ -152,8 +152,8 @@
                 console.log(this.product)
                 
                 this.$store.dispatch('send', {
-                    cmd: 'addOrderProduct',
-                    value: this.product
+                    cmd: 'changeOrderProduct',
+                    value: this.product 
                 })
 
                 this.close()
@@ -200,7 +200,7 @@
                 this.order.accessories = accessories
             },
             setTariff(tariff) {
-                this.product.tariff = tariff.id_rent
+                this.product.tariff_id = tariff.id_rent
             },
         },
 

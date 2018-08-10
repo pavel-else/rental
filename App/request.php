@@ -91,6 +91,9 @@ class Request
                 case 'addOrderProduct':
                     $this->addOrderProduct($value);
                 break;
+                case 'changeOrderProduct':
+                    $this->changeOrderProduct($value);
+                break;
                 case 'setCustomer':
                     $this->setCustomer($value);
                 break;
@@ -705,8 +708,8 @@ class Request
                 'order_id'      => $product[order_id],
                 'product_id'    => $product[product_id],
                 'tariff_id'     => $product[tariff],
-                'bill'          => 0,
-                'bill_no_sale'  => 0,
+                'bill'          => $product[bill],
+                'bill_no_sale'  => $product[bill_no_sale],
                 'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
             );
 
@@ -745,55 +748,52 @@ class Request
 
             $result = $this->pDB->get($sql, 0, $d);
 
-            return $result;
+            return $result[0][id];
         };
 
-        $set = function ($product) {
+        $update = function ($id, $product) {
 
-            $sql = 'INSERT INTO `order_products` (
-                `id`, 
-                `order_id`, 
-                `id_rental_org`, 
-                `product_id`,
-                `tariff_id`,
-                `bill`,
-                `bill_no_sale`,
-                `end_time`
-            ) VALUES (
-                NULL, 
-                :order_id, 
-                :id_rental_org, 
-                :product_id,
-                :tariff_id,
-                :bill,
-                :bill_no_sale,
-                :end_time
-            )';
+            $sql = '
+                UPDATE `order_products` 
+                SET  
+                    `id_rental_org` = :id_rental_org, 
+                    `order_id`      = :order_id, 
+                    `product_id`    = :product_id,
+                    `tariff_id`     = :tariff_id,
+                    `bill`          = :bill,
+                    `bill_no_sale`  = :bill_no_sale,
+                    `end_time`      = :end_time 
+                WHERE
+                    `id` = :id
+                AND
+                    `id_rental_org` = :id_rental_org
+            ';
 
             $d = array(
+                'id'            => $id,
                 'id_rental_org' => $this->app_id,
                 'order_id'      => $product[order_id],
                 'product_id'    => $product[product_id],
-                'tariff_id'     => $product[tariff],
-                'bill'          => 0,
-                'bill_no_sale'  => 0,
+                'tariff_id'     => $product[tariff_id],
+                'bill'          => $product[bill],
+                'bill_no_sale'  => $product[bill_no_sale],
                 'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
             );
 
             
             $result = $this->pDB->set($sql, $d);
 
-            $log = $result ? 'addOrderProduct complete' : 'addOrderProduct failed';
+            $log = $result ? 'changeOrderProduct complete' : 'changeOrderProduct failed';
 
             $this->writeLog($log);
 
             return $result;
         };
 
-        $find = $search($product[order_id], $product[product_id]);
+        $id = $search($product[order_id], $product[product_id]);
 
 
-        return $find ? $set($product) : $this->writeLog('addOrderProduct failed. Duble prod');
+        return $id ? $update($id, $product) : $this->writeLog('changeOrderProduct failed. Product not define');
     }
 
     private function deleteOrderProducts($product_id) {
