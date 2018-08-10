@@ -66,6 +66,8 @@
                 </tr>
             </table>
                 <div class="btn-group">
+                    <button @click="addOrder">addOrder</button>
+                    <button @click="changeOrder">changeOrder</button>
                     <button @click="save">Готово</button>
                     <button @click="close">Отмена</button>
                 </div>
@@ -103,9 +105,6 @@
                 order: null,
                 product: null,
 
-                changeID: false,
-                changeOrder: false,
-                changeProduct: false
             }
         },
 
@@ -148,16 +147,36 @@
                 this.$emit('close')
             },
             save() {
-                const order = this.order
                 console.log(this.product)
                 
                 this.$store.dispatch('send', {
-                    cmd: 'deleteOrderProduct',
-                    value: this.product 
+                    cmd: 'deleteOrder',
+                    value: this.order.order_id
                 })
 
                 this.close()
             },
+            addOrder() {
+                console.log(this.order)
+                
+                this.$store.dispatch('send', {
+                    cmd: 'addOrder',
+                    value: this.order
+                })
+
+                this.close()
+            },
+            changeOrder() {
+                console.log(this.order)
+                
+                this.$store.dispatch('send', {
+                    cmd: 'changeOrder',
+                    value: this.order
+                })
+
+                this.close()
+            },
+
 
             getPosition() {
                 // Возвращает id текущей позиции ордера или новую позицию
@@ -191,7 +210,7 @@
                 this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
             },
             setDeposit(deposit) {
-                this.order.deposit = deposit.id
+                this.order.deposit = deposit.id_rent
             },
             setPromotion(promotion) {
                 this.order.promotion = promotion.id

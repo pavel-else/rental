@@ -613,6 +613,31 @@ class Request
     }
 
     private function deleteOrder($order_id) {
+        if (empty($order_id)) {
+            return false;
+        }
+
+        $cheack = function ($order_id) {
+            //Вернет false если в ордере есть активные товары или true иначе
+            $sql = '
+                SELECT `id` 
+                FROM `order_products` 
+                WHERE `id_rental_org` = :id_rental_org 
+                AND `order_id` = :order_id
+                AND `end_time` IS NOT NULL
+            ';
+
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'order_id' => $order_id
+            );
+
+            $result = $this->pDB->get($sql, 0, $d);
+            $log = $result ? 'Active product! Can not remove a order' : 'Active product not found';
+            $this->writeLog($log);
+
+            return $result[0][id] ? false : true;
+        };
 
         $search = function ($order_id) {
             $sql = '
@@ -635,27 +660,24 @@ class Request
         $delete = function ($id) {
             $sql = '
                 DELETE FROM `orders` 
-                WHERE `id` = :id
+                WHERE `id_rental_org` = :id_rental_org 
+                AND `id` = :id
             ';
 
             $d = array(
+                'id_rental_org' => $this->app_id,
                 'id' => $id
             );
 
             return $this->pDB->set($sql, $d);
         };
 
-        if (empty($order_id)) {
-            return false;
+        if ($cheack($order_id)) {
+            $result = $delete($search($order_id));            
         }
-
-        $result = $delete($search($order_id));    
            
-        if ($result) {
-            $this->writeLog("deleteOrder completed.");
-        } else {
-            $this->writeLog("deleteOrder failed.");
-        }
+        $log = $result ? "deleteOrder completed." : "deleteOrder failed.";
+        $this->writeLog($log);
 
         return $result;        
     }
