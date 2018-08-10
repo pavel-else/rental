@@ -1418,7 +1418,7 @@ class Request
                 `name`,
                 `cost`,
                 `active`,
-                `tariff_id`,
+                `tariff_ids`,
                 `tariff_default`,
                 `updated`
             ) VALUES (
@@ -1428,7 +1428,7 @@ class Request
                 :name,
                 :cost,
                 :active,
-                :tariff_id,
+                :tariff_ids,
                 :tariff_default,
                 :updated
             )';
@@ -1439,7 +1439,7 @@ class Request
                 'name'          => $product[name],
                 'cost'          => $product[cost],
                 'active'        => $product[active],
-                'tariff_id'     => $product[tariff_id],
+                'tariff_ids'    => $product[tariff_ids],
                 'tariff_default'=> $product[tariff_default],
                 'updated'       => date("Y-m-d H:i:s", $product[updated]),
             );
@@ -1466,7 +1466,7 @@ class Request
                     `name`          = :name,
                     `cost`          = :cost,
                     `active`        = :active,
-                    `tariff_id`     = :tariff_id,
+                    `tariff_ids`    = :tariff_ids,
                     `tariff_default`= :tariff_default,
                     `categories`    = :categories,
                     `updated`       = :updated 
@@ -1480,7 +1480,7 @@ class Request
                 'name'          => $product[name],
                 'cost'          => $product[cost],
                 'active'        => $product[active],
-                'tariff_id'     => $product[tariff_id],
+                'tariff_ids'    => $product[tariff_ids],
                 'tariff_default'=> $product[tariff_default],
                 'categories'    => $product[categories],
                 'updated'       => date("Y-m-d H:i:s", $product[updated]),

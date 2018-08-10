@@ -14,7 +14,7 @@
                 <td>{{ product.id_rent }}</td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.cost }}</td>
-                <td>{{ product.tariff_id }}</td>
+                <td>{{ product.tariff_ids }}</td>
                 <td>{{ product.categories }}</td>
                 <td>{{ product.active }}</td>
                 <td>{{ product.updated }}</td>

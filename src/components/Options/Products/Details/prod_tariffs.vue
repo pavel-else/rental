@@ -27,7 +27,7 @@
         data() {
             return {
                 tariffs: this.$store.getters.tariffs.map(tariff => {
-                    const ids = this.data.tariff_id ? this.data.tariff_id.split(',') : []
+                    const ids = this.data.tariff_ids ? this.data.tariff_ids.split(',') : []
 
                     // Поле check нужно для отображения чекбоксов
                     tariff.check = ids.find(id => id === tariff.id_rent) ? true : false

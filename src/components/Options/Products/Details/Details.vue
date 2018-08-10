@@ -79,7 +79,6 @@
 
                 //console.log(this.product)
 
-                console.log(this.product)
                 this.$store.dispatch('send', {
                     cmd: 'setProduct',
                     value: this.product
@@ -115,7 +114,7 @@
                 console.log(this.product)
             },
             setTariffs(ids) {
-                this.product.tariff_id = ids
+                this.product.tariff_ids = ids
             },
             setTariffDefault(id) {
                 this.product.tariff_default = id
@@ -138,7 +137,7 @@
 <style scoped>
     .details {
         width: 300px;
-        margin-top: 120px;
+        margin-top: 60px;
     }
     input {
         width: 100%;
