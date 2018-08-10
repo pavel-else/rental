@@ -657,6 +657,7 @@ class Request
     private function addOrderProduct($product) {
 
         $search = function ($order_id, $product_id) {
+            // Запись не будет проведена если товар уже в прокате или ордера не существует
             $sql = '
                 SELECT `id` 
                 FROM `order_products` 
