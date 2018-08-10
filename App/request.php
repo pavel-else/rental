@@ -661,6 +661,77 @@ class Request
                 SELECT `id` 
                 FROM `order_products` 
                 WHERE `id_rental_org` = :id_rental_org 
+                AND `product_id`      = :product_id 
+                AND (`end_time` IS NULL
+                OR `order_id`        = :order_id) 
+            ';
+
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'order_id'      => $order_id,
+                'product_id'    => $product_id
+            );
+
+            $result = $this->pDB->get($sql, 0, $d);
+
+            return $result;
+        };
+
+        $set = function ($product) {
+
+            $sql = 'INSERT INTO `order_products` (
+                `id`, 
+                `order_id`, 
+                `id_rental_org`, 
+                `product_id`,
+                `tariff_id`,
+                `bill`,
+                `bill_no_sale`,
+                `end_time`
+            ) VALUES (
+                NULL, 
+                :order_id, 
+                :id_rental_org, 
+                :product_id,
+                :tariff_id,
+                :bill,
+                :bill_no_sale,
+                :end_time
+            )';
+
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'order_id'      => $product[order_id],
+                'product_id'    => $product[product_id],
+                'tariff_id'     => $product[tariff],
+                'bill'          => 0,
+                'bill_no_sale'  => 0,
+                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
+            );
+
+            
+            $result = $this->pDB->set($sql, $d);
+
+            $log = $result ? 'addOrderProduct complete' : 'addOrderProduct failed';
+
+            $this->writeLog($log);
+
+            return $result;
+        };
+
+        $find = $search($product[order_id], $product[product_id]);
+
+
+        return !$find ? $set($product) : $this->writeLog('addOrderProduct failed. Duble products or empty order');
+    }
+
+    private function changeOrderProduct($product) {
+
+        $search = function ($order_id, $product_id) {
+            $sql = '
+                SELECT `id` 
+                FROM `order_products` 
+                WHERE `id_rental_org` = :id_rental_org 
                 AND `order_id`        = :order_id 
                 AND `product_id`      = :product_id 
             ';
@@ -721,10 +792,8 @@ class Request
         $find = $search($product[order_id], $product[product_id]);
 
 
-        return !$find ? $set($product) : $this->writeLog('addOrderProduct failed. Duble prod')
+        return $find ? $set($product) : $this->writeLog('addOrderProduct failed. Duble prod');
     }
-
-
 
     private function deleteOrderProducts($product_id) {
 
