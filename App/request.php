@@ -94,6 +94,9 @@ class Request
                 case 'changeOrderProduct':
                     $this->changeOrderProduct($value);
                 break;
+                case 'deleteOrderProduct':
+                    $this->deleteOrderProduct($value);
+                break;
                 case 'setCustomer':
                     $this->setCustomer($value);
                 break;
@@ -834,64 +837,61 @@ class Request
         return $id ? $update($id, $product) : $this->writeLog('changeOrderProduct failed. Product not define in DB');
     }
 
-    private function deleteOrderProducts($product_id) {
+    private function deleteOrderProduct($product) {
+        if (empty($product[product_id])) {
+            $this->writeLog('deleteOrderProducts failed! empty product_id');
+            
+            return false;
+        }
 
-        $delete = function ($order_id) {
+        if (empty($product[order_id])) {
+            $this->writeLog('deleteOrderProducts failed! empty order_id');
+            
+            return false;
+        }
+
+        $delete = function ($id) {
             $sql = '
                 DELETE FROM `order_products` 
                 WHERE `id_rental_org` = :id_rental_org 
-                AND `order_id` = :order_id
+                AND `id` = :id
             ';
 
             $d = array(
                 'id_rental_org' => $this->app_id,
-                'order_id'      => $order_id
+                'id'            => $id
             );
 
-            return $this->pDB->set($sql, $d) ? 'delete products' : 'delete products failed';
+            $result = $this->pDB->set($sql, $d);
+            $log = $result ? 'delete products' : 'delete products failed';
+            $this->writeLog($log);
+
+            return $result;
         };
         
-            $search = function ($product_id) {
-                $sql = '
-                    SELECT `id` 
-                    FROM `order_products` 
-                    WHERE `id_rental_org` = :id_rental_org 
-                    AND `product_id` = :product_id 
-                    AND `end_time` = NULL
-                ';
+        $search = function ($order_id, $product_id) {
+            $sql = '
+                SELECT `id` 
+                FROM `order_products` 
+                WHERE `id_rental_org` = :id_rental_org 
+                AND `order_id`        = :order_id
+                AND `product_id`      = :product_id 
+            ';
 
-                $d = array(
-                    'id_rental_org' => $this->app_id,
-                    'product_id' => $product_id
-                );
+            $d = array(
+                'id_rental_org' => $this->app_id,
+                'order_id'      => $order_id,
+                'product_id'    => $product_id
+            );
 
-                $result = $this->pDB->get($sql, 0, $d);
+            $result = $this->pDB->get($sql, 0, $d);
 
-                return $result;
-            };
+            return $result[0][id];
+        };
 
-            $delete = function ($array) {
-                $sql = '
-                    DELETE FROM `order_products` 
-                    WHERE `id` = :id
-                ';
+        $id = $search($product[order_id], $product[product_id]);
 
-
-                foreach ($array as $key => $value) {
-                    # code...
-                    $d = array(
-                        'id' => $value[id]
-                    );
-
-                    $this->pDB->set($sql, $d);
-                }
-            };
-
-            if (empty($product_id)) {
-                return false;
-            }
-
-            $delete($search($product_id));
+        return $id ? $delete($id) : false;
     }
 
     private function setCustomer($customer) {

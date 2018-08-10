@@ -132,8 +132,8 @@
                 order_id:     this.order.order_id,
                 product_id:   product.id_rent || product.product_id,
                 tariff_id:    product.tariff_default || product.tariff_id,
-                bill:         null,
-                bill_no_sale: null,
+                bill:         0,
+                bill_no_sale: 0,
                 end_time:     null                
             }
         },
@@ -152,7 +152,7 @@
                 console.log(this.product)
                 
                 this.$store.dispatch('send', {
-                    cmd: 'changeOrderProduct',
+                    cmd: 'deleteOrderProduct',
                     value: this.product 
                 })
 
