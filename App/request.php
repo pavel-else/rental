@@ -676,7 +676,7 @@ class Request
             return $result;
         };
 
-        $set = function ($products) {
+        $set = function ($product) {
 
             $sql = 'INSERT INTO `order_products` (
                 `id`, 
@@ -720,7 +720,8 @@ class Request
 
         $find = $search($product[order_id], $product[product_id]);
 
-        return !$find ? $set($order_id, $products) : false;
+
+        return !$find ? $set($product) : $this->writeLog('addOrderProduct failed. Duble prod')
     }
 
 

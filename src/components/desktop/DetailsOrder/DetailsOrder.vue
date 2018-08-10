@@ -151,10 +151,10 @@
                 const order = this.order
                 console.log(this.product)
                 
-                // this.$store.dispatch('send', {
-                //     cmd: 'changeOrder',
-                //     value: order
-                // })
+                this.$store.dispatch('send', {
+                    cmd: 'addOrderProduct',
+                    value: this.product
+                })
 
                 this.close()
             },
