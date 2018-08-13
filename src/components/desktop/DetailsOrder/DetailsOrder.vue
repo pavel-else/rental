@@ -67,15 +67,40 @@
             </table>
                 <div class="btn-group">
                     <button 
-                        v-if="status == 'new' && statusPosition == 'new'" 
+                        :disabled="!(status == 'new' && statusPosition == 'new')" 
                         @click="addOrder"
-                    >addOrder</button>
+                    >
+                        add Order + product
+                    </button>
+                    <button 
+                        :disabled="!(status == 'new' && statusPosition == 'add')" 
+                        @click="addProduct"
+                    >
+                        add Product to Order
+                    </button>
 
-                    <button v-if="status == 'new'" @click="addProduct">addProduct</button>
+                    <button 
+                        :disabled="!(status == 'change' && statusChangeOrder)" 
+                        @click="changeOrder"
+                    >
+                        change Order
+                    </button>
 
-                    <button @click="changeOrder">changeOrder</button>
+                    <button 
+                        :disabled="!(status == 'change' && statusChangeProduct)" 
+                        @click="changeProduct"
+                    >
+                        change Product in Order
+                    </button>
 
-                    <button v-if="false" @click="save">Готово</button>
+                    <button
+                        :disabled="!(status == 'change' && statusPosition == 'new')" 
+                        @click="splitProduct"
+                    >
+                        split product to new order
+                    </button>
+
+
                     <button @click="close">Отмена</button>
                 </div>
         </div>
@@ -115,6 +140,8 @@
 
                 status: null,
                 statusPosition: null,
+                statusChangeOrder: false,
+                statusChangeProduct: false,
             }
         },
 
@@ -123,6 +150,7 @@
             const product = this.dataProduct
 
             this.status = this.dataStatus
+            this.statusPosition = this.status == 'new' ? 'new' : 'add'
 
             this.order = {
                 status:             order ? order.status : 'ACTIVE',
@@ -207,6 +235,58 @@
                 this.close()   
             },
 
+            changeProduct() {
+                console.log(this.product)
+                
+                this.$store.dispatch('send', {
+                    cmd: 'changeOrderProduct',
+                    value: this.product
+                })
+
+                this.close()
+            },
+
+            splitProduct() {
+                //Удаляем из ордера
+                const order_id = this.dataOrder.order_id
+                const product_id = this.product.product_id
+                const oldOrder = {order_id, product_id}
+
+                setTimeout(() => {
+                    this.$store.dispatch('send', {
+                        cmd: 'deleteOrderProduct',
+                        value: oldOrder
+                    })                    
+                }, 100)
+
+                // Добавляем новый ордер
+                setTimeout(() => {
+                    this.$store.dispatch('send', {
+                        cmd: 'addOrder',
+                        value: this.order
+                    })                  
+                }, 200)
+
+                //Записываем продукт в ордер
+                setTimeout(() => {
+                    this.$store.dispatch('send', {
+                        cmd: 'addOrderProduct',
+                        value: this.product
+                    })                  
+                }, 300)
+
+
+                // Удаляем старый ордер
+                setTimeout(() => {
+                    this.$store.dispatch('send', {
+                        cmd: 'deleteOrder',
+                        value: this.dataOrder
+                    })                    
+                }, 600)
+
+                this.close()
+            },
+
 
             getPosition() {
                 // Возвращает id текущей позиции ордера или новую позицию
@@ -235,25 +315,31 @@
                 this.order.order_id = $event.order_id
                 this.product.order_id = $event.order_id
 
-                this.statusPosition = this.dataProduct.order_id == this.order.order_id ? 'add' : 'new'
+                this.statusPosition = this.getOrderId() == this.order.order_id ?  'new' : 'add'
+                console.log(this.statusPosition)
 
 
             },
             setCustomer(customer) {
                 this.order.customer_id = customer.id_rent
                 this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
+                this.statusChangeOrder = true
             },
             setDeposit(deposit) {
                 this.order.deposit = deposit.id_rent
+                this.statusChangeOrder = true
             },
             setPromotion(promotion) {
                 this.order.promotion = promotion.id
+                this.statusChangeOrder = true
             },
             setAccessories(accessories) {
                 this.order.accessories = accessories
+                this.statusChangeOrder = true
             },
             setTariff(tariff) {
                 this.product.tariff_id = tariff.id_rent
+                this.statusChangeProduct = true
             },
         },
 

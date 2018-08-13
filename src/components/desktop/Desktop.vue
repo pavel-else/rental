@@ -6,9 +6,7 @@
         
         <order-list class="tmp"></order-list>
 
-        <!-- <addOrder v-if="show" :product="selectProduct" @close="onClose"></addOrder> -->
-
-        <DetailsOrder v-if="show" :data-product="product"  :data-status="'new'"@close="onClose"></DetailsOrder>
+        <DetailsOrder v-if="show" :data-product="product"  :data-status="'new'" @close="onClose"></DetailsOrder>
     </div>
 </template>
 

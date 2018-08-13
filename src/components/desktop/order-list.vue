@@ -27,7 +27,7 @@
             </tr>
         </table>
 
-        <DetailsOrder v-if="showDetails" :data-product="product" :data-order="order" @close="closeDetails"></DetailsOrder>
+        <DetailsOrder v-if="showDetails" :data-product="product" :data-order="order" :dataStatus="'change'" @close="closeDetails"></DetailsOrder>
         <Resume :order="order" @close="onClose" v-if="showResume"></Resume>
     </div>
 </template>
