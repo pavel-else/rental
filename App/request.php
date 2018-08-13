@@ -1202,11 +1202,11 @@ class Request
         $setProductStatus = function ($product) {
             $sql = '
                 UPDATE `products` 
-                SET `active` = :active 
+                SET `status` = :status 
                 WHERE `id_rent` = :id_rent' 
             ;
             $d = array(
-                'active' => 1,
+                'status' => 'free',
                 'id_rent' => $product[product_id],
             );
 
