@@ -66,9 +66,16 @@
                 </tr>
             </table>
                 <div class="btn-group">
-                    <button @click="addOrder">addOrder</button>
+                    <button 
+                        v-if="status == 'new' && statusPosition == 'new'" 
+                        @click="addOrder"
+                    >addOrder</button>
+
+                    <button v-if="status == 'new'" @click="addProduct">addProduct</button>
+
                     <button @click="changeOrder">changeOrder</button>
-                    <button @click="save">Готово</button>
+
+                    <button v-if="false" @click="save">Готово</button>
                     <button @click="close">Отмена</button>
                 </div>
         </div>
@@ -90,7 +97,8 @@
     export default {
         props: {
             dataOrder: null,
-            dataProduct: null
+            dataProduct: null,
+            dataStatus: null
         },
         components: {
             Position,
@@ -105,12 +113,16 @@
                 order: null,
                 product: null,
 
+                status: null,
+                statusPosition: null,
             }
         },
 
         beforeMount() {
             const order = this.dataOrder
             const product = this.dataProduct
+
+            this.status = this.dataStatus
 
             this.order = {
                 status:             order ? order.status : 'ACTIVE',
@@ -184,6 +196,17 @@
                 this.close()
             },
 
+            addProduct() {
+                console.log(this.product)
+                
+                this.$store.dispatch('send', {
+                    cmd: 'addOrderProduct',
+                    value: this.product
+                })
+
+                this.close()   
+            },
+
 
             getPosition() {
                 // Возвращает id текущей позиции ордера или новую позицию
@@ -211,6 +234,10 @@
                 this.order.order_id_position = $event.order_id_position
                 this.order.order_id = $event.order_id
                 this.product.order_id = $event.order_id
+
+                this.statusPosition = this.dataProduct.order_id == this.order.order_id ? 'add' : 'new'
+
+
             },
             setCustomer(customer) {
                 this.order.customer_id = customer.id_rent
