@@ -79,8 +79,8 @@ class Request
                 case 'getOrderID':
                     $this->response['options']['get_order_id'] = $this->getOrderID($value);
                 break;
-                case 'addOrder':
-                    $this->addOrder($value);
+                case 'newOrder':
+                    $this->newOrder($value);
                 break;
                 case 'changeOrder':
                     $this->changeOrder($value);
@@ -460,7 +460,7 @@ class Request
         return $result ? true : false;
     }
 
-    private function addOrder($order) {
+    private function newOrder($order) {
         $checkID = function ($order_id) {
             $sql = '
                 SELECT `id` 

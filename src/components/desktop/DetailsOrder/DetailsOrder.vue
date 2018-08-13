@@ -123,7 +123,6 @@
         props: {
             dataOrder: null,
             dataProduct: null,
-            dataStatus: null
         },
         components: {
             Position,
@@ -137,6 +136,7 @@
             return {
                 order: null,
                 product: null,
+                
 
                 status: null,
                 statusPosition: null,
@@ -174,8 +174,9 @@
                 }                
             } 
 
-            this.status = this.dataStatus
+            this.status = this.dataOrder ? 'change' : 'new'
             this.statusPosition = this.status == 'new' ? 'new' : 'add'
+            console.log(this.status)
 
 
             initOrder(this.dataOrder)
