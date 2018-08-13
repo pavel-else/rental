@@ -146,35 +146,40 @@
         },
 
         beforeMount() {
-            const order = this.dataOrder
-            const product = this.dataProduct
+            const initOrder = (order) => {
+                this.order = {
+                    status:             order ? order.status : 'ACTIVE',
+                    start_time:         order ? Date.parse(order.start_time) / 1000 : Math.floor(Date.now() / 1000),
+                    order_id:           order ? order.order_id : this.getOrderId(),
+                    order_id_position:  order ? order.order_id_position : null,
+                    advance:            order ? order.advance : null,
+                    note:               order ? order.note : null,
+                    products:           order ? order.products : [],
+                    promotion:          order ? order.promotion : null,
+                    accessories:        order ? order.accessories : null,
+                    customer_id:        order ? order.customer_id : null,
+                    deposit:            order ? order.deposit : null, 
+                }                
+            }
+
+            const initProduct = (product) => {
+                this.product = {
+                    name:         product.name,
+                    order_id:     this.order.order_id,
+                    product_id:   product.id_rent || product.product_id,
+                    tariff_id:    product.tariff_default || product.tariff_id,
+                    bill:         0,
+                    bill_no_sale: 0,
+                    end_time:     null                
+                }                
+            } 
 
             this.status = this.dataStatus
             this.statusPosition = this.status == 'new' ? 'new' : 'add'
 
-            this.order = {
-                status:             order ? order.status : 'ACTIVE',
-                start_time:         order ? Date.parse(order.start_time) / 1000 : Math.floor(Date.now() / 1000),
-                order_id:           order ? order.order_id : this.getOrderId(),
-                order_id_position:  order ? order.order_id_position : null,
-                advance:            order ? order.advance : null,
-                note:               order ? order.note : null,
-                products:           order ? order.products : [],
-                promotion:          order ? order.promotion : null,
-                accessories:        order ? order.accessories : null,
-                customer_id:        order ? order.customer_id : null,
-                deposit:            order ? order.deposit : null, 
-            }
 
-            this.product = {
-                name:         product.name,
-                order_id:     this.order.order_id,
-                product_id:   product.id_rent || product.product_id,
-                tariff_id:    product.tariff_default || product.tariff_id,
-                bill:         0,
-                bill_no_sale: 0,
-                end_time:     null                
-            }
+            initOrder(this.dataOrder)
+            initProduct(this.dataProduct)
         },
 
         methods: {
