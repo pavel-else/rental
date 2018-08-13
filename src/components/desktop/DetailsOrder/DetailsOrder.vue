@@ -2,73 +2,73 @@
     <div class="canvas">
         <div class="add-order details">
             <h3>Детали заказа<span> - #{{ order.order_id }}</span></h3>
-
-            <table>
-                <tr>
-                    <td>Товар</td>
-                    <td>{{ product.name }}</td>
-                </tr>
-                <tr>
-                    <td>ID заказа</td>
-                    <td>
-                        <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Аванс</td>
-                    <td><input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб"></td>
-                </tr>
-                <tr>
-                    <td>Клиент</td>
-                    <td>
-                        <SelectCustomer 
-                            :data="customers"
-                            :default="order.customer_id"
-                            @setCustomer="setCustomer($event)" 
-                        >
-                        </SelectCustomer>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Залог</td>
-                    <td>
-                        <SelectDeposit :data="deposits" :default="order.deposit" @setDeposit="setDeposit($event)"></SelectDeposit>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Примечание</td>
-                    <td>
-                        <textarea class="add-order__input--note" cols="30" rows="3" v-model="order.note"></textarea>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Акция</td>
-                    <td>
-                        <SelectPromotion :data="promotions" :default="order.promotion" @setPromotion="setPromotion($event)"></SelectPromotion>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Аксессуары</td>
-                    <td>
-                        <SelectAccessories :data="accessories" :default="order.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Тарифный план</td>
-                    <td>
-                        <SelectTariff 
-                            :data-tariffs="tariffs" 
-                            :data-tariff-default="product.tariff_id ? product.tariff_id : product.tariff_default" 
-                            @setTariff="setTariff($event)"
-                        >
-                        </SelectTariff>
-                    </td>
-                </tr>
-            </table>
+            <form @submit.prevent="">
+                <table>
+                    <tr>
+                        <td>Товар</td>
+                        <td>{{ product.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>ID заказа</td>
+                        <td>
+                            <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Аванс</td>
+                        <td><input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб"></td>
+                    </tr>
+                    <tr>
+                        <td>Клиент</td>
+                        <td>
+                            <SelectCustomer 
+                                :data="customers"
+                                :default="order.customer_id"
+                                @setCustomer="setCustomer($event)" 
+                            >
+                            </SelectCustomer>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Залог</td>
+                        <td>
+                            <SelectDeposit :data="deposits" :default="order.deposit" @setDeposit="setDeposit($event)"></SelectDeposit>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Примечание</td>
+                        <td>
+                            <textarea class="add-order__input--note" cols="30" rows="3" v-model="order.note"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Акция</td>
+                        <td>
+                            <SelectPromotion :data="promotions" :default="order.promotion" @setPromotion="setPromotion($event)"></SelectPromotion>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Аксессуары</td>
+                        <td>
+                            <SelectAccessories :data="accessories" :default="order.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Тарифный план</td>
+                        <td>
+                            <SelectTariff 
+                                :data-tariffs="tariffs" 
+                                :data-tariff-default="product.tariff_id ? product.tariff_id : product.tariff_default" 
+                                @setTariff="setTariff($event)"
+                            >
+                            </SelectTariff>
+                        </td>
+                    </tr>
+                </table>
                 <div class="btn-group">
                     <button 
                         :disabled="!(status == 'new' && statusPosition == 'new')" 
-                        @click="addOrder"
+                        @click="newOrder"
                     >
                         add Order + product
                     </button>
@@ -101,8 +101,9 @@
                     </button>
 
 
-                    <button @click="close">Отмена</button>
+                    <button @click.prevent="close">Отмена</button>
                 </div>
+            </form>
         </div>
     </div>
 </template>
@@ -136,12 +137,14 @@
             return {
                 order: null,
                 product: null,
-                
+
 
                 status: null,
                 statusPosition: null,
                 statusChangeOrder: false,
                 statusChangeProduct: false,
+
+                cmd: null
             }
         },
 
@@ -188,6 +191,26 @@
             ...getOrderId,
             ...makeOrder,
 
+            setCmd(rightHalf) {
+                const stack = []
+                let cmd = null
+                let value = null
+
+                if (this.status == 'new' && rightHalf == 'newPosition') {
+                    console.log('newOrder')                   
+                    cmd = 'newOrder'
+                    value = this.order
+                    stack.push({cmd: value})
+                }
+
+                console.log(stack)
+                if (this.status == 'new' && rightHalf == 'addPosition') {
+                    console.log('newOrder')                   
+                    cmd = newOrder
+                    value = this.order
+                }
+            },
+
 
             close() {
                 this.$emit('close')
@@ -202,12 +225,12 @@
 
                 this.close()
             },
-            addOrder() {
+            newOrder() {
                 console.log(this.order)
                 console.log(this.product)                
 
                 this.$store.dispatch('send', {
-                    cmd: 'addOrder',
+                    cmd: 'newOrder',
                     value: this.order
                 })
                 setTimeout(() => {
@@ -324,6 +347,8 @@
                 this.statusPosition = this.getOrderId() == this.order.order_id ?  'new' : 'add'
                 console.log(this.statusPosition)
 
+                this.setCmd(this.statusPosition + 'Position')
+
 
             },
             setCustomer(customer) {
@@ -336,6 +361,10 @@
                 this.statusChangeOrder = true
             },
             setPromotion(promotion) {
+                if (!promotion) {
+                    return
+                }
+
                 this.order.promotion = promotion.id
                 this.statusChangeOrder = true
             },
