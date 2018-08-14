@@ -87,7 +87,7 @@
                     </tr>
                 </table>
                 <div class="btn-group">
-                    <button 
+<!--                     <button 
                         :disabled="!(status == 'new' && statusPosition == 'new')" 
                         @click="newOrder"
                     >
@@ -119,7 +119,7 @@
                         @click="splitProduct"
                     >
                         split product to new order
-                    </button>
+                    </button> -->
 
 
                     <button @click.prevent="save">save</button>
@@ -211,25 +211,6 @@
             ...getOrderId,
             ...makeOrder,
 
-            setCmd(rightHalf) {
-                const stack = []
-                let cmd = null
-                let value = null
-
-                if (this.status == 'new' && rightHalf == 'newPosition') {                  
-                    cmd = 'newOrder'
-                    value = this.order
-                    stack.push({cmd: value})
-                }
-
-                console.log(stack)
-                if (this.status == 'new' && rightHalf == 'addPosition') {                  
-                    cmd = 'newOrder'
-                    value = this.order
-                }
-            },
-
-
             close() {
                 this.$emit('close')
             },
@@ -237,26 +218,25 @@
 
                 if (this.status == 'new' && this.statusPosition == 'new') {
                     console.log('newOrder')
+                    this.newOrder()
                 }
                 if (this.status == 'new' && this.statusPosition == 'add') {
                     console.log('addProduct')
+                    this.addProduct()
                 }
                 if (this.status == 'change' && this.statusChangeOrder) {
                     console.log('changeOrder')
+                    this.changeOrder()
                 }
                 if (this.status == 'change' && this.statusChangeProduct) {
                     console.log('changeProduct')
+                    this.changeProduct()
                 }
                 if (this.status == 'change' && this.statusPosition == 'new') {
                     console.log('splitProduct')
+                    this.splitProduct()
                 }
                 
-                 
-                // this.$store.dispatch('send', {
-                //     cmd: 'deleteOrder',
-                //     value: this.order.order_id
-                // })
-
                 this.close()
             },
             newOrder() {
@@ -345,7 +325,7 @@
                         cmd: 'deleteOrder',
                         value: this.dataOrder
                     })                    
-                }, 600)
+                }, 400)
 
                 this.close()
             },
@@ -379,9 +359,6 @@
                 this.product.order_id = $event.order_id
 
                 this.statusPosition = this.getOrderId() == this.order.order_id ?  'new' : 'add'
-                console.log(this.statusPosition)
-
-                this.setCmd(this.statusPosition + 'Position')
             },
                 
             setCustomer(customer) {
