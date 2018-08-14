@@ -1,3 +1,24 @@
+<!-- 
+    Компонент оперирует ордерами продуктов
+    Данные в компонент могут приходить из 2 источников
+    1. Новый ордер - product-list
+    2. Существующий ордер - order-list
+
+    Если новый ордер - то сам ордер пуст, передается только данные продукта.
+    Если существующий - передается и ордер и продукт
+
+    Данные обрабатываются и приводятся к общему виду в beforeCreated
+
+    Логическим завершением работы компонента есть отправка данных на сервер с нужной командой
+
+    Команды:
+    1. Новый ордер
+    2. Добавить продукт к ордеру
+    3. Изменить ордер
+    4. Изменить продукт
+    5. Отделить продукт в новый ордер
+ -->
+
 <template>
     <div class="canvas">
         <div class="add-order details">
@@ -148,7 +169,7 @@
             }
         },
 
-        beforeMount() {
+        created() {
             const initOrder = (order) => {
                 this.order = {
                     status:             order ? order.status : 'ACTIVE',
@@ -179,6 +200,7 @@
 
             this.status = this.dataOrder ? 'change' : 'new'
             this.statusPosition = this.status == 'new' ? 'new' : 'add'
+            
             console.log(this.status)
 
 
@@ -206,7 +228,7 @@
                 console.log(stack)
                 if (this.status == 'new' && rightHalf == 'addPosition') {
                     console.log('newOrder')                   
-                    cmd = newOrder
+                    cmd = 'newOrder'
                     value = this.order
                 }
             },
@@ -291,7 +313,7 @@
                 // Добавляем новый ордер
                 setTimeout(() => {
                     this.$store.dispatch('send', {
-                        cmd: 'addOrder',
+                        cmd: 'newOrder',
                         value: this.order
                     })                  
                 }, 200)
@@ -348,22 +370,20 @@
                 console.log(this.statusPosition)
 
                 this.setCmd(this.statusPosition + 'Position')
-
-
             },
+                
             setCustomer(customer) {
-                this.order.customer_id = customer.id_rent
+                this.order.customer_id = customer.id_rent 
                 this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
                 this.statusChangeOrder = true
             },
+
             setDeposit(deposit) {
                 this.order.deposit = deposit.id_rent
                 this.statusChangeOrder = true
-            },
-            setPromotion(promotion) {
-                if (!promotion) {
-                    return
-                }
+            },             
+            setPromotion(promotion) {                 if
+(!promotion) {                     return                 }
 
                 this.order.promotion = promotion.id
                 this.statusChangeOrder = true
@@ -382,7 +402,6 @@
             customers() {
                 return this.$store.getters.customers
             },
-
             tariffs() {
                 const id = this.dataProduct.id_rent ||this.dataProduct.product_id
 
@@ -394,7 +413,6 @@
                     return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
                 })
             },
-
             deposits() {
                 return this.$store.getters.depositList
             },
