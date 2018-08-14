@@ -160,7 +160,6 @@
                 order: null,
                 product: null,
 
-
                 status: null,
                 statusPosition: null,
                 statusChangeOrder: false,
@@ -240,9 +239,6 @@
                 this.close()
             },
             newOrder() {
-                console.log(this.order)
-                console.log(this.product)                
-
                 this.$store.dispatch('send', {
                     cmd: 'newOrder',
                     value: this.order
@@ -257,8 +253,6 @@
                 this.close()
             },
             changeOrder() {
-                console.log(this.order)
-                
                 this.$store.dispatch('send', {
                     cmd: 'changeOrder',
                     value: this.order
@@ -268,8 +262,6 @@
             },
 
             addProduct() {
-                console.log(this.product)
-                
                 this.$store.dispatch('send', {
                     cmd: 'addOrderProduct',
                     value: this.product
@@ -279,8 +271,6 @@
             },
 
             changeProduct() {
-                console.log(this.product)
-                
                 this.$store.dispatch('send', {
                     cmd: 'changeOrderProduct',
                     value: this.product
