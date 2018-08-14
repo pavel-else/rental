@@ -7,7 +7,7 @@
     Если новый ордер - то сам ордер пуст, передается только данные продукта.
     Если существующий - передается и ордер и продукт
 
-    Данные обрабатываются и приводятся к общему виду в beforeCreated
+    Данные обрабатываются и приводятся к общему виду в created
 
     Логическим завершением работы компонента есть отправка данных на сервер с нужной командой
 
@@ -37,7 +37,7 @@
                     </tr>
                     <tr>
                         <td>Аванс</td>
-                        <td><input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб"></td>
+                        <td><input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="statusChangeOrder = true"></td>
                     </tr>
                     <tr>
                         <td>Клиент</td>
@@ -122,6 +122,7 @@
                     </button>
 
 
+                    <button @click.prevent="save">save</button>
                     <button @click.prevent="close">Отмена</button>
                 </div>
             </form>
@@ -201,9 +202,6 @@
             this.status = this.dataOrder ? 'change' : 'new'
             this.statusPosition = this.status == 'new' ? 'new' : 'add'
             
-            console.log(this.status)
-
-
             initOrder(this.dataOrder)
             initProduct(this.dataProduct)
         },
@@ -218,16 +216,14 @@
                 let cmd = null
                 let value = null
 
-                if (this.status == 'new' && rightHalf == 'newPosition') {
-                    console.log('newOrder')                   
+                if (this.status == 'new' && rightHalf == 'newPosition') {                  
                     cmd = 'newOrder'
                     value = this.order
                     stack.push({cmd: value})
                 }
 
                 console.log(stack)
-                if (this.status == 'new' && rightHalf == 'addPosition') {
-                    console.log('newOrder')                   
+                if (this.status == 'new' && rightHalf == 'addPosition') {                  
                     cmd = 'newOrder'
                     value = this.order
                 }
@@ -238,12 +234,28 @@
                 this.$emit('close')
             },
             save() {
-                console.log(this.product)
+
+                if (this.status == 'new' && this.statusPosition == 'new') {
+                    console.log('newOrder')
+                }
+                if (this.status == 'new' && this.statusPosition == 'add') {
+                    console.log('addProduct')
+                }
+                if (this.status == 'change' && this.statusChangeOrder) {
+                    console.log('changeOrder')
+                }
+                if (this.status == 'change' && this.statusChangeProduct) {
+                    console.log('changeProduct')
+                }
+                if (this.status == 'change' && this.statusPosition == 'new') {
+                    console.log('splitProduct')
+                }
                 
-                this.$store.dispatch('send', {
-                    cmd: 'deleteOrder',
-                    value: this.order.order_id
-                })
+                 
+                // this.$store.dispatch('send', {
+                //     cmd: 'deleteOrder',
+                //     value: this.order.order_id
+                // })
 
                 this.close()
             },
