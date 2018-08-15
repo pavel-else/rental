@@ -79,8 +79,8 @@ class Request
                 case 'getOrderID':
                     $this->response['options']['get_order_id'] = $this->getOrderID($value);
                 break;
-                case 'addOrder':
-                    $this->addOrder($value);
+                case 'newOrder':
+                    $this->newOrder($value);
                 break;
                 case 'changeOrder':
                     $this->changeOrder($value);
@@ -460,7 +460,7 @@ class Request
         return $result ? true : false;
     }
 
-    private function addOrder($order) {
+    private function newOrder($order) {
         $checkID = function ($order_id) {
             $sql = '
                 SELECT `id` 
@@ -693,24 +693,57 @@ class Request
 
         $search = function ($order_id, $product_id) {
             // Запись не будет проведена если товар уже в прокате или ордера не существует
-            $sql = '
-                SELECT `id` 
-                FROM `order_products` 
-                WHERE `id_rental_org` = :id_rental_org 
-                AND `product_id`      = :product_id 
-                AND (`end_time` IS NULL
-                OR `order_id`        = :order_id) 
-            ';
 
-            $d = array(
-                'id_rental_org' => $this->app_id,
-                'order_id'      => $order_id,
-                'product_id'    => $product_id
-            );
+            $searchInOrderProduct = function ($product_id) {
 
-            $result = $this->pDB->get($sql, 0, $d);
+                // вернет true если продукт свободен
+                // если есть такая запись, где `end_time` IS NULL, то продукт занят, вернуть false
+                $sql = '
+                    SELECT `id` 
+                    FROM `order_products` 
+                    WHERE `id_rental_org` = :id_rental_org 
+                    AND `product_id`      = :product_id 
+                    AND `end_time` IS NULL
+                ';
 
-            return $result;
+                $d = array(
+                    'id_rental_org' => $this->app_id,
+                    'product_id'    => $product_id
+                );
+
+                $result = $this->pDB->get($sql, 0, $d);
+
+                if ($result) {
+                    $this->writeLog('addOrderProduct failed. free product not found');
+                }
+
+                return !$result;
+            };
+
+            $searchInOrders = function ($order_id) {
+                // вернет true если найдет ордер по id
+                $sql = '
+                    SELECT `id` 
+                    FROM `orders` 
+                    WHERE `id_rental_org` = :id_rental_org 
+                    AND `order_id`        = :order_id 
+                ';
+
+                $d = array(
+                    'id_rental_org' => $this->app_id,
+                    'order_id'      => $order_id
+                );
+
+                $result = $this->pDB->get($sql, 0, $d);
+
+                if (!$result) {
+                    $this->writeLog('addOrderProduct failed. Order not found');
+                }
+
+                return $result;
+            };
+
+            return $searchInOrderProduct($product_id) && $searchInOrders($order_id);
         };
 
         $set = function ($product) {
@@ -775,7 +808,7 @@ class Request
         $find = $search($product[order_id], $product[product_id]);
 
 
-        return !$find ? $set($product) : $this->writeLog('addOrderProduct failed. Duble products or empty order');
+        $find ? $set($product) : $this->writeLog('addOrderProduct failed. Duble products or empty order');
     }
 
     private function scanProduct($product) {
@@ -1202,11 +1235,11 @@ class Request
         $setProductStatus = function ($product) {
             $sql = '
                 UPDATE `products` 
-                SET `active` = :active 
+                SET `status` = :status 
                 WHERE `id_rent` = :id_rent' 
             ;
             $d = array(
-                'active' => 1,
+                'status' => 'free',
                 'id_rent' => $product[product_id],
             );
 

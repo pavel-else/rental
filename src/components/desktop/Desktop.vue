@@ -6,14 +6,11 @@
         
         <order-list class="tmp"></order-list>
 
-        <!-- <addOrder v-if="show" :product="selectProduct" @close="onClose"></addOrder> -->
-
-        <DetailsOrder v-if="show" :data-product="product"  :data-status="'new'"@close="onClose"></DetailsOrder>
+        <DetailsOrder v-if="show" :data-product="product" @close="onClose"></DetailsOrder>
     </div>
 </template>
 
 <script>
-import getOrderId   from '../../functions/getOrderId'
 import productList  from './product-list'
 import orderList    from './order-list'
 import DetailsOrder from './DetailsOrder/DetailsOrder'
@@ -32,29 +29,8 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
             }
         },
         methods: {
-            ...getOrderId,
-
-
             addOrder(product) {
                 this.product = product
-
-                this.order = {
-                    status:             'ACTIVE',
-                    start_time:         Math.floor(Date.now() / 1000),
-                    order_id:           this.getOrderId(),
-                    order_id_position:  null,
-                    advance:            null,
-                    note:               null,
-                    products:           [],
-                    promotion:          null,
-                    accessories:        null,
-                    customer:           null,
-                    deposit:            null, 
-
-                    // product: this.product.id_rent,
-                    // tariff: this.product.tariff_default,
-                },
-
                 this.show = true
             },
             onClose() {
