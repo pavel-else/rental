@@ -1,4 +1,5 @@
-import axios from 'axios'
+import axios   from 'axios'
+import tariffs from './tariffs'
 
 export default {
     state: {
@@ -29,6 +30,8 @@ export default {
             .then(r => {
                 console.log(r)             
             })
+
+            console.log(this)
 
             //clear queue
             state.queue = []
