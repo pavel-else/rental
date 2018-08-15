@@ -238,12 +238,8 @@
                 }
                 
                 this.$store.dispatch('addToQueue', {
-                    cmd: 'cmd',
-                    value: 'value'
-                })
-                this.$store.dispatch('addToQueue', {
-                    cmd: 'cmd2',
-                    value: 'value2'
+                    cmd: 'newOrder',
+                    value: this.order
                 })
 
                 this.$store.dispatch('sendQueue')

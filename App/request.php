@@ -36,8 +36,9 @@ class Request
         
         $cmds = $this->dataJSON['cmds'];
         $value = $this->dataJSON['value'];
+        $queue = $this->dataJSON['queue'];
 
-        $switch = function ($cmd) use($value) {
+        $switch = function ($cmd, $value) {
             switch ($cmd) {
                 case 'getLogs':
                     $this->response['logs'] = $this->logs;
@@ -126,13 +127,15 @@ class Request
             } 
         };
 
-        if (gettype($cmds) == 'array'){
-            foreach ($cmds as $key => $cmd) {
-                $switch($cmd);
-            }    
-        } else {
-            $switch($cmds);
-        }
+
+        foreach ($queue as $cell) {
+            if (empty($cell[cmd])) {
+                return;
+            }
+
+            $switch($cell[cmd], $cell[value]);
+        }    
+
 
         $this->getLogs();
         $this->send($this->response);

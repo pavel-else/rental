@@ -14,6 +14,8 @@ export default {
             //const url = options.state.url
             const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
 
+            console.log(state.queue)
+
             axios({
                 method: 'post',
                 url,
@@ -39,7 +41,7 @@ export default {
 				return
 			}
 
-			commit('addToQueue', [cmd, value])
+			commit('addToQueue', {cmd, value})
 		},
 		sendQueue({commit}) {
 			commit('sendQueue')
