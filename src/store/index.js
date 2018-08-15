@@ -64,15 +64,14 @@ const store = new Vuex.Store({
                     commit('setTariffs', r.data.tariffs)
                     commit('setCategories', r.data.categories)
                 })
-               
             })
         },
     },
     
     actions: {
-        upd({commit}, cmds) {           
-            this.state.sendToServer(cmds, null, {commit})
-        },
+        // upd({commit}, cmds) {           
+        //     this.state.sendToServer(cmds, null, {commit})
+        // },
 
         // Из компонентов обращаться так: this.$store.dispatch('send', 'setCustomer', {a: 'a'})
         send({commit}, {cmd, value}) {

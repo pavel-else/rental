@@ -128,9 +128,10 @@ class Request
         };
 
 
-        foreach ($queue as $cell) {
+        foreach ($queue as $key => $cell) {
+
             if (empty($cell[cmd])) {
-                return;
+                break;
             }
 
             $switch($cell[cmd], $cell[value]);
