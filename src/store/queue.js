@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 export default {
 	state: {
 		queue: []
@@ -9,9 +11,24 @@ export default {
 			console.log('addToQueue', cell)
 		},
 		sendQueue(state) {
-			//send queue
-			console.log('send queue', state.queue)
+            //const url = options.state.url
+            const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
 
+            axios({
+                method: 'post',
+                url,
+                data: {
+                    queue: state.queue
+                }
+            })
+            .catch(e => {
+                console.log(e)
+            })
+            .then(r => {
+                console.log(r)               
+            })
+
+            //clear queue
 			state.queue = []
 		}
 	},
