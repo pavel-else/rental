@@ -30,7 +30,7 @@ const store = new Vuex.Store({
 
             const check = (cmds) => {
                 if (!cmds) {
-
+                    return
                 }
 
                 if (cmds.cmd) {
@@ -41,7 +41,7 @@ const store = new Vuex.Store({
             }
 
             const sendToServer = (queue) => {
-                const send = new Promise((resolve, rejeect) => {
+                return new Promise((resolve, reject) => {
 
                     const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
 
@@ -71,19 +71,9 @@ const store = new Vuex.Store({
 
                     resolve()
                 })
-                send.then()
-
             }
 
-            const set = (cmds) => {
-                return  new Promise ((resolve, rejeect) => {
-                    sendToServer(cmds)
-
-                    resolve()               
-                })
-            }
-
-            const upd = () => {
+            const makeUpd = () => {
                 cmds = [
                     'getProducts',
                     'getOrders', 
@@ -98,10 +88,20 @@ const store = new Vuex.Store({
                 const queue = cmds.map(i => {
                     return {cmd: i}
                 })
-                sendToServer(queue)
+
+                return queue
             }
 
-            cmds ? set(check(cmds)).then(upd()) : upd()
+            const set = (cmds) => {
+                cmds = cmds ? cmds : []
+
+                cmds = [...cmds, ...makeUpd()]
+
+                sendToServer(cmds)
+            }
+
+
+            set(check(cmds))
         },
 
         upd({dispatch}) { 
