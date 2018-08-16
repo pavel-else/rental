@@ -218,11 +218,20 @@
 
                 if (this.status == 'new' && this.statusPosition == 'new') {
                     console.log('newOrder')
-                    // this.newOrder()
+
+                    this.$store.dispatch('send', [
+                        {cmd: 'newOrder',        value: this.order},
+                        {cmd: 'addOrderProduct', value: this.product},
+                    ])
                 }
+
                 if (this.status == 'new' && this.statusPosition == 'add') {
                     console.log('addProduct')
                     // this.addProduct()
+
+                    this.$store.dispatch('send', [
+                        {cmd: 'addOrderProduct', value: this.product},
+                    ])
                 }
                 if (this.status == 'change' && this.statusChangeOrder) {
                     console.log('changeOrder')
@@ -237,12 +246,9 @@
                     // this.splitProduct()
                 }
                 
-                this.$store.dispatch('addToQueue', {
-                    cmd: 'newOrder',
-                    value: this.order
-                })
 
-                this.$store.dispatch('sendQueue')
+
+                //this.$store.dispatch('sendQueue')
 
                 this.close()
             },

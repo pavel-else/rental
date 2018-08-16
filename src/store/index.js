@@ -22,7 +22,7 @@ const store = new Vuex.Store({
         categories,
         history,
     },
-    
+
     state: {
         queue: [],
     },
@@ -31,7 +31,7 @@ const store = new Vuex.Store({
         addToQueue(state, cell) {
             state.queue.push(cell)
 
-            console.log('addToQueue', cell)
+            console.log('addToQueue', cell.cmd, cell)
         },
     },
 
@@ -43,6 +43,26 @@ const store = new Vuex.Store({
             }
 
             commit('addToQueue', {cmd, value})
+        },
+
+        send({commit, dispatch}, cmds /*Array*/) {
+            if (!cmds) {
+                console.log('empty cmds')
+                return
+            }
+
+            if (!cmds.map) {
+                console.log('cmds is not array')
+                return
+            }
+
+            cmds.map(i => {
+                commit('addToQueue', {cmd: i.cmd, value: i.value})
+            })
+
+            dispatch('sendQueue')
+            dispatch('upd')
+
         },
 
         sendQueue({state, commit}) {
