@@ -115,8 +115,6 @@ const store = new Vuex.Store({
         upd({dispatch}) { 
             dispatch('send')        
         },
-
-
     }
 })
 
