@@ -87,7 +87,11 @@ export default {
 
     },
     mutations: {
-        setOpt(state, options) {
+        setOptions(state, options) {
+            if (!options) {
+                return
+            }
+            
             options.map(opt => {
                 state.options[opt.name] = opt.value
             })
