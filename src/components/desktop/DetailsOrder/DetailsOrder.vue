@@ -160,7 +160,6 @@
                 order: null,
                 product: null,
 
-
                 status: null,
                 statusPosition: null,
                 statusChangeOrder: false,
@@ -216,33 +215,65 @@
             },
             save() {
 
+                // newOrder
                 if (this.status == 'new' && this.statusPosition == 'new') {
                     console.log('newOrder')
-                    this.newOrder()
+
+                    this.$store.dispatch('send', [
+                        {cmd: 'newOrder',        value: this.order},
+                        {cmd: 'addOrderProduct', value: this.product},
+                    ])
                 }
+
+                // addProduct
                 if (this.status == 'new' && this.statusPosition == 'add') {
                     console.log('addProduct')
-                    this.addProduct()
+
+                    this.$store.dispatch('send', [
+                        {cmd: 'addOrderProduct', value: this.product},
+                    ])
                 }
+
+                // changeOrder
                 if (this.status == 'change' && this.statusChangeOrder) {
                     console.log('changeOrder')
-                    this.changeOrder()
+                    
+                    this.$store.dispatch('send', [
+                        {cmd: 'changeOrder', value: this.order},
+                    ])
                 }
+
+                // changeProduct
                 if (this.status == 'change' && this.statusChangeProduct) {
                     console.log('changeProduct')
-                    this.changeProduct()
+                    
+                    this.$store.dispatch('send', [
+                        {cmd: 'changeOrderProduct', value: this.product},
+                    ])
                 }
+
+                // splitProduct
                 if (this.status == 'change' && this.statusPosition == 'new') {
                     console.log('splitProduct')
-                    this.splitProduct()
+
+                    this.$store.dispatch('send', [
+                        {cmd: 'deleteOrderProduct', value: {
+                            order_id:   this.dataOrder.order_id,
+                            product_id: this.product.product_id
+                        }},
+                        {cmd: 'newOrder',        value: this.order},
+                        {cmd: 'addOrderProduct', value: this.product},
+                        {cmd: 'deleteOrder',     value: this.dataOrder},
+                    ])
                 }
                 
+
+
+                //this.$store.dispatch('sendQueue')
+
                 this.close()
             },
             newOrder() {
-                console.log(this.order)
-                console.log(this.product)                
-
                 this.$store.dispatch('send', {
                     cmd: 'newOrder',
                     value: this.order
@@ -257,8 +288,6 @@
                 this.close()
             },
             changeOrder() {
-                console.log(this.order)
-                
                 this.$store.dispatch('send', {
                     cmd: 'changeOrder',
                     value: this.order
@@ -268,8 +297,6 @@
             },
 
             addProduct() {
-                console.log(this.product)
-                
                 this.$store.dispatch('send', {
                     cmd: 'addOrderProduct',
                     value: this.product
@@ -279,8 +306,6 @@
             },
 
             changeProduct() {
-                console.log(this.product)
-                
                 this.$store.dispatch('send', {
                     cmd: 'changeOrderProduct',
                     value: this.product

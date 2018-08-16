@@ -45,7 +45,6 @@
                 this.customer = {}
             },
             onClose() {
-                console.log('close')
                 this.show = false
             }           
         },

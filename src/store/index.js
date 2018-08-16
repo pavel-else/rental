@@ -2,13 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-import products from './products'
-import customers from './Customers/customers'
-import orders from './orders'
-import options from './opt'
-import tariffs from './tariffs'
+import products   from './products'
+import customers  from './Customers/customers'
+import orders     from './orders'
+import options    from './opt'
+import tariffs    from './tariffs'
 import categories from './categories'
-import history from './History/history'
+import history    from './History/history'
+
 
 Vue.use(Vuex)
 
@@ -22,60 +23,97 @@ const store = new Vuex.Store({
         categories,
         history,
     },
-    state: {
-        sendToServer(cmds, data, {commit}) {
-            const url = options.state.url
 
-            axios({
-                method: 'post',
-                url,
-                data: {
-                    cmds,
-                    value: data
-                }
-            })
-            .catch(e => {
-                console.log(e)
-            })
-            .then(r => {
-                console.log(r)
 
-                axios({
-                    method: 'post',
-                    url,
-                    data: {
-                        cmds: options.state.cmds,
-                        value: data
-                    }
-                })
-                .catch(e => {
-                    console.log(e)
-                })
-                .then(r => {
-                    console.log(r)
-                    // Нужно организовать автоматический перебор приходящего массива
-                    commit('setProducts', r.data.products)
-                    commit('setCustomers', r.data.clients)
-                    commit('setOpt', r.data.options)
-                    commit('setOrders', {orders: r.data.orders, products: r.data.products})
-                    commit('setHistory', r.data.history)
-                    commit('setTariffs', r.data.tariffs)
-                    commit('setCategories', r.data.categories)
-                })
-               
-            })
-        },
-    },
-    
     actions: {
-        upd({commit}, cmds) {           
-            this.state.sendToServer(cmds, null, {commit})
+        /*
+        * Функция предназначена для отправки данных на сервер и обработки ответа с сервера
+        * Принимает массив объектов в формате [{cmd, value}, {cmd, value}]
+        * Также может принимать и одиночные объекты {cmd, value}, функция обернет в массив автоматом
+        * На сервер отправляется массив, содерж во-первых сеттеры, во-вторых геттеры для обновл. фронта
+        * Сеттеров может и не быть, тогда отправляются только команды обновления
+        * Внимание! Здесь все асинхронно!
+        */
+
+        send({commit, dispatch}, cmds /*Array*/) {
+
+            const check = (cmds) => {
+                if (!cmds) {
+                    return
+                }
+
+                if (cmds.cmd) {
+                    return [{cmd: cmds.cmd, value: cmds.value}]
+                }
+
+                return cmds
+            }
+
+            const sendToServer = (queue) => {
+                return new Promise((resolve, reject) => {
+
+                    const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
+
+                    console.log('request = ', queue)
+
+                    axios({
+                        method: 'post',
+                        url,
+                        data: {
+                            queue
+                        }
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+                    .then(r => {
+                        console.log('response = ', r)  
+
+                        commit('setProducts',   r.data.products)
+                        commit('setHistory',    r.data.history)
+                        commit('setOptions',    r.data.options)
+                        commit('setTariffs',    r.data.tariffs)
+                        commit('setCategories', r.data.categories)
+                        commit('setCustomers',  r.data.clients) // Change to customer!
+                        commit('setOrders', {orders: r.data.orders, products: r.data.products}) // split!
+                    })
+
+                    resolve()
+                })
+            }
+
+            const makeUpd = () => {
+                cmds = [
+                    'getProducts',
+                    'getOrders', 
+                    'getClients', 
+                    'getHistory', 
+                    'getTariffs', 
+                    'getCategories', 
+                    'getOptions', 
+                    'getLogs'
+                ]
+
+                const queue = cmds.map(i => {
+                    return {cmd: i}
+                })
+
+                return queue
+            }
+
+            const set = (cmds) => {
+                cmds = cmds ? cmds : []
+
+                cmds = [...cmds, ...makeUpd()]
+
+                sendToServer(cmds)
+            }
+
+            set(check(cmds))
         },
 
-        // Из компонентов обращаться так: this.$store.dispatch('send', 'setCustomer', {a: 'a'})
-        send({commit}, {cmd, value}) {
-            this.state.sendToServer(cmd, value, {commit})
-            console.log('send:', 'cmd = ' + cmd, 'value = ' + value)
+        upd({dispatch}) { 
+            dispatch('send')        
         },
     }
 })
