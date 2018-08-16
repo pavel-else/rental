@@ -4,6 +4,7 @@
             <li class="options__link" @click="select('general')" :class="{options__link_act: show.general}">Общие</li>
             <li class="options__link" @click="select('tariffs')" :class="{options__link_act: show.tariffs}">Тарифы</li>
             <li class="options__link" @click="select('products')" :class="{options__link_act: show.products}">Товары</li>
+            <li class="options__link" @click="select('categories')" :class="{options__link_act: show.categories}">Категории</li>
             <li class="options__link" @click="select('accessories')" :class="{options__link_act: show.accessories}">Аксессуары</li>
             <li class="options__link" @click="select('deposit')" :class="{options__link_act: show.deposit}">Залог</li>
             <li class="options__link" @click="select('sale')" :class="{options__link_act: show.sale}">Скидки</li>
@@ -11,18 +12,21 @@
         <General v-if="show.general"></General>
         <Tariffs v-if="show.tariffs"></Tariffs>
         <Products v-if="show.products"></Products>
+        <Categories v-if="show.categories"></Categories>
     </div>
 </template>
 <script>
     import Tariffs from './Tariffs/Tariffs'
     import General from './General'
     import Products from './Products/Products'
+    import Categories from './Categories/Categories'
 
     export default {
         components: {
             Tariffs,
             General,
-            Products
+            Products,
+            Categories
         },
         data() {
             return {

@@ -2,7 +2,7 @@
     <div id="app">
         <adm-panel class="adm"></adm-panel>
         <router-view></router-view>        
-        <!-- <test></test> --> 
+        <!-- <test></test>  -->
     </div>
 </template>
 
@@ -25,8 +25,6 @@ export default {
         this.$store.dispatch('upd')
 
         // Обновление таймеров
-        setInterval(() => {this.now = new Date()}, 1000)
-
         this.$store.dispatch('startTimer')
     },
 }

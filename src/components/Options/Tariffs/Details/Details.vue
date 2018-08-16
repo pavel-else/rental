@@ -120,7 +120,7 @@
                     if (h) return h
                 }) : ''
 
-                // При переключении типа тариф некоторые поля следует отчищать
+                // При переключении типа тарифa, некоторые поля следует отчищать
                 this.newTariff._h_h = this.newTariff.type === 'h' ? this.newTariff._h_h : null
                 this.newTariff.cost = this.newTariff.type === 'h' ? null : this.newTariff.cost
                 this.newTariff._d_min = this.newTariff.type !== 'h' ? null : this.newTariff._d_min
