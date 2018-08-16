@@ -94,15 +94,13 @@
                     value: this.C
                 })
 
-                console.log(this.C)
-                
+               
                 this.close()
             },
             close() {
                 this.$emit('close')
             },
             toDelete() {
-                console.log(this.C)
                 const id = this.C.id_rent
 
                 if (confirm(`Вы действительно хотите удалить клиента #${id}?`)) {
@@ -118,8 +116,7 @@
             },
 
             onChange() {
-                this.change = true,
-                console.log('change')
+                this.change = true
             },
         },
     }

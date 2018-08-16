@@ -1,48 +1,40 @@
 <template>        
     <div class="container">
+
         <product-list class="tmp" @addOrder="addOrder($event)"></product-list>
 
-        <new-order v-if="showNewOrder"></new-order>
-
+        
         <order-list class="tmp"></order-list>
 
-        <addOrder v-if="show" :product="selectProduct" @close="onClose"></addOrder>
+        <DetailsOrder v-if="show" :data-product="product" @close="onClose"></DetailsOrder>
     </div>
 </template>
 
 <script>
-import productList from './product-list'
-import orderList from './order-list'
-//import newOrder from './new-order'
-import addOrder from './addOrder/addOrder'
+import productList  from './product-list'
+import orderList    from './order-list'
+import DetailsOrder from './DetailsOrder/DetailsOrder'
 
     export default {
-        name: 'Desctop',
         components: {
             productList,
             orderList,
-            // newOrder,
-            addOrder
+            DetailsOrder
         },
         data() {
             return {
+                product: {},
+                order: {},
                 show: false,
-                selectProduct: {}
             }
         },
         methods: {
             addOrder(product) {
-                this.selectProduct = product
+                this.product = product
                 this.show = true
-                console.log(product)
             },
             onClose() {
                 this.show = false
-            }
-        },
-        computed: {
-            showNewOrder() {
-                return this.$store.getters.showNewOrder
             }
         },
     }

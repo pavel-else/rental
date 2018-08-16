@@ -1,44 +1,54 @@
 <template>
     <div class="customer-id">
-        <div class="btns tmp" v-if="show">
-            <!-- 
-                Перебираем массив (матица 4х4) 
-                Если в ячейке находится существующий ордер, выделяем его.
-                Выбираемая ячейка выделяется также
-            -->
+        <div class="btns tmp" v-if="open">
             <div 
-                v-for="(item, index) in btns"
                 class="btn"
-                :class="{active: item.position !== null, select: select == index}"
+                v-for="(item, index) in btns"
                 @click="onClick(item, index)"
             >
-                {{item.position}}
+                <Icon 
+                    :id="index" 
+                    :show="select == index || typeof(item.position) == 'number'" 
+                    :select="select == index">
+                </Icon>
             </div>
         </div>
-        <div class="btn" v-else @click="show = true">{{ select }}</div>
+        <div class="btn" v-else @click="open = true">
+            <Icon :id="select" :show="true" :select="false"></Icon>
+        </div>
     </div>
 </template>
 
 <script>
+    import getOrderId from '../../../../functions/getOrderId'
+    import Icon from '../../Icon/Icon'
+
     export default {
         props: {
-            free: Number
+            position: null
+        },
+        components: {
+            Icon
         },
         data() {
             return {
-                show: false,
-                select: this.free
+                open: false,
+                select: this.position,
+                selectIcon: 'd' + this.position,
             }
         },
         methods: {
+            ...getOrderId,
+
             onClick(item, order_id_position) {
                 const order_id = item.order_id
 
                 this.select = order_id_position
+                this.selectIcon = item.class
                 
                 this.$emit('setPosition', {order_id, order_id_position})
 
-                this.show = false
+                this.open = false
 
                 //console.log(order_id_position)
             }
@@ -55,14 +65,15 @@
 
                 const result = []
                 const orders = this.$store.getters.orders
-                const newId = this.$store.getters.options.new_order_id
+                const newId = this.getOrderId()
 
                 const iter = (num) => {
                     const order = orders.find(o => o.order_id_position == num)
 
                     result[num] = {
                         position: order ? num : null,
-                        order_id: order ? order.order_id : newId
+                        order_id: order ? order.order_id : newId,
+                        class: 'd' + num                          
                     }
 
                     return num < 1 ? result : iter(num - 1)
@@ -76,28 +87,35 @@
 
 <style>
     .btns {
-        width: 80px;
+        width: 120px;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
     }
     .btn {
-        width: 15px;
-        height: 15px;
-        background-color: #eee;
+        width: 25px;
+        height: 25px;
+      /*background-color: #eee;*/
         box-sizing: border-box;
         margin: 2px;
         font-size: 12px;
         text-align: center;
     }
     .btn:hover {
-        outline: 1px solid red;
+        outline: 1px solid lightgray;
         cursor: pointer;
     }
     .active {
         outline: 1px solid red;
     }
     .select {
-        background-color: #aaa;
+        outline: 1px solid red;
     }
+
+    .icon {
+        width: 100%;
+        height: 100%;       
+    }
+
+
 </style>

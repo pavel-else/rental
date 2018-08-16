@@ -80,8 +80,7 @@
         },
         computed: {
             tariffs() {
-                console.log(this.$store.getters.tariffsList)
-                return this.$store.getters.tariffsList
+                return this.$store.getters.tariffs
             },
         }
         
