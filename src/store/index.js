@@ -2,13 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-import products from './products'
-import customers from './Customers/customers'
-import orders from './orders'
-import options from './opt'
-import tariffs from './tariffs'
+import products   from './products'
+import customers  from './Customers/customers'
+import orders     from './orders'
+import options    from './opt'
+import tariffs    from './tariffs'
 import categories from './categories'
-import history from './History/history'
+import history    from './History/history'
+import queue      from './queue'
 
 Vue.use(Vuex)
 
@@ -21,6 +22,7 @@ const store = new Vuex.Store({
         tariffs,
         categories,
         history,
+        queue
     },
     state: {
         sendToServer(cmds, data, {commit}) {
@@ -62,15 +64,14 @@ const store = new Vuex.Store({
                     commit('setTariffs', r.data.tariffs)
                     commit('setCategories', r.data.categories)
                 })
-               
             })
         },
     },
     
     actions: {
-        upd({commit}, cmds) {           
-            this.state.sendToServer(cmds, null, {commit})
-        },
+        // upd({commit}, cmds) {           
+        //     this.state.sendToServer(cmds, null, {commit})
+        // },
 
         // Из компонентов обращаться так: this.$store.dispatch('send', 'setCustomer', {a: 'a'})
         send({commit}, {cmd, value}) {

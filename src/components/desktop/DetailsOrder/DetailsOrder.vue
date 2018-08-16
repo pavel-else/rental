@@ -218,25 +218,32 @@
 
                 if (this.status == 'new' && this.statusPosition == 'new') {
                     console.log('newOrder')
-                    this.newOrder()
+                    // this.newOrder()
                 }
                 if (this.status == 'new' && this.statusPosition == 'add') {
                     console.log('addProduct')
-                    this.addProduct()
+                    // this.addProduct()
                 }
                 if (this.status == 'change' && this.statusChangeOrder) {
                     console.log('changeOrder')
-                    this.changeOrder()
+                    // this.changeOrder()
                 }
                 if (this.status == 'change' && this.statusChangeProduct) {
                     console.log('changeProduct')
-                    this.changeProduct()
+                    // this.changeProduct()
                 }
                 if (this.status == 'change' && this.statusPosition == 'new') {
                     console.log('splitProduct')
-                    this.splitProduct()
+                    // this.splitProduct()
                 }
                 
+                this.$store.dispatch('addToQueue', {
+                    cmd: 'newOrder',
+                    value: this.order
+                })
+
+                this.$store.dispatch('sendQueue')
+
                 this.close()
             },
             newOrder() {
