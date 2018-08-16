@@ -28,18 +28,11 @@ export default {
             
         	console.log('set Orders')
         },
-
-        setOrder(state, {order, product}) {
-            const find = (id_rent) => {
-
-            }
-
-        }
 	},
 
     actions: {
-        setOrder({commit}, {order, product}) {           
-
+        setOrders({commit}, {order, product}) {           
+            commit('setOrders', {order, product})
         },
     },
 

@@ -12,10 +12,10 @@ export default {
             'getLogs'
         ],
 
-        // options: {
-        //     rent_min_time: 0, //ms
-        //     rent_round_bill: 0,          
-        // },
+        options: {
+            rent_min_time: 0, //ms
+            rent_round_bill: 0,          
+        },
     
         now: new Date(),
         max_order_id: Number,
@@ -87,7 +87,11 @@ export default {
 
     },
     mutations: {
-        setOpt(state, options) {
+        setOptions(state, options) {
+            if (!options) {
+                return
+            }
+            
             options.map(opt => {
                 state.options[opt.name] = opt.value
             })

@@ -17,6 +17,7 @@ export default {
         products(state) {
             return state.products
         },
+        product: state => state.products
     }
 }
 
