@@ -30,15 +30,15 @@ export default {
         },
 	},
 
-<<<<<<< HEAD
-=======
+
+
     actions: {
         setOrders({commit}, {order, product}) {           
             commit('setOrders', {order, product})
         },
     },
 
->>>>>>> f94785cad96dd914860b8c97e45846c63b64fbb8
+
 	getters: {
         orders(state) {
             return state.orders

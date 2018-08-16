@@ -9,10 +9,7 @@ import options    from './opt'
 import tariffs    from './tariffs'
 import categories from './categories'
 import history    from './History/history'
-<<<<<<< HEAD
-import queue      from './queue'
-=======
->>>>>>> f94785cad96dd914860b8c97e45846c63b64fbb8
+
 
 Vue.use(Vuex)
 
@@ -25,30 +22,15 @@ const store = new Vuex.Store({
         tariffs,
         categories,
         history,
-        queue
     },
-<<<<<<< HEAD
-    state: {
-        queue: [],
 
-        sendToServer(cmds, data, {commit}) {
-            const url = options.state.url
-
-            axios({
-                method: 'post',
-                url,
-                data: {
-                    cmds,
-                    value: data
-=======
 
     actions: {
         send({commit, dispatch}, cmds /*Array*/) {
 
             const check = (cmds) => {
                 if (!cmds) {
-                    return false
->>>>>>> f94785cad96dd914860b8c97e45846c63b64fbb8
+
                 }
 
                 if (cmds.cmd) {
@@ -116,66 +98,6 @@ const store = new Vuex.Store({
                 const queue = cmds.map(i => {
                     return {cmd: i}
                 })
-<<<<<<< HEAD
-               
-            })
-        },
-
-        send2Server({commit}) {
-            const url = options.state.url
-            const data = this.queue
-
-            axios({
-                method: 'post',
-                url,
-                data: {
-
-                }
-            })
-            .catch(e => {
-                console.log(e)
-            })
-            .then(r => {
-                console.log(r)
-
-                axios({
-                    method: 'post',
-                    url,
-                    data: {
-                        cmds: options.state.cmds,
-                        value: data
-                    }
-                })
-                .catch(e => {
-                    console.log(e)
-                })
-                .then(r => {
-                    console.log(r)
-                    // Нужно организовать автоматический перебор приходящего массива
-                    commit('setProducts', r.data.products)
-                    commit('setCustomers', r.data.clients)
-                    commit('setOpt', r.data.options)
-                    commit('setOrders', {orders: r.data.orders, products: r.data.products})
-                    commit('setHistory', r.data.history)
-                    commit('setTariffs', r.data.tariffs)
-                    commit('setCategories', r.data.categories)
-                })
-               
-            })
-        },
-    },
-    
-    actions: {
-        upd({commit}, cmds) {           
-            this.state.sendToServer(cmds, null, {commit})
-        },
-
-        // Из компонентов обращаться так: this.$store.dispatch('send', 'setCustomer', {a: 'a'})
-        send({commit}, {cmd, value}) {
-            this.state.sendToServer(cmd, value, {commit})
-            console.log('send:', 'cmd = ' + cmd, 'value = ', value)
-=======
-
                 sendToServer(queue)
             }
 
@@ -184,16 +106,9 @@ const store = new Vuex.Store({
 
         upd({dispatch}) { 
             dispatch('send')        
->>>>>>> f94785cad96dd914860b8c97e45846c63b64fbb8
         },
 
-        toQueque({commit}, {cmd, value}) {
-            this.state.queue.push([cmd, value])
-        },
 
-        sendQueue({commit}) {
-            this.state.send2Server({commit})
-        }
     }
 })
 
