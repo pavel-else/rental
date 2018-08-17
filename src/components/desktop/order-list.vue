@@ -103,6 +103,8 @@
                         cmd: 'stopOrder',
                         value: product
                     })
+
+                    this.showResume = true
                 }
 
                 const stopAll = () => {
