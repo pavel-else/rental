@@ -29,7 +29,7 @@ const routes = [
 
 export const router = new VueRouter({
     routes,
-    mode: 'history'
+    //mode: 'history'
     // для реализации этой опции для продакшна 
     // необходима спец.настройка сервера
 })

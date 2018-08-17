@@ -52,54 +52,54 @@
     }
 
     .d0 {
-        background-image: url('./img/star-green.svg');
+        background-image: url('../../../assets/img/icons/star-green.svg');
     }
     .d1 {
-        background-image: url('./img/star-yellow.svg');
+        background-image: url('../../../assets/img/icons/star-yellow.svg');
     }
     .d2 {
-        background-image: url('./img/star-purpur.svg');
+        background-image: url('../../../assets/img/icons/star-purpur.svg');
     }
     .d3 {
-        background-image: url('./img/star-red.svg');
+        background-image: url('../../../assets/img/icons/star-red.svg');
     }
 
     .d4 {
-        background-image: url('./img/circle-green.svg');
+        background-image: url('../../../assets/img/icons/circle-green.svg');
     }
     .d5 {
-        background-image: url('./img/circle-yellow.svg');
+        background-image: url('../../../assets/img/icons/circle-yellow.svg');
     }
     .d6 {
-        background-image: url('./img/circle-purpur.svg');
+        background-image: url('../../../assets/img/icons/circle-purpur.svg');
     }
     .d7 {
-        background-image: url('./img/circle-red.svg');
+        background-image: url('../../../assets/img/icons/circle-red.svg');
     }
 
     .d8 {
-        background-image: url('./img/triangle-green.svg');
+        background-image: url('../../../assets/img/icons/triangle-green.svg');
     }
     .d9 {
-        background-image: url('./img/triangle-yellow.svg');
+        background-image: url('../../../assets/img/icons/triangle-yellow.svg');
     }
     .d10 {
-        background-image: url('./img/triangle-purpur.svg');
+        background-image: url('../../../assets/img/icons/triangle-purpur.svg');
     }
     .d11 {
-        background-image: url('./img/triangle-red.svg');
+        background-image: url('../../../assets/img/icons/triangle-red.svg');
     }
 
     .d12 {
-        background-image: url('./img/rect-green.svg');
+        background-image: url('../../../assets/img/icons/rect-green.svg');
     }
     .d13 {
-        background-image: url('./img/rect-yellow.svg');
+        background-image: url('../../../assets/img/icons/rect-yellow.svg');
     }
     .d14 {
-        background-image: url('./img/rect-purpur.svg');
+        background-image: url('../../../assets/img/icons/rect-purpur.svg');
     }
     .d15 {
-        background-image: url('./img/rect-red.svg');
+        background-image: url('../../../assets/img/icons/rect-red.svg');
     }
 </style>
