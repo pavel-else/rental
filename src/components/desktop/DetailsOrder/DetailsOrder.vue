@@ -87,42 +87,7 @@
                     </tr>
                 </table>
                 <div class="btn-group">
-<!--                     <button 
-                        :disabled="!(status == 'new' && statusPosition == 'new')" 
-                        @click="newOrder"
-                    >
-                        add Order + product
-                    </button>
-                    <button 
-                        :disabled="!(status == 'new' && statusPosition == 'add')" 
-                        @click="addProduct"
-                    >
-                        add Product to Order
-                    </button>
-
-                    <button 
-                        :disabled="!(status == 'change' && statusChangeOrder)" 
-                        @click="changeOrder"
-                    >
-                        change Order
-                    </button>
-
-                    <button 
-                        :disabled="!(status == 'change' && statusChangeProduct)" 
-                        @click="changeProduct"
-                    >
-                        change Product in Order
-                    </button>
-
-                    <button
-                        :disabled="!(status == 'change' && statusPosition == 'new')" 
-                        @click="splitProduct"
-                    >
-                        split product to new order
-                    </button> -->
-
-
-                    <button @click.prevent="save">save</button>
+                    <button @click.prevent="save">Сохранить</button>
                     <button @click.prevent="close">Отмена</button>
                 </div>
             </form>
@@ -265,6 +230,7 @@
                         {cmd: 'addOrderProduct', value: this.product},
                         {cmd: 'deleteOrder',     value: this.dataOrder},
                     ])
+
                 }
                 
 
@@ -273,88 +239,6 @@
 
                 this.close()
             },
-            newOrder() {
-                this.$store.dispatch('send', {
-                    cmd: 'newOrder',
-                    value: this.order
-                })
-                setTimeout(() => {
-                    this.$store.dispatch('send', {
-                        cmd: 'addOrderProduct',
-                        value: this.product
-                    })                    
-                }, 500)
-
-                this.close()
-            },
-            changeOrder() {
-                this.$store.dispatch('send', {
-                    cmd: 'changeOrder',
-                    value: this.order
-                })
-
-                this.close()
-            },
-
-            addProduct() {
-                this.$store.dispatch('send', {
-                    cmd: 'addOrderProduct',
-                    value: this.product
-                })
-
-                this.close()   
-            },
-
-            changeProduct() {
-                this.$store.dispatch('send', {
-                    cmd: 'changeOrderProduct',
-                    value: this.product
-                })
-
-                this.close()
-            },
-
-            splitProduct() {
-                //Удаляем из ордера
-                const order_id = this.dataOrder.order_id
-                const product_id = this.product.product_id
-                const oldOrder = {order_id, product_id}
-
-                setTimeout(() => {
-                    this.$store.dispatch('send', {
-                        cmd: 'deleteOrderProduct',
-                        value: oldOrder
-                    })                    
-                }, 100)
-
-                // Добавляем новый ордер
-                setTimeout(() => {
-                    this.$store.dispatch('send', {
-                        cmd: 'newOrder',
-                        value: this.order
-                    })                  
-                }, 200)
-
-                //Записываем продукт в ордер
-                setTimeout(() => {
-                    this.$store.dispatch('send', {
-                        cmd: 'addOrderProduct',
-                        value: this.product
-                    })                  
-                }, 300)
-
-
-                // Удаляем старый ордер
-                setTimeout(() => {
-                    this.$store.dispatch('send', {
-                        cmd: 'deleteOrder',
-                        value: this.dataOrder
-                    })                    
-                }, 400)
-
-                this.close()
-            },
-
 
             getPosition() {
                 // Возвращает id текущей позиции ордера или новую позицию
@@ -396,8 +280,11 @@
                 this.order.deposit = deposit.id_rent
                 this.statusChangeOrder = true
             },             
-            setPromotion(promotion) {                 if
-(!promotion) {                     return                 }
+
+            setPromotion(promotion) {                 
+                if (!promotion) {
+                    return                 
+                }
 
                 this.order.promotion = promotion.id
                 this.statusChangeOrder = true
