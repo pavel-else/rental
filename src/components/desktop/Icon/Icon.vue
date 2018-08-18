@@ -52,54 +52,54 @@
     }
 
     .d0 {
-        background-image: url('../../../assets/img/icons/star-green.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/star-green.svg');
     }
     .d1 {
-        background-image: url('../../../assets/img/icons/star-yellow.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/star-yellow.svg');
     }
     .d2 {
-        background-image: url('../../../assets/img/icons/star-purpur.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/star-purpur.svg');
     }
     .d3 {
-        background-image: url('../../../assets/img/icons/star-red.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/star-red.svg');
     }
 
     .d4 {
-        background-image: url('../../../assets/img/icons/circle-green.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/circle-green.svg');
     }
     .d5 {
-        background-image: url('../../../assets/img/icons/circle-yellow.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/circle-yellow.svg');
     }
     .d6 {
-        background-image: url('../../../assets/img/icons/circle-purpur.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/circle-purpur.svg');
     }
     .d7 {
-        background-image: url('../../../assets/img/icons/circle-red.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/circle-red.svg');
     }
 
     .d8 {
-        background-image: url('../../../assets/img/icons/triangle-green.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/triangle-green.svg');
     }
     .d9 {
-        background-image: url('../../../assets/img/icons/triangle-yellow.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/triangle-yellow.svg');
     }
     .d10 {
-        background-image: url('../../../assets/img/icons/triangle-purpur.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/triangle-purpur.svg');
     }
     .d11 {
-        background-image: url('../../../assets/img/icons/triangle-red.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/triangle-red.svg');
     }
 
     .d12 {
-        background-image: url('../../../assets/img/icons/rect-green.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/rect-green.svg');
     }
     .d13 {
-        background-image: url('../../../assets/img/icons/rect-yellow.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/rect-yellow.svg');
     }
     .d14 {
-        background-image: url('../../../assets/img/icons/rect-purpur.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/rect-purpur.svg');
     }
     .d15 {
-        background-image: url('../../../assets/img/icons/rect-red.svg');
+        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/rect-red.svg');
     }
 </style>
