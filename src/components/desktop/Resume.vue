@@ -7,14 +7,18 @@
                 </tr>
                 <tr>
                     <td>Клиент</td>
-                    <td>{{order.customer_name}}</td>
+                    <td><span v-if="order.customer_name">{{ order.customer_name }} р.</span><span v-else>-</span></td>
                 </tr>
                 <tr>
                     <td>Товары</td>
                     <td>
-                        <ul>
-                            <li v-for="product in order.products">{{ product.name }} - {{ product.bill }} р.</li>
-                        </ul>
+                        <table class="table-products">
+                            <tr v-for="product in order.products">
+                                <td>{{ product.name }}</td>
+                                <td>-</td>
+                                <td>{{ product.bill }} р.</td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
                 <tr>
@@ -31,11 +35,11 @@
                 </tr>
                 <tr>
                     <td>Аванс</td>
-                    <td>{{ order.advance }}</td>
+                    <td><span v-if="order.advance > 0">{{ order.advance }} р.</span><span v-else>-</span></td>
                 </tr>
                 <tr>
                     <td>Скидка</td>
-                    <td></td>
+                    <td><span v-if="order.sale > 0">{{ order.sale }} р.</span><span v-else>-</span></td>
                 </tr>
                 <tr class="details__bill">
                     <td>К оплате</td>
@@ -153,5 +157,13 @@
     }
     .details__close::before {
         transform: rotate(-45deg);
+    }
+
+    .table-products {
+        padding: 0;
+        margin: 0;
+    }
+    .table-products td {
+        padding: 2px 5px;
     }
 </style>

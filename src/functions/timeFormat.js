@@ -14,7 +14,7 @@ export default {
         , minutes = sec / 60 % 60
         , seconds = sec % 60
 
-        let str = Math.floor(day) ? `${num(day)} дн. ` : ''
+        let str = Math.floor(day) ? `${Math.floor(day)} дн. ` : ''
 
         return `${str}${num(hours)}:${num(minutes)}:${num(seconds)}`
     }

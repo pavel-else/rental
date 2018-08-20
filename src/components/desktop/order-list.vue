@@ -9,20 +9,20 @@
                 v-for="(item, index) in orders"
                 :key="item.order_id"
             >
-                <td class="td-1 tmp">
+                <td class="td-1">
                     <Icon :id="item.order_id_position" :show="true"></Icon>
                 </td>
 
-                <td class="td-2 tmp">{{ item.start_time }}</td>
+                <td class="td-2">{{ item.start_time }}</td>
                 
                 <td>
                     <tr v-for="(subitem, index) in item.products">
-                        <td class="td-3 tmp product_name" @click="changeOrder(item, subitem)">{{ subitem.name }}</td>
+                        <td class="td-3 product_name" @click="changeOrder(item, subitem)">{{ subitem.name }}</td>
 
-                        <td class="td-4 tmp ">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
-                        <td class="td-5 tmp">{{ getBill(subitem.tariff_id, getTime(item.start_time, item.end_time)) }} р</td>
+                        <td class="td-4">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
+                        <td class="td-5">{{ getBill(subitem.tariff_id, getTime(item.start_time, subitem.end_time)) }} р</td>
 
-                        <td class="td-6 tmp"
+                        <td class="td-6"
                         >
                             <div class="stop-order__wrap">                                
                                 <div
@@ -31,7 +31,7 @@
                                     v-if="!subitem.end_time"
                                 >
                                 </div>
-                                <div v-else class="ord__td-6 stop-order_st"></div>
+                                <div v-if="subitem.end_time" class="ord__td-6 stop-order_st"></div>
                             </div>
                         </td>
                     </tr>
@@ -39,7 +39,7 @@
 
                 <td class="td-7">
                     <div class="stop-order__wrap">
-                        <div class="stop-order" @click="stopOrder(item)"></div>
+                        <div class="stop-order" v-if="item.products.length > 1" @click="stopOrder(item)"></div>
                     </div>
                 </td>
             </tr>

@@ -2,10 +2,6 @@
     <div class="snippet snippet__products">
         <h3>Свободныe</h3>
         <table class="table table-bordered">
-            <tr>
-                <th>№</th>
-                <th>Товар</th>
-            </tr>
             <tr v-for="(item, index) in filterProducts" @click="onClick(item)" class="products__product">
                 <td>{{ index + 1 }}</td>
                 <td>{{ item.name }}</td>
