@@ -19,14 +19,10 @@ export default {
             lastOrderID: null,
             lastOrderTime: null,
             lastOrderInterval: 180000, //ms       
+
         now: new Date(),
         },
     
-
-        // max_order_id: Number,
-        // new_order_id: Number,
-        // max_tariff_id: Number, 
-
         depositList: [
             {
                 id_rent: 1,
