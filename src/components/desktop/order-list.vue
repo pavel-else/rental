@@ -24,18 +24,24 @@
 
                         <td class="td-6 tmp"
                         >
-                            <div
-                                class="stop-order" 
-                                @click="stopOrder(item, subitem.product_id)" 
-                                v-if="!subitem.end_time"
-                            >
+                            <div class="stop-order__wrap">                                
+                                <div
+                                    class="stop-order" 
+                                    @click="stopOrder(item, subitem.product_id)" 
+                                    v-if="!subitem.end_time"
+                                >
+                                </div>
+                                <div v-else class="ord__td-6 stop-order_st"></div>
                             </div>
-                            <div v-else class="ord__td-6 stop-order_st"></div>
                         </td>
                     </tr>
                 </td>
 
-                <td class="td-7 stop-order-all" @click="stopOrder(item)">x</td>
+                <td class="td-7">
+                    <div class="stop-order__wrap">
+                        <div class="stop-order" @click="stopOrder(item)"></div>
+                    </div>
+                </td>
             </tr>
         </table>
 
@@ -156,15 +162,21 @@
         opacity: 0;
 
     }
+    .stop-order__wrap {
+        width: 15px;
+        display: flex;
+        justify-content: center;
+    }
 
     .stop-order_st {
         width: 7px;
         height: 7px;
         border: 1px solid red;
         border-radius: 50%;
-        margin: 0 auto;
+
     }
-    .td-6:hover .stop-order {
+    .td-6:hover .stop-order,
+    .td-7:hover .stop-order {
         position: relative;
         opacity: 1;
         cursor: pointer;
@@ -181,7 +193,7 @@
         content: '';
         position: absolute;
         width: 9px;
-        height: 2px;
+        height: 1px;
         background-color: black;
         top: 6px;
         left: 2px;
@@ -192,15 +204,6 @@
     .stop-order::before {
         transform: rotate(-45deg);
     }
-    .stop-order-all {
-        opacity: 0;
-    }
-    .stop-order-all:hover {
-        opacity: 1;
-        cursor: pointer;
-        text-align: center;
-    }
-
     .table td {
         padding: 5px;
         box-sizing: border-box;
@@ -231,14 +234,17 @@
     }
     .td-5 {
         width: 70px;
+        text-align: right;
     }
     .td-6 {
         width: 25px;
         text-align: center;
         vertical-align: middle;
+        box-sizing: border-box;
+        padding: 0;
     }
     .td-7 {
-        width: 25px;
+        width: 15px;
     }
 
     .product_name:hover {
