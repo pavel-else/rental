@@ -361,7 +361,7 @@
 
     .black .add-order__input--note {
         resize: vertical;
-        width: 98%;
+        width: 101%;
         background-color: #000;
         border-color: #333;
         color: rgba(255, 255, 255, 0.8);

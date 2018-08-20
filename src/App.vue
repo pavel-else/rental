@@ -43,11 +43,64 @@ export default {
 
     body {
         font-family: 'Roboto Condensed', sans-serif;
+        background-color: #000;
+        color: rgba(255, 255, 255, 0.8);
     }
+
+    h1, h2 {
+        font-weight: normal;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        display: inline-block;
+        margin: 0 10px;
+    }
+
+    a {
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    button {
+        font-family: Roboto Condensed;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 15px;
+        margin-right: 10px;
+    }
+
+    button:hover {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .white button {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 3px solid lightgray;
+        color: #333;
+    }
+    .black button {
+        background-color: #000;
+        border: 3px solid #333;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
 
     .app {
         width: 100%;
         height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
     }
 
     .app.black {
@@ -60,12 +113,11 @@ export default {
     }
 
     .app__wrap {
-        display: flex;
         width: 960px;
-        margin: 0 auto;
         padding-top: 10px;
         display: flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
     }
 
@@ -139,46 +191,8 @@ export default {
         transform: rotate(-45deg);
     }
 
-    h1, h2 {
-        font-weight: normal;
-    }
-
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    li {
-        display: inline-block;
-        margin: 0 10px;
-    }
-
-    button {
-        font-family: Roboto Condensed;
-        border: none;
-        border-radius: 5px;
-        padding: 5px 15px;
-        margin-right: 10px;
-    }
-
-    button:hover {
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    .white button {
-        background-color: rgba(255, 255, 255, 0.8);
-        border: 3px solid lightgray;
-        color: #333;
-    }
-    .black button {
-        background-color: #000;
-        border: 3px solid #333;
-        color: rgba(255, 255, 255, 0.8);
-    }
-
-
     .adm {
         position: relative;
     }
+
 </style>

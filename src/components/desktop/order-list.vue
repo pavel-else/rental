@@ -194,7 +194,7 @@
         position: absolute;
         width: 9px;
         height: 1px;
-        background-color: black;
+        background-color: #333;
         top: 6px;
         left: 2px;
     }

@@ -1,53 +1,55 @@
 <template>
-    <div class="details">        
-        <table>
-                <tr>
-                    <td>Заказ</td>
-                    <td>{{order.order_id}}</td>
-                </tr>
-                <tr>
-                    <td>Клиент</td>
-                    <td><span v-if="order.customer_name">{{ order.customer_name }} р.</span><span v-else>-</span></td>
-                </tr>
-                <tr>
-                    <td>Товары</td>
-                    <td>
-                        <table class="table-products">
-                            <tr v-for="product in order.products">
-                                <td>{{ product.name }}</td>
-                                <td>-</td>
-                                <td>{{ product.bill }} р.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Залог</td>
-                    <td><span v-if="order.deposit">{{ order.deposit }}</span><span v-else>-</span></td>
-                </tr>
-                <tr>
-                    <td>Начало</td>
-                    <td>{{ order.start_time }}</td>
-                </tr>
-                <tr>
-                    <td>Чистое время</td>
-                    <td>{{ getTimePlay(order) }}</td>
-                </tr>
-                <tr>
-                    <td>Аванс</td>
-                    <td><span v-if="order.advance > 0">{{ order.advance }} р.</span><span v-else>-</span></td>
-                </tr>
-                <tr>
-                    <td>Скидка</td>
-                    <td><span v-if="order.sale > 0">{{ order.sale }} р.</span><span v-else>-</span></td>
-                </tr>
-                <tr class="details__bill">
-                    <td>К оплате</td>
-                    <td>{{ bill }} р.</td>
-                </tr>
-        </table>
-        <div class="details__close" @click="close"></div>     
-    </div>
+    <div class="canvas">
+        <div class="details"> 
+            <table>
+                    <tr>
+                        <td>Заказ</td>
+                        <td>{{order.order_id}}</td>
+                    </tr>
+                    <tr>
+                        <td>Клиент</td>
+                        <td><span v-if="order.customer_name">{{ order.customer_name }} р.</span><span v-else>-</span></td>
+                    </tr>
+                    <tr>
+                        <td>Товары</td>
+                        <td>
+                            <table class="table-products">
+                                <tr v-for="product in order.products">
+                                    <td>{{ product.name }}</td>
+                                    <td>-</td>
+                                    <td>{{ product.bill }} р.</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Залог</td>
+                        <td><span v-if="order.deposit">{{ order.deposit }}</span><span v-else>-</span></td>
+                    </tr>
+                    <tr>
+                        <td>Начало</td>
+                        <td>{{ order.start_time }}</td>
+                    </tr>
+                    <tr>
+                        <td>Чистое время</td>
+                        <td>{{ getTimePlay(order) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Аванс</td>
+                        <td><span v-if="order.advance > 0">{{ order.advance }} р.</span><span v-else>-</span></td>
+                    </tr>
+                    <tr>
+                        <td>Скидка</td>
+                        <td><span v-if="order.sale > 0">{{ order.sale }} р.</span><span v-else>-</span></td>
+                    </tr>
+                    <tr class="details__bill">
+                        <td>К оплате</td>
+                        <td>{{ bill }} р.</td>
+                    </tr>
+            </table>
+            <div class="details__close" @click="close"></div>     
+        </div>
+    </div> 
 </template>
 
 <script>
@@ -106,11 +108,8 @@
         left: calc(50% - 150px);
         min-width: 300px;
         padding: 5px 10px;
-
-        border: 1px solid lightgray;
-        background-color: #fff;
-        box-shadow: 0 2px 5px 0px;  
     }
+
     td {
         padding: 5px;
     }
