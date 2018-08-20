@@ -1,6 +1,6 @@
 <template>
     <div class="customer-id">
-        <div class="btns tmp" v-if="open">
+        <div class="btns" v-if="open">
             <div 
                 class="btn"
                 v-for="(item, index) in btns"
@@ -92,6 +92,13 @@
         flex-wrap: wrap;
         justify-content: space-around;
     }
+    .black .btns {
+        border: 1px solid #333;
+    }
+    .white .btns {
+        border: 1px solid lightgray;
+    }
+
     .btn {
         width: 25px;
         height: 25px;

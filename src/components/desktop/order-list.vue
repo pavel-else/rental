@@ -1,5 +1,5 @@
 <template>
-    <div class="snippet snippet__orders">
+    <div class="order-list">
         <h3>В прокате</h3>
         <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
 
@@ -16,7 +16,7 @@
                 <td class="td-2">{{ item.start_time }}</td>
                 
                 <td>
-                    <tr v-for="(subitem, index) in item.products">
+                    <tr class="tr-product" v-for="(subitem, index) in item.products">
                         <td class="td-3 product_name" @click="changeOrder(item, subitem)">{{ subitem.name }}</td>
 
                         <td class="td-4">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
@@ -212,10 +212,17 @@
         margin: 0;
     }
 
-    .table-tr:nth-child(2n - 1) {
-        background-color: rgba(0,0,0,0.02);
-
+    .black .table-tr > td {
+        border-bottom: 1px solid #333;        
     }
+    .white .table-tr > td {
+        border-bottom: 1px solid lightgray;        
+    }
+
+    .table-tr:nth-child(2n - 1) {
+        background-color: rgba(0,0,0,0.01);
+    }
+
     .table th {
         text-align: center;
     }

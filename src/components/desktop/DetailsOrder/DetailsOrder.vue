@@ -59,7 +59,7 @@
                     <tr>
                         <td>Примечание</td>
                         <td>
-                            <textarea class="add-order__input--note" cols="30" rows="3" v-model="order.note"></textarea>
+                            <textarea class="add-order__input add-order__input--note" cols="30" rows="3" v-model="order.note"></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -88,7 +88,7 @@
                 </table>
                 <div class="btn-group">
                     <button @click.prevent="save">Сохранить</button>
-                    <button @click.prevent="close">Отмена</button>
+                    <button type="button" @click.prevent="close">Отмена</button>
                 </div>
             </form>
         </div>
@@ -344,13 +344,60 @@
     .add-order__input {
         width: 300px;
         min-height: 40px;
-        border-radius: 5px;
-        border: 1px solid #e8e8e8;
+        box-sizing: border-box;
+        border: 1px solid lightgray;
+        padding-left: 10px;
     }
-    .add-order__input--note {
+
+    .black .add-order__input--advance {
+        background-color: #000;
+        border: 1px solid #333;
+        color: rgba(255, 255, 255, 0.8);
+    }
+    .white .add-order__input--advance {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid lightgray;
+    }
+
+    .black .add-order__input--note {
         resize: vertical;
         width: 98%;
-        border-radius: 5px;
-        border-color: #e8e8e8;
+        background-color: #000;
+        border-color: #333;
+        color: rgba(255, 255, 255, 0.8);
+        font-family: Roboto Condensed;
+
+    }
+    .white .add-order__input--note {
+        resize: vertical;
+        width: 98%;
+        border-color: lightgray;
+        color: #333;
+        font-family: Roboto Condensed;
+    }
+
+    .black .multiselect {
+        background-color: #000;
+        border-radius: 0;
+        border: 1px solid #333;
+    }
+    .white .multiselect {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 0;
+        border: 1px solid lightgray;
+    }  
+
+    .black .multiselect__tags {
+        background-color: #000;
+        border: none;
+        color: rgba(255, 255, 255, 0.8);
+    }  
+    .white .multiselect__tags {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: none;
+        color: #333;
+    }
+    .black .multiselect__single {
+        background-color: #000;
     }
 </style>
