@@ -9,21 +9,39 @@
                 v-for="(item, index) in orders"
                 :key="item.order_id"
             >
-                <td class="ord__td-2">
+                <td class="td-1">
                     <Icon :id="item.order_id_position" :show="true"></Icon>
                 </td>
-                <td class="ord__td-5">{{ item.start_time }}</td>
+
+                <td class="td-2">{{ item.start_time }}</td>
+                
                 <td>
                     <tr v-for="(subitem, index) in item.products">
-                        <!-- <td class="ord__td-3">{{ subitem.product_id }}</td> -->
-                        <td class="ord__td-4 product_name" @click="changeOrder(item, subitem)">{{ subitem.name }}</td>
+                        <td class="td-3 product_name" @click="changeOrder(item, subitem)">{{ subitem.name }}</td>
 
-                        <td class="ord__td-6">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
-                        <td>{{ getBill(subitem.tariff_id, getTime(item.start_time, item.end_time)) }} р</td>
-                        <td class=" ord__td-6 stop-order" @click="stopOrder(item, subitem.product_id)" v-if="!subitem.end_time">x</td>
+                        <td class="td-4">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
+                        <td class="td-5">{{ getBill(subitem.tariff_id, getTime(item.start_time, subitem.end_time)) }} р</td>
+
+                        <td class="td-6"
+                        >
+                            <div class="stop-order__wrap">                                
+                                <div
+                                    class="stop-order" 
+                                    @click="stopOrder(item, subitem.product_id)" 
+                                    v-if="!subitem.end_time"
+                                >
+                                </div>
+                                <div v-if="subitem.end_time" class="ord__td-6 stop-order_st"></div>
+                            </div>
+                        </td>
                     </tr>
                 </td>
-                <td class="ord__td-7 stop-order-all" @click="stopOrder(item)">x</td>
+
+                <td class="td-7">
+                    <div class="stop-order__wrap">
+                        <div class="stop-order" v-if="item.products.length > 1" @click="stopOrder(item)"></div>
+                    </div>
+                </td>
             </tr>
         </table>
 
@@ -89,7 +107,6 @@
                 */
 
                 if (!order) {
-                    console.log('stopOrder: empty order')
                     return false
                 }
 
@@ -143,21 +160,50 @@
     }
     .stop-order {
         opacity: 0;
+
     }
-    .stop-order:hover {
-        opacity: 1;
-        cursor: pointer;
-        text-align: center;
-    }
-    .stop-order-all {
-        opacity: 0;
-    }
-    .stop-order-all:hover {
-        opacity: 1;
-        cursor: pointer;
-        text-align: center;
+    .stop-order__wrap {
+        width: 15px;
+        display: flex;
+        justify-content: center;
     }
 
+    .stop-order_st {
+        width: 7px;
+        height: 7px;
+        border: 1px solid red;
+        border-radius: 50%;
+
+    }
+    .td-6:hover .stop-order,
+    .td-7:hover .stop-order {
+        position: relative;
+        opacity: 1;
+        cursor: pointer;
+        text-align: center;
+        width: 13px;
+        height: 13px;
+        border: 1px solid red;
+        border-radius: 50%;
+        margin: 0 auto;
+    }
+    .stop-order::after, 
+    .stop-order::before {
+        display: block;
+        content: '';
+        position: absolute;
+        width: 9px;
+        height: 1px;
+        background-color: black;
+        top: 6px;
+        left: 2px;
+    }
+    .stop-order::after {
+        transform: rotate(45deg);
+    }
+    .stop-order::before {
+        transform: rotate(-45deg);
+    }
     .table td {
         padding: 5px;
         box-sizing: border-box;
@@ -173,27 +219,32 @@
     .table th {
         text-align: center;
     }
-    .ord__td-1 {
+    .td-1 {
         width: 20px;
     }
-    .ord__td-2 {
-        width: 40px;
-    }
-    .ord__td-3 {
-        width: 25px;
-    }
-    .ord__td-4 {
-        width: 180px;
-    }
-    .ord__td-5 {
-        width: 120px;
+    .td-2 {
+        width: 100px;
         text-align: center;
     }
-    .ord__td-6 {
-        width: 25px;
+    .td-3 {
+        width: 240px;
     }
-    .ord__td-7 {
+    .td-4 {
+        width: 80px;
+    }
+    .td-5 {
+        width: 70px;
+        text-align: right;
+    }
+    .td-6 {
         width: 25px;
+        text-align: center;
+        vertical-align: middle;
+        box-sizing: border-box;
+        padding: 0;
+    }
+    .td-7 {
+        width: 15px;
     }
 
     .product_name:hover {
