@@ -80,7 +80,6 @@ export default {
 
     button:hover {
         cursor: pointer;
-        font-weight: bold;
     }
 
     .white button {
@@ -93,6 +92,10 @@ export default {
         border: 3px solid #333;
         color: rgba(255, 255, 255, 0.8);
     }
+    .black button:hover {
+        border: 3px solid rgba(255, 255, 255, 0.8);
+    }
+
 
 
     .app {

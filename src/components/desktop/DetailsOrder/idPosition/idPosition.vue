@@ -50,7 +50,7 @@
 
                 this.open = false
 
-                //console.log(order_id_position)
+                //console.log(order_id)
             }
         },
 
@@ -65,7 +65,7 @@
 
                 const result = []
                 const orders = this.$store.getters.orders
-                const newId = this.getOrderId()
+                const newId = this.getOrderId('new')
 
                 const iter = (num) => {
                     const order = orders.find(o => o.order_id_position == num)
