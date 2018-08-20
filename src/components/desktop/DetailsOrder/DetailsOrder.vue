@@ -188,6 +188,9 @@
                         {cmd: 'newOrder',        value: this.order},
                         {cmd: 'addOrderProduct', value: this.product},
                     ])
+
+                    this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
+                    this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
                 }
 
                 // addProduct
@@ -241,10 +244,20 @@
             },
 
             getPosition() {
-                // Возвращает id текущей позиции ордера или новую позицию
+                // Если редактируем старый ордер, верну его позицию
+                // Если новый ордер из серии ордеров, верну позицию последнего ордера
+                // Если ордер совсем новый, верну свободную позицию
 
                 if (this.order.order_id_position) {
                     return this.order.order_id_position
+                }
+
+                if (this.order.order_id && !this.order.order_id_position) {
+                    const order = this.$store.getters.orders.find(i => i.order_id == this.order.order_id)
+
+                    if (order) {
+                        return order.order_id_position
+                    } 
                 }
                
                 const orders = this.$store.getters.orders
@@ -265,9 +278,10 @@
             setPosition($event) {
                 this.order.order_id_position = $event.order_id_position
                 this.order.order_id = $event.order_id
+                console.log(this.order.order_id)
                 this.product.order_id = $event.order_id
 
-                this.statusPosition = this.getOrderId() == this.order.order_id ?  'new' : 'add'
+                this.statusPosition = this.getOrderId('new') == this.order.order_id ?  'new' : 'add'
             },
                 
             setCustomer(customer) {

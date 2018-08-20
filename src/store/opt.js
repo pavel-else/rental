@@ -14,13 +14,18 @@ export default {
 
         options: {
             rent_min_time: 0, //ms
-            rent_round_bill: 0,          
+            rent_round_bill: 0,
+
+            lastOrderID: null,
+            lastOrderTime: null,
+            lastOrderInterval: 10000, //ms       
+        now: new Date(),
         },
     
-        now: new Date(),
-        max_order_id: Number,
-        new_order_id: Number,
-        max_tariff_id: Number,
+
+        // max_order_id: Number,
+        // new_order_id: Number,
+        // max_tariff_id: Number,
 
         depositList: [
             {
@@ -99,8 +104,17 @@ export default {
             console.log('set options')
         },
         now(state, date) {
-            state.now = date
+            state.options.now = date
         },
+        setOption(state, {option, value}) {
+            if (!option) {
+                return
+            }
+
+            state.options[option] = value
+
+            console.log('set option', option, state.options[option])
+        }
 
 
     },
@@ -112,7 +126,7 @@ export default {
     },
     getters: {
         now(state) {
-            return state.now
+            return state.options.now
         },
         options(state) {
             return state.options
