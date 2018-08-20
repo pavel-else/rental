@@ -25,7 +25,7 @@ export default {
 
         // max_order_id: Number,
         // new_order_id: Number,
-        // max_tariff_id: Number,
+        // max_tariff_id: Number, 
 
         depositList: [
             {
