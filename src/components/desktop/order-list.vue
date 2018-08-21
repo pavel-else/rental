@@ -6,16 +6,46 @@
         <table cellspacing="0" class="table">
             <tr 
                 class="table-tr" 
-                v-for="(item, index) in orders"
-                :key="item.order_id"
+                v-for="(order, index) in orders"
+                :key="order.order_id"
             >
                 <td class="td-1">
-                    <Icon :id="item.order_id_position" :show="true"></Icon>
+                    <Icon :id="order.order_id_position" :show="true"></Icon>
                 </td>
 
-                <td class="td-2">{{ item.start_time }}</td>
-                
+                <td class="td-2">{{ order.start_time }}</td>
+
                 <td>
+                    <tr v-for="product in getOrderProducts(order.order_id)" :key="product.product_id">
+                        <td class="td-3">{{ getProductName(product.product_id) }}</td>
+
+                        <td class="td-4">{{ getTimePlay(order.start_time, product.end_time) }}</td>
+
+                        <td class="td-5">
+                            {{ getBill(product.tariff_id, getTime(order.start_time, product.end_time)) }} р
+                        </td>
+
+                        <td class="td-6">
+                            <div class="stop-order__wrap">                                
+                                <div
+                                    class="stop-order" 
+                                    @click="stopOrder(order, product.product_id)" 
+                                    v-if="!product.end_time"
+                                >
+                                </div>
+                                <div v-if="product.end_time" class="ord__td-6 stop-order_st"></div>
+                            </div>                            
+                        </td>
+                    </tr>
+                </td>
+
+                <td class="td-7">
+                    <div class="stop-order__wrap">
+                        <div class="stop-order" v-if="true" @click="stopOrder(order)"></div>
+                    </div>   
+                </td>
+                
+<!--                 <td>
                     <tr class="tr-product" v-for="(subitem, index) in item.products">
                         <td class="td-3 product_name" @click="changeOrder(item, subitem)">{{ subitem.name }}</td>
 
@@ -35,13 +65,13 @@
                             </div>
                         </td>
                     </tr>
-                </td>
+                </td> -->
 
-                <td class="td-7">
+<!--                 <td class="td-7">
                     <div class="stop-order__wrap">
                         <div class="stop-order" v-if="item.products.length > 1" @click="stopOrder(item)"></div>
                     </div>
-                </td>
+                </td> -->
             </tr>
         </table>
 
@@ -141,6 +171,15 @@
                 this.showResume = false
             },
 
+            getOrderProducts(order_id) {
+                return this.$store.getters.OrderProducts.filter(i => i.order_id == order_id)
+            },
+            getProductName(product_id) {
+                const product = this.$store.getters.products.find(i => i.id_rent == product_id)
+
+                return product.name
+            }
+
         },
 
         computed: {
@@ -150,6 +189,8 @@
             products() {
                 return this.$store.getters.products
             },
+
+
         }
     }
 </script>

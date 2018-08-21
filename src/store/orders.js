@@ -30,7 +30,6 @@ export default {
         // },
 
         setOrders(state, orders) {
-
             state.orders = orders
             
         	console.log('set Orders')
