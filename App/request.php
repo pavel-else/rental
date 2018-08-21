@@ -187,24 +187,18 @@ class Request
         //     INNER JOIN `orders` on orders.order_id = order_products.order_id 
         //     WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
 
-        $this->writeLog("f.Orders completed");
 
         $orders = $this->pDB->get($sql, false, true);
+        
+        $log = $order ? "getOrderss completed" : "getOrderss failed";
 
-        foreach ($orders as $key => $order) {
-            $order[products] = $this->getOrderProducts($order[order_id]);
-            $result[] = $order;
-        }
+        $this->writeLog($log);
 
-        return $result;
+        return $orders;
     }
 
     private function getOrderProducts($order_id) {
-        $sql = 'SELECT * FROM `order_products` WHERE `order_id` =' .$order_id;
 
-        //$this->writeLog("f.getOrderProducts completed");
-
-        return $this->pDB->get($sql, false, true); 
     }
 
     private function getProductWithId($id) {
@@ -220,12 +214,29 @@ class Request
     }
 
     private function getHistory() {
+
+        $getOrderProducts = function ($order_id) {
+            $sql = '
+                SELECT * 
+                FROM `order_products` 
+                WHERE `order_id` = :order_id
+            ';
+
+            $d = array (
+                'order_id' => $order_id,            
+            );
+
+            $this->writeLog("getOrderProducts completed");
+
+            return $this->pDB->get($sql, false, $d); 
+        };
+
         $sql = 'SELECT * FROM `orders` WHERE `id_rental_org` = '.$this->app_id . ' ORDER BY `orders`.`order_id` DESC';        
 
         $orders = $this->pDB->get($sql, false, true);
 
         foreach ($orders as $key => $order) {
-            $order[products] = $this->getOrderProducts($order[order_id]);            
+            $order[products] = $getOrderProducts($order[order_id]);            
             $result[] = $order;
         }
 

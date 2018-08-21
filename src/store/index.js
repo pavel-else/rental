@@ -33,7 +33,6 @@ const store = new Vuex.Store({
         * Сеттеров может и не быть, тогда отправляются только команды обновления
         * Внимание! Здесь все асинхронно!
         */
-
         send({commit, dispatch}, cmds /*Array*/) {
 
             const check = (cmds) => {
