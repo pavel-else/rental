@@ -16,7 +16,12 @@
                 <td class="td-2">{{ order.start_time }}</td>
 
                 <td>
-                    <tr v-for="product in getOrderProducts(order.order_id)" :key="product.product_id">
+                    <tr 
+                        class="product-tr"
+                        v-for="product in getOrderProducts(order.order_id)" 
+                        :key="product.product_id"
+                        @click="changeOrder(order, product)"
+                    >
                         <td class="td-3">{{ getProductName(product.product_id) }}</td>
 
                         <td class="td-4">{{ getTimePlay(order.start_time, product.end_time) }}</td>
@@ -298,5 +303,12 @@
     .product_name:hover {
         text-decoration: underline;
         cursor: pointer;
+    }
+    .product-tr {
+        border-bottom: 1px solid transparent;
+    }
+    .product-tr:hover {
+        cursor: pointer;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.8);
     }
 </style>
