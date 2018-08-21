@@ -97,7 +97,7 @@ export default {
                 state.options[opt.name] = opt.value
             })
 
-            console.log('setOptions')
+            console.log('set options')
         },
         setOption(state, {option, value}) {
             if (!option) {

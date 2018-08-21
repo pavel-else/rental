@@ -2,13 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-import products   from './products'
-import customers  from './Customers/customers'
-import orders     from './orders'
-import options    from './opt'
-import tariffs    from './tariffs'
-import categories from './categories'
-import history    from './History/history'
+import products        from './products'
+import orderProducts   from './orderProducts'
+import customers       from './Customers/customers'
+import orders          from './orders'
+import options         from './opt'
+import tariffs         from './tariffs'
+import categories      from './categories'
+import history         from './History/history'
 
 
 Vue.use(Vuex)
@@ -16,6 +17,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     modules: {
         products,
+        orderProducts,
         customers,
         orders,
         options,
@@ -71,6 +73,7 @@ const store = new Vuex.Store({
                     commit('setTariffs',    r.data.tariffs)
                     commit('setCategories', r.data.categories)
                     commit('setCustomers',  r.data.customers)
+                    commit('setOrderProducts',  r.data.order_products)
                     commit('setOrders', { orders: r.data.orders, products: r.data.products }) // split!
                 })
             }
@@ -78,6 +81,7 @@ const store = new Vuex.Store({
             const makeUpd = () => {
                 cmds = [
                     'getProducts',
+                    'getOrderProducts',
                     'getOrders', 
                     'getCustomers', 
                     'getHistory', 

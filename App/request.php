@@ -50,7 +50,7 @@ class Request
                     $this->response['orders'] = $this->getOrders();
                 break;
                 case 'getOrderProducts':
-                    $this->response['order_products'] = $this->getOrderProducts($value);
+                    $this->response['order_products'] = $this->getOrderProducts();
                 break;
                 case 'getCustomers':
                     $this->response['customers'] = $this->getCustomers();
