@@ -174,11 +174,23 @@ class Request
     }
 
     private function getProducts() {
-        $not_in_rental = '0,';          // Велосипеды которые не в прокате   
-        $sql = 'SELECT * FROM `products` WHERE `id_rent` NOT IN ('.trim($not_in_rental,',').') AND `id_rental_org` = '.$this->app_id.' ORDER BY `name`';     // Перебираем все товары кроме активных (свободные велосипеды)
+        $sql = '
+            SELECT * 
+            FROM `products` 
+            WHERE `id_rental_org` = :id_rental_org 
+        ';
 
-        $this->writeLog("f.GetProducts completed");
-        return $this->pDB->get($sql, false, true);
+        $d = array (
+            'id_rental_org' => $this->app_id
+        );
+
+        $result = $this->pDB->get($sql, false, $d);
+        
+        $log = $result ? "getProducts completed" : "getProducts failed";
+
+        $this->writeLog($log);
+
+        return $result;
     }
 
     private function getOrders() {
@@ -194,13 +206,13 @@ class Request
             'id_rental_org' => $this->app_id
         );
 
-        $orders = $this->pDB->get($sql, false, $d);
+        $result = $this->pDB->get($sql, false, $d);
         
-        $log = $orders ? "getOrders completed" : "getOrders failed";
+        $log = $result ? "getOrders completed" : "getOrders failed";
 
         $this->writeLog($log);
 
-        return $orders;
+        return $result;
     }
 
     private function getOrderProducts() {
