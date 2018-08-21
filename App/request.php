@@ -52,8 +52,8 @@ class Request
                 case 'getOrderProducts':
                     $this->response['order_products'] = $this->getOrderProducts($value);
                 break;
-                case 'getClients':
-                    $this->response['clients'] = $this->getClients();
+                case 'getCustomers':
+                    $this->response['customers'] = $this->getCustomers();
                 break;
                 case 'getHistory':
                     $this->response['history'] = $this->getHistory($value);
@@ -241,12 +241,12 @@ class Request
     //     return $this->pDB->get($sql, false, true); 
     // }
 
-    private function getClients() {
+    private function getCustomers() {
         $sql = '
             SELECT * 
-            FROM `clients` 
+            FROM `customers` 
             WHERE `id_rental_org` = :id_rental_org 
-            ORDER BY `clients`.`fname` 
+            ORDER BY `customers`.`fname` 
             ASC
         ';
 
@@ -1055,7 +1055,7 @@ class Request
 
             $sql = '
                 SELECT `id` 
-                FROM `clients` 
+                FROM `customers` 
                 WHERE `id_rent` = :id_rent
             ';
 
@@ -1069,7 +1069,7 @@ class Request
 
         $update = function ($id, $customer) {
             $sql = '
-                UPDATE `clients` 
+                UPDATE `customers` 
                 SET 
                 `id_rent` = :id_rent,
                 `fname` = :fname,
@@ -1120,7 +1120,7 @@ class Request
             $getIncMaxID = function () {
                 $sql = '
                     SELECT `id_rent` 
-                    FROM `clients` 
+                    FROM `customers` 
                     WHERE `id_rental_org` = :id_rental_org 
                     ORDER BY `id_rent`
                     DESC LIMIT 1
@@ -1135,7 +1135,7 @@ class Request
                 return ++$result[0][id_rent];
             };
 
-            $sql = 'INSERT INTO `clients` (
+            $sql = 'INSERT INTO `customers` (
                 `id`,
                 `id_rent`,
                 `id_rental_org`,
@@ -1210,7 +1210,7 @@ class Request
 
             $sql = '
                 SELECT `id` 
-                FROM `clients` 
+                FROM `customers` 
                 WHERE `id_rent` = :id_rent
                 AND `id_rental_org` = :id_rental_org
             ';
@@ -1228,7 +1228,7 @@ class Request
         $delete = function ($id) {
             $sql = '
                 DELETE 
-                FROM `clients` 
+                FROM `customers` 
                 WHERE `id` = :id
             ';
 

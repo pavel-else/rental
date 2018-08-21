@@ -70,7 +70,7 @@ const store = new Vuex.Store({
                     commit('setOptions',    r.data.options)
                     commit('setTariffs',    r.data.tariffs)
                     commit('setCategories', r.data.categories)
-                    commit('setCustomers',  r.data.clients) // Change to customer!
+                    commit('setCustomers',  r.data.customers)
                     commit('setOrders', { orders: r.data.orders, products: r.data.products }) // split!
                 })
             }
@@ -79,7 +79,7 @@ const store = new Vuex.Store({
                 cmds = [
                     'getProducts',
                     'getOrders', 
-                    'getClients', 
+                    'getCustomers', 
                     'getHistory', 
                     'getTariffs', 
                     'getCategories', 
