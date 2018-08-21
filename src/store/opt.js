@@ -85,8 +85,8 @@ export default {
                 name: 'Шлем'
             }
         ]
-
     },
+
     mutations: {
         setOptions(state, options) {
             if (!options) {
@@ -97,10 +97,7 @@ export default {
                 state.options[opt.name] = opt.value
             })
 
-            console.log('set options')
-        },
-        now(state, date) {
-            state.options.now = date
+            console.log('setOptions')
         },
         setOption(state, {option, value}) {
             if (!option) {
@@ -109,17 +106,19 @@ export default {
 
             state.options[option] = value
 
-            console.log('set option', option, state.options[option])
+            console.log('setOption', option, state.options[option])
+        },
+        now(state, date) {
+            state.options.now = date
         }
-
-
     },
+
     actions: {
         startTimer({commit}) {
             setInterval(() => {commit('now', new Date())}, 3000)
         },
-
     },
+
     getters: {
         now(state) {
             return state.options.now
