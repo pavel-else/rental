@@ -67,14 +67,15 @@ const store = new Vuex.Store({
                 .then(r => {
                     console.log('front <-- back', r)  
 
-                    commit('setProducts',   r.data.products)
-                    commit('setHistory',    r.data.history)
-                    commit('setOptions',    r.data.options)
-                    commit('setTariffs',    r.data.tariffs)
-                    commit('setCategories', r.data.categories)
-                    commit('setCustomers',  r.data.customers)
-                    commit('setOrderProducts',  r.data.order_products)
-                    commit('setOrders', { orders: r.data.orders, products: r.data.products }) // split!
+                    commit('setProducts',      r.data.products)
+                    commit('setHistory',       r.data.history)
+                    commit('setOptions',       r.data.options)
+                    commit('setTariffs',       r.data.tariffs)
+                    commit('setCategories',    r.data.categories)
+                    commit('setCustomers',     r.data.customers)
+                    commit('setOrderProducts', r.data.order_products)
+                    commit('setOrders',        r.data.orders)
+                    /*commit('setOrders', { orders: r.data.orders, products: r.data.products })*/
                 })
             }
 
