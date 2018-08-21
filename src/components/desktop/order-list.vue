@@ -19,22 +19,22 @@
                     <tr 
                         class="product-tr"
                         v-for="product in getOrderProducts(order.order_id)" 
-                        :key="product.product_id"
-                        @click="changeOrder(order, product)"
+                        :key="product.product_id" 
+                                              
                     >
-                        <td class="td-3">{{ getProductName(product.product_id) }}</td>
+                        <td class="td-3" @click="changeOrder(order, product)" >{{ getProductName(product.product_id) }}</td>
 
-                        <td class="td-4">{{ getTimePlay(order.start_time, product.end_time) }}</td>
+                        <td class="td-4" @click="changeOrder(order, product)" >{{ getTimePlay(order.start_time, product.end_time) }}</td>
 
-                        <td class="td-5">
+                        <td class="td-5" @click="changeOrder(order, product)" >
                             {{ getBill(product.tariff_id, getTime(order.start_time, product.end_time)) }} р
-                        </td>
+                        </td>                          
 
                         <td class="td-6">
                             <div class="stop-order__wrap">                                
                                 <div
                                     class="stop-order" 
-                                    @click="stopOrder(order, product.product_id)" 
+                                    @click="stopOrder(order, product)" 
                                     v-if="!product.end_time"
                                 >
                                 </div>
@@ -134,7 +134,7 @@
                 return this.timeFormat(time)
             },
 
-            stopOrder(order, product_id) {
+            stopOrder(order, product) {
                 /*
                 * Функция принимает ордер и id продукта, ставит временнУю метку стопа,
                 * прописывает стоимость и отправляет на сервер.
@@ -145,8 +145,8 @@
                     return false
                 }
 
-                const stop = (product_id) => {
-                    const product = order.products.find(p => p.product_id == product_id)
+                const stop = (product) => {
+                    // const product = order.products.find(p => p.product_id == product_id)
 
                     product.end_time = Math.floor(Date.now() / 1000)
                     product.bill = this.getBill(product.tariff_id, this.getTime(order.start_time, product.end_time))
@@ -157,18 +157,17 @@
                     })
 
                     this.showResume = true
+                    this.order = order
                 }
 
                 const stopAll = () => {
-                    const products = order.products.filter(p => p.end_time == null)
+                    const products = this.getOrderProducts(this.order.order_id).filter(p => p.end_time == null)
 
-                    products.map(p => {
-                        stop(p.product_id)
-                    })
+                    products.map(p => stop(p))
                 }
 
                 this.order = order
-                return product_id ? stop(product_id) : stopAll()                
+                return product ? stop(product) : stopAll()                
             },
 
             onClose() {

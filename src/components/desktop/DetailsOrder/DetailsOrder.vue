@@ -27,7 +27,7 @@
                 <table>
                     <tr>
                         <td>Товар</td>
-                        <td>{{ product.name }}</td>
+                        <td>{{ getProductName(product.product_id) }}</td>
                     </tr>
                     <tr>
                         <td>ID заказа</td>
@@ -241,6 +241,12 @@
                 //this.$store.dispatch('sendQueue')
 
                 this.close()
+            },
+
+            getProductName(product_id) {
+                const product = this.$store.getters.products.find(i => i.id_rent == product_id)
+
+                return product.name
             },
 
             getPosition() {

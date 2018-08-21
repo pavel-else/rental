@@ -14,8 +14,8 @@
                         <td>Товары</td>
                         <td>
                             <table class="table-products">
-                                <tr v-for="product in order.products">
-                                    <td>{{ product.name }}</td>
+                                <tr v-for="product in getOrderProducts()">
+                                    <td>{{ getProductName(product.product_id) }}</td>
                                     <td>-</td>
                                     <td>{{ product.bill }} р.</td>
                                 </tr>
@@ -58,7 +58,16 @@
             order: Object
         },
         methods: {
-            getTimePlay(item) {
+            getOrderProducts() {
+                return this.$store.getters.OrderProducts.filter(i => i.order_id == this.order.order_id)
+            },
+            getProductName(product_id) {
+                const product = this.$store.getters.products.find(i => i.id_rent == product_id)
+
+                return product.name
+            },
+
+            getTimePlay(order) {
                 const timeFormat = function (ms/**number*/) {
                     if (ms < 0) ms = 0;
 
@@ -76,9 +85,11 @@
                     return num(hours) + ":" + num(minutes) + ":" + num(seconds);
                 }
 
-                const start = Date.parse(item.start_time)
-                
-                const end = item.products.reduce((acc, p) => {
+                const start = Date.parse(order.start_time)
+                const products = this.getOrderProducts()
+
+
+                const end = products.reduce((acc, p) => {
                     return acc = acc < p.end_time ? p.end_time : acc
                 }, 0)
 
@@ -93,7 +104,9 @@
         },
         computed: {
             bill() {
-                return this.order.products.reduce((acc, product) => {
+                const products = this.getOrderProducts()
+
+                return products.reduce((acc, product) => {
                     return acc + +product.bill
                 }, 0)
             }
