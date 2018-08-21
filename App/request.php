@@ -182,35 +182,73 @@ class Request
     }
 
     private function getOrders() {
-        $sql = 'SELECT * FROM `orders` WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
-        // $sql = 'SELECT * FROM `order_products` 
-        //     INNER JOIN `orders` on orders.order_id = order_products.order_id 
-        //     WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
+        $sql = '
+            SELECT * 
+            FROM `orders` 
+            WHERE `status` = :status  
+            AND `id_rental_org` = :id_rental_org
+        ';
 
+        $d = array (
+            'status'        => 'ACTIVE',
+            'id_rental_org' => $this->app_id
+        );
 
-        $orders = $this->pDB->get($sql, false, true);
+        $orders = $this->pDB->get($sql, false, $d);
         
-        $log = $order ? "getOrderss completed" : "getOrderss failed";
+        $log = $orders ? "getOrders completed" : "getOrders failed";
 
         $this->writeLog($log);
 
         return $orders;
     }
 
-    private function getOrderProducts($order_id) {
+    private function getOrderProducts() {
+        $sql = '
+            SELECT * 
+            FROM `order_products` 
+            WHERE `id_rental_org` = :id_rental_org
+        ';
 
+        $d = array (
+            'id_rental_org' => $this->app_id
+        );
+
+        $result = $this->pDB->get($sql, false, $d);
+        
+        $log = $result ? "getOrderProducts completed" : "getOrderProducts failed";
+
+        $this->writeLog($log);
+
+        return $result;       
     }
 
-    private function getProductWithId($id) {
-        $sql = 'SELECT * FROM `products` WHERE `id_rent` =' .$id;
+    // private function getProductWithId($id) {
+    //     $sql = 'SELECT * FROM `products` WHERE `id_rent` =' .$id;
 
-        return $this->pDB->get($sql, false, true); 
-    }
+    //     return $this->pDB->get($sql, false, true); 
+    // }
 
     private function getClients() {
-        $sql = 'SELECT * FROM `clients` WHERE `id_rental_org` = '.$this->app_id .' ORDER BY `clients`.`fname` ASC';
+        $sql = '
+            SELECT * 
+            FROM `clients` 
+            WHERE `id_rental_org` = :id_rental_org 
+            ORDER BY `clients`.`fname` 
+            ASC
+        ';
 
-        return $this->pDB->get($sql, false, true);
+        $d = array (
+            'id_rental_org' => $this->app_id
+        );
+
+        $result = $this->pDB->get($sql, false, $d);
+
+        $log = $result ? "getCustomers completed" : "getCustomers failed";
+
+        $this->writeLog($log);
+
+        return $result; 
     }
 
     private function getHistory() {
@@ -219,21 +257,31 @@ class Request
             $sql = '
                 SELECT * 
                 FROM `order_products` 
-                WHERE `order_id` = :order_id
+                WHERE `order_id`    = :order_id 
+                AND `id_rental_org` = :id_rental_org
             ';
 
             $d = array (
-                'order_id' => $order_id,            
+                'order_id'      => $order_id,
+                'id_rental_org' => $this->app_id           
             );
-
-            $this->writeLog("getOrderProducts completed");
 
             return $this->pDB->get($sql, false, $d); 
         };
 
-        $sql = 'SELECT * FROM `orders` WHERE `id_rental_org` = '.$this->app_id . ' ORDER BY `orders`.`order_id` DESC';        
+        $sql = '
+            SELECT * 
+            FROM `orders` 
+            WHERE `id_rental_org` = :id_rental_org
+            ORDER BY `orders`.`order_id` 
+            DESC
+        ';  
 
-        $orders = $this->pDB->get($sql, false, true);
+        $d = array (
+            'id_rental_org' => $this->app_id,
+        );      
+
+        $orders = $this->pDB->get($sql, false, $d);
 
         foreach ($orders as $key => $order) {
             $order[products] = $getOrderProducts($order[order_id]);            
