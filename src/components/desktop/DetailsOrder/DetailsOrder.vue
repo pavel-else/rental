@@ -37,7 +37,9 @@
                     </tr>
                     <tr>
                         <td>Аванс</td>
-                        <td><input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="statusChangeOrder = true"></td>
+                        <td>
+                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="statusChangeOrder = true">
+                        </td>
                     </tr>
                     <tr>
                         <td>Клиент</td>
@@ -111,6 +113,7 @@
         props: {
             dataOrder: null,
             dataProduct: null,
+            dataOrderProduct: Object
         },
         components: {
             Position,
@@ -122,52 +125,114 @@
         },
         data() {
             return {
-                order: null,
+                order: null, // init in created
                 product: null,
+                orderProduct: null,
 
                 status: null,
                 statusPosition: null,
                 statusChangeOrder: false,
                 statusChangeProduct: false,
 
-                cmd: null
+                cmd: null,
+                orders: this.$store.getters.orders
             }
         },
 
         created() {
-            const initOrder = (order) => {
-                this.order = {
-                    status:             order ? order.status : 'ACTIVE',
-                    start_time:         order ? Date.parse(order.start_time) / 1000 : Math.floor(Date.now() / 1000),
-                    order_id:           order ? order.order_id : this.getOrderId(),
-                    order_id_position:  order ? order.order_id_position : null,
-                    advance:            order ? order.advance : null,
-                    note:               order ? order.note : null,
-                    products:           order ? order.products : [],
-                    promotion:          order ? order.promotion : null,
-                    accessories:        order ? order.accessories : null,
-                    customer_id:        order ? order.customer_id : null,
-                    deposit:            order ? order.deposit : null, 
-                }                
+            const newOrder = (orderProduct) => {
+               
+                const isSerial = () => {
+                    const lastTime = this.$store.getters.options.lastOrderTime || false
+                    const interval = this.$store.getters.options.lastOrderInterval
+                    const now = this.$store.getters.options.now
+
+                    return lastTime && now - lastTime < interval
+                }
+
+                const getLastId = () => {
+                }
+
+                const newOrder = {
+                    status:            'ACTIVE',
+                    start_time:        Math.floor(Date.now() / 1000),
+                    order_id:          this.getOrderId('new'),
+                    order_id_position: null,
+                    advance:           null,
+                    note:              null,
+                    promotion:         null,
+                    accessories:       null,
+                    customer_id:       null,
+                    deposit:           null, 
+                }
+                const createOrderProduct = () => {
+                    return {
+                        product_id: null,
+                        tariff_id: null,
+                    }
+                }
+
+                const oldOrder = this.orders.find(i => i.order_id === getLastId())
+                const newOrderProduct = createOrderProduct()
+                newOrderProduct.product_id = orderProduct.id_rent
+                newOrderProduct.tariff_id = orderProduct.tariff_default
+
+                this.order = isSerial() ? oldOrder : newOrder
+                this.product = newOrderProduct
+
+                console.log('product', orderProduct)
+                console.log('newOrder')
             }
 
-            const initProduct = (product) => {
-                this.product = {
-                    name:         product.name,
-                    order_id:     this.order.order_id,
-                    product_id:   product.id_rent || product.product_id,
-                    tariff_id:    product.tariff_default || product.tariff_id,
-                    bill:         0,
-                    bill_no_sale: 0,
-                    end_time:     null                
-                }                
-            } 
+            const changeOrder = (orderProduct) => {
+                const order = this.orders.find(i => i.order_id === orderProduct.order_id)
+
+                this.order = order
+                this.product = orderProduct
+                this.product.name = this.getProductName(orderProduct.product_id)
+
+                console.log('changeOrder', this.orderProduct)
+            }
+
+            const orderProduct = this.dataOrderProduct
+
+            orderProduct.order_id ? changeOrder(orderProduct) : newOrder(orderProduct)
+
+
+            /////////////////////////////// deprecated
+            // const initOrder = (order) => {
+            //     this.order = {
+            //         status:             order ? order.status : 'ACTIVE',
+            //         start_time:         order ? Date.parse(order.start_time) / 1000 : Math.floor(Date.now() / 1000),
+            //         order_id:           order ? order.order_id : this.getOrderId(),
+            //         order_id_position:  order ? order.order_id_position : null,
+            //         advance:            order ? order.advance : null,
+            //         note:               order ? order.note : null,
+            //         products:           order ? order.products : [],
+            //         promotion:          order ? order.promotion : null,
+            //         accessories:        order ? order.accessories : null,
+            //         customer_id:        order ? order.customer_id : null,
+            //         deposit:            order ? order.deposit : null, 
+            //     }                
+            // }
+
+            // const initProduct = (product) => {
+            //     this.product = {
+            //         name:         product.name,
+            //         order_id:     this.order.order_id,
+            //         product_id:   product.id_rent || product.product_id,
+            //         tariff_id:    product.tariff_default || product.tariff_id,
+            //         bill:         0,
+            //         bill_no_sale: 0,
+            //         end_time:     null                
+            //     }                
+            // } 
+            // initOrder(this.dataOrder)
+            // initProduct(this.dataProduct)
+
 
             this.status = this.dataOrder ? 'change' : 'new'
             this.statusPosition = this.status == 'new' ? 'new' : 'add'
-            
-            initOrder(this.dataOrder)
-            initProduct(this.dataProduct)
         },
 
         methods: {
@@ -282,8 +347,10 @@
                 return +result
             },
             setPosition($event) {
+                this.order = this.$getters.orders.find(i => i.order_id === $event.order_id)
                 this.order.order_id_position = $event.order_id_position
                 this.order.order_id = $event.order_id
+
                 console.log(this.order.order_id)
                 this.product.order_id = $event.order_id
 

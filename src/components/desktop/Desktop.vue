@@ -6,7 +6,7 @@
         
         <order-list class="snippet snippet__orders"></order-list>
 
-        <DetailsOrder v-if="show" :data-product="product" @close="onClose"></DetailsOrder>
+        <DetailsOrder v-if="show" :data-order-product="product" :data-product="product" @close="onClose"></DetailsOrder>
     </div>
 </template>
 

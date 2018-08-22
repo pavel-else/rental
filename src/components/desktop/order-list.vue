@@ -50,37 +50,19 @@
                     </div>   
                 </td>
                 
-<!--                 <td>
-                    <tr class="tr-product" v-for="(subitem, index) in item.products">
-                        <td class="td-3 product_name" @click="changeOrder(item, subitem)">{{ subitem.name }}</td>
 
-                        <td class="td-4">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
-                        <td class="td-5">{{ getBill(subitem.tariff_id, getTime(item.start_time, subitem.end_time)) }} р</td>
-
-                        <td class="td-6"
-                        >
-                            <div class="stop-order__wrap">                                
-                                <div
-                                    class="stop-order" 
-                                    @click="stopOrder(item, subitem.product_id)" 
-                                    v-if="!subitem.end_time"
-                                >
-                                </div>
-                                <div v-if="subitem.end_time" class="ord__td-6 stop-order_st"></div>
-                            </div>
-                        </td>
-                    </tr>
-                </td> -->
-
-<!--                 <td class="td-7">
-                    <div class="stop-order__wrap">
-                        <div class="stop-order" v-if="item.products.length > 1" @click="stopOrder(item)"></div>
-                    </div>
-                </td> -->
             </tr>
         </table>
 
-        <DetailsOrder v-if="showDetails" :data-product="product" :data-order="order" @close="closeDetails"></DetailsOrder>
+        <DetailsOrder 
+            v-if="showDetails" 
+            :data-product="product" 
+            :data-order="order" 
+            :data-order-product="product" 
+            @close="closeDetails"
+        >
+        </DetailsOrder>
+
         <Resume :order="order" @close="onClose" v-if="showResume"></Resume>
     </div>
 </template>
