@@ -138,8 +138,6 @@
                 statusPosition: null,
                 statusChangeOrder: false,
                 statusChangeSubOrder: false,
-
-                cmd: null,
             }
         },
 
@@ -298,11 +296,6 @@
 
             //     }
                 
-
-
-
-                this.order = this.initOrder()
-                this.subOrder = this.initSubOrder()
                 this.close()
             },
             isSerial() {
@@ -311,9 +304,10 @@
                 const now      = this.$store.getters.options.now
                 const lastID   = this.getLastId()
                 const order    = this.orders.find(i => i.order_id == lastID)
-
+console.log(order)
                 // Если последний ордер уже закрыт
-                if (order && order.end_time) {
+                if (!order || order.status == 'END') {
+                    console.log('adsafsdfasdfasdf')
                     return false
                 }
 
@@ -368,13 +362,18 @@
                 }
             },
             setPosition($event) {
-                console.log($event)
+                    console.log($event)
 
-                //this.order = this.$getters.orders.find(i => i.order_id === $event.order_id)
-                this.order.order_id_position = $event.order_id_position
+                    const order_id = $event.order_id
+                    const order_id_position = $event.order_id_position
+
+                    this.order.order_id_position = order_id_position
+
+                    // this.order = order_id ? this.orders.find(i => i.order_id == order_id) : initOrder()
+                    // this.order.order_id_position = order_id_position
                 // this.order.order_id = $event.order_id
 
-                // console.log(this.order.order_id)
+                //console.log(this.order)
                 // this.product.order_id = $event.order_id
 
                 // this.statusPosition = this.getOrderId('new') == this.order.order_id ?  'new' : 'add'

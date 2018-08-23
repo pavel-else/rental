@@ -18,7 +18,7 @@ export default {
 
             lastOrderID: null,
             lastOrderTime: null,
-            lastOrderInterval: 9999999999, //180000, //ms       
+            lastOrderInterval: 180000, //ms       
 
             now: new Date(),
         },
