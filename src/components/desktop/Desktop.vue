@@ -6,7 +6,7 @@
         
         <order-list class="snippet snippet__orders"></order-list>
 
-        <DetailsOrder v-if="show" :data-sub-order="orderProduct" @close="onClose"></DetailsOrder>
+        <DetailsOrder v-if="show" :data-sub-order="subOrder" @close="onClose"></DetailsOrder>
     </div>
 </template>
 
@@ -25,25 +25,23 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
             return {
                 product: {},
                 order: {},
+                subOrder: null,
                 show: false,
             }
         },
         methods: {
             addOrder(product) {
-                this.product = product
+                this.subOrder = {                    
+                    product_id: product.id_rent
+                }
+
                 this.show = true
             },
             onClose() {
                 this.show = false
             }
         },
-        computed: {
-            orderProduct() {
-                return {
-                    product_id: this.product.id_rent
-                }
-            }
-        }
+
     }
 </script>
 

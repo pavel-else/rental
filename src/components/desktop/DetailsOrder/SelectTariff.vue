@@ -29,8 +29,8 @@
         components: { Multiselect },
         data () {
             return {
-                value: this.dataTariffs.find(tariff => tariff.id_rent == this.dataTariffDefault),                    
-                options: this.dataTariffs
+                value: this.dataTariffDefault ? this.dataTariffs.find(tariff => tariff.id_rent == this.dataTariffDefault) : null,
+                options: this.dataTariffs ? this.dataTariffs : []
             }
         },
         watch: {
