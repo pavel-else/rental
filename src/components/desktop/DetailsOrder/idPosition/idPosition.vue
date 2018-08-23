@@ -11,6 +11,7 @@
                     :show="select == index || typeof(item.position) == 'number'" 
                     :select="select == index">
                 </Icon>
+                {{item.order_id}}
             </div>
         </div>
         <div class="btn" v-else @click="open = true">
@@ -50,7 +51,7 @@
 
                 this.open = false
 
-                //console.log(order_id)
+                console.log(order_id)
             }
         },
 
