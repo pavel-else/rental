@@ -178,12 +178,17 @@
                     this.subOrder.product_id = this.product.id_rent
                     this.subOrder.tariff_id  = this.product.tariff_default
                     this.subOrder.order_id   = this.order.order_id
-
-                    console.log(this.product)
                 }
 
                 const serialOrderInit = () => {
+                    this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
 
+                    this.order = this.orders.find(i => i.order_id == this.getLastId())
+
+                    this.subOrder = this.initSubOrder()
+                    this.subOrder.product_id = this.product.id_rent
+                    this.subOrder.tariff_id  = this.product.tariff_default
+                    this.subOrder.order_id   = this.order.order_id
                 }
 
                 this.isSerial() ? serialOrderInit() : newOrderInit()   
@@ -193,10 +198,6 @@
 
 
             // const newOrder = (orderProduct) => {            
-
-
-            //     const getLastId = () => {
-            //     }
 
 
             //     const createOrderProduct = () => {
@@ -361,8 +362,19 @@
                 const lastTime = this.$store.getters.options.lastOrderTime || false
                 const interval = this.$store.getters.options.lastOrderInterval
                 const now      = this.$store.getters.options.now
+                const lastID   = this.getLastId()
+                const order    = this.orders.find(i => i.order_id == lastID)
+                console.log('order', order)
+
+                // Если последний ордер уже закрыт
+                if (order && order.end_time) {
+                    return false
+                }
 
                 return lastTime && now - lastTime < interval
+            },
+            getLastId() {
+                return this.$store.getters.options.lastOrderID
             },
 
             // getProductName(product_id) {
@@ -467,7 +479,6 @@
                     return
                 }
 
-                console.log('product', this.product)
                 const id = this.product.id_rent
                 const ids = this.product.tariff_ids.split(',')
 
