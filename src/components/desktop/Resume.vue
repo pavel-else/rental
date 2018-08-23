@@ -59,7 +59,8 @@
         },
         methods: {
             getOrderProducts() {
-                return this.$store.getters.OrderProducts.filter(i => i.order_id == this.order.order_id)
+                const subOrders = this.$store.getters.OrderProducts
+                return subOrders ? this.$store.getters.OrderProducts.filter(i => i.order_id == this.order.order_id) : []
             },
             getProductName(product_id) {
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
