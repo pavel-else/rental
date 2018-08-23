@@ -147,41 +147,44 @@
             // Компонент работает с новым либо существующим ордером, и взасимости от этого
             // В компонент может спускаться либо product_id, либо id (orderProduct) соответсвенно
 
-            if (this.dataSubOrder.id) {
+            const changeOrderInit = () => {
                 this.subOrder = this.subOrders.find(i => i.id == this.dataSubOrder.id)
                 this.product = this.products.find(i => i.id_rent == this.subOrder.product_id)
-                this.order = this.orders.find(i => i.order_id == this.subOrder.order_id)
-                //console.log(this.product)
-            } else if (this.dataSubOrder.product_id) {
-                this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
-                console.log(this.product)
+                this.order = this.orders.find(i => i.order_id == this.subOrder.order_id)  
             }
+
+            const newOrderInit = () => {
+                // Почему-то не срабатывает
+                if (!this.dataSubOrder.product_id) {
+                    console.log('product_id not found')
+                    return
+                }
+
+                const newOrderInit = () => {
+                    this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
+
+                    this.order.status     = 'ACTIVE'
+                    this.order.start_time = Math.floor(Date.now() / 1000)
+                    this.order.order_id   = this.getOrderId('new')
+
+                    console.log(this.order)
+                }
+
+                const serialOrderInit = () => {}
+
+                this.isSerial() ? serialOrderInit() : newOrderInit()   
+            }
+
+            this.dataSubOrder.id ? changeOrderInit() : newOrderInit()
 
             // const newOrder = (orderProduct) => {
                
-            //     const isSerial = () => {
-            //         const lastTime = this.$store.getters.options.lastOrderTime || false
-            //         const interval = this.$store.getters.options.lastOrderInterval
-            //         const now = this.$store.getters.options.now
 
-            //         return lastTime && now - lastTime < interval
-            //     }
 
             //     const getLastId = () => {
             //     }
 
-            //     const newOrder = {
-            //         status:            'ACTIVE',
-            //         start_time:        Math.floor(Date.now() / 1000),
-            //         order_id:          this.getOrderId('new'),
-            //         order_id_position: null,
-            //         advance:           null,
-            //         note:              null,
-            //         promotion:         null,
-            //         accessories:       null,
-            //         customer_id:       null,
-            //         deposit:           null, 
-            //     }
+
             //     const createOrderProduct = () => {
             //         return {
             //             product_id: null,
@@ -201,15 +204,6 @@
             //     console.log('newOrder')
             // }
 
-            // const changeOrder = (orderProduct) => {
-            //     const order = this.orders.find(i => i.order_id === orderProduct.order_id)
-
-            //     this.order = order
-            //     this.product = orderProduct
-            //     this.product.name = this.getProductName(orderProduct.product_id)
-
-            //     console.log('changeOrder', this.orderProduct)
-            // }
 
             // const orderProduct = this.dataOrderProduct
 
@@ -324,6 +318,13 @@
 
             //     this.close()
             // },
+            isSerial() {
+                const lastTime = this.$store.getters.options.lastOrderTime || false
+                const interval = this.$store.getters.options.lastOrderInterval
+                const now      = this.$store.getters.options.now
+
+                return lastTime && now - lastTime < interval
+            }
 
             // getProductName(product_id) {
             //     const product = this.$store.getters.products.find(i => i.id_rent == product_id)
@@ -417,8 +418,11 @@
                 return this.$store.getters.accessories
             },
             tariffs() {
-                const id = this.product.id_rent
+                if (!this.product) {
+                    return
+                }
 
+                const id = this.product.id_rent
                 const ids = this.product.tariff_ids.split(',')
 
                 return ids.map(id => {
