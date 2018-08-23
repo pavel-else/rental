@@ -124,9 +124,9 @@
         },
         data() {
             return {
-                order: null, // init in created
-                product: null,
-                subOrder: null,
+                order:    {}, 
+                product:  {},
+                subOrder: {},
 
                
 
@@ -144,12 +144,17 @@
         },
 
         created() {
+            // Компонент работает с новым либо существующим ордером, и взасимости от этого
+            // В компонент может спускаться либо product_id, либо id (orderProduct) соответсвенно
 
             if (this.dataSubOrder.id) {
                 this.subOrder = this.subOrders.find(i => i.id == this.dataSubOrder.id)
                 this.product = this.products.find(i => i.id_rent == this.subOrder.product_id)
                 this.order = this.orders.find(i => i.order_id == this.subOrder.order_id)
                 //console.log(this.product)
+            } else if (this.dataSubOrder.product_id) {
+                this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
+                console.log(this.product)
             }
 
             // const newOrder = (orderProduct) => {
