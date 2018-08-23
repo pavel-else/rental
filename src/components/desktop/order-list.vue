@@ -22,11 +22,11 @@
                         :key="product.product_id" 
                                               
                     >
-                        <td class="td-3" @click="changeOrder(order, product)" >{{ getProductName(product.product_id) }}</td>
+                        <td class="td-3" @click="changeOrder(product.id)" >{{ getProductName(product.product_id) }}</td>
 
-                        <td class="td-4" @click="changeOrder(order, product)" >{{ getTimePlay(order.start_time, product.end_time) }}</td>
+                        <td class="td-4" @click="changeOrder(product.id)" >{{ getTimePlay(order.start_time, product.end_time) }}</td>
 
-                        <td class="td-5" @click="changeOrder(order, product)" >
+                        <td class="td-5" @click="changeOrder(product.id)" >
                             {{ getBill(product.tariff_id, getTime(order.start_time, product.end_time)) }} р
                         </td>                          
 
@@ -56,9 +56,7 @@
 
         <DetailsOrder 
             v-if="showDetails" 
-            :data-product="product" 
-            :data-order="order" 
-            :data-order-product="product" 
+            :data-sub-order="product" 
             @close="closeDetails"
         >
         </DetailsOrder>
@@ -97,17 +95,18 @@
             ...getTime,
             ...timeFormat,
 
-            changeOrder(order, product) {
-                this.product = product
-                //console.log(product)
+            changeOrder(id) {
+                this.product = {id}
+
+                //console.log(this.product)
 
                 this.showDetails = true
                 
-                this.order = order
+                //this.order = order
             },
             closeDetails() {
                 this.product = null
-                this.order = null
+                //this.order = null
                 this.showDetails = false
             },
 
@@ -158,7 +157,7 @@
             },
 
             getOrderProducts(order_id) {
-                return this.$store.getters.OrderProducts.filter(i => i.order_id == order_id)
+                return this.$store.getters.orderProducts.filter(i => i.order_id == order_id)
             },
             getProductName(product_id) {
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)

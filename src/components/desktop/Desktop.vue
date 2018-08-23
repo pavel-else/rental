@@ -6,7 +6,7 @@
         
         <order-list class="snippet snippet__orders"></order-list>
 
-        <DetailsOrder v-if="show" :data-order-product="product" :data-product="product" @close="onClose"></DetailsOrder>
+        <DetailsOrder v-if="show" :data-sub-order="orderProduct" @close="onClose"></DetailsOrder>
     </div>
 </template>
 
@@ -37,6 +37,13 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
                 this.show = false
             }
         },
+        computed: {
+            orderProduct() {
+                return {
+                    product_id: this.product.id_rent
+                }
+            }
+        }
     }
 </script>
 
