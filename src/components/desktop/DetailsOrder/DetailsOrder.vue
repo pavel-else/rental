@@ -137,7 +137,7 @@
 
                 statusPosition: null,
                 statusChangeOrder: false,
-                statusChangeProduct: false,
+                statusChangeSubOrder: false,
 
                 cmd: null,
             }
@@ -273,14 +273,14 @@
                     ])
                 }
 
-            //     // changeProduct
-            //     if (this.status == 'change' && this.statusChangeProduct) {
-            //         console.log('changeProduct')
+                // changeProduct
+                if (this.statusChangeSubOrder) {
+                    console.log('ChangeSubOrder')
                     
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'changeOrderProduct', value: this.product},
-            //         ])
-            //     }
+                    this.$store.dispatch('send', [
+                        {cmd: 'changeOrderProduct', value: this.subOrder},
+                    ])
+                }
 
             //     // splitProduct
             //     if (this.status == 'change' && this.statusPosition == 'new') {
@@ -406,7 +406,7 @@
             },
             setTariff(tariff) {
                 this.subOrder.tariff_id = tariff.id_rent
-                this.statusChangeProduct = true
+                this.statusChangeSubOrder = true 
             },
         },
 
