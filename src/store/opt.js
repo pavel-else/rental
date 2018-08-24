@@ -20,7 +20,7 @@ export default {
             lastOrderTime: null,
             lastOrderInterval: 180000, //ms       
 
-            now: new Date(),
+            now: Date.now(),
         },
     
         depositList: [
@@ -115,7 +115,7 @@ export default {
 
     actions: {
         startTimer({commit}) {
-            setInterval(() => {commit('now', new Date())}, 3000)
+            setInterval(() => {commit('now', Date.now())}, 3000)
         },
     },
 

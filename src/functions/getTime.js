@@ -8,8 +8,9 @@ export default {
         const now = this.$store.getters.now
 
         const start_time = Date.parse(start)
+        const end_time   = end ? Date.parse(end) : now    
 
-        const end_time = end ? Date.parse(end) : now    
+    	console.log(start_time, end_time)
 
         const diff = end_time ? end_time - start_time : now - start_time
 

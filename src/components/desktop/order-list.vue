@@ -24,7 +24,7 @@
                     >
                         <td class="td-3" @click="changeOrder(subOrder.id)" >{{ getProductName(subOrder.product_id) }}</td>
 
-                        <td class="td-4" @click="changeOrder(subOrder.id)" >{{ getTimePlay(order.start_time, subOrder.end_time) }}</td>
+                        <td class="td-4" @click="changeOrder(subOrder.id)" >{{ getTimePlay(order, subOrder) }}</td>
 
                         <td class="td-5" @click="changeOrder(subOrder.id)" >
                             {{ getBill(subOrder.tariff_id, getTime(order.start_time, subOrder.end_time)) }} р
@@ -112,9 +112,26 @@
                 this.showDetails = false
             },
 
-            getTimePlay(start, end) {
+            getTimePlay(order, subOrder) {
+                const start = order.start_time
+                const end   = subOrder.end_time
+                const pause = subOrder.pause_time
+
                 const time = this.getTime(start, end)
-                return this.timeFormat(time)
+
+                if (subOrder.status == "ACTIVE") {
+                    return this.timeFormat(time - pause)
+                }
+
+                if (subOrder.status == "PAUSE") {
+                    const oldPause = subOrder.pause_time
+                    const newPause = Date.now() - Date.parse(subOrder.pause_start)
+                    const pause = +oldPause + newPause
+                    console.log(time - pause)
+
+                    return this.timeFormat(time - pause)
+                }
+
             },
 
             pause(subOrder) {
