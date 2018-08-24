@@ -18,50 +18,51 @@
                 <td>
                     <tr 
                         class="product-tr"
-                        v-for="product in getOrderProducts(order.order_id)" 
-                        :key="product.product_id" 
+                        v-for="subOrder in getSubOrders(order.order_id)" 
+                        :key="subOrder.product_id" 
                                               
                     >
-                        <td class="td-3" @click="changeOrder(product.id)" >{{ getProductName(product.product_id) }}</td>
+                        <td class="td-3" @click="changeOrder(subOrder.id)" >{{ getProductName(subOrder.product_id) }}</td>
 
-                        <td class="td-4" @click="changeOrder(product.id)" >{{ getTimePlay(order.start_time, product.end_time) }}</td>
+                        <td class="td-4" @click="changeOrder(subOrder.id)" >{{ getTimePlay(order.start_time, subOrder.end_time) }}</td>
 
-                        <td class="td-5" @click="changeOrder(product.id)" >
-                            {{ getBill(product.tariff_id, getTime(order.start_time, product.end_time)) }} р
+                        <td class="td-5" @click="changeOrder(subOrder.id)" >
+                            {{ getBill(subOrder.tariff_id, getTime(order.start_time, subOrder.end_time)) }} р
                         </td>                          
 
-                        <td class="td-6">
-                            <div class="icons__wrap">                                
-                                <i 
-                                    class="icon far fa-pause-circle"
-                                    @click="stopOrder(order, product)" 
-                                    v-if="!product.end_time"
-                                >
-                                </i>
-                                <i 
-                                    class="icon far fa-stop-circle"
-                                    @click="stopOrder(order, product)" 
-                                    v-if="!product.end_time"
-                                >
-                                </i>
-                            </div>                            
+                        <td class="td-6 td-6-1">
+                            <i 
+                                class="icon far fa-pause-circle"
+                                :class="{ icon__active: subOrder.status == 'PAUSE' }"
+                                @click="pause(subOrder)" 
+                                v-if="!subOrder.end_time"
+                            >
+                            </i>
+                        </td>
+                        <td class="td-6 td-6-2">                            
+                            <i 
+                                class="icon far fa-stop-circle"
+                                :class="{ icon__active: subOrder.end_time }"
+                                @click="stopOrder(order, subOrder)" 
+                            >
+                            </i>                          
                         </td>
                     </tr>
                 </td>
 
                 <td class="td-7">
-                    <div class="stop-order__wrap">
-                        <div class="stop-order" v-if="true" @click="stopOrder(order)"></div>
-                    </div>   
-                </td>
-                
-
+                    <!-- <i 
+                         class="icon far fa-stop-circle"
+                         @click="stopOrder(order)" 
+                     >
+                     </i>  -->  
+                </td>              
             </tr>
         </table>
 
         <DetailsOrder 
             v-if="showDetails" 
-            :data-sub-order="product" 
+            :data-sub-order="subOrder" 
             @close="closeDetails"
         >
         </DetailsOrder>
@@ -88,7 +89,7 @@
         data() {
             return {
                 order: null,
-                product: null,
+                subOrder: null,
 
                 showDetails: false,
                 showResume: false,
@@ -101,16 +102,12 @@
             ...timeFormat,
 
             changeOrder(id) {
-                this.product = {id}
-
-                //console.log(this.product)
-
+                this.subOrder = {id}
                 this.showDetails = true
-                
-                //this.order = order
             },
+
             closeDetails() {
-                this.product = null
+                this.subOrder = null
                 //this.order = null
                 this.showDetails = false
             },
@@ -118,6 +115,18 @@
             getTimePlay(start, end) {
                 const time = this.getTime(start, end)
                 return this.timeFormat(time)
+            },
+
+            pause(subOrder) {
+                subOrder.status = "PAUSE"
+                subOrder.pause_start = this.$store.getters.options.now
+
+                this.$store.dispatch('send', {
+                    cmd: 'changeOrderProduct',
+                    value: subOrder
+                })
+
+                console.log('pause', subOrder)
             },
 
             stopOrder(order, product) {
@@ -147,7 +156,7 @@
                 }
 
                 const stopAll = () => {
-                    const products = this.getOrderProducts(this.order.order_id).filter(p => p.end_time == null)
+                    const products = this.getSubOrders(this.order.order_id).filter(p => p.end_time == null)
 
                     products.map(p => stop(p))
                 }
@@ -161,10 +170,12 @@
                 this.showResume = false
             },
 
-            getOrderProducts(order_id) {
+            getSubOrders(order_id) {
                 const subOrders = this.$store.getters.orderProducts
+
                 return subOrders ? this.$store.getters.orderProducts.filter(i => i.order_id == order_id) : []   
             },
+
             getProductName(product_id) {
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
@@ -190,29 +201,20 @@
     .empty {
         padding: 0 20px;
     }
-    .icons__wrap {
-        width: 40px;
-        display: flex;
-        justify-content: center;
-    }
+
     .icon {
-        opacity: 0.2;
-        padding: 5px;
+        opacity: 0.1;
         text-align: center;  
     }
-    .icon:hover,
     .icon:hover {
         opacity: 1;
         cursor: pointer;
     }
 
-    .stop-order_st {
-        width: 7px;
-        height: 7px;
-        border: 1px solid red;
-        border-radius: 50%;
-
+    .icon__active {
+        opacity: 1;
     }
+
 
     .table td {
         padding: 5px;
@@ -254,12 +256,7 @@
         text-align: right;
     }
     .td-6 {
-        width: 45px;
-        text-align: center;
-        vertical-align: middle;
-        box-sizing: border-box;
-        padding: 0;
-        padding-left: 15px;
+        width: 10px;
     }
     .td-7 {
         width: 15px;

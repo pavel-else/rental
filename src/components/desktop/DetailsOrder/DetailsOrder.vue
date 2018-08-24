@@ -145,6 +145,8 @@
             // Компонент работает с новым либо существующим ордером, и взасимости от этого
             // В компонент может спускаться либо product_id, либо id (orderProduct) соответсвенно
 
+            console.log(this.dataSubOrder)
+
             const changeOrderInit = () => {
                 this.subOrder = this.subOrders.find(i => i.id == this.dataSubOrder.id)
                 this.product = this.products.find(i => i.id_rent == this.subOrder.product_id)
@@ -304,10 +306,9 @@
                 const now      = this.$store.getters.options.now
                 const lastID   = this.getLastId()
                 const order    = this.orders.find(i => i.order_id == lastID)
-console.log(order)
+
                 // Если последний ордер уже закрыт
                 if (!order || order.status == 'END') {
-                    console.log('adsafsdfasdfasdf')
                     return false
                 }
 
@@ -435,18 +436,6 @@ console.log(order)
                 })
             },
         },
-        whatch: {
-            order() {
-                console.log("change order", this.order)
-            },
-            product() {
-                console.log("change product", this.product)
-            },
-            subOrder() {
-                console.log("change subOrder", this.subOrder)
-            },
-        }
-
     }
 </script>
 

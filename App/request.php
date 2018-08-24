@@ -948,7 +948,10 @@ class Request
                     `tariff_id`     = :tariff_id,
                     `bill`          = :bill,
                     `bill_no_sale`  = :bill_no_sale,
-                    `end_time`      = :end_time 
+                    `pause_start`   = :pause_start,
+                    `pause_time`    = :pause_time,
+                    `end_time`      = :end_time,
+                    `status`        = :status 
                 WHERE
                     `id` = :id
                 AND
@@ -963,7 +966,11 @@ class Request
                 'tariff_id'     => $product[tariff_id],
                 'bill'          => $product[bill],
                 'bill_no_sale'  => $product[bill_no_sale],
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
+                'pause_start'   => $product[pause_start],
+                'pause_start'   => $product[pause_start],
+                'pause_time'    => $product[pause_time],
+                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
+                'status'        => $product[status]
             );
 
             
