@@ -118,15 +118,33 @@
             },
 
             pause(subOrder) {
-                subOrder.status = "PAUSE"
-                subOrder.pause_start = this.$store.getters.options.now
+                if (subOrder.status != 'ACTIVE' && subOrder.status != 'PAUSE') {
+                    console.log('unknown status - ', subOrder.status)
+                    return
+                }
+
+                const makePause = () => {
+                    subOrder.status = "PAUSE"
+                    subOrder.pause_start = Math.floor(Date.now() / 1000)         
+                }
+
+                const makeActive = () => {
+                    subOrder.status = "ACTIVE"
+
+                    const sec = Math.floor((Date.now() - Date.parse(subOrder.pause_start)) / 1000)
+
+                    subOrder.pause_time = +subOrder.pause_time + sec
+
+                    subOrder.pause_start = null
+                }
+
+                subOrder.status == "ACTIVE" ? makePause() : makeActive()
+
 
                 this.$store.dispatch('send', {
                     cmd: 'changeOrderProduct',
                     value: subOrder
                 })
-
-                console.log('pause', subOrder)
             },
 
             stopOrder(order, product) {
