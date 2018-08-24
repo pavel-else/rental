@@ -829,7 +829,10 @@ class Request
                 `tariff_id`,
                 `bill`,
                 `bill_no_sale`,
-                `end_time`
+                `pause_start`,
+                `pause_time`,
+                `end_time`,
+                `status` 
             ) VALUES (
                 NULL, 
                 :order_id, 
@@ -838,7 +841,10 @@ class Request
                 :tariff_id,
                 :bill,
                 :bill_no_sale,
-                :end_time
+                :pause_start,
+                :pause_time,
+                :end_time,
+                :status 
             )';
 
             $d = array(
@@ -848,7 +854,12 @@ class Request
                 'tariff_id'     => $product[tariff_id],
                 'bill'          => $product[bill],
                 'bill_no_sale'  => $product[bill_no_sale],
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
+                'pause_start'   => $product[pause_start],
+                'pause_start'   => $product[pause_start],
+                'pause_time'    => $product[pause_time],
+                'pause_time'    => $product[pause_time],
+                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
+                'status'        => $product[status]
             );
 
             
@@ -1267,12 +1278,15 @@ class Request
             $end_time = date("Y-m-d H:i:s", $product[end_time]);            
             $sql = '
                 UPDATE `order_products` 
-                SET `end_time` = :end_time 
+                SET 
+                    `end_time` = :end_time,
+                    `status`   = :status  
                 WHERE `order_id` = :order_id 
                 AND `product_id` = :product_id' 
             ;
             $d = array(
                 'end_time'      => $end_time,
+                'status'        => $product[status],
                 'order_id'      => $product[order_id],
                 'product_id'    => $product[product_id],
             );

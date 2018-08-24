@@ -180,6 +180,7 @@
                     this.subOrder.product_id = this.product.id_rent
                     this.subOrder.tariff_id  = this.product.tariff_default
                     this.subOrder.order_id   = this.order.order_id
+                    this.subOrder.status     = 'ACTIVE'
 
                     this.status = 'newOrder'
                     console.log(this.order)

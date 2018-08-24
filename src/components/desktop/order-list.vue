@@ -145,6 +145,7 @@
 
                     product.end_time = Math.floor(Date.now() / 1000)
                     product.bill = this.getBill(product.tariff_id, this.getTime(order.start_time, product.end_time))
+                    product.status = "END"
 
                     this.$store.dispatch('send', {
                         cmd: 'stopOrder',
