@@ -31,14 +31,19 @@
                         </td>                          
 
                         <td class="td-6">
-                            <div class="stop-order__wrap">                                
-                                <div
-                                    class="stop-order" 
+                            <div class="icons__wrap">                                
+                                <i 
+                                    class="icon far fa-pause-circle"
                                     @click="stopOrder(order, product)" 
                                     v-if="!product.end_time"
                                 >
-                                </div>
-                                <div v-if="product.end_time" class="ord__td-6 stop-order_st"></div>
+                                </i>
+                                <i 
+                                    class="icon far fa-stop-circle"
+                                    @click="stopOrder(order, product)" 
+                                    v-if="!product.end_time"
+                                >
+                                </i>
                             </div>                            
                         </td>
                     </tr>
@@ -185,14 +190,20 @@
     .empty {
         padding: 0 20px;
     }
-    .stop-order {
-        opacity: 0;
-
-    }
-    .stop-order__wrap {
-        width: 15px;
+    .icons__wrap {
+        width: 40px;
         display: flex;
         justify-content: center;
+    }
+    .icon {
+        opacity: 0.2;
+        padding: 5px;
+        text-align: center;  
+    }
+    .icon:hover,
+    .icon:hover {
+        opacity: 1;
+        cursor: pointer;
     }
 
     .stop-order_st {
@@ -202,35 +213,7 @@
         border-radius: 50%;
 
     }
-    .td-6:hover .stop-order,
-    .td-7:hover .stop-order {
-        position: relative;
-        opacity: 1;
-        cursor: pointer;
-        text-align: center;
-        width: 13px;
-        height: 13px;
-        border: 1px solid red;
-        border-radius: 50%;
-        margin: 0 auto;
-    }
-    .stop-order::after, 
-    .stop-order::before {
-        display: block;
-        content: '';
-        position: absolute;
-        width: 9px;
-        height: 1px;
-        background-color: #333;
-        top: 6px;
-        left: 2px;
-    }
-    .stop-order::after {
-        transform: rotate(45deg);
-    }
-    .stop-order::before {
-        transform: rotate(-45deg);
-    }
+
     .table td {
         padding: 5px;
         box-sizing: border-box;
@@ -271,11 +254,12 @@
         text-align: right;
     }
     .td-6 {
-        width: 25px;
+        width: 45px;
         text-align: center;
         vertical-align: middle;
         box-sizing: border-box;
         padding: 0;
+        padding-left: 15px;
     }
     .td-7 {
         width: 15px;
