@@ -196,6 +196,8 @@
                     this.subOrder.product_id = this.product.id_rent
                     this.subOrder.tariff_id  = this.product.tariff_default
                     this.subOrder.order_id   = this.order.order_id
+                    this.subOrder.status     = 'ACTIVE'
+                    this.subOrder.pause_time = 0
 
                     this.status = 'addProduct'
                     console.log(this.order)
