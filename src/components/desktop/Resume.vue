@@ -4,27 +4,36 @@
             <table>
                     <tr>
                         <td>Заказ</td>
-                        <td>{{order.order_id}}</td>
+                        <td> # {{ order.order_id }}</td>
                     </tr>
                     <tr>
                         <td>Клиент</td>
-                        <td><span v-if="order.customer_name">{{ order.customer_name }} р.</span><span v-else>-</span></td>
+                        <td>
+                            <span v-if="order.customer_name">{{ order.customer_name }} р.</span>
+                            <span v-else>-</span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Товары</td>
                         <td>
                             <table class="table-products">
-                                <tr v-for="product in getOrderProducts()">
-                                    <td>{{ getProductName(product.product_id) }}</td>
+                                <tr 
+                                    v-for="item in subOrders" 
+                                    :class="getClass(item.product_id)"
+                                >
+                                    <td>{{ getProductName(item.product_id) }}</td>
                                     <td>-</td>
-                                    <td>{{ product.bill }} р.</td>
+                                    <td>{{ item.bill }} р.</td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
                     <tr>
                         <td>Залог</td>
-                        <td><span v-if="order.deposit">{{ order.deposit }}</span><span v-else>-</span></td>
+                        <td>
+                            <span v-if="order.deposit">{{ order.deposit }}</span>
+                            <span v-else>-</span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Начало</td>
@@ -32,19 +41,31 @@
                     </tr>
                     <tr>
                         <td>Чистое время</td>
-                        <td>{{ getTimePlay(order) }}</td>
+                        <td>{{ activeTime }}</td>
                     </tr>
                     <tr>
                         <td>Аванс</td>
-                        <td><span v-if="order.advance > 0">{{ order.advance }} р.</span><span v-else>-</span></td>
+                        <td>
+                            <span v-if="order.advance > 0">{{ order.advance }} р.</span>
+                            <span v-else>-</span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Скидка</td>
-                        <td><span v-if="order.sale > 0">{{ order.sale }} р.</span><span v-else>-</span></td>
+                        <td>
+                            <span v-if="order.sale > 0">{{ order.sale }} р.</span>
+                            <span v-else>-</span>
+                        </td>
                     </tr>
+
+                    <tr>
+                        <td>Стоимость заказа</td>
+                        <td>{{ total }} р.</td>
+                    </tr>
+
                     <tr class="details__bill">
                         <td>К оплате</td>
-                        <td>{{ bill }} р.</td>
+                        <td>{{ total - order.advance }} р.</td>
                     </tr>
             </table>
             <div class="details__close" @click="close"></div>     
@@ -53,66 +74,63 @@
 </template>
 
 <script>
+    import timeFormat from '../../functions/timeFormat'
+    import getTime    from '../../functions/getTime'
+
     export default {
         props: {
-            order: Object
+            order:    Object,
+            subOrder: Object
         },
-        methods: {
-            getOrderProducts() {
-                const subOrders = this.$store.getters.orderProducts
+        data() {
+            return {
+                subOrders: this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id)
+            }
+        },
 
-                return subOrders ? this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id) : []
-            },
+        methods: {
+            ...getTime,
+            ...timeFormat,
+
             getProductName(product_id) {
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
                 return product.name
             },
-
-            getTimePlay(order) {
-                const timeFormat = function (ms/**number*/) {
-                    if (ms < 0) ms = 0;
-
-                    function num(val){
-                        val = Math.floor(val);
-                        return val < 10 ? '0' + val : val;
-                    }
-                    
-                    var sec = ms / 1000
-                      , hours = sec / 3600  % 24
-                      , minutes = sec / 60 % 60
-                      , seconds = sec % 60
-                    ;
-
-                    return num(hours) + ":" + num(minutes) + ":" + num(seconds);
+            getClass(product_id) {
+                return {
+                    select : this.subOrder.product_id == product_id
                 }
-
-                const start = Date.parse(order.start_time)
-                const products = this.getOrderProducts()
-
-
-                const end = products.reduce((acc, p) => {
-                    return acc = acc < p.end_time ? p.end_time : acc
-                }, 0)
-
-                const diff = end * 1000 - start
-
-                return timeFormat(diff)
             },
 
             close() {
                 this.$emit('close')
-            }
+            },
         },
-        computed: {
-            bill() {
-                const products = this.getOrderProducts()
 
-                return products.reduce((acc, product) => {
-                    return acc + +product.bill
-                }, 0)
+        computed: {
+            total() {
+
+                return this.subOrders ? this.subOrders.reduce((acc, subOrder) => {
+                    return acc + +subOrder.bill
+                }, 0) : 0   
+            },
+
+
+
+            activeTime() {
+                const start = this.order.start_time
+                const end   = this.subOrder.end_time
+                const pause = this.subOrder.pause_time
+
+                const time = this.getTime(start, end)
+
+
+                return this.timeFormat(time - pause)
             }
         }
+
+
     }
 </script>
 
@@ -179,5 +197,8 @@
     }
     .table-products td {
         padding: 2px 5px;
+    }
+    .select {
+        outline: 1px solid #333;
     }
 </style>

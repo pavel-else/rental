@@ -145,6 +145,8 @@
             // Компонент работает с новым либо существующим ордером, и взасимости от этого
             // В компонент может спускаться либо product_id, либо id (orderProduct) соответсвенно
 
+            console.log(this.dataSubOrder)
+
             const changeOrderInit = () => {
                 this.subOrder = this.subOrders.find(i => i.id == this.dataSubOrder.id)
                 this.product = this.products.find(i => i.id_rent == this.subOrder.product_id)
@@ -169,7 +171,7 @@
 
                     this.order = this.initOrder()
                     this.order.status              = 'ACTIVE'
-                    this.order.start_time          = Math.floor(Date.now() / 1000)
+                    this.order.start_time          = Date.now()
                     this.order.order_id            = this.getOrderId('new')
                     this.order.order_id_position   = this.getPosition('new')
 
@@ -178,6 +180,8 @@
                     this.subOrder.product_id = this.product.id_rent
                     this.subOrder.tariff_id  = this.product.tariff_default
                     this.subOrder.order_id   = this.order.order_id
+                    this.subOrder.status     = 'ACTIVE'
+                    this.subOrder.pause_time = 0
 
                     this.status = 'newOrder'
                     console.log(this.order)
@@ -192,6 +196,8 @@
                     this.subOrder.product_id = this.product.id_rent
                     this.subOrder.tariff_id  = this.product.tariff_default
                     this.subOrder.order_id   = this.order.order_id
+                    this.subOrder.status     = 'ACTIVE'
+                    this.subOrder.pause_time = 0
 
                     this.status = 'addProduct'
                     console.log(this.order)
@@ -304,10 +310,9 @@
                 const now      = this.$store.getters.options.now
                 const lastID   = this.getLastId()
                 const order    = this.orders.find(i => i.order_id == lastID)
-console.log(order)
+
                 // Если последний ордер уже закрыт
                 if (!order || order.status == 'END') {
-                    console.log('adsafsdfasdfasdf')
                     return false
                 }
 
@@ -435,18 +440,6 @@ console.log(order)
                 })
             },
         },
-        whatch: {
-            order() {
-                console.log("change order", this.order)
-            },
-            product() {
-                console.log("change product", this.product)
-            },
-            subOrder() {
-                console.log("change subOrder", this.subOrder)
-            },
-        }
-
     }
 </script>
 

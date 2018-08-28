@@ -593,7 +593,7 @@ class Request
                 'status'              => $order[status],
                 'order_customer_id'   => $order[customer_id],
                 'order_customer_name' => $order[customer_name],
-                'order_start_time'    => date("Y-m-d H:i:s", $order[start_time]),
+                'order_start_time'    => date("Y-m-d H:i:s", $order[start_time] / 1000),
                 'order_advance'       => $order[advance] === NULL ? 0 : $order[advance],
                 'deposit'             => $order[deposit],
                 'order_note'          => $order[note],
@@ -829,7 +829,10 @@ class Request
                 `tariff_id`,
                 `bill`,
                 `bill_no_sale`,
-                `end_time`
+                `pause_start`,
+                `pause_time`,
+                `end_time`,
+                `status` 
             ) VALUES (
                 NULL, 
                 :order_id, 
@@ -838,7 +841,10 @@ class Request
                 :tariff_id,
                 :bill,
                 :bill_no_sale,
-                :end_time
+                :pause_start,
+                :pause_time,
+                :end_time,
+                :status 
             )';
 
             $d = array(
@@ -848,7 +854,12 @@ class Request
                 'tariff_id'     => $product[tariff_id],
                 'bill'          => $product[bill],
                 'bill_no_sale'  => $product[bill_no_sale],
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
+                'pause_start'   => $product[pause_start],
+                'pause_start'   => $product[pause_start],
+                'pause_time'    => $product[pause_time],
+                'pause_time'    => $product[pause_time],
+                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
+                'status'        => $product[status]
             );
 
             
@@ -948,7 +959,10 @@ class Request
                     `tariff_id`     = :tariff_id,
                     `bill`          = :bill,
                     `bill_no_sale`  = :bill_no_sale,
-                    `end_time`      = :end_time 
+                    `pause_start`   = :pause_start,
+                    `pause_time`    = :pause_time,
+                    `end_time`      = :end_time,
+                    `status`        = :status 
                 WHERE
                     `id` = :id
                 AND
@@ -963,7 +977,11 @@ class Request
                 'tariff_id'     => $product[tariff_id],
                 'bill'          => $product[bill],
                 'bill_no_sale'  => $product[bill_no_sale],
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
+                'pause_start'   => $product[pause_start],
+                'pause_start'   => date("Y-m-d H:i:s", $product[pause_start]),
+                'pause_time'    => $product[pause_time],
+                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
+                'status'        => $product[status]
             );
 
             
@@ -1256,16 +1274,18 @@ class Request
         * 4. Меняем статус ордера, если активных продуктов нет
         */
 
-        $setEndTime = function ($product) {
-            $end_time = date("Y-m-d H:i:s", $product[end_time]);            
+        $setEndTime = function ($product) {          
             $sql = '
                 UPDATE `order_products` 
-                SET `end_time` = :end_time 
+                SET 
+                    `end_time` = :end_time,
+                    `status`   = :status  
                 WHERE `order_id` = :order_id 
                 AND `product_id` = :product_id' 
             ;
             $d = array(
-                'end_time'      => $end_time,
+                'end_time'      => date("Y-m-d H:i:s", $product[end_time] / 1000), 
+                'status'        => $product[status],
                 'order_id'      => $product[order_id],
                 'product_id'    => $product[product_id],
             );
