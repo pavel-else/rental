@@ -127,9 +127,7 @@
                 },              
 
                 orders:    this.$store.getters.orders,
-                subOrders: this.$store.getters.orderProducts,
-                products:  this.$store.getters.products,
-
+                
                 status: null
             }
         },
@@ -153,11 +151,9 @@
             }
 
             const addSubOrder = () => {
-                this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
 
                 this.order = this.orders.find(i => i.order_id == this.getLastId())
 
-                this.subOrder = this.initSubOrder()
                 this.subOrder.product_id = this.product.id_rent
                 this.subOrder.tariff_id  = this.product.tariff_default
                 this.subOrder.order_id   = this.order.order_id
@@ -165,7 +161,6 @@
                 this.subOrder.pause_time = 0
 
                 this.status = 'addSubOrder'
-                console.log(this.order)
             }
 
             this.isSerial() ? addSubOrder() : newOrder()   
@@ -204,72 +199,11 @@
                 this.close()
             },
 
-            // save() {
-
-            //     // newOrder
-            //     if (this.status.main == 'newOrder') {
-            //         console.log('newOrder')
-
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'newOrder',        value: this.order},
-            //             {cmd: 'addOrderProduct', value: this.subOrder},
-            //         ])
-
-            //         this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
-            //         this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
-            //     }
-
-            //     // addSubOrder
-            //     if (this.status.main == 'addSubOrder') {
-            //         console.log('addSubOrder')
-
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'addOrderProduct', value: this.subOrder},
-            //         ])
-            //     }
-
-            //     // changeOrder
-            //     if (this.status.changeOrder) {
-            //         console.log('changeOrder')
-                    
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'changeOrder', value: this.order},
-            //         ])
-            //     }
-
-            //     // changeProduct
-            //     if (this.status.changeSubOrder) {
-            //         console.log('ChangeSubOrder')
-                    
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'changeOrderProduct', value: this.subOrder},
-            //         ])
-            //     }
-
-            //     // splitProduct
-            //     if (this.status == 'change' && this.statusPosition == 'new') {
-            //         console.log('splitProduct')
-
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'deleteOrderProduct', value: {
-            //                 order_id:   this.dataOrder.order_id,
-            //                 product_id: this.product.product_id
-            //             }},
-            //             {cmd: 'newOrder',        value: this.order},
-            //             {cmd: 'addOrderProduct', value: this.product},
-            //             {cmd: 'deleteOrder',     value: this.dataOrder},
-            //         ])
-
-            //     }
-                
-            //     this.close()
-            // },
-
             isSerial() {
                 const lastTime = this.$store.getters.options.lastOrderTime || false
                 const interval = this.$store.getters.options.lastOrderInterval
                 const now      = this.$store.getters.options.now
-                const lastID   = this.$store.getters.options.lastOrderID
+                const lastID   = this.getLastId()
                 const order    = this.orders.find(i => i.order_id == lastID)
 
                 // Если последний ордер уже закрыт
@@ -280,10 +214,12 @@
                 return lastTime && now - lastTime < interval
             },
 
+            getLastId() {
+                return this.$store.getters.options.lastOrderID
+            },
+
             getPosition(cmd) {
-                // Если редактируем конкретный старый ордер, верну его позицию
-                // Если ордер совсем новый, верну свободную позицию
-                
+
                 const newPosition = () => {
                     const orders = this.$store.getters.orders
                     const count = 15
