@@ -235,10 +235,9 @@
 
             title(customer_id) {
                 const customers = this.$store.getters.customers
-
                 const customer = customers.find(i => i.id_rent == customer_id)
 
-                return `${customer.fname} ${customer.sname[0]}. ${customer.tname[0]}.  ${customer.phone}`                
+                return customer ? `${customer.fname} ${customer.sname[0]}. ${customer.tname[0]}.  ${customer.phone}` : 'Клиент не указан'
             },
 
             getProductName(product_id) {
