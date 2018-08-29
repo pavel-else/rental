@@ -126,16 +126,15 @@
         },
         data() {
             return {
-                // order:    {}, 
+                order:    {}, 
+                subOrder: {},              
                 product:  {},
-                // subOrder: {},              
 
                 orders:    this.$store.getters.orders,
                 subOrders: this.$store.getters.orderProducts,
                 products:  this.$store.getters.products,
 
                 status: {
-                    changePosition: null,
                     changeOrder:    false,
                     changeSubOrder: false,
                 },
@@ -149,9 +148,7 @@
         },
 
         methods: {
-
             ...getOrderId,
-
 
             close() {
                 this.$emit('close')
@@ -159,27 +156,27 @@
 
             save() {
 
-                // newOrder
-                if (this.status.main == 'newOrder') {
-                    console.log('newOrder')
+                // // newOrder
+                // if (this.status.main == 'newOrder') {
+                //     console.log('newOrder')
 
-                    this.$store.dispatch('send', [
-                        {cmd: 'newOrder',        value: this.order},
-                        {cmd: 'addOrderProduct', value: this.subOrder},
-                    ])
+                //     this.$store.dispatch('send', [
+                //         {cmd: 'newOrder',        value: this.order},
+                //         {cmd: 'addOrderProduct', value: this.subOrder},
+                //     ])
 
-                    this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
-                    this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
-                }
+                //     this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
+                //     this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
+                // }
 
-                // addSubOrder
-                if (this.status.main == 'addSubOrder') {
-                    console.log('addSubOrder')
+                // // addSubOrder
+                // if (this.status.main == 'addSubOrder') {
+                //     console.log('addSubOrder')
 
-                    this.$store.dispatch('send', [
-                        {cmd: 'addOrderProduct', value: this.subOrder},
-                    ])
-                }
+                //     this.$store.dispatch('send', [
+                //         {cmd: 'addOrderProduct', value: this.subOrder},
+                //     ])
+                // }
 
                 // changeOrder
                 if (this.status.changeOrder) {
@@ -304,10 +301,14 @@
             setCustomer(customer) {
                 this.order.customer_id = customer.id_rent 
                 this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
+
+                this.status.changeOrder = true
             },
 
             setDeposit(deposit) {
                 this.order.deposit = deposit.id_rent
+
+                this.status.changeOrder = true
             },             
 
             setPromotion(promotion) {                 
@@ -316,14 +317,20 @@
                 }
 
                 this.order.promotion = promotion.id
+
+                this.status.changeOrder = true
             },
 
             setAccessories(accessories) {
                 this.order.accessories = accessories
+
+                this.status.changeOrder = true
             },
 
             setTariff(tariff) {
                 this.subOrder.tariff_id = tariff.id_rent
+                this.status.changeSubOrder = true
+
                 this.status.changeSubOrder = true
             },
         },

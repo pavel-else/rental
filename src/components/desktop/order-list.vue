@@ -7,7 +7,6 @@
             <tr 
                 class="table-tr" 
                 v-for="(order, index) in orders"
-                :key="order.order_id"
             >
                 <td class="td-1">
                     <Icon :id="order.order_id_position" :show="true"></Icon>
