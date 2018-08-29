@@ -38,7 +38,7 @@
                     <tr>
                         <td>Аванс</td>
                         <td>
-                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="statusChangeOrder = true">
+                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="status.changeOrder = true">
                         </td>
                     </tr>
                     <tr>
@@ -133,27 +133,25 @@
                 subOrders: this.$store.getters.orderProducts,
                 products:  this.$store.getters.products,
 
-                status: null,
-
-                statusPosition: null,
-                statusChangeOrder: false,
-                statusChangeSubOrder: false,
+                status: {
+                    main:           null,
+                    changePosition: null,
+                    changeOrder:    false,
+                    changeSubOrder: false,
+                },
             }
         },
 
         created() {
             // Компонент работает с новым либо существующим ордером, и взасимости от этого
-            // В компонент может спускаться либо product_id, либо id (orderProduct) соответсвенно
-
-            console.log(this.dataSubOrder)
+            // В компонент может спускаться либо product_id, либо id (subOrder) соответсвенно
 
             const changeOrderInit = () => {
                 this.subOrder = this.subOrders.find(i => i.id == this.dataSubOrder.id)
                 this.product = this.products.find(i => i.id_rent == this.subOrder.product_id)
                 this.order = this.orders.find(i => i.order_id == this.subOrder.order_id)
 
-                this.status = 'change' 
-                console.log(this.order)
+                this.status.changeOrder = true 
             }
 
             const newOrderInit = () => {
@@ -183,7 +181,7 @@
                     this.subOrder.status     = 'ACTIVE'
                     this.subOrder.pause_time = 0
 
-                    this.status = 'newOrder'
+                    this.status.main = 'newOrder'
                     console.log(this.order)
                 }
 
@@ -199,7 +197,7 @@
                     this.subOrder.status     = 'ACTIVE'
                     this.subOrder.pause_time = 0
 
-                    this.status = 'addProduct'
+                    this.status.main = 'addSubOrder'
                     console.log(this.order)
                 }
 
@@ -207,9 +205,6 @@
             }
 
             this.dataSubOrder.id ? changeOrderInit() : newOrderInit()
-
-            // this.status = this.order ? 'change' : 'new'
-            // this.statusPosition = this.status == 'new' ? 'new' : 'add'
         },
 
         methods: {
@@ -220,10 +215,11 @@
             close() {
                 this.$emit('close')
             },
+
             initOrder() {
                 return {
-                    status:             null,              
-                    start_time:         null,         
+                    status:             'ACTIVE',              
+                    start_time:         Date.now(),         
                     order_id:           null,           
                     order_id_position:  null,  
                     advance:            null,            
@@ -235,6 +231,7 @@
                     deposit:            null,            
                 }
             },
+
             initSubOrder() {
                 return {
                     product_id:   null,
@@ -242,12 +239,14 @@
                     order_id:     null,
                     bill:         0,
                     bill_no_sale: 0,
+                    status:       'ACTIVE',
+                    pause_time:   0,
                 }
             },
             save() {
 
                 // newOrder
-                if (this.status == 'newOrder') {
+                if (this.status.main == 'newOrder') {
                     console.log('newOrder')
 
                     this.$store.dispatch('send', [
@@ -259,9 +258,9 @@
                     this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
                 }
 
-                // addProduct
-                if (this.status == 'addProduct') {
-                    console.log('addProduct')
+                // addSubOrder
+                if (this.status.main == 'addSubOrder') {
+                    console.log('addSubOrder')
 
                     this.$store.dispatch('send', [
                         {cmd: 'addOrderProduct', value: this.subOrder},
@@ -269,7 +268,7 @@
                 }
 
                 // changeOrder
-                if (this.statusChangeOrder) {
+                if (this.status.changeOrder) {
                     console.log('changeOrder')
                     
                     this.$store.dispatch('send', [
@@ -278,7 +277,7 @@
                 }
 
                 // changeProduct
-                if (this.statusChangeSubOrder) {
+                if (this.status.changeSubOrder) {
                     console.log('ChangeSubOrder')
                     
                     this.$store.dispatch('send', [
@@ -304,6 +303,7 @@
                 
                 this.close()
             },
+
             isSerial() {
                 const lastTime = this.$store.getters.options.lastOrderTime || false
                 const interval = this.$store.getters.options.lastOrderInterval
@@ -318,32 +318,14 @@
 
                 return lastTime && now - lastTime < interval
             },
+
             getLastId() {
                 return this.$store.getters.options.lastOrderID
             },
 
-            // getProductName(product_id) {
-            //     const product = this.$store.getters.products.find(i => i.id_rent == product_id)
-
-            //     return product.name
-            // },
-
-            getPosition(status) {
-                // Если редактируем старый ордер, верну его позицию
-                // Если новый ордер из серии ордеров, верну позицию последнего ордера
+            getPosition() {
+                // Если редактируем конкретный старый ордер, верну его позицию
                 // Если ордер совсем новый, верну свободную позицию
-
-                if (this.order.order_id_position) {
-                    return this.order.order_id_position
-                }
-
-                // if (this.order.order_id && !this.order.order_id_position) {
-                //     const order = this.$store.getters.orders.find(i => i.order_id == this.order.order_id)
-
-                //     if (order) {
-                //         return order.order_id_position
-                //     } 
-                // }
                 
                 const newPosition = () => {
                     const orders = this.$store.getters.orders
@@ -362,38 +344,60 @@
                     return +result                    
                 }
 
-                if (status) {
+
+                if (this.status.main == 'addSubOrder') {
+                    return this.order.order_id_position
+                }
+
+                if (this.status.main == 'newOrder') {
                     return newPosition()
                 }
             },
+
             setPosition($event) {
-                    console.log($event)
+                const order_id = $event.order_id
+                const order_id_position = $event.order_id_position
 
-                    const order_id = $event.order_id
-                    const order_id_position = $event.order_id_position
+                const order = this.orders.find(i => i.order_id == order_id)
 
-                    this.order.order_id_position = order_id_position
+                if (order) {
+                    this.order = order
 
-                    // this.order = order_id ? this.orders.find(i => i.order_id == order_id) : initOrder()
-                    // this.order.order_id_position = order_id_position
-                // this.order.order_id = $event.order_id
+                    this.subOrder = this.initSubOrder()
 
-                //console.log(this.order)
-                // this.product.order_id = $event.order_id
+                    this.subOrder.product_id = this.product.id_rent
+                    this.subOrder.tariff_id  = this.product.tariff_default
+                    this.subOrder.order_id   = order_id
 
-                // this.statusPosition = this.getOrderId('new') == this.order.order_id ?  'new' : 'add'
 
+                    this.status.main = 'addSubOrder'
+                }
+
+                if (!order) {
+                    this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
+
+                    this.order = this.initOrder()
+
+                    this.order.order_id            = order_id
+                    this.order.order_id_position   = order_id_position
+
+                    
+                    this.subOrder = this.initSubOrder()
+                    this.subOrder.product_id = this.product.id_rent
+                    this.subOrder.tariff_id  = this.product.tariff_default
+                    this.subOrder.order_id   = order_id
+
+                    this.status.main = 'newOrder'
+                }
             },
                 
             setCustomer(customer) {
                 this.order.customer_id = customer.id_rent 
                 this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
-                this.statusChangeOrder = true
             },
 
             setDeposit(deposit) {
                 this.order.deposit = deposit.id_rent
-                this.statusChangeOrder = true
             },             
 
             setPromotion(promotion) {                 
@@ -402,15 +406,15 @@
                 }
 
                 this.order.promotion = promotion.id
-                this.statusChangeOrder = true
             },
+
             setAccessories(accessories) {
                 this.order.accessories = accessories
-                this.statusChangeOrder = true
             },
+
             setTariff(tariff) {
                 this.subOrder.tariff_id = tariff.id_rent
-                this.statusChangeSubOrder = true 
+                this.status.changeSubOrder = true
             },
         },
 
