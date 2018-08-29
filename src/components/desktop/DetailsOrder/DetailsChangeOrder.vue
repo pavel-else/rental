@@ -1,3 +1,24 @@
+<!-- 
+    Компонент оперирует ордерами продуктов
+    Данные в компонент могут приходить из 2 источников
+    1. Новый ордер - product-list
+    2. Существующий ордер - order-list
+
+    Если новый ордер - то сам ордер пуст, передается только данные продукта.
+    Если существующий - передается и ордер и продукт
+
+    Данные обрабатываются и приводятся к общему виду в created
+
+    Логическим завершением работы компонента есть отправка данных на сервер с нужной командой
+
+    Команды:
+    1. Новый ордер
+    2. Добавить продукт к ордеру
+    3. Изменить ордер
+    4. Изменить продукт
+    5. Отделить продукт в новый ордер
+ -->
+
 <template>
     <div class="canvas">
         <div class="add-order details">
@@ -11,13 +32,13 @@
                     <tr>
                         <td>ID заказа</td>
                         <td>
-                            <!-- <Position :position="getPosition()" @setPosition="setPosition($event)"></Position> -->
+                            <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
                         </td>
                     </tr>
                     <tr>
                         <td>Аванс</td>
                         <td>
-                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб">
+                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="status.changeOrder = true">
                         </td>
                     </tr>
                     <tr>
@@ -78,7 +99,9 @@
 </template>
 
 <script>
+    import copyObject        from '../../../functions/copyObject'
     import getOrderId        from '../../../functions/getOrderId'
+    import makeOrder         from '../../../functions/makeOrder'
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
@@ -89,7 +112,7 @@
 
     export default {
         props: {
-            product: Object
+            dataSubOrder: Object
         },
 
         components: {
@@ -102,9 +125,101 @@
         },
         data() {
             return {
-                order:    {
-                    status:             null,              
-                    start_time:         null,         
+                order:    {}, 
+                product:  {},
+                subOrder: {},              
+
+                orders:    this.$store.getters.orders,
+                subOrders: this.$store.getters.orderProducts,
+                products:  this.$store.getters.products,
+
+                status: {
+                    main:           null,
+                    changePosition: null,
+                    changeOrder:    false,
+                    changeSubOrder: false,
+                },
+            }
+        },
+
+        created() {
+            // Компонент работает с новым либо существующим ордером, и взасимости от этого
+            // В компонент может спускаться либо product_id, либо id (subOrder) соответсвенно
+
+            const changeOrderInit = () => {
+                this.subOrder = this.subOrders.find(i => i.id == this.dataSubOrder.id)
+                this.product = this.products.find(i => i.id_rent == this.subOrder.product_id)
+                this.order = this.orders.find(i => i.order_id == this.subOrder.order_id)
+
+                this.status.changeOrder = true 
+            }
+
+            const newOrderInit = () => {
+
+                // 2 Варианта: Просто новый ордер и ордер из серии ордеров
+
+                if (!this.dataSubOrder.product_id) {
+                    console.log('product_id not found')
+                    this.close()
+                    return
+                }
+
+                const newOrderInit = () => {
+                    this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
+
+                    this.order = this.initOrder()
+                    this.order.status              = 'ACTIVE'
+                    this.order.start_time          = Date.now()
+                    this.order.order_id            = this.getOrderId('new')
+                    this.order.order_id_position   = this.getPosition('new')
+
+                    
+                    this.subOrder = this.initSubOrder()
+                    this.subOrder.product_id = this.product.id_rent
+                    this.subOrder.tariff_id  = this.product.tariff_default
+                    this.subOrder.order_id   = this.order.order_id
+                    this.subOrder.status     = 'ACTIVE'
+                    this.subOrder.pause_time = 0
+
+                    this.status.main = 'newOrder'
+                    console.log(this.order)
+                }
+
+                const serialOrderInit = () => {
+                    this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
+
+                    this.order = this.orders.find(i => i.order_id == this.getLastId())
+
+                    this.subOrder = this.initSubOrder()
+                    this.subOrder.product_id = this.product.id_rent
+                    this.subOrder.tariff_id  = this.product.tariff_default
+                    this.subOrder.order_id   = this.order.order_id
+                    this.subOrder.status     = 'ACTIVE'
+                    this.subOrder.pause_time = 0
+
+                    this.status.main = 'addSubOrder'
+                    console.log(this.order)
+                }
+
+                this.isSerial() ? serialOrderInit() : newOrderInit()   
+            }
+
+            this.dataSubOrder.id ? changeOrderInit() : newOrderInit()
+        },
+
+        methods: {
+            ...copyObject,
+            ...getOrderId,
+            ...makeOrder,
+
+            close() {
+                this.$emit('close')
+            },
+
+            initOrder() {
+                return {
+                    status:             'ACTIVE',              
+                    start_time:         Date.now(),         
                     order_id:           null,           
                     order_id_position:  null,  
                     advance:            null,            
@@ -113,76 +228,27 @@
                     promotion:          null,          
                     accessories:        null,        
                     customer_id:        null,        
-                    deposit:            null,
-                },
+                    deposit:            null,            
+                }
+            },
 
-                subOrder: {
+            initSubOrder() {
+                return {
                     product_id:   null,
                     tariff_id:    null,
                     order_id:     null,
-                    status:       null,
                     bill:         0,
                     bill_no_sale: 0,
+                    status:       'ACTIVE',
                     pause_time:   0,
-                },              
-
-                orders:    this.$store.getters.orders,
-                subOrders: this.$store.getters.orderProducts,
-                products:  this.$store.getters.products,
-
-                status: null
-            }
-        },
-
-        created() {
-
-            const newOrder = () => {
-                this.order.status              = 'ACTIVE'
-                this.order.start_time          = Date.now()
-                this.order.order_id            = this.getOrderId('new')
-                this.order.order_id_position   = this.getPosition('new')
-
-                
-                this.subOrder.product_id = this.product.id_rent
-                this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.order_id
-                this.subOrder.status     = 'ACTIVE'
-                this.subOrder.pause_time = 0
-
-                this.status = 'newOrder'
-            }
-
-            const addSubOrder = () => {
-                this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
-
-                this.order = this.orders.find(i => i.order_id == this.getLastId())
-
-                this.subOrder = this.initSubOrder()
-                this.subOrder.product_id = this.product.id_rent
-                this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.order_id
-                this.subOrder.status     = 'ACTIVE'
-                this.subOrder.pause_time = 0
-
-                this.status = 'addSubOrder'
-                console.log(this.order)
-            }
-
-            this.isSerial() ? addSubOrder() : newOrder()   
-        },
-
-        methods: {
-            ...getOrderId,
-
-            close() {
-                this.$emit('close')
+                }
             },
-
             save() {
-                console.log('order: ',this.order, 'subOrder: ', this.subOrder)
 
                 // newOrder
-                if (this.status == 'newOrder') {
+                if (this.status.main == 'newOrder') {
+                    console.log('newOrder')
+
                     this.$store.dispatch('send', [
                         {cmd: 'newOrder',        value: this.order},
                         {cmd: 'addOrderProduct', value: this.subOrder},
@@ -193,7 +259,7 @@
                 }
 
                 // addSubOrder
-                if (this.status == 'addSubOrder') {
+                if (this.status.main == 'addSubOrder') {
                     console.log('addSubOrder')
 
                     this.$store.dispatch('send', [
@@ -201,50 +267,23 @@
                     ])
                 }
 
-                this.close()
-            },
-
-            // save() {
-
-            //     // newOrder
-            //     if (this.status.main == 'newOrder') {
-            //         console.log('newOrder')
-
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'newOrder',        value: this.order},
-            //             {cmd: 'addOrderProduct', value: this.subOrder},
-            //         ])
-
-            //         this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
-            //         this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
-            //     }
-
-            //     // addSubOrder
-            //     if (this.status.main == 'addSubOrder') {
-            //         console.log('addSubOrder')
-
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'addOrderProduct', value: this.subOrder},
-            //         ])
-            //     }
-
-            //     // changeOrder
-            //     if (this.status.changeOrder) {
-            //         console.log('changeOrder')
+                // changeOrder
+                if (this.status.changeOrder) {
+                    console.log('changeOrder')
                     
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'changeOrder', value: this.order},
-            //         ])
-            //     }
+                    this.$store.dispatch('send', [
+                        {cmd: 'changeOrder', value: this.order},
+                    ])
+                }
 
-            //     // changeProduct
-            //     if (this.status.changeSubOrder) {
-            //         console.log('ChangeSubOrder')
+                // changeProduct
+                if (this.status.changeSubOrder) {
+                    console.log('ChangeSubOrder')
                     
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'changeOrderProduct', value: this.subOrder},
-            //         ])
-            //     }
+                    this.$store.dispatch('send', [
+                        {cmd: 'changeOrderProduct', value: this.subOrder},
+                    ])
+                }
 
             //     // splitProduct
             //     if (this.status == 'change' && this.statusPosition == 'new') {
@@ -262,14 +301,14 @@
 
             //     }
                 
-            //     this.close()
-            // },
+                this.close()
+            },
 
             isSerial() {
                 const lastTime = this.$store.getters.options.lastOrderTime || false
                 const interval = this.$store.getters.options.lastOrderInterval
                 const now      = this.$store.getters.options.now
-                const lastID   = this.$store.getters.options.lastOrderID
+                const lastID   = this.getLastId()
                 const order    = this.orders.find(i => i.order_id == lastID)
 
                 // Если последний ордер уже закрыт
@@ -280,7 +319,11 @@
                 return lastTime && now - lastTime < interval
             },
 
-            getPosition(cmd) {
+            getLastId() {
+                return this.$store.getters.options.lastOrderID
+            },
+
+            getPosition() {
                 // Если редактируем конкретный старый ордер, верну его позицию
                 // Если ордер совсем новый, верну свободную позицию
                 
@@ -301,47 +344,56 @@
                     return +result                    
                 }
 
-                if (cmd == 'new') {
+
+                if (this.status.main == 'addSubOrder') {
+                    return this.order.order_id_position
+                }
+
+                if (this.status.changeOrder) {
+                    return this.order.order_id_position
+                }
+
+                if (this.status.main == 'newOrder') {
                     return newPosition()
                 }
             },
 
-            // setPosition($event) {
-            //     const order_id = $event.order_id
-            //     const order_id_position = $event.order_id_position
+            setPosition($event) {
+                const order_id = $event.order_id
+                const order_id_position = $event.order_id_position
 
-            //     const order = this.orders.find(i => i.order_id == order_id)
+                const order = this.orders.find(i => i.order_id == order_id)
 
-            //     if (order) {
-            //         this.order = order
+                if (order) {
+                    this.order = order
 
-            //         this.subOrder = this.initSubOrder()
+                    this.subOrder = this.initSubOrder()
 
-            //         this.subOrder.product_id = this.product.id_rent
-            //         this.subOrder.tariff_id  = this.product.tariff_default
-            //         this.subOrder.order_id   = order_id
+                    this.subOrder.product_id = this.product.id_rent
+                    this.subOrder.tariff_id  = this.product.tariff_default
+                    this.subOrder.order_id   = order_id
 
 
-            //         this.status.main = 'addSubOrder'
-            //     }
+                    this.status.main = 'addSubOrder'
+                }
 
-            //     if (!order) {
-            //         this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
+                if (!order) {
+                    this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
 
-            //         this.order = this.initOrder()
+                    this.order = this.initOrder()
 
-            //         this.order.order_id            = order_id
-            //         this.order.order_id_position   = order_id_position
+                    this.order.order_id            = order_id
+                    this.order.order_id_position   = order_id_position
 
                     
-            //         this.subOrder = this.initSubOrder()
-            //         this.subOrder.product_id = this.product.id_rent
-            //         this.subOrder.tariff_id  = this.product.tariff_default
-            //         this.subOrder.order_id   = order_id
+                    this.subOrder = this.initSubOrder()
+                    this.subOrder.product_id = this.product.id_rent
+                    this.subOrder.tariff_id  = this.product.tariff_default
+                    this.subOrder.order_id   = order_id
 
-            //         this.status.main = 'newOrder'
-            //     }
-            // },
+                    this.status.main = 'newOrder'
+                }
+            },
                 
             setCustomer(customer) {
                 this.order.customer_id = customer.id_rent 
@@ -366,6 +418,7 @@
 
             setTariff(tariff) {
                 this.subOrder.tariff_id = tariff.id_rent
+                this.status.changeSubOrder = true
             },
         },
 
