@@ -349,6 +349,10 @@
                     return this.order.order_id_position
                 }
 
+                if (this.status.changeOrder) {
+                    return this.order.order_id_position
+                }
+
                 if (this.status.main == 'newOrder') {
                     return newPosition()
                 }
