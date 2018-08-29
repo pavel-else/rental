@@ -11,7 +11,7 @@
                     <tr>
                         <td>ID заказа</td>
                         <td>
-                            <!-- <Position :position="getPosition()" @setPosition="setPosition($event)"></Position> -->
+                            <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
                         </td>
                     </tr>
                     <tr>
@@ -100,6 +100,7 @@
             SelectPromotion,
             SelectDeposit,
         },
+
         data() {
             return {
                 order:    {
@@ -127,7 +128,7 @@
                 },              
 
                 orders:    this.$store.getters.orders,
-                
+
                 status: null
             }
         },
@@ -240,44 +241,21 @@
                 if (cmd == 'new') {
                     return newPosition()
                 }
+
+                if (this.status == 'newOrder') {
+                    return newPosition()
+                }
+
+                if (this.status == 'addSubOrder') {
+                    return this.order.order_id_position
+                }
             },
 
-            // setPosition($event) {
-            //     const order_id = $event.order_id
-            //     const order_id_position = $event.order_id_position
-
-            //     const order = this.orders.find(i => i.order_id == order_id)
-
-            //     if (order) {
-            //         this.order = order
-
-            //         this.subOrder = this.initSubOrder()
-
-            //         this.subOrder.product_id = this.product.id_rent
-            //         this.subOrder.tariff_id  = this.product.tariff_default
-            //         this.subOrder.order_id   = order_id
-
-
-            //         this.status.main = 'addSubOrder'
-            //     }
-
-            //     if (!order) {
-            //         this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
-
-            //         this.order = this.initOrder()
-
-            //         this.order.order_id            = order_id
-            //         this.order.order_id_position   = order_id_position
-
-                    
-            //         this.subOrder = this.initSubOrder()
-            //         this.subOrder.product_id = this.product.id_rent
-            //         this.subOrder.tariff_id  = this.product.tariff_default
-            //         this.subOrder.order_id   = order_id
-
-            //         this.status.main = 'newOrder'
-            //     }
-            // },
+            setPosition({order_id, order_id_position}) {
+                this.order.order_id = order_id
+                this.subOrder.order_id = order_id
+                this.order.order_id_position = order_id_position
+            },
                 
             setCustomer(customer) {
                 this.order.customer_id = customer.id_rent 

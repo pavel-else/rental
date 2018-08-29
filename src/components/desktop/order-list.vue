@@ -22,11 +22,11 @@
                         :key="subOrder.product_id" 
                                               
                     >
-                        <td class="td-3" @click="changeOrder(subOrder.id)" >{{ getProductName(subOrder.product_id) }}</td>
+                        <td class="td-3" @click="toChange(order, subOrder)" >{{ getProductName(subOrder.product_id) }}</td>
 
-                        <td class="td-4" @click="changeOrder(subOrder.id)" >{{ getTimePlay(order, subOrder) }}</td>
+                        <td class="td-4" @click="toChange(order, subOrder)" >{{ getTimePlay(order, subOrder) }}</td>
 
-                        <td class="td-5" @click="changeOrder(subOrder.id)" >
+                        <td class="td-5" @click="toChange(order, subOrder)" >
                             {{ getBill(subOrder) }} р
                         </td>                          
 
@@ -62,7 +62,8 @@
 
         <DetailsOrder 
             v-if="showDetails" 
-            :data-sub-order="subOrder" 
+            :dataOrder="order" 
+            :dataSubOrder="subOrder" 
             @close="closeDetails"
         >
         </DetailsOrder>
@@ -73,7 +74,7 @@
 
 <script>
     import Resume       from './Resume'
-    import DetailsOrder from  './DetailsOrder/DetailsOrder'
+    import DetailsOrder from  './DetailsOrder/DetailsChangeOrder'
     import Icon         from  './Icon/Icon'
 
     import calculateBill    from '../../functions/calculateBill'
@@ -101,14 +102,15 @@
             ...timeFormat,
             ...calculateBill,
 
-            changeOrder(id) {
-                this.subOrder = {id}
+            toChange(order, subOrder) {
+                this.order = order
+                this.subOrder = subOrder
                 this.showDetails = true
             },
 
             closeDetails() {
                 this.subOrder = null
-                //this.order = null
+                this.order = null
                 this.showDetails = false
             },
 
