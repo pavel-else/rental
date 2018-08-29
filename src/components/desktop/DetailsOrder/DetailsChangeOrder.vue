@@ -156,28 +156,6 @@
 
             save() {
 
-                // // newOrder
-                // if (this.status.main == 'newOrder') {
-                //     console.log('newOrder')
-
-                //     this.$store.dispatch('send', [
-                //         {cmd: 'newOrder',        value: this.order},
-                //         {cmd: 'addOrderProduct', value: this.subOrder},
-                //     ])
-
-                //     this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
-                //     this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
-                // }
-
-                // // addSubOrder
-                // if (this.status.main == 'addSubOrder') {
-                //     console.log('addSubOrder')
-
-                //     this.$store.dispatch('send', [
-                //         {cmd: 'addOrderProduct', value: this.subOrder},
-                //     ])
-                // }
-
                 // changeOrder
                 if (this.status.changeOrder) {
                     console.log('changeOrder')
@@ -211,6 +189,28 @@
             //         ])
 
             //     }
+
+                // // newOrder
+                // if (this.status.main == 'newOrder') {
+                //     console.log('newOrder')
+
+                //     this.$store.dispatch('send', [
+                //         {cmd: 'newOrder',        value: this.order},
+                //         {cmd: 'addOrderProduct', value: this.subOrder},
+                //     ])
+
+                //     this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
+                //     this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
+                // }
+
+                // // addSubOrder
+                // if (this.status.main == 'addSubOrder') {
+                //     console.log('addSubOrder')
+
+                //     this.$store.dispatch('send', [
+                //         {cmd: 'addOrderProduct', value: this.subOrder},
+                //     ])
+                // }
                 
                 this.close()
             },
@@ -261,42 +261,11 @@
 
             },
 
-            // setPosition($event) {
-            //     const order_id = $event.order_id
-            //     const order_id_position = $event.order_id_position
-
-            //     const order = this.orders.find(i => i.order_id == order_id)
-
-            //     if (order) {
-            //         this.order = order
-
-            //         this.subOrder = this.initSubOrder()
-
-            //         this.subOrder.product_id = this.product.id_rent
-            //         this.subOrder.tariff_id  = this.product.tariff_default
-            //         this.subOrder.order_id   = order_id
-
-
-            //         this.status.main = 'addSubOrder'
-            //     }
-
-            //     if (!order) {
-            //         this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
-
-            //         this.order = this.initOrder()
-
-            //         this.order.order_id            = order_id
-            //         this.order.order_id_position   = order_id_position
-
-                    
-            //         this.subOrder = this.initSubOrder()
-            //         this.subOrder.product_id = this.product.id_rent
-            //         this.subOrder.tariff_id  = this.product.tariff_default
-            //         this.subOrder.order_id   = order_id
-
-            //         this.status.main = 'newOrder'
-            //     }
-            // },
+            setPosition({order_id, order_id_position}) {
+                this.order.order_id = order_id
+                this.subOrder.order_id = order_id
+                this.order.order_id_position = order_id_position
+            },
                 
             setCustomer(customer) {
                 this.order.customer_id = customer.id_rent 

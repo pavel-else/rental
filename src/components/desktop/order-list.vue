@@ -7,6 +7,7 @@
             <tr 
                 class="table-tr" 
                 v-for="(order, index) in orders"
+                :title="title(order.customer_id)"
             >
                 <td class="td-1">
                     <Icon :id="order.order_id_position" :show="true"></Icon>
@@ -230,6 +231,14 @@
                 const subOrders = this.$store.getters.orderProducts
 
                 return subOrders ? this.$store.getters.orderProducts.filter(i => i.order_id == order_id) : []   
+            },
+
+            title(customer_id) {
+                const customers = this.$store.getters.customers
+
+                const customer = customers.find(i => i.id_rent == customer_id)
+
+                return `${customer.fname} ${customer.sname[0]}. ${customer.tname[0]}.  ${customer.phone}`                
             },
 
             getProductName(product_id) {
