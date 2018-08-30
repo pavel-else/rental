@@ -3,7 +3,6 @@ export default {
 		orders: []
 	},
 	mutations: {
-        setOrders(state, {orders, products}) {
             /*
             * Запись активных ордеров в хранилище
             * Функция подмешивает в массив данные (название продукта) из таблицы Продукты
@@ -13,18 +12,25 @@ export default {
             * По id ордера продукта находим в таблице Продукты нужную запись
             * Сохраняем данные в массиве Ордеров
             */
+        // setOrders(state, {orders, products}) {
 
-            const result = orders ? orders.map(order => {
-                for (var i = 0; i < order.products.length; i++) {
-                    const product = products.find(p => p.id_rent == order.products[i].product_id)
+        //     const result = orders ? orders.map(order => {
+        //         for (var i = 0; i < order.products.length; i++) {
+        //             const product = products.find(p => p.id_rent == order.products[i].product_id)
 
-                    order.products[i].name = product ? product.name : ''
-                }
+        //             order.products[i].name = product ? product.name : ''
+        //         }
 
-                return order
-            }) : []
+        //         return order
+        //     }) : []
 
-            state.orders = result
+        //     state.orders = result
+            
+        //     console.log('set Orders')
+        // },
+
+        setOrders(state, orders) {
+            state.orders = orders
             
         	console.log('set Orders')
         },
@@ -33,8 +39,12 @@ export default {
 
 
     actions: {
-        setOrders({commit}, {order, product}) {           
-            commit('setOrders', {order, product})
+        // setOrders({commit}, {order, product}) {           
+        //     commit('setOrders', {order, product})
+        // },
+
+        setOrders({commit}, orders) {           
+            commit('setOrders', orders)
         },
     },
 

@@ -1,6 +1,6 @@
 <template>
     <div class="customer-id">
-        <div class="btns tmp" v-if="open">
+        <div class="btns" v-if="open">
             <div 
                 class="btn"
                 v-for="(item, index) in btns"
@@ -9,7 +9,8 @@
                 <Icon 
                     :id="index" 
                     :show="select == index || typeof(item.position) == 'number'" 
-                    :select="select == index">
+                    :select="select == index"
+                >
                 </Icon>
             </div>
         </div>
@@ -50,7 +51,7 @@
 
                 this.open = false
 
-                //console.log(order_id_position)
+                console.log(order_id)
             }
         },
 
@@ -60,12 +61,12 @@
                 *   Функция подготавливает массив (матрица 4х4) объектов.
                 *   Массив необходим для визуализации существующих ордеров.
                 *   Если ордер существует, то в ячейке содержится его индекс и order_id.
-                *   Если ордера не существует, то в ячейке пустое значение вместо индекса, и id нового ордера
+                *   Если ордера не существует, то в ячейке индекс, и id нового ордера
                 */
 
                 const result = []
                 const orders = this.$store.getters.orders
-                const newId = this.getOrderId()
+                const newId = this.getOrderId('new')
 
                 const iter = (num) => {
                     const order = orders.find(o => o.order_id_position == num)
@@ -92,6 +93,13 @@
         flex-wrap: wrap;
         justify-content: space-around;
     }
+    .black .btns {
+        border: 1px solid #333;
+    }
+    .white .btns {
+        border: 1px solid lightgray;
+    }
+
     .btn {
         width: 25px;
         height: 25px;

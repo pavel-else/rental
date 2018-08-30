@@ -1,7 +1,7 @@
 <template>
     <div class="history">
         <h2>История заказов</h2>
-        <table class="history__table">
+        <table cellspacing="0" class="history__table">
             <tr>
                 <th>id</th>
                 <th>ФИО</th>
@@ -91,15 +91,21 @@
     }
 </script>
 
-<style>
+<style scoped>
+    .history {
+    }
     .history__table tr:not(:first-child):hover {
         cursor: pointer;
         box-shadow: 0px 0px 1px 0px;
     }
 
-    .history__table td {
+    .white .history__table td {
         border: 1px solid lightgray;
-        padding: 2px;
+        padding: 2px 5px;
+    }
+    .black .history__table td {
+        border: 1px solid #333;
+        padding: 5px;
     }
     .history__td--time {
         text-align: right;

@@ -2,13 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-import products   from './products'
-import customers  from './Customers/customers'
-import orders     from './orders'
-import options    from './opt'
-import tariffs    from './tariffs'
-import categories from './categories'
-import history    from './History/history'
+import products        from './products'
+import orderProducts   from './orderProducts'
+import customers       from './Customers/customers'
+import orders          from './orders'
+import options         from './opt'
+import tariffs         from './tariffs'
+import categories      from './categories'
+import history         from './History/history'
 
 
 Vue.use(Vuex)
@@ -16,6 +17,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     modules: {
         products,
+        orderProducts,
         customers,
         orders,
         options,
@@ -23,7 +25,6 @@ const store = new Vuex.Store({
         categories,
         history,
     },
-
 
     actions: {
         /*
@@ -34,7 +35,6 @@ const store = new Vuex.Store({
         * Сеттеров может и не быть, тогда отправляются только команды обновления
         * Внимание! Здесь все асинхронно!
         */
-
         send({commit, dispatch}, cmds /*Array*/) {
 
             const check = (cmds) => {
@@ -50,43 +50,41 @@ const store = new Vuex.Store({
             }
 
             const sendToServer = (queue) => {
-                return new Promise((resolve, reject) => {
+                const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
 
-                    const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
+                console.log('front --> back', queue)
 
-                    console.log('request = ', queue)
+                axios({
+                    method: 'post',
+                    url,
+                    data: {
+                        queue
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+                .then(r => {
+                    console.log('front <-- back', r)  
 
-                    axios({
-                        method: 'post',
-                        url,
-                        data: {
-                            queue
-                        }
-                    })
-                    .catch(e => {
-                        console.log(e)
-                    })
-                    .then(r => {
-                        console.log('response = ', r)  
-
-                        commit('setProducts',   r.data.products)
-                        commit('setHistory',    r.data.history)
-                        commit('setOptions',    r.data.options)
-                        commit('setTariffs',    r.data.tariffs)
-                        commit('setCategories', r.data.categories)
-                        commit('setCustomers',  r.data.clients) // Change to customer!
-                        commit('setOrders', {orders: r.data.orders, products: r.data.products}) // split!
-                    })
-
-                    resolve()
+                    commit('setProducts',      r.data.products)
+                    commit('setHistory',       r.data.history)
+                    commit('setOptions',       r.data.options)
+                    commit('setTariffs',       r.data.tariffs)
+                    commit('setCategories',    r.data.categories)
+                    commit('setCustomers',     r.data.customers)
+                    commit('setOrderProducts', r.data.order_products)
+                    commit('setOrders',        r.data.orders)
+                    /*commit('setOrders', { orders: r.data.orders, products: r.data.products })*/
                 })
             }
 
             const makeUpd = () => {
                 cmds = [
                     'getProducts',
+                    'getOrderProducts',
                     'getOrders', 
-                    'getClients', 
+                    'getCustomers', 
                     'getHistory', 
                     'getTariffs', 
                     'getCategories', 

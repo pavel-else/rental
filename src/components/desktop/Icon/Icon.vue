@@ -50,6 +50,12 @@
         height: 100%;
         background-color: rgba(256,256,256,0.8);
     }
+    .white .fill {
+        background-color: rgba(256,256,256,0.8);
+    }
+    .black .fill {
+        background-color: rgba(0,0,0,0.75);
+    }
 
     .d0 {
         background-image: url('http://overhost.net/rental2/api_v1/ajax/App/dist/star-green.svg');

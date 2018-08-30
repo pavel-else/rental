@@ -13,15 +13,16 @@ export default {
         ],
 
         options: {
-            rent_min_time: 0, //ms
-            rent_round_bill: 0,          
+            rent_min_time: 1800000, //min
+            rent_round_bill: 0,
+
+            lastOrderID: null,
+            lastOrderTime: null,
+            lastOrderInterval: 180000, //ms       
+
+            now: Date.now(),
         },
     
-        now: new Date(),
-        max_order_id: Number,
-        new_order_id: Number,
-        max_tariff_id: Number,
-
         depositList: [
             {
                 id_rent: 1,
@@ -84,8 +85,8 @@ export default {
                 name: 'Шлем'
             }
         ]
-
     },
+
     mutations: {
         setOptions(state, options) {
             if (!options) {
@@ -98,21 +99,29 @@ export default {
 
             console.log('set options')
         },
-        now(state, date) {
-            state.now = date
+        setOption(state, {option, value}) {
+            if (!option) {
+                return
+            }
+
+            state.options[option] = value
+
+            console.log('setOption', option, state.options[option])
         },
-
-
+        now(state, date) {
+            state.options.now = date
+        }
     },
+
     actions: {
         startTimer({commit}) {
-            setInterval(() => {commit('now', new Date())}, 3000)
+            setInterval(() => {commit('now', Date.now())}, 1000)
         },
-
     },
+
     getters: {
         now(state) {
-            return state.now
+            return state.options.now
         },
         options(state) {
             return state.options

@@ -1,6 +1,6 @@
 <template>
     <div class="canvas">
-        <div class="details">
+        <div class="details customer__details">
             <h3>
                 <span v-if="customer.id">Сведения о клиенте</span>
                 <span v-else>Добавить нового клиента</span>
@@ -126,10 +126,17 @@
     .details {
         min-width: 300px;
         padding: 5px 10px;
+        margin: 50px;
+    }
 
-        border: 1px solid lightgray;
-        background-color: #fff;
-        box-shadow: 0 2px 5px 0px;  
+    .customer__details input, 
+    .customer__details textarea {
+        background-color: #000;
+        color: rgba(255, 255, 255, 0.8);
+        border: 1px solid #333;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 5px 10px;
     }
     td {
         padding: 5px;
