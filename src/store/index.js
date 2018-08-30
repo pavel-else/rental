@@ -89,7 +89,8 @@ const store = new Vuex.Store({
                     'getTariffs', 
                     'getCategories', 
                     'getOptions', 
-                    'getLogs'
+                    'getLogs',
+                    'getAccessories'
                 ]
 
                 const queue = cmds.map(i => {
