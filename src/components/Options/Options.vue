@@ -9,10 +9,13 @@
             <li class="options__link" @click="select('deposit')" :class="{options__link_act: show.deposit}">Залог</li>
             <li class="options__link" @click="select('sale')" :class="{options__link_act: show.sale}">Скидки</li>
         </ul>
+
         <General v-if="show.general"></General>
         <Tariffs v-if="show.tariffs"></Tariffs>
         <Products v-if="show.products"></Products>
         <Categories v-if="show.categories"></Categories>
+        <Accessories v-if="show.accessories"></Accessories>
+
     </div>
 </template>
 <script>
@@ -20,13 +23,15 @@
     import General from './General'
     import Products from './Products/Products'
     import Categories from './Categories/Categories'
+    import Accessories from './Accessories/Accessories'
 
     export default {
         components: {
             Tariffs,
             General,
             Products,
-            Categories
+            Categories,
+            Accessories
         },
         data() {
             return {
@@ -36,7 +41,7 @@
                     products: false,
                     accessories: false,
                     deposit: false,
-                    sale: false
+                    sale: false,
                 }
             }
         },
@@ -57,12 +62,12 @@
     }
     .options__link {
         padding: 5px;
+    }
+    .options__link:not(.options__link_act):hover {
+        outline: 1px solid #333;
         cursor: pointer;
     }
-    .options__link:hover {
-        outline: 1px solid rgba(0,0 ,0, 0.2);
-    }
     .options__link_act {
-        text-decoration: underline;
+        outline: 2px solid #333;
     }
 </style>
