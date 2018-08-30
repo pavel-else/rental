@@ -73,7 +73,7 @@
                     <tr>
                         <td>Аксессуары</td>
                         <td>
-                            <SelectAccessories :data="accessories" :default="order.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
+                            <SelectAccessories :data="accessories" :default="subOrder.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
                         </td>
                     </tr>
                     <tr>
@@ -291,9 +291,9 @@
             },
 
             setAccessories(accessories) {
-                this.order.accessories = accessories
+                this.subOrder.accessories = accessories
 
-                this.status.changeOrder = true
+                this.status.changeSubOrder = true
             },
 
             setTariff(tariff) {

@@ -139,7 +139,8 @@ trait SubOrders
                 `pause_start`,
                 `pause_time`,
                 `end_time`,
-                `status` 
+                `status`, 
+                `accessories`
             ) VALUES (
                 NULL, 
                 :order_id, 
@@ -151,7 +152,8 @@ trait SubOrders
                 :pause_start,
                 :pause_time,
                 :end_time,
-                :status 
+                :status,
+                :accessories
             )';
 
             $d = array(
@@ -166,7 +168,8 @@ trait SubOrders
                 'pause_time'    => $product[pause_time],
                 'pause_time'    => $product[pause_time],
                 'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
-                'status'        => $product[status]
+                'status'        => $product[status],
+                'accessories'   => $product[accessories]
             );
 
             
@@ -176,7 +179,9 @@ trait SubOrders
 
             $this->writeLog($log);
 
-            $subsql = ' UPDATE `products` 
+            $subsql = ' 
+                UPDATE 
+                    `products` 
                 SET 
                     `status` = :status 
                 WHERE 
@@ -269,7 +274,8 @@ trait SubOrders
                     `pause_start`   = :pause_start,
                     `pause_time`    = :pause_time,
                     `end_time`      = :end_time,
-                    `status`        = :status 
+                    `status`        = :status,
+                    `accessories`   = :accessories 
                 WHERE
                     `id` = :id
                 AND
@@ -288,7 +294,8 @@ trait SubOrders
                 'pause_start'   => date("Y-m-d H:i:s", $product[pause_start]),
                 'pause_time'    => $product[pause_time],
                 'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
-                'status'        => $product[status]
+                'status'        => $product[status],
+                'accessories'   => $product[accessories]
             );
 
             

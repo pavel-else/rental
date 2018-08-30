@@ -57,8 +57,7 @@ trait Orders
                 `advance`,
                 `deposit`,
                 `note`,
-                `promotion`,
-                `accessories`
+                `promotion`
             ) VALUES (
                 NULL, 
                 :order_id, 
@@ -71,8 +70,7 @@ trait Orders
                 :order_advance,
                 :deposit, 
                 :order_note,
-                :promotion,
-                :accessories
+                :promotion
             )';
 
             $d = array(
@@ -86,8 +84,7 @@ trait Orders
                 'order_advance'       => $order[advance] === NULL ? 0 : $order[advance],
                 'deposit'             => $order[deposit],
                 'order_note'          => $order[note],
-                'promotion'           => $order[promotion],
-                'accessories'         => $order[accessories]
+                'promotion'           => $order[promotion]
             );
 
             return $this->pDB->set($sql, $d);

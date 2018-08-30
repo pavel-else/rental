@@ -75,16 +75,16 @@ export default {
             }
         ],
 
-        accessories: [
-            {
-                id: 1,
-                name: 'Детское кресло'
-            },
-            {
-                id: 2,
-                name: 'Шлем'
-            }
-        ]
+        // accessories: [
+        //     {
+        //         id: 1,
+        //         name: 'Детское кресло'
+        //     },
+        //     {
+        //         id: 2,
+        //         name: 'Шлем'
+        //     }
+        // ]
     },
 
     mutations: {
@@ -136,9 +136,6 @@ export default {
         },
         promotions(state) {
             return state.promotions
-        },
-        accessories(state) {
-            return state.accessories
         },
     }
 }

@@ -52,7 +52,7 @@
                     <tr>
                         <td>Аксессуары</td>
                         <td>
-                            <SelectAccessories :data="accessories" :default="order.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
+                            <SelectAccessories :data="accessories" :default="subOrder.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
                         </td>
                     </tr>
                     <tr>
@@ -112,7 +112,6 @@
                     note:               null,               
                     products:           null,
                     promotion:          null,          
-                    accessories:        null,        
                     customer_id:        null,        
                     deposit:            null,
                 },
@@ -122,6 +121,7 @@
                     tariff_id:    null,
                     order_id:     null,
                     status:       null,
+                    accessories:  null,        
                     bill:         0,
                     bill_no_sale: 0,
                     pause_time:   0,
@@ -275,7 +275,8 @@
             },
 
             setAccessories(accessories) {
-                this.order.accessories = accessories
+                this.subOrder.accessories = accessories
+                console.log(this.subOrder.accessories)
             },
 
             setTariff(tariff) {
