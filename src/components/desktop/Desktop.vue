@@ -1,12 +1,12 @@
 <template>        
-    <div class="container">
+    <div class="desktop">
 
-        <product-list class="tmp" @addOrder="addOrder($event)"></product-list>
+        <product-list class="snippet snippet__products" @addOrder="addOrder($event)"></product-list>
 
         
-        <order-list class="tmp"></order-list>
+        <order-list class="snippet snippet__orders"></order-list>
 
-        <DetailsOrder v-if="show" :data-product="product" @close="onClose"></DetailsOrder>
+        <DetailsOrder v-if="show" :product="product" @close="onClose"></DetailsOrder>
     </div>
 </template>
 
@@ -25,17 +25,45 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
             return {
                 product: {},
                 order: {},
+                subOrder: null,
                 show: false,
             }
         },
         methods: {
             addOrder(product) {
                 this.product = product
+
                 this.show = true
             },
             onClose() {
                 this.show = false
             }
         },
+
     }
 </script>
+
+<style scoped>
+    .desktop {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+    .snippet {
+        padding: 20px;
+    }
+
+    .black .snippet {
+       border: 1px solid #333; 
+    }
+    .white .snippet {
+       border: 1px solid lightgray;
+    }
+    .snippet:first-child {
+        margin-right: 50px;
+    }
+    .snippet h3 {
+        text-align: center;
+    }
+
+</style>

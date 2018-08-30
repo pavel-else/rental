@@ -1,101 +1,136 @@
 <template>
-    <div class="details">        
-        <table>
-                <tr>
-                    <td>Заказ</td>
-                    <td>{{order.order_id}}</td>
-                </tr>
-                <tr>
-                    <td>Клиент</td>
-                    <td><span v-if="order.customer_name">{{ order.customer_name }} р.</span><span v-else>-</span></td>
-                </tr>
-                <tr>
-                    <td>Товары</td>
-                    <td>
-                        <table class="table-products">
-                            <tr v-for="product in order.products">
-                                <td>{{ product.name }}</td>
-                                <td>-</td>
-                                <td>{{ product.bill }} р.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Залог</td>
-                    <td><span v-if="order.deposit">{{ order.deposit }}</span><span v-else>-</span></td>
-                </tr>
-                <tr>
-                    <td>Начало</td>
-                    <td>{{ order.start_time }}</td>
-                </tr>
-                <tr>
-                    <td>Чистое время</td>
-                    <td>{{ getTimePlay(order) }}</td>
-                </tr>
-                <tr>
-                    <td>Аванс</td>
-                    <td><span v-if="order.advance > 0">{{ order.advance }} р.</span><span v-else>-</span></td>
-                </tr>
-                <tr>
-                    <td>Скидка</td>
-                    <td><span v-if="order.sale > 0">{{ order.sale }} р.</span><span v-else>-</span></td>
-                </tr>
-                <tr class="details__bill">
-                    <td>К оплате</td>
-                    <td>{{ bill }} р.</td>
-                </tr>
-        </table>
-        <div class="details__close" @click="close"></div>     
-    </div>
+    <div class="canvas">
+        <div class="details"> 
+            <table>
+                    <tr>
+                        <td>Заказ</td>
+                        <td> # {{ order.order_id }}</td>
+                    </tr>
+                    <tr>
+                        <td>Клиент</td>
+                        <td>
+                            <span v-if="order.customer_name">{{ order.customer_name }} р.</span>
+                            <span v-else>-</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Товары</td>
+                        <td>
+                            <table class="table-products">
+                                <tr 
+                                    v-for="item in subOrders" 
+                                    :class="getClass(item.product_id)"
+                                >
+                                    <td>{{ getProductName(item.product_id) }}</td>
+                                    <td>-</td>
+                                    <td>{{ item.bill }} р.</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Залог</td>
+                        <td>
+                            <span v-if="order.deposit">{{ order.deposit }}</span>
+                            <span v-else>-</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Начало</td>
+                        <td>{{ order.start_time }}</td>
+                    </tr>
+                    <tr>
+                        <td>Чистое время</td>
+                        <td>{{ activeTime }}</td>
+                    </tr>
+                    <tr>
+                        <td>Аванс</td>
+                        <td>
+                            <span v-if="order.advance > 0">{{ order.advance }} р.</span>
+                            <span v-else>-</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Скидка</td>
+                        <td>
+                            <span v-if="order.sale > 0">{{ order.sale }} р.</span>
+                            <span v-else>-</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Стоимость заказа</td>
+                        <td>{{ total }} р.</td>
+                    </tr>
+
+                    <tr class="details__bill">
+                        <td>К оплате</td>
+                        <td>{{ total - order.advance }} р.</td>
+                    </tr>
+            </table>
+            <div class="details__close" @click="close"></div>     
+        </div>
+    </div> 
 </template>
 
 <script>
+    import timeFormat from '../../functions/timeFormat'
+    import getTime    from '../../functions/getTime'
+
     export default {
         props: {
-            order: Object
+            order:    Object,
+            subOrder: Object
         },
+        data() {
+            return {
+                subOrders: this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id)
+            }
+        },
+
         methods: {
-            getTimePlay(item) {
-                const timeFormat = function (ms/**number*/) {
-                    if (ms < 0) ms = 0;
+            ...getTime,
+            ...timeFormat,
 
-                    function num(val){
-                        val = Math.floor(val);
-                        return val < 10 ? '0' + val : val;
-                    }
-                    
-                    var sec = ms / 1000
-                      , hours = sec / 3600  % 24
-                      , minutes = sec / 60 % 60
-                      , seconds = sec % 60
-                    ;
+            getProductName(product_id) {
+                const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
-                    return num(hours) + ":" + num(minutes) + ":" + num(seconds);
+                return product.name
+            },
+            getClass(product_id) {
+                return {
+                    select : this.subOrder.product_id == product_id
                 }
-
-                const start = Date.parse(item.start_time)
-                
-                const end = item.products.reduce((acc, p) => {
-                    return acc = acc < p.end_time ? p.end_time : acc
-                }, 0)
-
-                const diff = end * 1000 - start
-
-                return timeFormat(diff)
             },
 
             close() {
                 this.$emit('close')
-            }
+            },
         },
+
         computed: {
-            bill() {
-                return this.order.products.reduce((acc, product) => {
-                    return acc + +product.bill
-                }, 0)
+            total() {
+
+                return this.subOrders ? this.subOrders.reduce((acc, subOrder) => {
+                    return acc + +subOrder.bill
+                }, 0) : 0   
+            },
+
+
+
+            activeTime() {
+                const start = this.order.start_time
+                const end   = this.subOrder.end_time
+                const pause = this.subOrder.pause_time
+
+                const time = this.getTime(start, end)
+
+
+                return this.timeFormat(time - pause)
             }
         }
+
+
     }
 </script>
 
@@ -106,11 +141,8 @@
         left: calc(50% - 150px);
         min-width: 300px;
         padding: 5px 10px;
-
-        border: 1px solid lightgray;
-        background-color: #fff;
-        box-shadow: 0 2px 5px 0px;  
     }
+
     td {
         padding: 5px;
     }
@@ -165,5 +197,8 @@
     }
     .table-products td {
         padding: 2px 5px;
+    }
+    .select {
+        outline: 1px solid #333;
     }
 </style>

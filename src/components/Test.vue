@@ -8,7 +8,7 @@
 
 <script>
 
-    import getBill from "../functions/getBill"
+
     export default {
 
         data() {
@@ -21,10 +21,10 @@
         },
 
         methods: {
-            ...getBill,
+
 
             onClick() {
-                this.answer = this.getBill(3, this.h * 60 * 1000)
+
 
                 // const cmd = 'getTariffs'
                 // const value = {id_rent: 178}

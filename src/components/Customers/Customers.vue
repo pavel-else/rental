@@ -7,11 +7,11 @@
                 <th>Телефон</th>
                 <th>Скидка</th>
             </tr>
-            <tr v-for="C in customers" @click="onClick(C)">
-                <td>{{ C.id_rent }}</td>
-                <td>{{ C.fname }} {{ C.sname }} {{ C.tname }}</td>
-                <td>{{ C.phone }}</td>
-                <td>{{ C.sale }}</td>
+            <tr v-for="customer in customers" @click="onClick(customer)">
+                <td>{{ customer.id_rent }}</td>
+                <td>{{ customer.fname }} {{ customer.sname }} {{ customer.tname }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>{{ customer.sale }}</td>
             </tr>
         </table>
         <div class="customer_buttons">

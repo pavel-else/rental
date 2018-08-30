@@ -50,10 +50,10 @@ class Request
                     $this->response['orders'] = $this->getOrders();
                 break;
                 case 'getOrderProducts':
-                    $this->response['order_products'] = $this->getOrderProducts($value);
+                    $this->response['order_products'] = $this->getOrderProducts();
                 break;
-                case 'getClients':
-                    $this->response['clients'] = $this->getClients();
+                case 'getCustomers':
+                    $this->response['customers'] = $this->getCustomers();
                 break;
                 case 'getHistory':
                     $this->response['history'] = $this->getHistory($value);
@@ -174,58 +174,129 @@ class Request
     }
 
     private function getProducts() {
-        $not_in_rental = '0,';          // Велосипеды которые не в прокате   
-        $sql = 'SELECT * FROM `products` WHERE `id_rent` NOT IN ('.trim($not_in_rental,',').') AND `id_rental_org` = '.$this->app_id.' ORDER BY `name`';     // Перебираем все товары кроме активных (свободные велосипеды)
+        $sql = '
+            SELECT * 
+            FROM `products` 
+            WHERE `id_rental_org` = :id_rental_org 
+        ';
 
-        $this->writeLog("f.GetProducts completed");
-        return $this->pDB->get($sql, false, true);
-    }
+        $d = array (
+            'id_rental_org' => $this->app_id
+        );
 
-    private function getOrders() {
-        $sql = 'SELECT * FROM `orders` WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
-        // $sql = 'SELECT * FROM `order_products` 
-        //     INNER JOIN `orders` on orders.order_id = order_products.order_id 
-        //     WHERE `status` = \'ACTIVE\' AND `id_rental_org` = '.$this->app_id;
+        $result = $this->pDB->get($sql, false, $d);
+        
+        $log = $result ? "getProducts completed" : "getProducts failed";
 
-        $this->writeLog("f.Orders completed");
-
-        $orders = $this->pDB->get($sql, false, true);
-
-        foreach ($orders as $key => $order) {
-            $order[products] = $this->getOrderProducts($order[order_id]);
-            $result[] = $order;
-        }
+        $this->writeLog($log);
 
         return $result;
     }
 
-    private function getOrderProducts($order_id) {
-        $sql = 'SELECT * FROM `order_products` WHERE `order_id` =' .$order_id;
+    private function getOrders() {
+        $sql = '
+            SELECT * 
+            FROM `orders` 
+            WHERE `status` = :status  
+            AND `id_rental_org` = :id_rental_org
+        ';
 
-        //$this->writeLog("f.getOrderProducts completed");
+        $d = array (
+            'status'        => 'ACTIVE',
+            'id_rental_org' => $this->app_id
+        );
 
-        return $this->pDB->get($sql, false, true); 
+        $result = $this->pDB->get($sql, false, $d);
+        
+        $log = $result ? "getOrders completed" : "getOrders failed";
+
+        $this->writeLog($log);
+
+        return $result;
     }
 
-    private function getProductWithId($id) {
-        $sql = 'SELECT * FROM `products` WHERE `id_rent` =' .$id;
+    private function getOrderProducts() {
+        $sql = '
+            SELECT * 
+            FROM `order_products` 
+            WHERE `id_rental_org` = :id_rental_org
+        ';
 
-        return $this->pDB->get($sql, false, true); 
+        $d = array (
+            'id_rental_org' => $this->app_id
+        );
+
+        $result = $this->pDB->get($sql, false, $d);
+        
+        $log = $result ? "getOrderProducts completed" : "getOrderProducts failed";
+
+        $this->writeLog($log);
+
+        return $result;       
     }
 
-    private function getClients() {
-        $sql = 'SELECT * FROM `clients` WHERE `id_rental_org` = '.$this->app_id .' ORDER BY `clients`.`fname` ASC';
+    // private function getProductWithId($id) {
+    //     $sql = 'SELECT * FROM `products` WHERE `id_rent` =' .$id;
 
-        return $this->pDB->get($sql, false, true);
+    //     return $this->pDB->get($sql, false, true); 
+    // }
+
+    private function getCustomers() {
+        $sql = '
+            SELECT * 
+            FROM `customers` 
+            WHERE `id_rental_org` = :id_rental_org 
+            ORDER BY `customers`.`fname` 
+            ASC
+        ';
+
+        $d = array (
+            'id_rental_org' => $this->app_id
+        );
+
+        $result = $this->pDB->get($sql, false, $d);
+
+        $log = $result ? "getCustomers completed" : "getCustomers failed";
+
+        $this->writeLog($log);
+
+        return $result; 
     }
 
     private function getHistory() {
-        $sql = 'SELECT * FROM `orders` WHERE `id_rental_org` = '.$this->app_id . ' ORDER BY `orders`.`order_id` DESC';        
 
-        $orders = $this->pDB->get($sql, false, true);
+        $getOrderProducts = function ($order_id) {
+            $sql = '
+                SELECT * 
+                FROM `order_products` 
+                WHERE `order_id`    = :order_id 
+                AND `id_rental_org` = :id_rental_org
+            ';
+
+            $d = array (
+                'order_id'      => $order_id,
+                'id_rental_org' => $this->app_id           
+            );
+
+            return $this->pDB->get($sql, false, $d); 
+        };
+
+        $sql = '
+            SELECT * 
+            FROM `orders` 
+            WHERE `id_rental_org` = :id_rental_org
+            ORDER BY `orders`.`order_id` 
+            DESC
+        ';  
+
+        $d = array (
+            'id_rental_org' => $this->app_id,
+        );      
+
+        $orders = $this->pDB->get($sql, false, $d);
 
         foreach ($orders as $key => $order) {
-            $order[products] = $this->getOrderProducts($order[order_id]);            
+            $order[products] = $getOrderProducts($order[order_id]);            
             $result[] = $order;
         }
 
@@ -522,7 +593,7 @@ class Request
                 'status'              => $order[status],
                 'order_customer_id'   => $order[customer_id],
                 'order_customer_name' => $order[customer_name],
-                'order_start_time'    => date("Y-m-d H:i:s", $order[start_time]),
+                'order_start_time'    => date("Y-m-d H:i:s", $order[start_time] / 1000),
                 'order_advance'       => $order[advance] === NULL ? 0 : $order[advance],
                 'deposit'             => $order[deposit],
                 'order_note'          => $order[note],
@@ -575,7 +646,6 @@ class Request
                 `status`            = :status,
                 `customer_id`       = :customer_id,
                 `customer_name`     = :customer_name,
-                `start_time`        = :start_time,
                 `advance`           = :advance,
                 `deposit`           = :deposit,      
                 `note`              = :note,     
@@ -594,7 +664,6 @@ class Request
                 'status'            => $order[status],
                 'customer_id'       => $order[customer_id],
                 'customer_name'     => $order[customer_name],
-                'start_time'        => date("Y-m-d H:i:s", $order[start_time]),
                 'advance'           => $order[advance],
                 'deposit'           => $order[deposit],      
                 'note'              => $order[note],     
@@ -760,7 +829,10 @@ class Request
                 `tariff_id`,
                 `bill`,
                 `bill_no_sale`,
-                `end_time`
+                `pause_start`,
+                `pause_time`,
+                `end_time`,
+                `status` 
             ) VALUES (
                 NULL, 
                 :order_id, 
@@ -769,7 +841,10 @@ class Request
                 :tariff_id,
                 :bill,
                 :bill_no_sale,
-                :end_time
+                :pause_start,
+                :pause_time,
+                :end_time,
+                :status 
             )';
 
             $d = array(
@@ -779,7 +854,12 @@ class Request
                 'tariff_id'     => $product[tariff_id],
                 'bill'          => $product[bill],
                 'bill_no_sale'  => $product[bill_no_sale],
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
+                'pause_start'   => $product[pause_start],
+                'pause_start'   => $product[pause_start],
+                'pause_time'    => $product[pause_time],
+                'pause_time'    => $product[pause_time],
+                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
+                'status'        => $product[status]
             );
 
             
@@ -879,7 +959,10 @@ class Request
                     `tariff_id`     = :tariff_id,
                     `bill`          = :bill,
                     `bill_no_sale`  = :bill_no_sale,
-                    `end_time`      = :end_time 
+                    `pause_start`   = :pause_start,
+                    `pause_time`    = :pause_time,
+                    `end_time`      = :end_time,
+                    `status`        = :status 
                 WHERE
                     `id` = :id
                 AND
@@ -894,7 +977,11 @@ class Request
                 'tariff_id'     => $product[tariff_id],
                 'bill'          => $product[bill],
                 'bill_no_sale'  => $product[bill_no_sale],
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL
+                'pause_start'   => $product[pause_start],
+                'pause_start'   => date("Y-m-d H:i:s", $product[pause_start]),
+                'pause_time'    => $product[pause_time],
+                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
+                'status'        => $product[status]
             );
 
             
@@ -984,7 +1071,7 @@ class Request
 
             $sql = '
                 SELECT `id` 
-                FROM `clients` 
+                FROM `customers` 
                 WHERE `id_rent` = :id_rent
             ';
 
@@ -998,7 +1085,7 @@ class Request
 
         $update = function ($id, $customer) {
             $sql = '
-                UPDATE `clients` 
+                UPDATE `customers` 
                 SET 
                 `id_rent` = :id_rent,
                 `fname` = :fname,
@@ -1049,7 +1136,7 @@ class Request
             $getIncMaxID = function () {
                 $sql = '
                     SELECT `id_rent` 
-                    FROM `clients` 
+                    FROM `customers` 
                     WHERE `id_rental_org` = :id_rental_org 
                     ORDER BY `id_rent`
                     DESC LIMIT 1
@@ -1064,7 +1151,7 @@ class Request
                 return ++$result[0][id_rent];
             };
 
-            $sql = 'INSERT INTO `clients` (
+            $sql = 'INSERT INTO `customers` (
                 `id`,
                 `id_rent`,
                 `id_rental_org`,
@@ -1139,7 +1226,7 @@ class Request
 
             $sql = '
                 SELECT `id` 
-                FROM `clients` 
+                FROM `customers` 
                 WHERE `id_rent` = :id_rent
                 AND `id_rental_org` = :id_rental_org
             ';
@@ -1157,7 +1244,7 @@ class Request
         $delete = function ($id) {
             $sql = '
                 DELETE 
-                FROM `clients` 
+                FROM `customers` 
                 WHERE `id` = :id
             ';
 
@@ -1187,16 +1274,18 @@ class Request
         * 4. Меняем статус ордера, если активных продуктов нет
         */
 
-        $setEndTime = function ($product) {
-            $end_time = date("Y-m-d H:i:s", $product[end_time]);            
+        $setEndTime = function ($product) {          
             $sql = '
                 UPDATE `order_products` 
-                SET `end_time` = :end_time 
+                SET 
+                    `end_time` = :end_time,
+                    `status`   = :status  
                 WHERE `order_id` = :order_id 
                 AND `product_id` = :product_id' 
             ;
             $d = array(
-                'end_time'      => $end_time,
+                'end_time'      => date("Y-m-d H:i:s", $product[end_time] / 1000), 
+                'status'        => $product[status],
                 'order_id'      => $product[order_id],
                 'product_id'    => $product[product_id],
             );

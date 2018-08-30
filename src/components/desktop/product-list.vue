@@ -1,5 +1,5 @@
 <template>
-    <div class="snippet snippet__products">
+    <div class="product-list">
         <h3>Свободныe</h3>
         <table class="table table-bordered">
             <tr v-for="(item, index) in filterProducts" @click="onClick(item)" class="products__product">
