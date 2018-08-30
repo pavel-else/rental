@@ -137,6 +137,9 @@ class Request
                 case 'getAccessories':
                     $this->response['accessories'] = $this->getAccessories();
                 break;
+                case 'setAccessory':
+                    $this->setAccessory($value);
+                break;
 
                 // Options
                 case 'getOptions':

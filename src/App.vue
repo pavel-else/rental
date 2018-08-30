@@ -82,6 +82,13 @@ export default {
         cursor: pointer;
     }
 
+    input {
+        background-color: #000;
+        border: 1px solid #333;
+        color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+    }
+
     .white button {
         background-color: rgba(255, 255, 255, 0.8);
         border: 3px solid lightgray;
@@ -149,7 +156,7 @@ export default {
     .details {
         position: relative;
         min-width: 300px;
-        padding: 5px 10px;
+        padding: 5px 10px 10px;
     }
     .black .details {
         border: 1px solid #333;

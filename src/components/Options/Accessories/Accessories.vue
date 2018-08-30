@@ -15,37 +15,36 @@
             </tr>
         </table>
         
-<!--         <button class="products__button products__button--add" @click="newProduct">Добавить</button> -->
-<!-- 
-        <Details :data="product" @close="onClose" v-if="show"></Details> -->
+        <button @click="newAccessory">Добавить</button>
+
+        <Details :data="accessory" @close="onClose" v-if="show"></Details>
     </div>
 </template>
 <script>
-    //import Details from './Details/Details'
+    import Details from './Details'
     export default {
         components: {
-            //Details
+            Details
         },
         data() {
             return {
                 show: false,
-                product: {}
+                accessory: {}
             }
         },
         methods: {
             onClose() {
-                this.product = {}
+                this.accessory = {}
                 this.show = false
             },
-            // onClick(product) {
-            //     this.product = product
-            //     this.show = true
-            //     console.log(product)
-            // },
-            // newProduct() {
-            //     this.show = true
-            //     this.product = {}
-            // }
+            onClick(accessory) {
+                this.accessory = accessory
+                this.show = true
+            },
+            newAccessory() {
+                this.show = true
+                this.accessory = {}
+            }
         },
         computed: {
             accessories() {
