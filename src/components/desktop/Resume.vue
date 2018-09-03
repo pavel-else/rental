@@ -9,13 +9,13 @@
                     <tr>
                         <td>Клиент</td>
                         <td>
-                            <span v-if="order.customer_name">{{ order.customer_name }} р.</span>
+                            <span v-if="order.customer_name">{{ order.customer_name }}</span>
                             <span v-else>-</span>
                         </td>
                     </tr>
                     <tr>
                         <td>Товары</td>
-                        <td>
+                        <td class="products">
                             <table class="table-products">
                                 <tr 
                                     v-for="item in subOrders" 
@@ -43,6 +43,28 @@
                         <td>Чистое время</td>
                         <td>{{ activeTime }}</td>
                     </tr>
+
+                    <tr>
+                        <td>Стоимость проката</td>
+                        <td>{{ total }} р.</td>
+                    </tr>
+
+                    <tr v-if="accessories">
+                        <td>Аксессуары</td>
+                        <td class="accessories">
+                            <tr v-for="item in accessories">
+                                <td>{{ item.name }}</td>
+                                <td> - </td>
+                                <td>{{ item.value }} {{ item.type }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Итого: {{ totalAccess }} р</b></td>
+
+                            </tr>
+                        </td>
+                    </tr>
+
+
                     <tr>
                         <td>Аванс</td>
                         <td>
@@ -50,6 +72,7 @@
                             <span v-else>-</span>
                         </td>
                     </tr>
+                    
                     <tr>
                         <td>Скидка</td>
                         <td>
@@ -58,14 +81,9 @@
                         </td>
                     </tr>
 
-                    <tr>
-                        <td>Стоимость заказа</td>
-                        <td>{{ total }} р.</td>
-                    </tr>
-
                     <tr class="details__bill">
                         <td>К оплате</td>
-                        <td>{{ total - order.advance }} р.</td>
+                        <td>{{ total + totalAccess - order.advance }} р.</td>
                     </tr>
             </table>
             <div class="details__close" @click="close"></div>     
@@ -110,13 +128,31 @@
 
         computed: {
             total() {
-
                 return this.subOrders ? this.subOrders.reduce((acc, subOrder) => {
                     return acc + +subOrder.bill
                 }, 0) : 0   
             },
 
+            accessories() {
+                if (!this.subOrder.accessories) {
+                    return null
+                }
 
+                const split = this.subOrder.accessories.split(',') // [1, 2]
+
+                return split.map(i => {
+                    return this.$store.getters.accessories.find(j => j.id_rent == i)
+                })
+            },
+
+            totalAccess() {
+                return this.accessories.reduce((acc, item) => {
+                    acc = item.type == "%" ?
+                        acc + this.total * (item.value / 100) :
+                        acc + +item.value
+                    return acc
+                }, 0)
+            },
 
             activeTime() {
                 const start = this.order.start_time
@@ -200,5 +236,10 @@
     }
     .select {
         outline: 1px solid #333;
+    }
+
+    .accessories,
+    .products {
+        font-size: 14px;
     }
 </style>
