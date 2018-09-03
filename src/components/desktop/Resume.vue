@@ -146,12 +146,12 @@
             },
 
             totalAccess() {
-                return this.accessories.reduce((acc, item) => {
+                return this.accessories ? this.accessories.reduce((acc, item) => {
                     acc = item.type == "%" ?
                         acc + this.total * (item.value / 100) :
                         acc + +item.value
                     return acc
-                }, 0)
+                }, 0) : null
             },
 
             activeTime() {

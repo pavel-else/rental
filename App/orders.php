@@ -25,6 +25,7 @@ trait Orders
     }
 
     private function newOrder($order) {
+
         $checkID = function ($order_id) {
             $sql = '
                 SELECT `id` 
@@ -90,7 +91,7 @@ trait Orders
             return $this->pDB->set($sql, $d);
         };
 
-        $result =  !$checkID($order[order_id]) ? $newOrder($order) : false;
+        $result = !$checkID($order[order_id]) ? $newOrder($order) : false;
 
         if ($result) {
             $this->writeLog('setOrder completed');
@@ -172,12 +173,13 @@ trait Orders
     }
 
     private function deleteOrder($order_id) {
+
         if (empty($order_id)) {
             return false;
         }
 
         $cheack = function ($order_id) {
-            //Вернет false если в ордере есть активные товары или true иначе
+            //Вернет true если в ордере есть активные товары или false иначе
             $sql = '
                 SELECT `id` 
                 FROM `order_products` 
@@ -188,14 +190,16 @@ trait Orders
 
             $d = array(
                 'id_rental_org' => $this->app_id,
-                'order_id' => $order_id
+                'order_id'      => $order_id
             );
 
             $result = $this->pDB->get($sql, 0, $d);
-            $log = $result ? 'Active product! Can not remove a order' : 'Active product not found';
+
+            $log = $result ? 'Order[subOrder]' : 'order[]';
+
             $this->writeLog($log);
 
-            return $result[0][id] ? false : true;
+            return $result;
         };
 
         $search = function ($order_id) {
@@ -213,7 +217,7 @@ trait Orders
 
             $result = $this->pDB->get($sql, 0, $d);
 
-            return $result[0][id];
+            return $result;
         };
 
         $delete = function ($id) {
@@ -231,15 +235,34 @@ trait Orders
             return $this->pDB->set($sql, $d);
         };
 
-        if ($cheack($order_id)) {
+        if (!$cheack($order_id)) {
             $result = $delete($search($order_id));            
         }
            
         $log = $result ? "deleteOrder completed." : "deleteOrder failed.";
+
         $this->writeLog($log);
 
         return $result;        
     }
+
+    private function splitOrder($data) {
+
+        if (empty($data)) {
+            return false;
+        }
+
+        $order = $data[order];
+        $oldSubOrder = $data[subOrder];
+        $newSubOrder = $data[subOrder];
+
+        $newSubOrder[order_id] = $order[order_id];
+
+        $this->newOrder($order);
+        $this->deleteOrderProduct($oldSubOrder);
+        $this->addOrderProduct($newSubOrder);
+        $this->deleteOrder($order[old_id]);
+    }     
 
     // stopOrder in SubOrders
 }

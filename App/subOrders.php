@@ -315,6 +315,7 @@ trait SubOrders
     }
 
     private function deleteOrderProduct($product) {
+        
         if (empty($product[product_id])) {
             $this->writeLog('deleteOrderProducts failed! empty product_id');
             

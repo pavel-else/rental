@@ -74,6 +74,9 @@ class Request
                 case 'deleteOrder':
                     $this->deleteOrder($value);
                 break;
+                case 'splitOrder':
+                    $this->splitOrder($value);
+                break;
 
                 // SubOrders
                 case 'getOrderProducts':

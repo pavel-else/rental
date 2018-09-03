@@ -202,17 +202,18 @@
 
             splitOrder(order_id, position) {
                 const order = this.order
-                const subOrder = this.order
+                const subOrder = this.subOrder
 
                 this.status.splitOrder = true
 
-                order.old_order_id = this.order.order_id
+                order.old_id = this.order.order_id
 
                 order.order_id = order_id
                 order.start_time = Date.parse(this.order.start_time)
                 order.order_id_position = position
 
-                subOrder.order_id = order_id
+
+                //subOrder.product_id = this.product.id_rent
 
                 this.order = order
                 this.subOrder = subOrder
