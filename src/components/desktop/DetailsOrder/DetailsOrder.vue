@@ -79,6 +79,7 @@
 
 <script>
     import getOrderId        from '../../../functions/getOrderId'
+    import copyObject        from '../../../functions/copyObject'
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
@@ -134,41 +135,14 @@
         },
 
         created() {
-
-            const newOrder = () => {
-                this.order.status              = 'ACTIVE'
-                this.order.start_time          = Date.now()
-                this.order.order_id            = this.getOrderId('new')
-                this.order.order_id_position   = this.getPosition('new')
-
-                
-                this.subOrder.product_id = this.product.id_rent
-                this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.order_id
-                this.subOrder.status     = 'ACTIVE'
-                this.subOrder.pause_time = 0
-
-                this.status = 'newOrder'
-            }
-
-            const addSubOrder = () => {
-
-                this.order = this.orders.find(i => i.order_id == this.getLastId())
-
-                this.subOrder.product_id = this.product.id_rent
-                this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.order_id
-                this.subOrder.status     = 'ACTIVE'
-                this.subOrder.pause_time = 0
-
-                this.status = 'addSubOrder'
-            }
-
-            this.isSerial() ? addSubOrder() : newOrder()   
+            this.isSerial() ? 
+                this.addSubOrder(this.getLastId()) : 
+                this.newOrder(this.getOrderId('new'), this.getPosition('new'))   
         },
-
+        
         methods: {
             ...getOrderId,
+            ...copyObject,
 
             close() {
                 this.$emit('close')
@@ -198,6 +172,49 @@
                 }
 
                 this.close()
+            },
+
+            newOrder(order_id, order_id_position) {
+                this.order.status              = 'ACTIVE'
+                this.order.start_time          = Date.now()
+                this.order.order_id            = order_id
+                this.order.order_id_position   = order_id_position
+
+                this.$set(this.order, 'customer_id', null)
+
+                
+                this.subOrder.product_id = this.product.id_rent
+                this.subOrder.tariff_id  = this.product.tariff_default
+                this.subOrder.order_id   = this.order.order_id
+                this.subOrder.status     = 'ACTIVE'
+                this.subOrder.pause_time = 0
+
+                this.status = 'newOrder'
+            },
+
+            addSubOrder(order_id) {
+
+                if (!order_id) {
+                    console.log('empty order_id!')
+                    return
+                }
+
+                const order = this.orders.find(i => i.order_id == order_id)
+
+                if (!order) {
+                    console.log('order not found!')
+                }
+
+                this.order = this.copyObject(order)
+
+                this.subOrder.product_id = this.product.id_rent
+                this.subOrder.tariff_id  = this.product.tariff_default
+                this.subOrder.order_id   = this.order.order_id
+                this.subOrder.status     = 'ACTIVE'
+                this.subOrder.pause_time = 0
+
+                this.status = 'addSubOrder'
+                console.log(this.order)
             },
 
             isSerial() {
@@ -252,9 +269,12 @@
             },
 
             setPosition({order_id, order_id_position}) {
-                this.order.order_id = order_id
-                this.subOrder.order_id = order_id
-                this.order.order_id_position = order_id_position
+
+                this.orders.find(i => i.order_id == order_id) ?
+                    this.addSubOrder(order_id) :
+                    this.newOrder(order_id, order_id_position)
+
+                console.log(this.status)
             },
                 
             setCustomer(customer) {

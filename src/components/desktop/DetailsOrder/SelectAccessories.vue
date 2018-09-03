@@ -16,7 +16,7 @@
         >
             <template slot="tag" slot-scope="props">
                 <span class="custom__tag">
-                    <span>{{ props.option.name }}</span>
+                    <span>{{ props.option.name }} {{ props.option.value }}{{ props.option.type }}</span>
                     <span class="custom__remove" @click="props.remove(props.option)">❌</span>
                 </span>
             </template>
