@@ -116,6 +116,7 @@
                 status: {
                     changeOrder:    false,
                     changeSubOrder: false,
+                    splitOrder:     false,
                 },
             }
         },
@@ -145,7 +146,7 @@
                 }
 
                 // changeProduct
-                if (this.status.changeSubOrder) {
+                if (this.status.changeSubOrder && !this.status.splitOrder) {
                     console.log('ChangeSubOrder')
                     
                     this.$store.dispatch('send', [
@@ -153,65 +154,25 @@
                     ])
                 }
 
-            //     // splitProduct
-            //     if (this.status == 'change' && this.statusPosition == 'new') {
-            //         console.log('splitProduct')
+                // splitOrder
+                if (this.status.splitOrder) {
+                    console.log('splitOrder')
 
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'deleteOrderProduct', value: {
-            //                 order_id:   this.dataOrder.order_id,
-            //                 product_id: this.product.product_id
-            //             }},
-            //             {cmd: 'newOrder',        value: this.order},
-            //             {cmd: 'addOrderProduct', value: this.product},
-            //             {cmd: 'deleteOrder',     value: this.dataOrder},
-            //         ])
+                    this.$store.dispatch('send', [
+                        {
+                            cmd: 'splitOrder', 
+                            value: {
+                                order:    this.order,
+                                subOrder: this.subOrder
+                            }
+                        }
+                    ])
 
-            //     }
+                }
 
-                // // newOrder
-                // if (this.status.main == 'newOrder') {
-                //     console.log('newOrder')
-
-                //     this.$store.dispatch('send', [
-                //         {cmd: 'newOrder',        value: this.order},
-                //         {cmd: 'addOrderProduct', value: this.subOrder},
-                //     ])
-
-                //     this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
-                //     this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
-                // }
-
-                // // addSubOrder
-                // if (this.status.main == 'addSubOrder') {
-                //     console.log('addSubOrder')
-
-                //     this.$store.dispatch('send', [
-                //         {cmd: 'addOrderProduct', value: this.subOrder},
-                //     ])
-                // }
-                
+              
                 this.close()
             },
-
-            // isSerial() {
-            //     const lastTime = this.$store.getters.options.lastOrderTime || false
-            //     const interval = this.$store.getters.options.lastOrderInterval
-            //     const now      = this.$store.getters.options.now
-            //     const lastID   = this.getLastId()
-            //     const order    = this.orders.find(i => i.order_id == lastID)
-
-            //     // Если последний ордер уже закрыт
-            //     if (!order || order.status == 'END') {
-            //         return false
-            //     }
-
-            //     return lastTime && now - lastTime < interval
-            // },
-
-            // getLastId() {
-            //     return this.$store.getters.options.lastOrderID
-            // },
 
             getPosition() {
                 // Если редактируем конкретный старый ордер, верну его позицию
@@ -237,13 +198,31 @@
                 if (this.order.order_id_position) {
                     return this.order.order_id_position
                 }
+            },
 
+            splitOrder(order_id, position) {
+                const order = this.order
+                const subOrder = this.order
+
+                this.status.splitOrder = true
+
+                order.old_order_id = this.order.order_id
+
+                order.order_id = order_id
+                order.start_time = Date.parse(this.order.start_time)
+                order.order_id_position = position
+
+                subOrder.order_id = order_id
+
+                this.order = order
+                this.subOrder = subOrder
             },
 
             setPosition({order_id, order_id_position}) {
-                this.order.order_id = order_id
-                this.subOrder.order_id = order_id
-                this.order.order_id_position = order_id_position
+                if (!this.orders.find(i => i.order_id == order_id)) {
+                    this.status.splitOrder = true
+                    this.splitOrder(order_id, order_id_position)
+                }
             },
                 
             setCustomer(customer) {
