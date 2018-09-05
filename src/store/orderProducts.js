@@ -14,7 +14,7 @@ export default {
         }
     },
     getters: {
-        OrderProducts: state => state.orderProducts
+        orderProducts: state => state.orderProducts
     }
 }
 

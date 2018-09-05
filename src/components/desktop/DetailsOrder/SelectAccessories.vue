@@ -15,7 +15,10 @@
             :preselect-first="false"
         >
             <template slot="tag" slot-scope="props">
-                <span class="custom__tag"><span>{{ props.option.name }}</span><span class="custom__remove" @click="props.remove(props.option)">❌</span></span>
+                <span class="custom__tag">
+                    <span>{{ props.option.name }} {{ props.option.value }}{{ props.option.type }}</span>
+                    <span class="custom__remove" @click="props.remove(props.option)">❌</span>
+                </span>
             </template>
 
         </multiselect>
@@ -33,13 +36,29 @@
         components: { Multiselect },
         data () {
             return {
-                value: this.data.find(i => i.id == this.default),                    
+                value: null,                  
                 options: this.data
+            }
+        },
+        created() {
+            if(!this.default) {
+                return null
+            }
+
+            const split = this.default.split(',') // [1, 2]
+
+            this.value = split.map(i => {
+                return this.$store.getters.accessories.find(j => j.id_rent == i)
+            })
+        },
+        methods: {
+            type(type) {
+                return type == '%' ? '%' : 'p.'
             }
         },
         watch: {
             value() {
-                this.$emit('setAccessories', this.value.map(a => a.id).join())
+                this.$emit('setAccessories', this.value.map(i => i.id_rent).join())
             }
         }
     }

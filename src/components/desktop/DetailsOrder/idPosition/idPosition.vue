@@ -9,8 +9,10 @@
                 <Icon 
                     :id="index" 
                     :show="select == index || typeof(item.position) == 'number'" 
-                    :select="select == index">
+                    :select="select == index"
+                >
                 </Icon>
+                {{item.order_id}}
             </div>
         </div>
         <div class="btn" v-else @click="open = true">
@@ -49,8 +51,6 @@
                 this.$emit('setPosition', {order_id, order_id_position})
 
                 this.open = false
-
-                //console.log(order_id)
             }
         },
 
@@ -60,7 +60,7 @@
                 *   Функция подготавливает массив (матрица 4х4) объектов.
                 *   Массив необходим для визуализации существующих ордеров.
                 *   Если ордер существует, то в ячейке содержится его индекс и order_id.
-                *   Если ордера не существует, то в ячейке пустое значение вместо индекса, и id нового ордера
+                *   Если ордера не существует, то в ячейке индекс, и id нового ордера
                 */
 
                 const result = []

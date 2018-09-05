@@ -7,7 +7,7 @@
             <tr 
                 class="table-tr" 
                 v-for="(order, index) in orders"
-                :key="order.order_id"
+                :title="title(order.customer_id)"
             >
                 <td class="td-1">
                     <Icon :id="order.order_id_position" :show="true"></Icon>
@@ -18,79 +18,66 @@
                 <td>
                     <tr 
                         class="product-tr"
-                        v-for="product in getOrderProducts(order.order_id)" 
-                        :key="product.product_id" 
+                        v-for="subOrder in getSubOrders(order.order_id)" 
+                        :key="subOrder.product_id" 
                                               
                     >
-                        <td class="td-3" @click="changeOrder(order, product)" >{{ getProductName(product.product_id) }}</td>
+                        <td class="td-3" @click="toChange(order, subOrder)" >{{ getProductName(subOrder.product_id) }}</td>
 
-                        <td class="td-4" @click="changeOrder(order, product)" >{{ getTimePlay(order.start_time, product.end_time) }}</td>
+                        <td class="td-4" @click="toChange(order, subOrder)" >{{ getTimePlay(order, subOrder) }}</td>
 
-                        <td class="td-5" @click="changeOrder(order, product)" >
-                            {{ getBill(product.tariff_id, getTime(order.start_time, product.end_time)) }} р
+                        <td class="td-5" @click="toChange(order, subOrder)" >
+                            {{ getBill(subOrder) }} р
                         </td>                          
 
-                        <td class="td-6">
-                            <div class="stop-order__wrap">                                
-                                <div
-                                    class="stop-order" 
-                                    @click="stopOrder(order, product)" 
-                                    v-if="!product.end_time"
-                                >
-                                </div>
-                                <div v-if="product.end_time" class="ord__td-6 stop-order_st"></div>
-                            </div>                            
+                        <td class="td-6 td-6-1">
+                            <i 
+                                class="icon far fa-pause-circle"
+                                :class="{ icon__active: subOrder.status == 'PAUSE' }"
+                                @click="pause(subOrder)" 
+                                v-if="!subOrder.end_time"
+                            >
+                            </i>
+                        </td>
+                        <td class="td-6 td-6-2">                            
+                            <i 
+                                class="icon far fa-stop-circle"
+                                :class="{ icon__active: subOrder.end_time }"
+                                @click="stopOrder(order, subOrder)" 
+                            >
+                            </i>                          
                         </td>
                     </tr>
                 </td>
 
                 <td class="td-7">
-                    <div class="stop-order__wrap">
-                        <div class="stop-order" v-if="true" @click="stopOrder(order)"></div>
-                    </div>   
-                </td>
-                
-<!--                 <td>
-                    <tr class="tr-product" v-for="(subitem, index) in item.products">
-                        <td class="td-3 product_name" @click="changeOrder(item, subitem)">{{ subitem.name }}</td>
-
-                        <td class="td-4">{{ getTimePlay(item.start_time, subitem.end_time) }}</td>
-                        <td class="td-5">{{ getBill(subitem.tariff_id, getTime(item.start_time, subitem.end_time)) }} р</td>
-
-                        <td class="td-6"
-                        >
-                            <div class="stop-order__wrap">                                
-                                <div
-                                    class="stop-order" 
-                                    @click="stopOrder(item, subitem.product_id)" 
-                                    v-if="!subitem.end_time"
-                                >
-                                </div>
-                                <div v-if="subitem.end_time" class="ord__td-6 stop-order_st"></div>
-                            </div>
-                        </td>
-                    </tr>
-                </td> -->
-
-<!--                 <td class="td-7">
-                    <div class="stop-order__wrap">
-                        <div class="stop-order" v-if="item.products.length > 1" @click="stopOrder(item)"></div>
-                    </div>
-                </td> -->
+                    <!-- <i 
+                         class="icon far fa-stop-circle"
+                         @click="stopOrder(order)" 
+                     >
+                     </i>  -->  
+                </td>              
             </tr>
         </table>
 
-        <DetailsOrder v-if="showDetails" :data-product="product" :data-order="order" @close="closeDetails"></DetailsOrder>
-        <Resume :order="order" @close="onClose" v-if="showResume"></Resume>
+        <DetailsOrder 
+            v-if="showDetails" 
+            :dataOrder="order" 
+            :dataSubOrder="subOrder" 
+            @close="closeDetails"
+        >
+        </DetailsOrder>
+
+        <Resume :order="order" :subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
     </div>
 </template>
 
 <script>
     import Resume       from './Resume'
-    import DetailsOrder from  './DetailsOrder/DetailsOrder'
+    import DetailsOrder from  './DetailsOrder/DetailsChangeOrder'
     import Icon         from  './Icon/Icon'
 
-    import getBill    from '../../functions/getBill'
+    import calculateBill    from '../../functions/calculateBill'
     import timeFormat from '../../functions/timeFormat'
     import getTime    from '../../functions/getTime'
 
@@ -103,7 +90,7 @@
         data() {
             return {
                 order: null,
-                product: null,
+                subOrder: null,
 
                 showDetails: false,
                 showResume: false,
@@ -111,30 +98,92 @@
         },
 
         methods: {
-            ...getBill,
             ...getTime,
             ...timeFormat,
+            ...calculateBill,
 
-            changeOrder(order, product) {
-                this.product = product
-                //console.log(product)
-
-                this.showDetails = true
-                
+            toChange(order, subOrder) {
                 this.order = order
+                this.subOrder = subOrder
+                this.showDetails = true
             },
+
             closeDetails() {
-                this.product = null
+                this.subOrder = null
                 this.order = null
                 this.showDetails = false
             },
 
-            getTimePlay(start, end) {
-                const time = this.getTime(start, end)
-                return this.timeFormat(time)
+            getTimePlay(order, subOrder) {
+                const start = Date.parse(order.start_time)
+                const end   = this.$store.getters.options.now
+                const pause = subOrder.pause_time
+
+                const time = end - start
+
+                if (subOrder.status == "ACTIVE") {
+                    if (time && pause) {
+                        return this.timeFormat(time - pause)
+                    }
+                }
+
+                if (subOrder.status == "PAUSE") {
+                    const oldPause = subOrder.pause_time
+                    const newPause = Date.now() - Date.parse(subOrder.pause_start)
+                    const pause = +oldPause + newPause
+                    //console.log(time - pause)
+
+                    if (time && pause) {
+                        return this.timeFormat(time - pause)
+                    }
+                }
+
+                if (subOrder.status == "END") {                   
+                    return this.timeFormat(Date.parse(subOrder.end_time) - start - pause)
+                }
             },
 
-            stopOrder(order, product) {
+            getBill(subOrder) {
+                const order = this.$store.getters.orders.find(i => i.order_id == subOrder.order_id)
+                
+                const time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time
+
+                return this.calculateBill(subOrder.tariff_id, time )
+            },
+
+            pause(subOrder) {
+                if (subOrder.status != 'ACTIVE' && subOrder.status != 'PAUSE') {
+                    console.log('unknown status - ', subOrder.status)
+                    return
+                }
+
+                const makePause = () => {
+                    subOrder.status = "PAUSE"
+                    subOrder.pause_start = Date.now() / 1000        
+                }
+
+                const makeActive = () => {
+                    subOrder.status = "ACTIVE"
+
+                    const pause = Date.now() - Date.parse(subOrder.pause_start)
+
+                    subOrder.pause_time = +subOrder.pause_time + pause
+
+                    subOrder.pause_start = null
+
+                    console.log(subOrder)
+                }
+
+                subOrder.status == "ACTIVE" ? makePause() : makeActive()
+
+
+                this.$store.dispatch('send', {
+                    cmd: 'changeOrderProduct',
+                    value: subOrder
+                })
+            },
+
+            stopOrder(order, subOrder) {
                 /*
                 * Функция принимает ордер и id продукта, ставит временнУю метку стопа,
                 * прописывает стоимость и отправляет на сервер.
@@ -145,29 +194,32 @@
                     return false
                 }
 
-                const stop = (product) => {
-                    // const product = order.products.find(p => p.product_id == product_id)
+                const stop = (subOrder) => {
+                    // const subOrder = order.products.find(p => p.product_id == product_id)
 
-                    product.end_time = Math.floor(Date.now() / 1000)
-                    product.bill = this.getBill(product.tariff_id, this.getTime(order.start_time, product.end_time))
+                    subOrder.end_time = Date.now()
+                    subOrder.bill = this.getBill(subOrder)
+                    subOrder.status = "END"
 
                     this.$store.dispatch('send', {
                         cmd: 'stopOrder',
-                        value: product
+                        value: subOrder
                     })
 
                     this.showResume = true
+                    this.subOrder = subOrder
                     this.order = order
                 }
 
                 const stopAll = () => {
-                    const products = this.getOrderProducts(this.order.order_id).filter(p => p.end_time == null)
+                    const products = this.getSubOrders(this.order.order_id).filter(p => p.end_time == null)
 
                     products.map(p => stop(p))
                 }
 
                 this.order = order
-                return product ? stop(product) : stopAll()                
+
+                return subOrder ? stop(subOrder) : stopAll()                
             },
 
             onClose() {
@@ -175,15 +227,24 @@
                 this.showResume = false
             },
 
-            getOrderProducts(order_id) {
-                return this.$store.getters.OrderProducts.filter(i => i.order_id == order_id)
+            getSubOrders(order_id) {
+                const subOrders = this.$store.getters.orderProducts
+
+                return subOrders ? this.$store.getters.orderProducts.filter(i => i.order_id == order_id) : []   
             },
+
+            title(customer_id) {
+                const customers = this.$store.getters.customers
+                const customer = customers.find(i => i.id_rent == customer_id)
+
+                return customer ? `${customer.fname} ${customer.sname[0]}. ${customer.tname[0]}.  ${customer.phone}` : 'Клиент не указан'
+            },
+
             getProductName(product_id) {
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
                 return product.name
             }
-
         },
 
         computed: {
@@ -193,8 +254,6 @@
             products() {
                 return this.$store.getters.products
             },
-
-
         }
     }
 </script>
@@ -203,52 +262,20 @@
     .empty {
         padding: 0 20px;
     }
-    .stop-order {
-        opacity: 0;
 
+    .icon {
+        opacity: 0.2;
+        text-align: center;  
     }
-    .stop-order__wrap {
-        width: 15px;
-        display: flex;
-        justify-content: center;
-    }
-
-    .stop-order_st {
-        width: 7px;
-        height: 7px;
-        border: 1px solid red;
-        border-radius: 50%;
-
-    }
-    .td-6:hover .stop-order,
-    .td-7:hover .stop-order {
-        position: relative;
+    .icon:hover {
         opacity: 1;
         cursor: pointer;
-        text-align: center;
-        width: 13px;
-        height: 13px;
-        border: 1px solid red;
-        border-radius: 50%;
-        margin: 0 auto;
     }
-    .stop-order::after, 
-    .stop-order::before {
-        display: block;
-        content: '';
-        position: absolute;
-        width: 9px;
-        height: 1px;
-        background-color: #333;
-        top: 6px;
-        left: 2px;
+
+    .icon__active {
+        opacity: 1;
     }
-    .stop-order::after {
-        transform: rotate(45deg);
-    }
-    .stop-order::before {
-        transform: rotate(-45deg);
-    }
+
     .table td {
         padding: 5px;
         box-sizing: border-box;
@@ -289,11 +316,7 @@
         text-align: right;
     }
     .td-6 {
-        width: 25px;
-        text-align: center;
-        vertical-align: middle;
-        box-sizing: border-box;
-        padding: 0;
+        width: 10px;
     }
     .td-7 {
         width: 15px;

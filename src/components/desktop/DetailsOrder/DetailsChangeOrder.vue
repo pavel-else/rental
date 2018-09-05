@@ -17,7 +17,7 @@
                     <tr>
                         <td>Аванс</td>
                         <td>
-                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб">
+                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="status.changeOrder = true">
                         </td>
                     </tr>
                     <tr>
@@ -78,8 +78,9 @@
 </template>
 
 <script>
-    import getOrderId        from '../../../functions/getOrderId'
     import copyObject        from '../../../functions/copyObject'
+    import getOrderId        from '../../../functions/getOrderId'
+    import makeOrder         from '../../../functions/makeOrder'
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
@@ -90,7 +91,8 @@
 
     export default {
         props: {
-            product: Object
+            dataOrder: Object,
+            dataSubOrder: Object
         },
 
         components: {
@@ -101,143 +103,81 @@
             SelectPromotion,
             SelectDeposit,
         },
-
         data() {
             return {
-                order:    {
-                    status:             null,              
-                    start_time:         null,         
-                    order_id:           null,           
-                    order_id_position:  null,  
-                    advance:            null,            
-                    note:               null,               
-                    products:           null,
-                    promotion:          null,          
-                    customer_id:        null,        
-                    deposit:            null,
-                },
-
-                subOrder: {
-                    product_id:   null,
-                    tariff_id:    null,
-                    order_id:     null,
-                    status:       null,
-                    accessories:  null,        
-                    bill:         0,
-                    bill_no_sale: 0,
-                    pause_time:   0,
-                },              
+                order:    {}, 
+                subOrder: {},              
+                product:  {},
 
                 orders:    this.$store.getters.orders,
+                subOrders: this.$store.getters.orderProducts,
+                products:  this.$store.getters.products,
 
-                status: null
+                status: {
+                    changeOrder:    false,
+                    changeSubOrder: false,
+                    splitOrder:     false,
+                },
             }
         },
 
         created() {
-            this.isSerial() ? 
-                this.addSubOrder(this.getLastId()) : 
-                this.newOrder(this.getOrderId('new'), this.getPosition('new'))   
+            this.order = this.dataOrder
+            this.subOrder = this.dataSubOrder
+            this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
         },
-        
+
         methods: {
             ...getOrderId,
-            ...copyObject,
 
             close() {
                 this.$emit('close')
             },
 
             save() {
-                console.log('order: ',this.order, 'subOrder: ', this.subOrder)
 
-                // newOrder
-                if (this.status == 'newOrder') {
+                // changeOrder
+                if (this.status.changeOrder) {
+                    console.log('changeOrder')
+                    
                     this.$store.dispatch('send', [
-                        {cmd: 'newOrder',        value: this.order},
-                        {cmd: 'addOrderProduct', value: this.subOrder},
-                    ])
-
-                    this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
-                    this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
-                }
-
-                // addSubOrder
-                if (this.status == 'addSubOrder') {
-                    console.log('addSubOrder')
-
-                    this.$store.dispatch('send', [
-                        {cmd: 'addOrderProduct', value: this.subOrder},
+                        {cmd: 'changeOrder', value: this.order},
                     ])
                 }
 
+                // changeProduct
+                if (this.status.changeSubOrder && !this.status.splitOrder) {
+                    console.log('ChangeSubOrder')
+                    
+                    this.$store.dispatch('send', [
+                        {cmd: 'changeOrderProduct', value: this.subOrder},
+                    ])
+                }
+
+                // splitOrder
+                if (this.status.splitOrder) {
+                    console.log('splitOrder')
+
+                    this.$store.dispatch('send', [
+                        {
+                            cmd: 'splitOrder', 
+                            value: {
+                                order:    this.order,
+                                subOrder: this.subOrder
+                            }
+                        }
+                    ])
+
+                }
+
+              
                 this.close()
             },
 
-            newOrder(order_id, order_id_position) {
-                this.order.status              = 'ACTIVE'
-                this.order.start_time          = Date.now()
-                this.order.order_id            = order_id
-                this.order.order_id_position   = order_id_position
-
-                this.$set(this.order, 'customer_id', null)
-
+            getPosition() {
+                // Если редактируем конкретный старый ордер, верну его позицию
+                // Если ордер совсем новый, верну свободную позицию
                 
-                this.subOrder.product_id = this.product.id_rent
-                this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.order_id
-                this.subOrder.status     = 'ACTIVE'
-                this.subOrder.pause_time = 0
-
-                this.status = 'newOrder'
-            },
-
-            addSubOrder(order_id) {
-
-                if (!order_id) {
-                    console.log('empty order_id!')
-                    return
-                }
-
-                const order = this.orders.find(i => i.order_id == order_id)
-
-                if (!order) {
-                    console.log('order not found!')
-                }
-
-                this.order = this.copyObject(order)
-
-                this.subOrder.product_id = this.product.id_rent
-                this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.order_id
-                this.subOrder.status     = 'ACTIVE'
-                this.subOrder.pause_time = 0
-
-                this.status = 'addSubOrder'
-                console.log(this.order)
-            },
-
-            isSerial() {
-                const lastTime = this.$store.getters.options.lastOrderTime || false
-                const interval = this.$store.getters.options.lastOrderInterval
-                const now      = this.$store.getters.options.now
-                const lastID   = this.getLastId()
-                const order    = this.orders.find(i => i.order_id == lastID)
-
-                // Если последний ордер уже закрыт
-                if (!order || order.status == 'END') {
-                    return false
-                }
-
-                return lastTime && now - lastTime < interval
-            },
-
-            getLastId() {
-                return this.$store.getters.options.lastOrderID
-            },
-
-            getPosition(cmd) {
-
                 const newPosition = () => {
                     const orders = this.$store.getters.orders
                     const count = 15
@@ -255,35 +195,48 @@
                     return +result                    
                 }
 
-                if (cmd == 'new') {
-                    return newPosition()
-                }
-
-                if (this.status == 'newOrder') {
-                    return newPosition()
-                }
-
-                if (this.status == 'addSubOrder') {
+                if (this.order.order_id_position) {
                     return this.order.order_id_position
                 }
             },
 
+            splitOrder(order_id, position) {
+                const order = this.order
+                const subOrder = this.subOrder
+
+                this.status.splitOrder = true
+
+                order.old_id = this.order.order_id
+
+                order.order_id = order_id
+                order.start_time = Date.parse(this.order.start_time)
+                order.order_id_position = position
+
+
+                //subOrder.product_id = this.product.id_rent
+
+                this.order = order
+                this.subOrder = subOrder
+            },
+
             setPosition({order_id, order_id_position}) {
-
-                this.orders.find(i => i.order_id == order_id) ?
-                    this.addSubOrder(order_id) :
-                    this.newOrder(order_id, order_id_position)
-
-                console.log(this.status)
+                if (!this.orders.find(i => i.order_id == order_id)) {
+                    this.status.splitOrder = true
+                    this.splitOrder(order_id, order_id_position)
+                }
             },
                 
             setCustomer(customer) {
                 this.order.customer_id = customer.id_rent 
                 this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
+
+                this.status.changeOrder = true
             },
 
             setDeposit(deposit) {
                 this.order.deposit = deposit.id_rent
+
+                this.status.changeOrder = true
             },             
 
             setPromotion(promotion) {                 
@@ -292,15 +245,21 @@
                 }
 
                 this.order.promotion = promotion.id
+
+                this.status.changeOrder = true
             },
 
             setAccessories(accessories) {
                 this.subOrder.accessories = accessories
-                console.log(this.subOrder.accessories)
+
+                this.status.changeSubOrder = true
             },
 
             setTariff(tariff) {
                 this.subOrder.tariff_id = tariff.id_rent
+                this.status.changeSubOrder = true
+
+                this.status.changeSubOrder = true
             },
         },
 

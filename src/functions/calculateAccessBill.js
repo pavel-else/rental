@@ -1,7 +1,7 @@
 import roundBill from './roundBill'
 
 export default {
-    getBill(tariff_id, time /**ms*/) {
+    calculateAccessBill(tariff_id, time /**ms*/) {
         if (!tariff_id || !time) {
             return 0
         }
@@ -22,10 +22,12 @@ export default {
             */
 
             // Алиасы
-            const minTime = this.$store.getters.rentMinTime // Порог минималки, 30 min
+            const minTime = this.$store.getters.options.rent_min_time // Порог минималки, 30 min
             const hh = tariff._h_h // расчасовка
             let last_h = +tariff._h_h[0]
             
+            //console.log('time', time)
+
             if (time < minTime) {
                 return tariff._h_min
             }

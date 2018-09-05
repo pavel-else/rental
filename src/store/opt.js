@@ -13,14 +13,14 @@ export default {
         ],
 
         options: {
-            rent_min_time: 0, //ms
+            rent_min_time: 1800000, //min
             rent_round_bill: 0,
 
             lastOrderID: null,
             lastOrderTime: null,
             lastOrderInterval: 180000, //ms       
 
-            now: new Date(),
+            now: Date.now(),
         },
     
         depositList: [
@@ -75,16 +75,16 @@ export default {
             }
         ],
 
-        accessories: [
-            {
-                id: 1,
-                name: 'Детское кресло'
-            },
-            {
-                id: 2,
-                name: 'Шлем'
-            }
-        ]
+        // accessories: [
+        //     {
+        //         id: 1,
+        //         name: 'Детское кресло'
+        //     },
+        //     {
+        //         id: 2,
+        //         name: 'Шлем'
+        //     }
+        // ]
     },
 
     mutations: {
@@ -115,7 +115,7 @@ export default {
 
     actions: {
         startTimer({commit}) {
-            setInterval(() => {commit('now', new Date())}, 3000)
+            setInterval(() => {commit('now', Date.now())}, 1000)
         },
     },
 
@@ -136,9 +136,6 @@ export default {
         },
         promotions(state) {
             return state.promotions
-        },
-        accessories(state) {
-            return state.accessories
         },
     }
 }

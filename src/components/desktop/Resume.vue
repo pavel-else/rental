@@ -4,27 +4,36 @@
             <table>
                     <tr>
                         <td>Заказ</td>
-                        <td>{{order.order_id}}</td>
+                        <td> # {{ order.order_id }}</td>
                     </tr>
                     <tr>
                         <td>Клиент</td>
-                        <td><span v-if="order.customer_name">{{ order.customer_name }} р.</span><span v-else>-</span></td>
+                        <td>
+                            <span v-if="order.customer_name">{{ order.customer_name }}</span>
+                            <span v-else>-</span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Товары</td>
-                        <td>
+                        <td class="products">
                             <table class="table-products">
-                                <tr v-for="product in getOrderProducts()">
-                                    <td>{{ getProductName(product.product_id) }}</td>
+                                <tr 
+                                    v-for="item in subOrders" 
+                                    :class="getClass(item.product_id)"
+                                >
+                                    <td>{{ getProductName(item.product_id) }}</td>
                                     <td>-</td>
-                                    <td>{{ product.bill }} р.</td>
+                                    <td>{{ item.bill }} р.</td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
                     <tr>
                         <td>Залог</td>
-                        <td><span v-if="order.deposit">{{ order.deposit }}</span><span v-else>-</span></td>
+                        <td>
+                            <span v-if="order.deposit">{{ order.deposit }}</span>
+                            <span v-else>-</span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Начало</td>
@@ -32,19 +41,49 @@
                     </tr>
                     <tr>
                         <td>Чистое время</td>
-                        <td>{{ getTimePlay(order) }}</td>
+                        <td>{{ activeTime }}</td>
                     </tr>
+
+                    <tr>
+                        <td>Стоимость проката</td>
+                        <td>{{ total }} р.</td>
+                    </tr>
+
+                    <tr v-if="accessories">
+                        <td>Аксессуары</td>
+                        <td class="accessories">
+                            <tr v-for="item in accessories">
+                                <td>{{ item.name }}</td>
+                                <td> - </td>
+                                <td>{{ item.value }} {{ item.type }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Итого: {{ totalAccess }} р</b></td>
+
+                            </tr>
+                        </td>
+                    </tr>
+
+
                     <tr>
                         <td>Аванс</td>
-                        <td><span v-if="order.advance > 0">{{ order.advance }} р.</span><span v-else>-</span></td>
+                        <td>
+                            <span v-if="order.advance > 0">{{ order.advance }} р.</span>
+                            <span v-else>-</span>
+                        </td>
                     </tr>
+                    
                     <tr>
                         <td>Скидка</td>
-                        <td><span v-if="order.sale > 0">{{ order.sale }} р.</span><span v-else>-</span></td>
+                        <td>
+                            <span v-if="order.sale > 0">{{ order.sale }} р.</span>
+                            <span v-else>-</span>
+                        </td>
                     </tr>
+
                     <tr class="details__bill">
                         <td>К оплате</td>
-                        <td>{{ bill }} р.</td>
+                        <td>{{ total + totalAccess - order.advance }} р.</td>
                     </tr>
             </table>
             <div class="details__close" @click="close"></div>     
@@ -53,64 +92,81 @@
 </template>
 
 <script>
+    import timeFormat from '../../functions/timeFormat'
+    import getTime    from '../../functions/getTime'
+
     export default {
         props: {
-            order: Object
+            order:    Object,
+            subOrder: Object
         },
+        data() {
+            return {
+                subOrders: this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id)
+            }
+        },
+
         methods: {
-            getOrderProducts() {
-                return this.$store.getters.OrderProducts.filter(i => i.order_id == this.order.order_id)
-            },
+            ...getTime,
+            ...timeFormat,
+
             getProductName(product_id) {
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
                 return product.name
             },
-
-            getTimePlay(order) {
-                const timeFormat = function (ms/**number*/) {
-                    if (ms < 0) ms = 0;
-
-                    function num(val){
-                        val = Math.floor(val);
-                        return val < 10 ? '0' + val : val;
-                    }
-                    
-                    var sec = ms / 1000
-                      , hours = sec / 3600  % 24
-                      , minutes = sec / 60 % 60
-                      , seconds = sec % 60
-                    ;
-
-                    return num(hours) + ":" + num(minutes) + ":" + num(seconds);
+            getClass(product_id) {
+                return {
+                    select : this.subOrder.product_id == product_id
                 }
-
-                const start = Date.parse(order.start_time)
-                const products = this.getOrderProducts()
-
-
-                const end = products.reduce((acc, p) => {
-                    return acc = acc < p.end_time ? p.end_time : acc
-                }, 0)
-
-                const diff = end * 1000 - start
-
-                return timeFormat(diff)
             },
 
             close() {
                 this.$emit('close')
-            }
+            },
         },
-        computed: {
-            bill() {
-                const products = this.getOrderProducts()
 
-                return products.reduce((acc, product) => {
-                    return acc + +product.bill
-                }, 0)
+        computed: {
+            total() {
+                return this.subOrders ? this.subOrders.reduce((acc, subOrder) => {
+                    return acc + +subOrder.bill
+                }, 0) : 0   
+            },
+
+            accessories() {
+                if (!this.subOrder.accessories) {
+                    return null
+                }
+
+                const split = this.subOrder.accessories.split(',') // [1, 2]
+
+                return split.map(i => {
+                    return this.$store.getters.accessories.find(j => j.id_rent == i)
+                })
+            },
+
+            totalAccess() {
+                return this.accessories ? this.accessories.reduce((acc, item) => {
+                    acc = item.type == "%" ?
+                        acc + this.total * (item.value / 100) :
+                        acc + +item.value
+                    return acc
+                }, 0) : null
+            },
+
+            activeTime() {
+                const start = this.order.start_time
+                const end   = this.subOrder.end_time
+                const pause = this.subOrder.pause_time
+
+                const time = this.getTime(start, end)
+
+
+                return this.timeFormat(time - pause)
             }
         }
+
+
     }
 </script>
 
@@ -177,5 +233,13 @@
     }
     .table-products td {
         padding: 2px 5px;
+    }
+    .select {
+        outline: 1px solid #333;
+    }
+
+    .accessories,
+    .products {
+        font-size: 14px;
     }
 </style>
