@@ -417,7 +417,8 @@ trait SubOrders
                 SET 
                     `bill`        = :bill, 
                     `bill_rent`   = :bill_rent, 
-                    `bill_access` = :bill_access 
+                    `bill_access` = :bill_access, 
+                    `paid`        = :paid 
                 WHERE 
                     `order_id` = :order_id 
                 AND 
@@ -430,6 +431,7 @@ trait SubOrders
                 'bill_access' => $subOrder[bill_access],
                 'order_id'    => $subOrder[order_id],
                 'product_id'  => $subOrder[product_id],
+                'paid'        => $subOrder[paid],
             );
 
             $result = $this->pDB->set($sql, $d);

@@ -205,18 +205,20 @@
                     subOrder.bill_rent = bill
 
                     const accessories = this.getAccessories(subOrder)
-                    
+
                     subOrder.bill_access = this.billAccess(accessories, bill)
 
                     subOrder.bill = +bill
 
                     subOrder.status = "END"
+                    subOrder.paid = true
 
                     this.$store.dispatch('send', {
                         cmd: 'stopOrder',
                         value: subOrder
                     })
 
+                    // Передача в Resume.vue
                     this.showResume = true
                     this.subOrder = subOrder
                     this.order = order
