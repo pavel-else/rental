@@ -372,7 +372,7 @@ trait SubOrders
         return $id ? $delete($id) : false;
     }
 
-    private function stopOrder($product) {
+    private function stopOrder($subOrder) {
         /*
         * Функция принимает 1 Товар и записывает в БД информацию о стопе
         *
@@ -382,34 +382,35 @@ trait SubOrders
         * 4. Меняем статус ордера, если активных продуктов нет
         */
 
-        $setEndTime = function ($product) {          
+        $setEndTime = function ($subOrder) {          
             $sql = '
-                UPDATE `order_products` 
+                UPDATE 
+                    `order_products` 
                 SET 
                     `end_time` = :end_time,
                     `status`   = :status  
-                WHERE `order_id` = :order_id 
-                AND `product_id` = :product_id' 
+                WHERE 
+                    `order_id` = :order_id 
+                AND 
+                    `product_id` = :product_id' 
             ;
             $d = array(
-                'end_time'      => date("Y-m-d H:i:s", $product[end_time] / 1000), 
-                'status'        => $product[status],
-                'order_id'      => $product[order_id],
-                'product_id'    => $product[product_id],
+                'end_time'   => date("Y-m-d H:i:s", $subOrder[end_time] / 1000), 
+                'status'     => $subOrder[status],
+                'order_id'   => $subOrder[order_id],
+                'product_id' => $subOrder[product_id],
             );
 
             $result = $this->pDB->set($sql, $d);
 
-            if ($result) {
-                $this->writeLog('stopOrder: setEndTime completed');
-            } else {
-                $this->writeLog('stopOrder: setEndTime error');
-            }
+            $log = $result ? 'stopOrder: setEndTime completed' : 'stopOrder: setEndTime error';
+
+            $this->writeLog($log);
 
             return $result;
         };
 
-        $setBill = function ($product) {
+        $setBill = function ($subOrder) {
             $sql = '
                 UPDATE 
                     `order_products` 
@@ -424,74 +425,82 @@ trait SubOrders
             ;
 
             $d = array(
-                'bill'        => $product[bill],
-                'bill_rent'   => $product[bill_rent],
-                'bill_access' => $product[bill_access],
-                'order_id'    => $product[order_id],
-                'product_id'  => $product[product_id],
+                'bill'        => $subOrder[bill],
+                'bill_rent'   => $subOrder[bill_rent],
+                'bill_access' => $subOrder[bill_access],
+                'order_id'    => $subOrder[order_id],
+                'product_id'  => $subOrder[product_id],
             );
 
             $result = $this->pDB->set($sql, $d);
 
-            if ($result) {
-                $this->writeLog('stopOrder: setBill completed');
-            } else {
-                $this->writeLog('stopOrder: setBill error');
-            }
+            $log = $result ? 'stopOrder: setBill completed' : 'stopOrder: setBill error';
+
+            $this->writeLog($log);
 
             return $result;
         };
 
-        $setProductStatus = function ($product) {
+        $setProductStatus = function ($subOrder) {
             $sql = '
-                UPDATE `products` 
-                SET `status` = :status 
-                WHERE `id_rent` = :id_rent' 
+                UPDATE 
+                    `products` 
+                SET 
+                    `status` = :status 
+                WHERE 
+                    `id_rent` = :id_rent' 
             ;
+
             $d = array(
-                'status' => 'free',
-                'id_rent' => $product[product_id],
+                'status'  => 'free',
+                'id_rent' => $subOrder[product_id],
             );
 
             $result = $this->pDB->set($sql, $d);
 
-            if ($result) {
-                $this->writeLog('stopOrder: setProductStatus completed');
-            } else {
-                $this->writeLog('stopOrder: setProductStatus error');
-            }
+            $log = $result ? 'stopOrder: setProductStatus completed' : 'stopOrder: setProductStatus error';
+
+            $this->writeLog($log);
 
             return $result;
         };
 
-        $setOrderStatus = function ($product) {
+        $setOrderStatus = function ($subOrder) {
             /*
             * 1. Выбираем по id продукты вместе с их временными стоп-метками
             * 2. Если на всех продуктах стоят стоп-метки - меняем статус ордера
             */
             $getProducts = function ($order_id) {
                 $sql = '
-                    SELECT `order_id`, `end_time` 
-                    FROM `order_products`
-                    WHERE `order_id` = ' . '\'' . $order_id . '\''
-                ;
+                    SELECT 
+                        `order_id`, 
+                        `end_time` 
+                    FROM 
+                        `order_products`
+                    WHERE 
+                        `order_id` = :order_id
+                ';
 
-                return $this->pDB->get($sql, false, true);               
+                $d = array(
+                    'order_id' => $order_id
+                );
+
+                return $this->pDB->get($sql, false, $d);               
             };
 
-            $changeStatus = function ($order_id, array $products) {
+            $changeStatus = function ($order_id, array $subOrders) {
                 /*
                 * 1. Перебираем все продуты ордера
                 * 2. Если среди них не нашлось активного продукта (end_time == null), меняем статус ордера
                 */
 
-                if (empty($products)) {
+                if (empty($subOrders)) {
                     return;
                 }
 
                 $result = true;
 
-                foreach ($products as $value) {
+                foreach ($subOrders as $value) {
                     if (empty($value[end_time])) {
                         $result = false;
                     }
@@ -499,35 +508,37 @@ trait SubOrders
 
                 if ($result) {
                     $sql = '
-                        UPDATE `orders` 
-                        SET `status` = :status 
-                        WHERE `order_id` = :order_id
+                        UPDATE 
+                            `orders` 
+                        SET 
+                            `status` = :status 
+                        WHERE 
+                            `order_id` = :order_id
                     ';
+
                     $d = array(
                         'order_id' => $order_id,
-                        'status' => 'END'
+                        'status'   => 'END'
                     );
 
                     return $this->pDB->set($sql, $d);
                 } 
             };
             
-            $result = $changeStatus($product[order_id], $getProducts($product[order_id]));
+            $result = $changeStatus($subOrder[order_id], $getProducts($subOrder[order_id]));
 
-            if ($result) {
-                $this->writeLog('stopOrder: setOrderStatus completed');
-            } else {
-                $this->writeLog('stopOrder: setOrderStatus error');
-            }
+            $log = $result ? 'stopOrder: setOrderStatus completed' : 'stopOrder: setOrderStatus error';
+
+            $this->writeLog($log);
 
             return $result;
         };
 
 
-        $setEndTime($product);
-        $setBill($product);
-        $setProductStatus($product);
-        $setOrderStatus($product);
+        $setEndTime($subOrder);
+        $setBill($subOrder);
+        $setProductStatus($subOrder);
+        $setOrderStatus($subOrder);
     }
 }
 
