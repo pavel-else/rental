@@ -121,13 +121,16 @@
 
         data() {
             return {
-                order: this._order,
-                subOrder: this._subOrder,
+                order: {},
+                subOrder: {}
             }
         },
 
         created() {
             if (this.cmd == 'stopOrder') {
+                this.order = this._order
+                this.subOrder = this.subOrder
+
                 this.stopOrder(this.order, this.subOrder)
             }
         },
@@ -142,6 +145,7 @@
 
                 return product.name
             },
+
             getClass(product_id) {
                 return {
                     select : this.subOrder.product_id == product_id
@@ -229,13 +233,12 @@
                 })
             },
 
-
             activeTime() {
-                const start = this.order.start_time
+                const start = Date.parse(this.order.start_time)
                 const end   = this.subOrder.end_time
-                const pause = this.subOrder.pause_time
+                const pause = this.subOrder.pause_time ? this.subOrder.pause_time : 0
 
-                const time = this.getTime(start, end)
+                const time = end - start
 
                 return this.timeFormat(time - pause)
             },
