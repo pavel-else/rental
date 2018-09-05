@@ -80,7 +80,6 @@
 <script>
     import copyObject        from '../../../functions/copyObject'
     import getOrderId        from '../../../functions/getOrderId'
-    import makeOrder         from '../../../functions/makeOrder'
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'

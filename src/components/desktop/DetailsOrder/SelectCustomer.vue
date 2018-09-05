@@ -46,6 +46,9 @@
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
-<style>
 
+<style>
+    .multiselect__input {
+        background-color: #000 !important;
+    }
 </style>

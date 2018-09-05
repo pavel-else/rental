@@ -411,15 +411,24 @@ trait SubOrders
 
         $setBill = function ($product) {
             $sql = '
-                UPDATE `order_products` 
-                SET `bill` = :bill 
-                WHERE `order_id` = :order_id 
-                AND `product_id` = :product_id' 
+                UPDATE 
+                    `order_products` 
+                SET 
+                    `bill`        = :bill, 
+                    `bill_rent`   = :bill_rent, 
+                    `bill_access` = :bill_access 
+                WHERE 
+                    `order_id` = :order_id 
+                AND 
+                    `product_id` = :product_id' 
             ;
+
             $d = array(
-                'bill' => $product[bill],
-                'order_id' => $product[order_id],
-                'product_id' => $product[product_id],
+                'bill'        => $product[bill],
+                'bill_rent'   => $product[bill_rent],
+                'bill_access' => $product[bill_access],
+                'order_id'    => $product[order_id],
+                'product_id'  => $product[product_id],
             );
 
             $result = $this->pDB->set($sql, $d);

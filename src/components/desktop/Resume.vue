@@ -15,15 +15,17 @@
                     </tr>
                     <tr>
                         <td>Товары</td>
-                        <td class="products">
-                            <table class="table-products">
+                        <td class="suborders">
+                            <table class="table-suborders">
                                 <tr 
                                     v-for="item in subOrders" 
                                     :class="getClass(item.product_id)"
                                 >
                                     <td>{{ getProductName(item.product_id) }}</td>
-                                    <td>-</td>
-                                    <td>{{ item.bill }} р.</td>
+                                    <td v-if="item.bill > 0"> _ </td>
+                                    <td>
+                                        <span v-if="item.bill > 0">{{ item.bill }} р.</span>
+                                    </td>
                                 </tr>
                             </table>
                         </td>
@@ -46,21 +48,25 @@
 
                     <tr>
                         <td>Стоимость проката</td>
-                        <td>{{ total }} р.</td>
+                        <td>{{ billRent }} р.</td>
                     </tr>
 
                     <tr v-if="accessories">
                         <td>Аксессуары</td>
-                        <td class="accessories">
-                            <tr v-for="item in accessories">
-                                <td>{{ item.name }}</td>
-                                <td> - </td>
-                                <td>{{ item.value }} {{ item.type }}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Итого: {{ totalAccess }} р</b></td>
-
-                            </tr>
+                        <td>
+                            <table class="accessories">
+                                <tr 
+                                    class="accessories__tr"
+                                    v-for="item in accessories"
+                                >
+                                    <td>{{ item.name }}</td>
+                                    <td> _ </td>
+                                    <td>{{ item.value }} {{ item.type }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="accessories__td--result"><b>= {{ billAccess }} р</b></td>
+                                </tr>                                
+                            </table>
                         </td>
                     </tr>
 
@@ -83,9 +89,17 @@
 
                     <tr class="details__bill">
                         <td>К оплате</td>
-                        <td>{{ total + totalAccess - order.advance }} р.</td>
+                        <td>
+                            {{ total }} р.
+                            <input type="checkbox" checked title="Оплачено">
+                        </td>
                     </tr>
             </table>
+
+            <div class="btn-group">
+                <button>Сохранить</button>
+                <button @click="close">Закрыть</button>
+            </div>
             <div class="details__close" @click="close"></div>     
         </div>
     </div> 
@@ -127,10 +141,25 @@
         },
 
         computed: {
-            total() {
+            billRent() {
                 return this.subOrders ? this.subOrders.reduce((acc, subOrder) => {
                     return acc + +subOrder.bill
                 }, 0) : 0   
+            },
+
+            billAccess() {
+                return this.accessories ? this.accessories.reduce((acc, item) => {
+                    acc = item.type == "%" ?
+                        acc + this.billRent * (item.value / 100) :
+                        acc + +item.value
+                    return acc
+                }, 0) : null
+            },
+
+            total() {
+                return this.order.end_time 
+                    ? this.billRent + this.billAccess - this.order.advance
+                    : this.billRent + this.billAccess
             },
 
             accessories() {
@@ -145,14 +174,6 @@
                 })
             },
 
-            totalAccess() {
-                return this.accessories ? this.accessories.reduce((acc, item) => {
-                    acc = item.type == "%" ?
-                        acc + this.total * (item.value / 100) :
-                        acc + +item.value
-                    return acc
-                }, 0) : null
-            },
 
             activeTime() {
                 const start = this.order.start_time
@@ -161,12 +182,9 @@
 
                 const time = this.getTime(start, end)
 
-
                 return this.timeFormat(time - pause)
             }
         }
-
-
     }
 </script>
 
@@ -180,7 +198,7 @@
     }
 
     td {
-        padding: 5px;
+        padding: 10px 5px;
     }
 
     td:first-child {
@@ -227,11 +245,11 @@
         transform: rotate(-45deg);
     }
 
-    .table-products {
+    .table-suborders {
         padding: 0;
         margin: 0;
     }
-    .table-products td {
+    .table-suborders td {
         padding: 2px 5px;
     }
     .select {
@@ -239,7 +257,15 @@
     }
 
     .accessories,
-    .products {
+    .suborders {
         font-size: 14px;
+    }
+
+    .accessories__tr td {
+        padding: 1px 5px;
+    }
+
+    .accessories__td--result {
+        padding-top: 10px;
     }
 </style>

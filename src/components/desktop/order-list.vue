@@ -77,9 +77,10 @@
     import DetailsOrder from  './DetailsOrder/DetailsChangeOrder'
     import Icon         from  './Icon/Icon'
 
-    import calculateBill    from '../../functions/calculateBill'
-    import timeFormat from '../../functions/timeFormat'
-    import getTime    from '../../functions/getTime'
+    import calculateBill from '../../functions/calculateBill'
+    import billAccess    from '../../functions/billAccess'
+    import timeFormat    from '../../functions/timeFormat'
+    import getTime       from '../../functions/getTime'
 
     export default {
         components: {
@@ -101,6 +102,7 @@
             ...getTime,
             ...timeFormat,
             ...calculateBill,
+            ...billAccess,
 
             toChange(order, subOrder) {
                 this.order = order
@@ -185,7 +187,7 @@
 
             stopOrder(order, subOrder) {
                 /*
-                * Функция принимает ордер и id продукта, ставит временнУю метку стопа,
+                * Функция принимает ордер и сабордер, ставит временнУю метку стопа,
                 * прописывает стоимость и отправляет на сервер.
                 * Если id продукта не указан, то функция остановки применяется для всех активных ордеров
                 */
@@ -198,7 +200,16 @@
                     // const subOrder = order.products.find(p => p.product_id == product_id)
 
                     subOrder.end_time = Date.now()
-                    subOrder.bill = this.getBill(subOrder)
+
+                    const bill = this.getBill(subOrder)
+                    subOrder.bill_rent = bill
+
+                    const accessories = this.getAccessories(subOrder)
+                    
+                    subOrder.bill_access = this.billAccess(accessories, bill)
+
+                    subOrder.bill = +bill
+
                     subOrder.status = "END"
 
                     this.$store.dispatch('send', {
@@ -244,7 +255,19 @@
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
                 return product.name
-            }
+            },
+
+            getAccessories(subOrder) {
+                if (!subOrder.accessories) {
+                    return null
+                }
+
+                const split = subOrder.accessories.split(',') // [1, 2]
+
+                return split.map(i => {
+                    return this.$store.getters.accessories.find(j => j.id_rent == i)
+                })
+            },
         },
 
         computed: {
