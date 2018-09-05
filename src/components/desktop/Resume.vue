@@ -91,38 +91,51 @@
                         <td>К оплате</td>
                         <td>
                             {{ total }} р.
-                            <input type="checkbox" checked title="Оплачено">
                         </td>
                     </tr>
             </table>
 
             <div class="btn-group">
-                <button>Сохранить</button>
-                <button @click="close">Закрыть</button>
+                <button @click="pay">Наличными</button>
+                <button>Картой</button>
+                <button @click="close">Без оплаты</button>
             </div>
+
             <div class="details__close" @click="close"></div>     
         </div>
     </div> 
 </template>
 
 <script>
-    import timeFormat from '../../functions/timeFormat'
-    import getTime    from '../../functions/getTime'
+    import timeFormat    from '../../functions/timeFormat'
+    import getTime       from '../../functions/getTime'
+    import calculateBill from '../../functions/calculateBill'
+
 
     export default {
         props: {
-            order:    Object,
-            subOrder: Object
+            cmd:       String,
+            _order:    Object,
+            _subOrder: Object
         },
+
         data() {
             return {
-                subOrders: this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id)
+                order: this._order,
+                subOrder: this._subOrder,
+            }
+        },
+
+        created() {
+            if (this.cmd == 'stopOrder') {
+                this.stopOrder(this.order, this.subOrder)
             }
         },
 
         methods: {
             ...getTime,
             ...timeFormat,
+            ...calculateBill,
 
             getProductName(product_id) {
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
@@ -138,6 +151,48 @@
             close() {
                 this.$emit('close')
             },
+
+            getBill(subOrder, order) {
+                const time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time
+
+                return this.calculateBill(subOrder.tariff_id, time)
+            },
+
+            getAccessories(subOrder) {
+                if (!subOrder.accessories) {
+                    return null
+                }
+
+                const split = subOrder.accessories.split(',') // [1, 2]
+
+                return split.map(i => {
+                    return this.$store.getters.accessories.find(j => j.id_rent == i)
+                })
+            },
+
+            stopOrder(order, subOrder) {
+                subOrder.end_time = Date.now()
+
+                const billRent = this.getBill(subOrder, order)
+
+                subOrder.bill_rent = billRent
+
+                const accessories = this.getAccessories(subOrder)
+
+
+                subOrder.bill_access = this.billAccess
+
+                subOrder.status = "END"
+            },
+
+            pay() {
+                this.subOrder.paid = true
+
+                this.$store.dispatch('send', {
+                    cmd: 'stopOrder',
+                    value: this.subOrder
+                })
+            }
         },
 
         computed: {
@@ -183,7 +238,11 @@
                 const time = this.getTime(start, end)
 
                 return this.timeFormat(time - pause)
-            }
+            },
+
+            subOrders() {
+                return this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id)
+            }                
         }
     }
 </script>

@@ -43,7 +43,7 @@
                             <i 
                                 class="icon far fa-stop-circle"
                                 :class="{ icon__active: subOrder.end_time }"
-                                @click="stopOrder(order, subOrder)" 
+                                @click="stopOrder(order, subOrder, 'stopOrder')" 
                             >
                             </i>                          
                         </td>
@@ -68,7 +68,7 @@
         >
         </DetailsOrder>
 
-        <Resume :order="order" :subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
+        <Resume :cmd="cmd" :_order="order" :_subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
     </div>
 </template>
 
@@ -88,6 +88,7 @@
             DetailsOrder,
             Icon
         },
+
         data() {
             return {
                 order: null,
@@ -95,6 +96,8 @@
 
                 showDetails: false,
                 showResume: false,
+
+                cmd: null
             }
         },
 
@@ -145,12 +148,14 @@
                 }
             },
 
+
+            /// СРОЧНО ПЕРЕДЕЛАТЬ! ! !
             getBill(subOrder) {
                 const order = this.$store.getters.orders.find(i => i.order_id == subOrder.order_id)
                 
                 const time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time
 
-                return this.calculateBill(subOrder.tariff_id, time )
+                return this.calculateBill(subOrder.tariff_id, time)
             },
 
             pause(subOrder) {
@@ -185,54 +190,63 @@
                 })
             },
 
-            stopOrder(order, subOrder) {
+            stopOrder(order, subOrder, cmd) {
                 /*
                 * Функция принимает ордер и сабордер, ставит временнУю метку стопа,
                 * прописывает стоимость и отправляет на сервер.
                 * Если id продукта не указан, то функция остановки применяется для всех активных ордеров
                 */
 
-                if (!order) {
-                    return false
-                }
-
-                const stop = (subOrder) => {
-                    // const subOrder = order.products.find(p => p.product_id == product_id)
-
-                    subOrder.end_time = Date.now()
-
-                    const bill = this.getBill(subOrder)
-                    subOrder.bill_rent = bill
-
-                    const accessories = this.getAccessories(subOrder)
-
-                    subOrder.bill_access = this.billAccess(accessories, bill)
-
-                    subOrder.bill = +bill
-
-                    subOrder.status = "END"
-                    subOrder.paid = true
-
-                    this.$store.dispatch('send', {
-                        cmd: 'stopOrder',
-                        value: subOrder
-                    })
-
-                    // Передача в Resume.vue
-                    this.showResume = true
-                    this.subOrder = subOrder
+                if (cmd == 'stopOrder') {
+                    this.cmd = cmd
                     this.order = order
+                    this.subOrder = subOrder
+                    this.showResume = true
                 }
 
-                const stopAll = () => {
-                    const products = this.getSubOrders(this.order.order_id).filter(p => p.end_time == null)
 
-                    products.map(p => stop(p))
-                }
+                // if (!order) {
+                //     return false
+                // }
 
-                this.order = order
+                // const stop = (subOrder) => {
 
-                return subOrder ? stop(subOrder) : stopAll()                
+                //     subOrder.end_time = Date.now()
+
+                //     const bill = this.getBill(subOrder)
+                //     subOrder.bill_rent = bill
+
+                //     const accessories = this.getAccessories(subOrder)
+
+                //     subOrder.bill_access = this.billAccess(accessories, bill)
+
+                //     subOrder.bill = +bill
+
+                //     subOrder.status = "END"
+
+
+                //     this.$store.dispatch('send', {
+                //         cmd: 'stopOrder',
+                //         value: subOrder
+                //     })
+
+                //     // Передача в Resume.vue
+                //     this.showResume = true
+                //     this.subOrder = subOrder
+                //     this.order = order
+                // }
+
+                // const stopAll = () => {
+                //     const products = this.getSubOrders(this.order.order_id).filter(i => i.end_time == null)
+
+                //     products.map(i => stop(i))
+                // }
+
+                //this.order = order
+
+              // subOrder.paid = true
+
+                //return subOrder ? stop(subOrder) : stopAll()                
             },
 
             onClose() {
