@@ -291,7 +291,7 @@ trait SubOrders
                 'bill'          => $product[bill],
                 'bill_no_sale'  => $product[bill_no_sale],
                 'pause_start'   => $product[pause_start],
-                'pause_start'   => date("Y-m-d H:i:s", $product[pause_start]),
+                'pause_start'   => $product[pause_start] ? date("Y-m-d H:i:s", $product[pause_start]) : NULL,
                 'pause_time'    => $product[pause_time],
                 'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
                 'status'        => $product[status],

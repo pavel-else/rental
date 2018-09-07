@@ -124,6 +124,7 @@
     import timeFormat    from '../../functions/timeFormat'
     import calculateBill from '../../functions/calculateBill'
     import roundBill     from '../../functions/roundBill'
+    import pause         from './pause'
 
 
     export default {
@@ -145,11 +146,17 @@
         created() {
             console.log('cmd = ', this.cmd)
 
-            if (this.cmd == 'stopOrder') {
+            if (this.cmd == 'stopOrder') {                
                 this.order = this._order
                 this.subOrder = this._subOrder
 
+                if (this.subOrder.status == "PAUSE") {
+                    pause(this.subOrder)
+                }
+
                 this.stopSubOrder(this.order, this.subOrder)
+
+                console.log(this.subOrder)
             }
         },
 
@@ -175,7 +182,7 @@
                 */
 
                 // Заменить product_id на rent_id
-                return this.subOrders.filter(i => i.status === "ACTIVE" && i.product_id != subOrder.product_id).length
+                return this.subOrders.filter(i => i.status !== "END" && i.product_id != subOrder.product_id).length
                     ? false
                     : true
             },
@@ -188,7 +195,7 @@
             getBill(subOrder, order) {
                 // Обертка над calculateBill
 
-                const time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time
+                const time = subOrder.end_time - Date.parse(order.start_time) - subOrder.pause_time
 
                 return +this.calculateBill(subOrder.tariff_id, time)
             },
@@ -274,10 +281,15 @@
                 const start = Date.parse(this.order.start_time)
                 const end   = this.subOrder.end_time
                 const pause = this.subOrder.pause_time ? this.subOrder.pause_time : 0
+                const time = end - start - pause
 
-                const time = end - start
+                // console.log(start)
+                // console.log(end)
+                // console.log(pause)
+                // console.log(time)
+                // console.log(this.timeFormat(time))
 
-                return this.timeFormat(time - pause)
+                return this.timeFormat(time)
             },
 
             subOrders() {
