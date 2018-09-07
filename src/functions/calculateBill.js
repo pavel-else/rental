@@ -52,8 +52,7 @@ export default {
                 result = tariff._h_min
             }
                 
-            return roundBill(result) 
-            
+            return result           
         }
 
         const d = (tariff, time) => {
