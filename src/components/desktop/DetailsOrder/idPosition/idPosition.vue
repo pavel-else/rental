@@ -12,7 +12,7 @@
                     :select="select == index"
                 >
                 </Icon>
-                {{item.order_id}}
+<!--                 {{item.order_id}} -->
             </div>
         </div>
         <div class="btn" v-else @click="open = true">

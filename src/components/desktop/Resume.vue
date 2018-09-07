@@ -112,8 +112,9 @@
             </table>
 
             <div class="btn-group">
-                <button @click="pay('money')">Наличными</button>
-                <button @click="pay('card')">Картой</button>
+
+                <button @click="pay('money')"><i class="fa fa-eur" aria-hidden="true"></i>Наличными</button>
+                <button @click="pay('card')"><i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой</button>
                 <button v-if="!isLast(subOrder)"@click="pay('dont pay')">Без оплаты</button>
             </div>
         </div>
@@ -380,5 +381,9 @@
     .accessories__td--result {
         padding-top: 10px;
         text-align: right;
+    }
+
+    .icon {
+        margin-right: 10px;
     }
 </style>

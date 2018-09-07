@@ -151,7 +151,11 @@
 
             /// СРОЧНО ПЕРЕДЕЛАТЬ! ! !
             getBill(order, subOrder) {
-                const time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time
+                const time = subOrder.status == "ACTIVE"
+                    ? Date.now() - Date.parse(order.start_time) - subOrder.pause_time
+                    : Date.parse(subOrder.pause_start) - Date.parse(order.start_time)
+
+                console.log(time)
 
                 return this.calculateBill(subOrder.tariff_id, time)
             },
