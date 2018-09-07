@@ -48,7 +48,7 @@
 
                     <tr>
                         <td>Стоимость проката</td>
-                        <td>{{ billRent }} р.</td>
+                        <td>{{ getBill(subOrder, order) }} р.</td>
                     </tr>
 
                     <tr v-if="accessories">
@@ -96,9 +96,9 @@
             </table>
 
             <div class="btn-group">
-                <button @click="pay">Наличными</button>
-                <button>Картой</button>
-                <button @click="close">Без оплаты</button>
+                <button @click="pay('money')">Наличными</button>
+                <button @click="pay('card')">Картой</button>
+                <button @click="pay('dont pay')">Без оплаты</button>
             </div>
 
             <div class="details__close" @click="close"></div>     
@@ -129,7 +129,9 @@
         created() {
             if (this.cmd == 'stopOrder') {
                 this.order = this._order
-                this.subOrder = this.subOrder
+                this.subOrder = this._subOrder
+
+                console.log(this.isLast(this.subOrder))
 
                 this.stopOrder(this.order, this.subOrder)
             }
@@ -150,6 +152,15 @@
                 return {
                     select : this.subOrder.product_id == product_id
                 }
+            },
+
+            isLast(subOrder) {
+                /*
+                * Функция нужна для проверки ордера - закрывается последний сабордер или нет?
+                */
+
+                // Заменить product_id на rent_id
+                return this.subOrders.filter(i => i.status === "ACTIVE" && i.product_id != subOrder.product_id).length
             },
 
             close() {
@@ -178,6 +189,7 @@
                 subOrder.end_time = Date.now()
 
                 const billRent = this.getBill(subOrder, order)
+                console.log(billRent)
 
                 subOrder.bill_rent = billRent
 
@@ -189,13 +201,22 @@
                 subOrder.status = "END"
             },
 
-            pay() {
-                this.subOrder.paid = true
+            pay(type) {
+
+                if (type === 'money') {
+                    this.subOrder.paid = true
+                }
+
+                if (type === 'dont pay') {
+                    this.subOrder.paid = false
+                }
 
                 this.$store.dispatch('send', {
                     cmd: 'stopOrder',
                     value: this.subOrder
                 })
+
+                this.close()
             }
         },
 
