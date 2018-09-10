@@ -69,10 +69,13 @@
                     </tr>
                 </table>
                 <div class="btn-group">
+                    <button @click="toPrint">Печать</button>
                     <button @click.prevent="save">Сохранить</button>
                     <button type="button" @click.prevent="close">Отмена</button>
                 </div>
             </form>
+
+            <Print v-if="print" :order="order" @close="closePrint"></Print>
         </div>
     </div>
 </template>
@@ -87,6 +90,7 @@
     import SelectTariff      from './SelectTariff'
     import SelectPromotion   from './SelectPromotion'
     import SelectDeposit     from './SelectDeposit'
+    import Print             from './Print'
 
     export default {
         props: {
@@ -101,6 +105,7 @@
             SelectTariff,
             SelectPromotion,
             SelectDeposit,
+            Print
         },
         data() {
             return {
@@ -117,6 +122,8 @@
                     changeSubOrder: false,
                     splitOrder:     false,
                 },
+
+                print: false,
             }
         },
 
@@ -171,6 +178,12 @@
 
               
                 this.close()
+            },
+            toPrint() {
+                this.print = true
+            },
+            closePrint() {
+                this.print = false
             },
 
             getPosition() {

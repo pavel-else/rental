@@ -81,6 +81,7 @@
     import billAccess    from '../../functions/billAccess'
     import timeFormat    from '../../functions/timeFormat'
     import getTime       from '../../functions/getTime'
+    import roundBill     from '../../functions/roundBill'
 
     export default {
         components: {
@@ -155,9 +156,7 @@
                     ? Date.now() - Date.parse(order.start_time) - subOrder.pause_time
                     : Date.parse(subOrder.pause_start) - Date.parse(order.start_time)
 
-                console.log(time)
-
-                return this.calculateBill(subOrder.tariff_id, time)
+                return roundBill(this.calculateBill(subOrder.tariff_id, time))
             },
 
             pause(subOrder) {

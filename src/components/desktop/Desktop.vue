@@ -2,7 +2,6 @@
     <div class="desktop">
 
         <product-list class="snippet snippet__products" @addOrder="addOrder($event)"></product-list>
-
         
         <order-list class="snippet snippet__orders"></order-list>
 
