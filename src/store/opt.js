@@ -75,6 +75,7 @@ export default {
             }
         ],
 
+<<<<<<< HEAD
         accessories: [
             {
                 id: 1,
@@ -85,6 +86,18 @@ export default {
                 name: 'Шлем'
             }
         ]
+=======
+        // accessories: [
+        //     {
+        //         id: 1,
+        //         name: 'Детское кресло'
+        //     },
+        //     {
+        //         id: 2,
+        //         name: 'Шлем'
+        //     }
+        // ]
+>>>>>>> dev
     },
 
     mutations: {
@@ -136,9 +149,6 @@ export default {
         },
         promotions(state) {
             return state.promotions
-        },
-        accessories(state) {
-            return state.accessories
         },
     }
 }

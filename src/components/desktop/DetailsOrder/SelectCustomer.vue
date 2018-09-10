@@ -27,7 +27,7 @@
         components: { Multiselect },
         data () {
             return {
-                value: this.$store.getters.customers.find(c => c.id_rent == this.default),                  
+                value: this.$store.getters.customers.find(i => i.id_rent == this.default),                  
                 options: this.data
             }
         },
@@ -46,6 +46,9 @@
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
-<style>
 
+<style>
+    .multiselect__input {
+        background-color: #000 !important;
+    }
 </style>

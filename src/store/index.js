@@ -10,6 +10,10 @@ import options         from './opt'
 import tariffs         from './tariffs'
 import categories      from './categories'
 import history         from './History/history'
+<<<<<<< HEAD
+=======
+import accessories     from './accessories'
+>>>>>>> dev
 
 
 Vue.use(Vuex)
@@ -24,6 +28,7 @@ const store = new Vuex.Store({
         tariffs,
         categories,
         history,
+        accessories,
     },
 
     actions: {
@@ -75,7 +80,11 @@ const store = new Vuex.Store({
                     commit('setCustomers',     r.data.customers)
                     commit('setOrderProducts', r.data.order_products)
                     commit('setOrders',        r.data.orders)
+<<<<<<< HEAD
                     /*commit('setOrders', { orders: r.data.orders, products: r.data.products })*/
+=======
+                    commit('setAccessories',   r.data.accessories)
+>>>>>>> dev
                 })
             }
 
@@ -89,7 +98,8 @@ const store = new Vuex.Store({
                     'getTariffs', 
                     'getCategories', 
                     'getOptions', 
-                    'getLogs'
+                    'getLogs',
+                    'getAccessories'
                 ]
 
                 const queue = cmds.map(i => {

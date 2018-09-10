@@ -1,8 +1,12 @@
 <template>        
     <div class="desktop">
+<<<<<<< HEAD
 
         <product-list class="snippet snippet__products" @addOrder="addOrder($event)"></product-list>
+=======
+>>>>>>> dev
 
+        <product-list class="snippet snippet__products" @addOrder="addOrder($event)"></product-list>
         
         <order-list class="snippet snippet__orders"></order-list>
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!-- 
     Компонент оперирует ордерами продуктов
     Данные в компонент могут приходить из 2 источников
@@ -23,6 +24,12 @@
     <div class="canvas">
         <div class="add-order details">
             <!-- <h3>Детали заказа<span> - #{{ order.order_id }}</span></h3> -->
+=======
+<template>
+    <div class="canvas">
+        <div class="add-order details">
+            <h3>Детали заказа<span> - #{{ order.order_id }}</span></h3>
+>>>>>>> dev
             <form @submit.prevent="">
                 <table>
                     <tr>
@@ -73,7 +80,11 @@
                     <tr>
                         <td>Аксессуары</td>
                         <td>
+<<<<<<< HEAD
                             <SelectAccessories :data="accessories" :default="order.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
+=======
+                            <SelectAccessories :data="accessories" :default="subOrder.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
+>>>>>>> dev
                         </td>
                     </tr>
                     <tr>
@@ -90,10 +101,19 @@
                     </tr>
                 </table>
                 <div class="btn-group">
+<<<<<<< HEAD
+=======
+                    <button @click="toPrint">Печать</button>
+>>>>>>> dev
                     <button @click.prevent="save">Сохранить</button>
                     <button type="button" @click.prevent="close">Отмена</button>
                 </div>
             </form>
+<<<<<<< HEAD
+=======
+
+            <Print v-if="print" :order="order" @close="closePrint"></Print>
+>>>>>>> dev
         </div>
     </div>
 </template>
@@ -101,7 +121,10 @@
 <script>
     import copyObject        from '../../../functions/copyObject'
     import getOrderId        from '../../../functions/getOrderId'
+<<<<<<< HEAD
     import makeOrder         from '../../../functions/makeOrder'
+=======
+>>>>>>> dev
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
@@ -109,6 +132,10 @@
     import SelectTariff      from './SelectTariff'
     import SelectPromotion   from './SelectPromotion'
     import SelectDeposit     from './SelectDeposit'
+<<<<<<< HEAD
+=======
+    import Print             from './Print'
+>>>>>>> dev
 
     export default {
         props: {
@@ -123,6 +150,10 @@
             SelectTariff,
             SelectPromotion,
             SelectDeposit,
+<<<<<<< HEAD
+=======
+            Print
+>>>>>>> dev
         },
         data() {
             return {
@@ -137,7 +168,14 @@
                 status: {
                     changeOrder:    false,
                     changeSubOrder: false,
+<<<<<<< HEAD
                 },
+=======
+                    splitOrder:     false,
+                },
+
+                print: false,
+>>>>>>> dev
             }
         },
 
@@ -166,7 +204,11 @@
                 }
 
                 // changeProduct
+<<<<<<< HEAD
                 if (this.status.changeSubOrder) {
+=======
+                if (this.status.changeSubOrder && !this.status.splitOrder) {
+>>>>>>> dev
                     console.log('ChangeSubOrder')
                     
                     this.$store.dispatch('send', [
@@ -174,6 +216,7 @@
                     ])
                 }
 
+<<<<<<< HEAD
             //     // splitProduct
             //     if (this.status == 'change' && this.statusPosition == 'new') {
             //         console.log('splitProduct')
@@ -233,6 +276,33 @@
             // getLastId() {
             //     return this.$store.getters.options.lastOrderID
             // },
+=======
+                // splitOrder
+                if (this.status.splitOrder) {
+                    console.log('splitOrder')
+
+                    this.$store.dispatch('send', [
+                        {
+                            cmd: 'splitOrder', 
+                            value: {
+                                order:    this.order,
+                                subOrder: this.subOrder
+                            }
+                        }
+                    ])
+
+                }
+
+              
+                this.close()
+            },
+            toPrint() {
+                this.print = true
+            },
+            closePrint() {
+                this.print = false
+            },
+>>>>>>> dev
 
             getPosition() {
                 // Если редактируем конкретный старый ордер, верну его позицию
@@ -258,6 +328,7 @@
                 if (this.order.order_id_position) {
                     return this.order.order_id_position
                 }
+<<<<<<< HEAD
 
             },
 
@@ -265,6 +336,34 @@
                 this.order.order_id = order_id
                 this.subOrder.order_id = order_id
                 this.order.order_id_position = order_id_position
+=======
+            },
+
+            splitOrder(order_id, position) {
+                const order = this.order
+                const subOrder = this.subOrder
+
+                this.status.splitOrder = true
+
+                order.old_id = this.order.order_id
+
+                order.order_id = order_id
+                order.start_time = Date.parse(this.order.start_time)
+                order.order_id_position = position
+
+
+                //subOrder.product_id = this.product.id_rent
+
+                this.order = order
+                this.subOrder = subOrder
+            },
+
+            setPosition({order_id, order_id_position}) {
+                if (!this.orders.find(i => i.order_id == order_id)) {
+                    this.status.splitOrder = true
+                    this.splitOrder(order_id, order_id_position)
+                }
+>>>>>>> dev
             },
                 
             setCustomer(customer) {
@@ -291,9 +390,15 @@
             },
 
             setAccessories(accessories) {
+<<<<<<< HEAD
                 this.order.accessories = accessories
 
                 this.status.changeOrder = true
+=======
+                this.subOrder.accessories = accessories
+
+                this.status.changeSubOrder = true
+>>>>>>> dev
             },
 
             setTariff(tariff) {
