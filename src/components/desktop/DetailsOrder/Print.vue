@@ -58,7 +58,7 @@
 
                 </p>
 
-                <h3 class="print__caption">6. Реквизиты  И  Подписи  Сторон</h3>
+                <h3 class="print__caption">6. Реквизиты  и  Подписи  Сторон</h3>
                 <p class="print__p">
                     <table class="print__p--info">
                         <tr>
@@ -91,9 +91,6 @@
                     </table>
                 </p>
             </div>
-
-            <button @click="close">Закрыть</button>
-
         </div>
     </div>
 </template>
@@ -115,19 +112,7 @@
 
             print() {
                 window.print()
-
-
-                // var prtContent = document.getElementById(strid);
-                // var WinPrint =
-
-                // window.open('','','left=0,top=0');
-                // WinPrint.document.write(prtContent.innerHTML);
-                // WinPrint.document.close();
-                // WinPrint.focus();
-                // WinPrint.print();
-                // WinPrint.close();
-                // prtContent.innerHTML=strOldOne;
-
+                this.close()
             },
         },
 
@@ -183,6 +168,11 @@
 </script>
 
 <style>
+    @page {
+        size:  auto;   /* auto is the initial value */
+        margin: 0mm;  /* this affects the margin in the printer settings */
+    }
+
     p {
         margin: 0;
     }
@@ -199,28 +189,28 @@
         height: 297mm;
         box-sizing: border-box;
         padding: 10mm 10mm 10mm 15mm;
-        line-height: 1.1;
+        line-height: 1.2;
 
         background-color: #fff;
         color: #333;
     } 
 
     .print__title {
-        margin: 0;
-        text-align: center;
-        text-transform: uppercase;
-        font-weight: bold;
-        font-size: 13px
-    }
-    .print__caption {
         margin: 10px 0 0 0;
         text-align: center;
         text-transform: uppercase;
         font-weight: bold;
         font-size: 13px
     }
+    .print__caption {
+        margin: 15px 0 0 0;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 13px
+    }
     .print__p {
-        margin-top: 10px;
+        margin: 5px 0 0 0;
     }
     .print__p--date {
         display: flex;
