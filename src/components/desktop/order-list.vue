@@ -150,9 +150,20 @@
             },
 
             getBill(order, subOrder) {
-                const time = subOrder.status == "ACTIVE"
-                    ? Date.now() - Date.parse(order.start_time) - subOrder.pause_time
-                    : Date.parse(subOrder.pause_start) - Date.parse(order.start_time)
+                let time
+                
+                if (subOrder.status == "ACTIVE") {
+                    time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time
+                }
+
+                if (subOrder.status == "PAUSE") {
+                    time = Date.parse(subOrder.pause_start) - Date.parse(order.start_time)
+                }
+
+                if (subOrder.status == "END") {
+                    time = Date.parse(subOrder.end_time) - Date.parse(order.start_time)
+                }
+
 
                 return roundBill(this.calculateBill(subOrder.tariff_id, time))
             },

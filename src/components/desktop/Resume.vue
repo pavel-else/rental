@@ -18,7 +18,7 @@
                         </td>
                     </tr>
 
-                    <tr>
+                    <tr v-if="isLast(subOrder) && subOrders.length > 1">
                         <td>Товары</td>
                         <td class="suborders">
                             <table class="table-suborders">
@@ -26,23 +26,30 @@
                                     v-for="item in subOrders" 
                                     :class="getClass(item.product_id)"
                                 >
+                                    <td>
+                                        <span v-if="item.paid == 1" title="Оплачено">+</span>
+                                        <span v-else title="Не оплачено">-</span>
+                                    </td>
                                     <td>{{ getProductName(item.product_id) }}</td>
                                     <td v-if="item.bill > 0"> _ </td>
                                     <td>
                                         <span v-if="item.bill_rent > 0" title="Прокат">
-                                            {{ item.bill_rent }}
-                                        </span>
-                                        <span v-if="item.bill_access" title="Аксессуары">
-                                         + {{ item.bill_access }} 
-                                        </span>
-                                        <span v-if="item.sale" title="Скидка">
-                                         - {{ item.sale }} 
+                                            {{ +item.bill_rent + +item.bill_access}}  - {{ item.sale }}
                                         </span>
                                         р.
                                     </td>
                                 </tr>
                             </table>
                         </td>
+                    </tr>
+                    <tr v-else>
+                        <td>
+                            Товар
+                        </td>
+                        <td>
+                            {{ getProductName(subOrder.product_id) }}
+                        </td>
+
                     </tr>
 
                     <tr>
@@ -88,15 +95,10 @@
                     </tr>
 
                     <tr>
-                        <td>Неоплаченные товары</td>
-                        <td>
-                            <span>{{ dontPay }} р.</span>
-                        </td>
-                    </tr>
-                    <tr>
                         <td>Итого</td>
                         <td>
-                            <span>{{ billRent + billAccess }} р.</span>
+                            <span v-if="dontPay">{{ billRent + billAccess }} + {{ dontPay }} = {{ billRent + billAccess + dontPay }} р.</span>
+                            <span v-else>{{ billRent + billAccess }} р.</span>
                         </td>
                     </tr>
 
@@ -231,12 +233,12 @@
 
                 this.total = !this.isLast(subOrder) 
                     ? billRent + this.billAccess - this.sale
-                    : this.dontPay - advance
+                    : (billRent + this.billAccess - this.sale) + this.dontPay - advance
 
                 this.total = roundBill(this.total)
 
                 subOrder.sale = this.sale
-                console.log(subOrder)
+
                 subOrder.status = "END"
             },
 
@@ -280,10 +282,11 @@
                     return acc
                 }, 0) : null
             },
+
             dontPay() {
-                // Перебираю все неоплаченные
+                // Перебираю все неоплаченные кроме текущего
                 return this.subOrders ? this.subOrders.reduce((acc, item) => {
-                    if (item.paid == 0) {
+                    if (item.paid == 0 && item.product_id != this.subOrder.product_id) {
                         acc += +item.bill_access + +item.bill_rent - +item.sale
                     }
 
