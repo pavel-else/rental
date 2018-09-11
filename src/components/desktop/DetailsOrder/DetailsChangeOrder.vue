@@ -59,7 +59,6 @@
                         <td>Тарифный план</td>
                         <td>
                             <SelectTariff 
-                                v-if=""
                                 :data-tariffs="tariffs" 
                                 :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default" 
                                 @setTariff="setTariff($event)"

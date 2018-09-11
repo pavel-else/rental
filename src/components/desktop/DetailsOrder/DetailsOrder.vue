@@ -124,7 +124,7 @@
                     status:       null,
                     accessories:  null,        
                     bill:         0,
-                    bill_no_sale: 0,
+                    sale:         0,
                     pause_time:   0,
                 },              
 

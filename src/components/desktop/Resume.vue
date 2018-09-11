@@ -29,10 +29,16 @@
                                     <td>{{ getProductName(item.product_id) }}</td>
                                     <td v-if="item.bill > 0"> _ </td>
                                     <td>
-                                        <span v-if="item.bill_rent > 0">
+                                        <span v-if="item.bill_rent > 0" title="Прокат">
                                             {{ item.bill_rent }}
-                                            <span v-if="item.bill_access"> + </span>
-                                            {{ item.bill_access }} р.</span>
+                                        </span>
+                                        <span v-if="item.bill_access" title="Аксессуары">
+                                         + {{ item.bill_access }} 
+                                        </span>
+                                        <span v-if="item.sale" title="Скидка">
+                                         - {{ item.sale }} 
+                                        </span>
+                                        р.
                                     </td>
                                 </tr>
                             </table>
@@ -59,7 +65,7 @@
 
                     <tr>
                         <td>Стоимость проката</td>
-                        <td>{{ getBill(subOrder, order) }} р.</td>
+                        <td>{{ billRent }} р.</td>
                     </tr>
 
                     <tr v-if="accessories">
@@ -81,6 +87,25 @@
                         </td>
                     </tr>
 
+                    <tr>
+                        <td>Неоплаченные товары</td>
+                        <td>
+                            <span>{{ dontPay }} р.</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Итого</td>
+                        <td>
+                            <span>{{ billRent + billAccess }} р.</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Скидка</td>
+                        <td>
+                            <span>{{ sale }} р.</span>
+                        </td>
+                    </tr>
 
                     <tr>
                         <td>Аванс</td>
@@ -90,13 +115,6 @@
                         </td>
                     </tr>
                     
-                    <tr>
-                        <td>Скидка</td>
-                        <td>
-                            <span v-if="order.sale > 0">{{ order.sale }} р.</span>
-                            <span v-else>-</span>
-                        </td>
-                    </tr>
 
                     <tr class="details__bill">
                         <td>
@@ -161,8 +179,6 @@
                 }
 
                 this.stopSubOrder(this.order, this.subOrder)
-
-                console.log(this.subOrder)
             }
         },
 
@@ -198,42 +214,29 @@
                 this.$emit('close')
             },
 
-            getBill(subOrder, order) {
-                // Обертка над calculateBill
-
-                const time = subOrder.end_time - Date.parse(order.start_time) - subOrder.pause_time
-
-                return +this.calculateBill(subOrder.tariff_id, time)
-            },
-
             stopSubOrder(order, subOrder) {
                 /*
                 * Функция останавливает сабордер
                 * Если сабордер последний, то подсчитывается конечная стоимость с учетом аванса и неоплаченых товаров
                 */
 
-                const getTotal = () => {
-                    const advance = +order.advance
-
-                    return this.subOrders.reduce((acc, item) => {
-                        if (item.paid == 0) {
-                            acc += +item.bill_access + +item.bill_rent
-                        }
-
-                        return acc                            
-                    }, -advance)
-                }
-
                 subOrder.end_time = Date.now()
 
-                const billRent = this.getBill(subOrder, order)
+                const billRent = this.billRent
 
                 subOrder.bill_rent = billRent
                 subOrder.bill_access = this.billAccess
 
-                this.total = !this.isLast(subOrder) ? billRent + this.billAccess : getTotal()
+                const advance = +order.advance
+
+                this.total = !this.isLast(subOrder) 
+                    ? billRent + this.billAccess - this.sale
+                    : this.dontPay - advance
+
                 this.total = roundBill(this.total)
-                
+
+                subOrder.sale = this.sale
+                console.log(subOrder)
                 subOrder.status = "END"
             },
 
@@ -261,6 +264,13 @@
         },
 
         computed: {
+            billRent() {
+                // Обертка над calculateBill
+                const time = this.subOrder.end_time - Date.parse(this.order.start_time) - this.subOrder.pause_time
+
+                return +this.calculateBill(this.subOrder.tariff_id, time)
+            },
+
             billAccess() {
                 return this.accessories ? this.accessories.reduce((acc, item) => {
                     acc += item.type == "%" 
@@ -269,6 +279,30 @@
 
                     return acc
                 }, 0) : null
+            },
+            dontPay() {
+                // Перебираю все неоплаченные
+                return this.subOrders ? this.subOrders.reduce((acc, item) => {
+                    if (item.paid == 0) {
+                        acc += +item.bill_access + +item.bill_rent - +item.sale
+                    }
+
+                    return acc                            
+                }, 0) : 0
+            },
+
+            sale() {
+                if (!this.customer || !this.customer.sale) {
+                    return 0
+                }
+
+                const sale = (this.billRent + this.billAccess) * (this.customer.sale / 100)
+
+                return roundBill(sale)
+            },
+
+            customer() {
+                return this.$store.getters.customers.find(i => i.id_rent === this.order.customer_id)
             },
 
             accessories() {
@@ -299,7 +333,6 @@
             },
 
             subOrders() {
-
                 return this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id)
             }                
         }
