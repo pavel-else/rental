@@ -149,8 +149,6 @@
                 }
             },
 
-
-            /// СРОЧНО ПЕРЕДЕЛАТЬ! ! !
             getBill(order, subOrder) {
                 const time = subOrder.status == "ACTIVE"
                     ? Date.now() - Date.parse(order.start_time) - subOrder.pause_time

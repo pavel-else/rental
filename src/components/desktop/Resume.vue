@@ -112,10 +112,15 @@
             </table>
 
             <div class="btn-group">
-
-                <button @click="pay('money')"><i class="fa fa-eur" aria-hidden="true"></i>Наличными</button>
-                <button @click="pay('card')"><i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой</button>
-                <button v-if="!isLast(subOrder)"@click="pay('dont pay')">Без оплаты</button>
+                <button class="resume__button" @click="pay('money')">
+                    <i class="fa fa-eur" aria-hidden="true"></i>Наличными
+                </button>
+                <button class="resume__button" @click="pay('card')">
+                    <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
+                </button>
+                <button class="resume__button" v-if="!isLast(subOrder)"@click="pay('dont pay')">
+                    Без оплаты
+                </button>
             </div>
         </div>
     </div> 
@@ -383,7 +388,16 @@
         text-align: right;
     }
 
+    .btn-group {
+        display: flex;
+    }
+
+    .resume__button {
+        display: flex;
+    }
+
     .icon {
+        display: block;
         margin-right: 10px;
     }
 </style>

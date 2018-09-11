@@ -78,6 +78,10 @@ export default {
         margin-right: 10px;
     }
 
+    i {
+        font-family: Roboto Condensed;
+    }
+
     button:hover {
         cursor: pointer;
     }
