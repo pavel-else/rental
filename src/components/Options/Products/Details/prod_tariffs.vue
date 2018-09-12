@@ -5,21 +5,25 @@
                 <td>
                     <input 
                         class="checkbox"
-                        :id="'tariff__' + tariff.id_rent"
+                        :id="'check__tariff-' + tariff.id_rent"
                         type="checkbox" 
                         v-model="tariff.check" 
                         @change="setTariffs"
                     >
-                    <label :for="'tariff__' + tariff.id_rent">
+                    <label :for="'check__tariff-' + tariff.id_rent" title="Привязать к товару">
                     </label>
 
                     <input 
+                        class="radio" 
+                        :id="'radio__tariff-' + tariff.id_rent"
                         type="radio" 
                         name="tariff_default"
                         :value="tariff.id_rent"
                         v-model="tariffDefault"
                         @change="setTariffDefault"
                     >
+                    <label :for="'radio__tariff-' + tariff.id_rent" title="По умолчанию">
+                    </label>
                 </td>
                 <td>{{ tariff.name }}</td>
             </tr>
@@ -33,8 +37,15 @@
             data: Object // product
         },
 
+        created() {
+
+
+        },
+
         data() {
             return {
+                check: [],
+
                 tariffs: this.$store.getters.tariffs.map(tariff => {
                     const ids = this.data.tariff_ids ? this.data.tariff_ids.split(',') : []
 
@@ -46,7 +57,8 @@
                     return tariff
                 }),
 
-                tariffDefault: this.data.tariff_default
+                tariffDefault: this.data.tariff_default,
+
             }
         },
         methods: {
@@ -54,10 +66,15 @@
                 const filter = this.tariffs.filter(tariff => tariff.check == true)
                 const ids = filter.map(tariff => tariff.id_rent)
 
+                console.log(this.check)
+
                 this.$emit('setTariffs', ids.join())
             },
             setTariffDefault() {
                 this.$emit('setTariffDefault', this.tariffDefault)
+            },
+            isShow(tariff) {
+                return tariff.check
             }
         }
     }

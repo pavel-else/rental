@@ -119,6 +119,24 @@ export default {
         transform: rotate(-45deg);
     }
 
+    .radio {
+        display: none;
+    }
+    .radio + label {
+        display: inline-block;
+        position: relative;
+        box-sizing: border-box;
+        border: 2px solid #333;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+    }
+
+    .radio:checked + label {
+        background-color: #333;
+        border-color: lightgray;
+    }
+
     select {
         padding:3px;
         margin: 0;
