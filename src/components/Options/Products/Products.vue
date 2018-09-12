@@ -106,8 +106,12 @@
         margin-right: 10px;
         vertical-align: middle;
     }
+    .product__status--free {
+    }
     .product__status--busy {
-        background-color: lightgray;
+        background-color: #333;
+        border: 1px solid lightgray;
+
     }
     .product__status--fix {
         border: 1px solid red;

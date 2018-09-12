@@ -3,7 +3,16 @@
         <table>
             <tr v-for="tariff in tariffs">
                 <td>
-                    <input type="checkbox" v-model="tariff.check" @change="setTariffs">
+                    <input 
+                        class="checkbox"
+                        :id="'tariff__' + tariff.id_rent"
+                        type="checkbox" 
+                        v-model="tariff.check" 
+                        @change="setTariffs"
+                    >
+                    <label :for="'tariff__' + tariff.id_rent">
+                    </label>
+
                     <input 
                         type="radio" 
                         name="tariff_default"

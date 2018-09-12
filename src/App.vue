@@ -93,6 +93,32 @@ export default {
         padding: 5px;
     }
 
+    .checkbox {
+        display: none;
+    }
+
+    .checkbox + label {
+        display: inline-block;
+        position: relative;
+        box-sizing: border-box;
+        border: 1px solid #333;
+        width: 14px;
+        height: 14px;
+    }
+
+    .checkbox:checked + label::before {
+        display: block;
+        position: absolute;
+        content: '';
+        left: 1px;
+        top: 2px;
+        width: 8px;
+        height: 4px;
+        border-left: 2px solid rgba(255, 255, 255, 0.8);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.8);
+        transform: rotate(-45deg);
+    }
+
     select {
         padding:3px;
         margin: 0;
