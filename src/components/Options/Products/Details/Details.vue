@@ -102,10 +102,18 @@
                 }
             },
             remove() {
-                if (confirm(`Вы действительно хотите удалить тариф '${this.product.name}'?`)) {
+                const title = "Почему Вы хотите удалить этот товар?"
+                const def = "Причина удаления"
+                const answer = prompt(title, def)
+
+                if (answer) {
+                    this.product.note = answer
+                    this.product.status = 'deleted'
+                    this.product.updated = Math.floor(Date.now() / 1000)
+
                     this.$store.dispatch('send', {
-                        cmd: 'deleteProduct',
-                        value: this.product.id_rent
+                        cmd: 'setProduct',
+                        value: this.product
                     })
                     this.$emit('close')
                 }

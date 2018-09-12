@@ -7,10 +7,12 @@ trait Products
             SELECT * 
             FROM `products` 
             WHERE `id_rental_org` = :id_rental_org 
+            AND NOT `status`      = :status
         ';
 
         $d = array (
-            'id_rental_org' => $this->app_id
+            'id_rental_org' => $this->app_id,
+            'status'        => 'deleted'
         );
 
         $result = $this->pDB->get($sql, false, $d);
@@ -81,6 +83,7 @@ trait Products
                 `status`,
                 `tariff_ids`,
                 `tariff_default`,
+                `note`, 
                 `updated`
             ) VALUES (
                 NULL,
@@ -91,6 +94,7 @@ trait Products
                 :status,
                 :tariff_ids,
                 :tariff_default,
+                :note,
                 :updated
             )';
 
@@ -102,6 +106,7 @@ trait Products
                 'status'        => $product[status],
                 'tariff_ids'    => $product[tariff_ids],
                 'tariff_default'=> $product[tariff_default],
+                'note'          => $product[note],
                 'updated'       => date("Y-m-d H:i:s", $product[updated]),
             );
             
@@ -130,8 +135,10 @@ trait Products
                     `tariff_ids`    = :tariff_ids,
                     `tariff_default`= :tariff_default,
                     `categories`    = :categories,
+                    `note`          = :note,
                     `updated`       = :updated 
-                WHERE `id` = :id
+                WHERE 
+                    `id` = :id
             ';
 
             $d = array(
@@ -144,6 +151,7 @@ trait Products
                 'tariff_ids'    => $product[tariff_ids],
                 'tariff_default'=> $product[tariff_default],
                 'categories'    => $product[categories],
+                'note'          => $product[note],
                 'updated'       => date("Y-m-d H:i:s", $product[updated]),
             );
 
