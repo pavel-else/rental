@@ -1,28 +1,28 @@
 <template>
     <div class="option option-products">
         <table>
-            <tr>
-                <th>id</th>
-                <th>Название</th>
-                <th>Стоимость</th>
-                <th>Тариф</th>
-                <th>Категория</th>
-                <th>Статус</th>
-            </tr>
+            <!-- <tr> -->
+                <!-- <th>id</th> -->
+                <!-- <th>Название</th> -->
+                <!-- <th>Стоимость</th> -->
+                <!-- <th>Тариф</th> -->
+                <!-- <th>Категория</th> -->
+                <!-- <th>Статус</th> -->
+            <!-- </tr> -->
             <tr v-for="product in products" @click="onClick(product)">
-                <td>{{ product.id_rent }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.cost }}</td>
-                <td>{{ product.tariff_ids }}</td>
-                <td>{{ product.categories }}</td>
                 <td class="product__td--status">
                     <span 
                         class="product__status" 
                         :class="'product__status--' + product.status"
-                        :title="product.status" 
+                        :title="'Статус: ' + product.status" 
                     >                            
                     </span>
                 </td>
+                <td title="ID">{{ product.id_rent }}</td>
+                <td title="Название">{{ product.name }}</td>
+                <!-- <td>{{ product.cost }}</td> -->
+                <!-- <td>{{ product.tariff_ids }}</td> -->
+                <!-- <td>{{ product.categories }}</td> -->
             </tr>
         </table>
         
@@ -77,7 +77,7 @@
         padding-bottom: 10px;
     }
 
-    tr:not(:first-child):hover {
+    tr:hover {
         cursor: pointer;
         outline: 1px solid #333;
     }
@@ -92,8 +92,8 @@
 
     .products__button--add {
         align-self: flex-start;
-        margin-top: 20px;
-        margin-left: 30px;
+        margin-top: 10px;
+        margin-left: 130px;
     }
 
     .product__status {
