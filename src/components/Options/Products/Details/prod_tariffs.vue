@@ -37,15 +37,8 @@
             data: Object // product
         },
 
-        created() {
-
-
-        },
-
         data() {
             return {
-                check: [],
-
                 tariffs: this.$store.getters.tariffs.map(tariff => {
                     const ids = this.data.tariff_ids ? this.data.tariff_ids.split(',') : []
 
@@ -73,9 +66,6 @@
             setTariffDefault() {
                 this.$emit('setTariffDefault', this.tariffDefault)
             },
-            isShow(tariff) {
-                return tariff.check
-            }
         }
     }
 </script>
