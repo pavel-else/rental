@@ -8,7 +8,6 @@
                 <th>Тариф</th>
                 <th>Категория</th>
                 <th>Статус</th>
-                <!-- <th>Изменено</th> -->
             </tr>
             <tr v-for="product in products" @click="onClick(product)">
                 <td>{{ product.id_rent }}</td>
@@ -16,8 +15,14 @@
                 <td>{{ product.cost }}</td>
                 <td>{{ product.tariff_ids }}</td>
                 <td>{{ product.categories }}</td>
-                <td>{{ product.status }}</td>
-                <!-- <td>{{ product.updated }}</td> -->
+                <td class="product__td--status">
+                    <span 
+                        class="product__status" 
+                        :class="'product__status--' + product.status"
+                        :title="product.status" 
+                    >                            
+                    </span>
+                </td>
             </tr>
         </table>
         
@@ -26,6 +31,7 @@
         <Details :data="product" @close="onClose" v-if="show"></Details>
     </div>
 </template>
+
 <script>
     import Details from './Details/Details'
     export default {
@@ -61,6 +67,7 @@
         
     }
 </script>
+
 <style scoped>
     td, th {
         padding: 5px;
@@ -72,7 +79,11 @@
 
     tr:not(:first-child):hover {
         cursor: pointer;
-        outline: 1px solid rgba(0,0,0,0.2);
+        outline: 1px solid #333;
+    }
+
+    .product__td--status {
+        text-align: center;
     }
 
     .option-products {
@@ -83,6 +94,23 @@
         align-self: flex-start;
         margin-top: 20px;
         margin-left: 30px;
+    }
+
+    .product__status {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        box-sizing: border-box;
+        border: 2px solid #333;
+        border-radius: 50%;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+    .product__status--busy {
+        background-color: lightgray;
+    }
+    .product__status--fix {
+        border: 1px solid red;
     }
 
 </style>

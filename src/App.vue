@@ -93,6 +93,18 @@ export default {
         padding: 5px;
     }
 
+    select {
+        padding:3px;
+        margin: 0;
+        background: #000;
+        color: rgba(255, 255, 255, 0.8);
+        border: 1px solid #333;
+        outline: none;
+
+        cursor: pointer;
+        width: 100%;
+    }
+
     .white button {
         background-color: rgba(255, 255, 255, 0.8);
         border: 3px solid lightgray;

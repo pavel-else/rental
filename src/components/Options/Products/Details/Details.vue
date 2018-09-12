@@ -34,12 +34,19 @@
                     <tr>
                         <td>Категории</td>
                         <td>
-                            <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>                       
+                            <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>
                         </td>
                     </tr>
                     <tr>
                         <td>Статус</td>
-                        <td><input v-model="product.status"></td>
+                        <td>
+                            <select v-model="product.status">
+                                <option disabled value=""></option>
+                                <option value="free">free</option>
+                                <option value="fix">fix</option>
+                                <option value="busy">busy</option>
+                            </select>
+                        </td>
                     </tr>
                 </table>
             </form>
