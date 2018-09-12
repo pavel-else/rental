@@ -34,21 +34,30 @@
                     <tr>
                         <td>Категории</td>
                         <td>
-                            <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>                       
+                            <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>
                         </td>
                     </tr>
                     <tr>
                         <td>Статус</td>
-                        <td><input v-model="product.status"></td>
+                        <td>
+                            <select v-model="product.status">
+                                <option disabled value=""></option>
+                                <option value="free">free</option>
+                                <option value="fix">fix</option>
+                                <option value="busy">busy</option>
+                            </select>
+                        </td>
                     </tr>
                 </table>
-            </form>     
+            </form>
             
             <div class="btn-group">
                 <button @click="save" :disabled="!change">Сохранить</button>
                 <button @click="close">Отмена</button>
                 <button @click="remove" v-if="product.id_rent">Удалить</button>      
             </div>
+
+            <p class="products__updated" v-if="product.id_rent">Дата последнего изменения: {{ product.updated }}</p> 
 
             <div class="details__close" @click="close"></div>     
         </div>
@@ -102,11 +111,20 @@
                 }
             },
             remove() {
-                if (confirm(`Вы действительно хотите удалить тариф '${this.product.name}'?`)) {
+                const title = "Почему Вы хотите удалить этот товар?"
+                const def = "Причина удаления"
+                const answer = prompt(title, def)
+
+                if (answer) {
+                    this.product.note = answer
+                    this.product.status = 'deleted'
+                    this.product.updated = Math.floor(Date.now() / 1000)
+
                     this.$store.dispatch('send', {
-                        cmd: 'deleteProduct',
-                        value: this.product.id_rent
+                        cmd: 'setProduct',
+                        value: this.product
                     })
+
                     this.$emit('close')
                 }
             },
@@ -152,6 +170,11 @@
     }
 
     .btn-group {
-    	margin-top: 10px;
+    	margin-top: 20px;
+    }
+    .products__updated {
+        font-size: 12px;
+        margin: 20px 0 0 0;
+        color: rgba(255, 255, 255, 0.5);
     }
 </style>

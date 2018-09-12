@@ -78,12 +78,14 @@ export default {
         margin-right: 10px;
     }
 
+    i {
+        font-family: Roboto Condensed;
+    }
+
     button:hover {
         cursor: pointer;
     }
 
-<<<<<<< HEAD
-=======
     input {
         background-color: #000;
         border: 1px solid #333;
@@ -91,7 +93,62 @@ export default {
         padding: 5px;
     }
 
->>>>>>> dev
+    .checkbox {
+        display: none;
+    }
+
+    .checkbox + label {
+        display: inline-block;
+        position: relative;
+        box-sizing: border-box;
+        border: 1px solid #333;
+        width: 14px;
+        height: 14px;
+    }
+
+    .checkbox:checked + label::before {
+        display: block;
+        position: absolute;
+        content: '';
+        left: 1px;
+        top: 2px;
+        width: 8px;
+        height: 4px;
+        border-left: 2px solid rgba(255, 255, 255, 0.8);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.8);
+        transform: rotate(-45deg);
+    }
+
+    .radio {
+        display: none;
+    }
+    .radio + label {
+        display: inline-block;
+        position: relative;
+        box-sizing: border-box;
+        border: 2px solid #333;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+    }
+
+    .radio:checked + label {
+        background-color: #333;
+        border-color: lightgray;
+    }
+
+    select {
+        padding:3px;
+        margin: 0;
+        background: #000;
+        color: rgba(255, 255, 255, 0.8);
+        border: 1px solid #333;
+        outline: none;
+
+        cursor: pointer;
+        width: 100%;
+    }
+
     .white button {
         background-color: rgba(255, 255, 255, 0.8);
         border: 3px solid lightgray;
@@ -159,11 +216,7 @@ export default {
     .details {
         position: relative;
         min-width: 300px;
-<<<<<<< HEAD
-        padding: 5px 10px;
-=======
         padding: 5px 10px 10px;
->>>>>>> dev
     }
     .black .details {
         border: 1px solid #333;

@@ -3,14 +3,27 @@
         <table>
             <tr v-for="tariff in tariffs">
                 <td>
-                    <input type="checkbox" v-model="tariff.check" @change="setTariffs">
                     <input 
+                        class="checkbox"
+                        :id="'check__tariff-' + tariff.id_rent"
+                        type="checkbox" 
+                        v-model="tariff.check" 
+                        @change="setTariffs"
+                    >
+                    <label :for="'check__tariff-' + tariff.id_rent" title="Привязать к товару">
+                    </label>
+
+                    <input 
+                        class="radio" 
+                        :id="'radio__tariff-' + tariff.id_rent"
                         type="radio" 
                         name="tariff_default"
                         :value="tariff.id_rent"
                         v-model="tariffDefault"
                         @change="setTariffDefault"
                     >
+                    <label :for="'radio__tariff-' + tariff.id_rent" title="По умолчанию">
+                    </label>
                 </td>
                 <td>{{ tariff.name }}</td>
             </tr>
@@ -37,7 +50,8 @@
                     return tariff
                 }),
 
-                tariffDefault: this.data.tariff_default
+                tariffDefault: this.data.tariff_default,
+
             }
         },
         methods: {
@@ -45,11 +59,13 @@
                 const filter = this.tariffs.filter(tariff => tariff.check == true)
                 const ids = filter.map(tariff => tariff.id_rent)
 
+                console.log(this.check)
+
                 this.$emit('setTariffs', ids.join())
             },
             setTariffDefault() {
                 this.$emit('setTariffDefault', this.tariffDefault)
-            }
+            },
         }
     }
 </script>

@@ -1,10 +1,5 @@
 <template>        
     <div class="desktop">
-<<<<<<< HEAD
-
-        <product-list class="snippet snippet__products" @addOrder="addOrder($event)"></product-list>
-=======
->>>>>>> dev
 
         <product-list class="snippet snippet__products" @addOrder="addOrder($event)"></product-list>
         

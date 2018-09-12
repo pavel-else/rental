@@ -75,18 +75,6 @@ export default {
             }
         ],
 
-<<<<<<< HEAD
-        accessories: [
-            {
-                id: 1,
-                name: 'Детское кресло'
-            },
-            {
-                id: 2,
-                name: 'Шлем'
-            }
-        ]
-=======
         // accessories: [
         //     {
         //         id: 1,
@@ -97,7 +85,6 @@ export default {
         //         name: 'Шлем'
         //     }
         // ]
->>>>>>> dev
     },
 
     mutations: {

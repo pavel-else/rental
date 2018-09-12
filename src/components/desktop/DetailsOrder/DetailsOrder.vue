@@ -79,10 +79,7 @@
 
 <script>
     import getOrderId        from '../../../functions/getOrderId'
-<<<<<<< HEAD
-=======
     import copyObject        from '../../../functions/copyObject'
->>>>>>> dev
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
@@ -116,10 +113,6 @@
                     note:               null,               
                     products:           null,
                     promotion:          null,          
-<<<<<<< HEAD
-                    accessories:        null,        
-=======
->>>>>>> dev
                     customer_id:        null,        
                     deposit:            null,
                 },
@@ -129,12 +122,9 @@
                     tariff_id:    null,
                     order_id:     null,
                     status:       null,
-<<<<<<< HEAD
-=======
                     accessories:  null,        
->>>>>>> dev
                     bill:         0,
-                    bill_no_sale: 0,
+                    sale:         0,
                     pause_time:   0,
                 },              
 
@@ -145,51 +135,14 @@
         },
 
         created() {
-<<<<<<< HEAD
-
-            const newOrder = () => {
-                this.order.status              = 'ACTIVE'
-                this.order.start_time          = Date.now()
-                this.order.order_id            = this.getOrderId('new')
-                this.order.order_id_position   = this.getPosition('new')
-
-                
-                this.subOrder.product_id = this.product.id_rent
-                this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.order_id
-                this.subOrder.status     = 'ACTIVE'
-                this.subOrder.pause_time = 0
-
-                this.status = 'newOrder'
-            }
-
-            const addSubOrder = () => {
-
-                this.order = this.orders.find(i => i.order_id == this.getLastId())
-
-                this.subOrder.product_id = this.product.id_rent
-                this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.order_id
-                this.subOrder.status     = 'ACTIVE'
-                this.subOrder.pause_time = 0
-
-                this.status = 'addSubOrder'
-            }
-
-            this.isSerial() ? addSubOrder() : newOrder()   
-=======
             this.isSerial() ? 
                 this.addSubOrder(this.getLastId()) : 
                 this.newOrder(this.getOrderId('new'), this.getPosition('new'))   
->>>>>>> dev
         },
         
         methods: {
             ...getOrderId,
-<<<<<<< HEAD
-=======
             ...copyObject,
->>>>>>> dev
 
             close() {
                 this.$emit('close')
@@ -221,54 +174,6 @@
                 this.close()
             },
 
-<<<<<<< HEAD
-            isSerial() {
-                const lastTime = this.$store.getters.options.lastOrderTime || false
-                const interval = this.$store.getters.options.lastOrderInterval
-                const now      = this.$store.getters.options.now
-                const lastID   = this.getLastId()
-                const order    = this.orders.find(i => i.order_id == lastID)
-
-                // Если последний ордер уже закрыт
-                if (!order || order.status == 'END') {
-                    return false
-                }
-
-                return lastTime && now - lastTime < interval
-            },
-
-            getLastId() {
-                return this.$store.getters.options.lastOrderID
-            },
-
-            getPosition(cmd) {
-
-                const newPosition = () => {
-                    const orders = this.$store.getters.orders
-                    const count = 15
-                    let id = null
-
-                    const iter = (num) => {
-                        id = orders.find(item => item.order_id_position == num) ? id : num
-
-                        return num < 1 ? id : iter(num - 1)
-                    }
-
-                    const result = iter(count)
-                    this.order.order_id_position = result
-
-                    return +result                    
-                }
-
-                if (cmd == 'new') {
-                    return newPosition()
-                }
-
-                if (this.status == 'newOrder') {
-                    return newPosition()
-                }
-
-=======
             newOrder(order_id, order_id_position) {
                 this.order.status              = 'ACTIVE'
                 this.order.start_time          = Date.now()
@@ -358,25 +263,18 @@
                     return newPosition()
                 }
 
->>>>>>> dev
                 if (this.status == 'addSubOrder') {
                     return this.order.order_id_position
                 }
             },
 
             setPosition({order_id, order_id_position}) {
-<<<<<<< HEAD
-                this.order.order_id = order_id
-                this.subOrder.order_id = order_id
-                this.order.order_id_position = order_id_position
-=======
 
                 this.orders.find(i => i.order_id == order_id) ?
                     this.addSubOrder(order_id) :
                     this.newOrder(order_id, order_id_position)
 
                 console.log(this.status)
->>>>>>> dev
             },
                 
             setCustomer(customer) {
@@ -397,12 +295,8 @@
             },
 
             setAccessories(accessories) {
-<<<<<<< HEAD
-                this.order.accessories = accessories
-=======
                 this.subOrder.accessories = accessories
                 console.log(this.subOrder.accessories)
->>>>>>> dev
             },
 
             setTariff(tariff) {
@@ -458,7 +352,6 @@
         box-sizing: border-box;
         border: 1px solid lightgray;
         padding-left: 10px;
-<<<<<<< HEAD
     }
 
     .black .add-order__input--advance {
@@ -466,15 +359,6 @@
         border: 1px solid #333;
         color: rgba(255, 255, 255, 0.8);
     }
-=======
-    }
-
-    .black .add-order__input--advance {
-        background-color: #000;
-        border: 1px solid #333;
-        color: rgba(255, 255, 255, 0.8);
-    }
->>>>>>> dev
     .white .add-order__input--advance {
         background-color: rgba(255, 255, 255, 0.8);
         border: 1px solid lightgray;

@@ -70,4 +70,7 @@
     .options__link_act {
         outline: 2px solid #333;
     }
+    .option {
+        margin-top: 50px;
+    }
 </style>

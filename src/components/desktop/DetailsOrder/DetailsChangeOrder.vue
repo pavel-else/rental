@@ -1,35 +1,7 @@
-<<<<<<< HEAD
-<!-- 
-    Компонент оперирует ордерами продуктов
-    Данные в компонент могут приходить из 2 источников
-    1. Новый ордер - product-list
-    2. Существующий ордер - order-list
-
-    Если новый ордер - то сам ордер пуст, передается только данные продукта.
-    Если существующий - передается и ордер и продукт
-
-    Данные обрабатываются и приводятся к общему виду в created
-
-    Логическим завершением работы компонента есть отправка данных на сервер с нужной командой
-
-    Команды:
-    1. Новый ордер
-    2. Добавить продукт к ордеру
-    3. Изменить ордер
-    4. Изменить продукт
-    5. Отделить продукт в новый ордер
- -->
-
-<template>
-    <div class="canvas">
-        <div class="add-order details">
-            <!-- <h3>Детали заказа<span> - #{{ order.order_id }}</span></h3> -->
-=======
 <template>
     <div class="canvas">
         <div class="add-order details">
             <h3>Детали заказа<span> - #{{ order.order_id }}</span></h3>
->>>>>>> dev
             <form @submit.prevent="">
                 <table>
                     <tr>
@@ -80,18 +52,13 @@
                     <tr>
                         <td>Аксессуары</td>
                         <td>
-<<<<<<< HEAD
-                            <SelectAccessories :data="accessories" :default="order.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
-=======
                             <SelectAccessories :data="accessories" :default="subOrder.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
->>>>>>> dev
                         </td>
                     </tr>
                     <tr>
                         <td>Тарифный план</td>
                         <td>
                             <SelectTariff 
-                                v-if=""
                                 :data-tariffs="tariffs" 
                                 :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default" 
                                 @setTariff="setTariff($event)"
@@ -101,19 +68,13 @@
                     </tr>
                 </table>
                 <div class="btn-group">
-<<<<<<< HEAD
-=======
                     <button @click="toPrint">Печать</button>
->>>>>>> dev
                     <button @click.prevent="save">Сохранить</button>
                     <button type="button" @click.prevent="close">Отмена</button>
                 </div>
             </form>
-<<<<<<< HEAD
-=======
 
             <Print v-if="print" :order="order" @close="closePrint"></Print>
->>>>>>> dev
         </div>
     </div>
 </template>
@@ -121,10 +82,6 @@
 <script>
     import copyObject        from '../../../functions/copyObject'
     import getOrderId        from '../../../functions/getOrderId'
-<<<<<<< HEAD
-    import makeOrder         from '../../../functions/makeOrder'
-=======
->>>>>>> dev
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
@@ -132,10 +89,7 @@
     import SelectTariff      from './SelectTariff'
     import SelectPromotion   from './SelectPromotion'
     import SelectDeposit     from './SelectDeposit'
-<<<<<<< HEAD
-=======
     import Print             from './Print'
->>>>>>> dev
 
     export default {
         props: {
@@ -150,10 +104,7 @@
             SelectTariff,
             SelectPromotion,
             SelectDeposit,
-<<<<<<< HEAD
-=======
             Print
->>>>>>> dev
         },
         data() {
             return {
@@ -168,14 +119,10 @@
                 status: {
                     changeOrder:    false,
                     changeSubOrder: false,
-<<<<<<< HEAD
-                },
-=======
                     splitOrder:     false,
                 },
 
                 print: false,
->>>>>>> dev
             }
         },
 
@@ -204,11 +151,7 @@
                 }
 
                 // changeProduct
-<<<<<<< HEAD
-                if (this.status.changeSubOrder) {
-=======
                 if (this.status.changeSubOrder && !this.status.splitOrder) {
->>>>>>> dev
                     console.log('ChangeSubOrder')
                     
                     this.$store.dispatch('send', [
@@ -216,67 +159,6 @@
                     ])
                 }
 
-<<<<<<< HEAD
-            //     // splitProduct
-            //     if (this.status == 'change' && this.statusPosition == 'new') {
-            //         console.log('splitProduct')
-
-            //         this.$store.dispatch('send', [
-            //             {cmd: 'deleteOrderProduct', value: {
-            //                 order_id:   this.dataOrder.order_id,
-            //                 product_id: this.product.product_id
-            //             }},
-            //             {cmd: 'newOrder',        value: this.order},
-            //             {cmd: 'addOrderProduct', value: this.product},
-            //             {cmd: 'deleteOrder',     value: this.dataOrder},
-            //         ])
-
-            //     }
-
-                // // newOrder
-                // if (this.status.main == 'newOrder') {
-                //     console.log('newOrder')
-
-                //     this.$store.dispatch('send', [
-                //         {cmd: 'newOrder',        value: this.order},
-                //         {cmd: 'addOrderProduct', value: this.subOrder},
-                //     ])
-
-                //     this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
-                //     this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
-                // }
-
-                // // addSubOrder
-                // if (this.status.main == 'addSubOrder') {
-                //     console.log('addSubOrder')
-
-                //     this.$store.dispatch('send', [
-                //         {cmd: 'addOrderProduct', value: this.subOrder},
-                //     ])
-                // }
-                
-                this.close()
-            },
-
-            // isSerial() {
-            //     const lastTime = this.$store.getters.options.lastOrderTime || false
-            //     const interval = this.$store.getters.options.lastOrderInterval
-            //     const now      = this.$store.getters.options.now
-            //     const lastID   = this.getLastId()
-            //     const order    = this.orders.find(i => i.order_id == lastID)
-
-            //     // Если последний ордер уже закрыт
-            //     if (!order || order.status == 'END') {
-            //         return false
-            //     }
-
-            //     return lastTime && now - lastTime < interval
-            // },
-
-            // getLastId() {
-            //     return this.$store.getters.options.lastOrderID
-            // },
-=======
                 // splitOrder
                 if (this.status.splitOrder) {
                     console.log('splitOrder')
@@ -302,7 +184,6 @@
             closePrint() {
                 this.print = false
             },
->>>>>>> dev
 
             getPosition() {
                 // Если редактируем конкретный старый ордер, верну его позицию
@@ -328,15 +209,6 @@
                 if (this.order.order_id_position) {
                     return this.order.order_id_position
                 }
-<<<<<<< HEAD
-
-            },
-
-            setPosition({order_id, order_id_position}) {
-                this.order.order_id = order_id
-                this.subOrder.order_id = order_id
-                this.order.order_id_position = order_id_position
-=======
             },
 
             splitOrder(order_id, position) {
@@ -363,7 +235,6 @@
                     this.status.splitOrder = true
                     this.splitOrder(order_id, order_id_position)
                 }
->>>>>>> dev
             },
                 
             setCustomer(customer) {
@@ -390,15 +261,9 @@
             },
 
             setAccessories(accessories) {
-<<<<<<< HEAD
-                this.order.accessories = accessories
-
-                this.status.changeOrder = true
-=======
                 this.subOrder.accessories = accessories
 
                 this.status.changeSubOrder = true
->>>>>>> dev
             },
 
             setTariff(tariff) {

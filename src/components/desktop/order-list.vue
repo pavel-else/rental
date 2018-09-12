@@ -27,11 +27,7 @@
                         <td class="td-4" @click="toChange(order, subOrder)" >{{ getTimePlay(order, subOrder) }}</td>
 
                         <td class="td-5" @click="toChange(order, subOrder)" >
-<<<<<<< HEAD
-                            {{ getBill(subOrder) }} р
-=======
                             {{ getBill(order, subOrder) }} р
->>>>>>> dev
                         </td>                          
 
                         <td class="td-6 td-6-1">
@@ -47,11 +43,7 @@
                             <i 
                                 class="icon far fa-stop-circle"
                                 :class="{ icon__active: subOrder.end_time }"
-<<<<<<< HEAD
-                                @click="stopOrder(order, subOrder)" 
-=======
                                 @click="stopOrder(order, subOrder, 'stopOrder')" 
->>>>>>> dev
                             >
                             </i>                          
                         </td>
@@ -76,11 +68,7 @@
         >
         </DetailsOrder>
 
-<<<<<<< HEAD
-        <Resume :order="order" :subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
-=======
         <Resume :cmd="cmd" :_order="order" :_subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
->>>>>>> dev
     </div>
 </template>
 
@@ -89,17 +77,11 @@
     import DetailsOrder from  './DetailsOrder/DetailsChangeOrder'
     import Icon         from  './Icon/Icon'
 
-<<<<<<< HEAD
-    import calculateBill    from '../../functions/calculateBill'
-    import timeFormat from '../../functions/timeFormat'
-    import getTime    from '../../functions/getTime'
-=======
     import calculateBill from '../../functions/calculateBill'
     import billAccess    from '../../functions/billAccess'
     import timeFormat    from '../../functions/timeFormat'
     import getTime       from '../../functions/getTime'
     import roundBill     from '../../functions/roundBill'
->>>>>>> dev
 
     export default {
         components: {
@@ -124,10 +106,7 @@
             ...getTime,
             ...timeFormat,
             ...calculateBill,
-<<<<<<< HEAD
-=======
             ...billAccess,
->>>>>>> dev
 
             toChange(order, subOrder) {
                 this.order = order
@@ -145,7 +124,6 @@
                 const start = Date.parse(order.start_time)
                 const end   = this.$store.getters.options.now
                 const pause = subOrder.pause_time
-<<<<<<< HEAD
 
                 const time = end - start
 
@@ -171,113 +149,21 @@
                 }
             },
 
-            getBill(subOrder) {
-                const order = this.$store.getters.orders.find(i => i.order_id == subOrder.order_id)
-                
-                const time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time
-
-                return this.calculateBill(subOrder.tariff_id, time )
-            },
-
-            pause(subOrder) {
-                if (subOrder.status != 'ACTIVE' && subOrder.status != 'PAUSE') {
-                    console.log('unknown status - ', subOrder.status)
-                    return
-                }
-
-                const makePause = () => {
-                    subOrder.status = "PAUSE"
-                    subOrder.pause_start = Date.now() / 1000        
-                }
-
-                const makeActive = () => {
-                    subOrder.status = "ACTIVE"
-
-                    const pause = Date.now() - Date.parse(subOrder.pause_start)
-
-                    subOrder.pause_time = +subOrder.pause_time + pause
-
-                    subOrder.pause_start = null
-
-                    console.log(subOrder)
-                }
-
-                subOrder.status == "ACTIVE" ? makePause() : makeActive()
-
-
-                this.$store.dispatch('send', {
-                    cmd: 'changeOrderProduct',
-                    value: subOrder
-                })
-            },
-
-            stopOrder(order, subOrder) {
-                /*
-                * Функция принимает ордер и id продукта, ставит временнУю метку стопа,
-                * прописывает стоимость и отправляет на сервер.
-                * Если id продукта не указан, то функция остановки применяется для всех активных ордеров
-                */
-=======
-
-                const time = end - start
->>>>>>> dev
-
-                if (subOrder.status == "ACTIVE") {
-                    if (time && pause) {
-                        return this.timeFormat(time - pause)
-                    }
-                }
-
-<<<<<<< HEAD
-                const stop = (subOrder) => {
-                    // const subOrder = order.products.find(p => p.product_id == product_id)
-
-                    subOrder.end_time = Date.now()
-                    subOrder.bill = this.getBill(subOrder)
-                    subOrder.status = "END"
-
-                    this.$store.dispatch('send', {
-                        cmd: 'stopOrder',
-                        value: subOrder
-                    })
-
-                    this.showResume = true
-                    this.subOrder = subOrder
-                    this.order = order
-                }
-
-                const stopAll = () => {
-                    const products = this.getSubOrders(this.order.order_id).filter(p => p.end_time == null)
-
-                    products.map(p => stop(p))
-                }
-
-                this.order = order
-
-                return subOrder ? stop(subOrder) : stopAll()                
-=======
-                if (subOrder.status == "PAUSE") {
-                    const oldPause = subOrder.pause_time
-                    const newPause = Date.now() - Date.parse(subOrder.pause_start)
-                    const pause = +oldPause + newPause
-                    //console.log(time - pause)
-
-                    if (time && pause) {
-                        return this.timeFormat(time - pause)
-                    }
-                }
-
-                if (subOrder.status == "END") {                   
-                    return this.timeFormat(Date.parse(subOrder.end_time) - start - pause)
-                }
-            },
-
-
-            /// СРОЧНО ПЕРЕДЕЛАТЬ! ! !
             getBill(order, subOrder) {
-                const time = subOrder.status == "ACTIVE"
-                    ? Date.now() - Date.parse(order.start_time) - subOrder.pause_time
-                    : Date.parse(subOrder.pause_start) - Date.parse(order.start_time)
+                let time
+                
+                if (subOrder.status == "ACTIVE") {
+                    time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time
+                }
+
+                if (subOrder.status == "PAUSE") {
+                    time = Date.parse(subOrder.pause_start) - Date.parse(order.start_time)
+                }
+
+                if (subOrder.status == "END") {
+                    time = Date.parse(subOrder.end_time) - Date.parse(order.start_time)
+                }
+
 
                 return roundBill(this.calculateBill(subOrder.tariff_id, time))
             },
@@ -327,7 +213,6 @@
                     this.subOrder = subOrder
                     this.showResume = true
                 }               
->>>>>>> dev
             },
 
             onClose() {
@@ -352,9 +237,6 @@
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
                 return product.name
-<<<<<<< HEAD
-            }
-=======
             },
 
             getAccessories(subOrder) {
@@ -368,7 +250,6 @@
                     return this.$store.getters.accessories.find(j => j.id_rent == i)
                 })
             },
->>>>>>> dev
         },
 
         computed: {

@@ -51,11 +51,6 @@
                 this.$emit('setPosition', {order_id, order_id_position})
 
                 this.open = false
-<<<<<<< HEAD
-
-                console.log(order_id)
-=======
->>>>>>> dev
             }
         },
 

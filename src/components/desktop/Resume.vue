@@ -9,19 +9,6 @@
                         <td>Заказ</td>
                         <td> # {{ order.order_id }}</td>
                     </tr>
-<<<<<<< HEAD
-                    <tr>
-                        <td>Клиент</td>
-                        <td>
-                            <span v-if="order.customer_name">{{ order.customer_name }} р.</span>
-                            <span v-else>-</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Товары</td>
-                        <td>
-                            <table class="table-products">
-=======
 
                     <tr>
                         <td>Клиент</td>
@@ -31,36 +18,40 @@
                         </td>
                     </tr>
 
-                    <tr>
+                    <tr v-if="isLast(subOrder) && subOrders.length > 1">
                         <td>Товары</td>
                         <td class="suborders">
                             <table class="table-suborders">
->>>>>>> dev
                                 <tr 
                                     v-for="item in subOrders" 
                                     :class="getClass(item.product_id)"
                                 >
+                                    <td>
+                                        <span v-if="item.paid == 1" title="Оплачено">+</span>
+                                        <span v-else title="Не оплачено">-</span>
+                                    </td>
                                     <td>{{ getProductName(item.product_id) }}</td>
-<<<<<<< HEAD
-                                    <td>-</td>
-                                    <td>{{ item.bill }} р.</td>
-=======
                                     <td v-if="item.bill > 0"> _ </td>
                                     <td>
-                                        <span v-if="item.bill_rent > 0">
-                                            {{ item.bill_rent }}
-                                            <span v-if="item.bill_access"> + </span>
-                                            {{ item.bill_access }} р.</span>
+                                        <span v-if="item.bill_rent > 0" title="Прокат">
+                                            {{ +item.bill_rent + +item.bill_access}}  - {{ item.sale }}
+                                        </span>
+                                        р.
                                     </td>
->>>>>>> dev
                                 </tr>
                             </table>
                         </td>
                     </tr>
-<<<<<<< HEAD
-=======
+                    <tr v-else>
+                        <td>
+                            Товар
+                        </td>
+                        <td>
+                            {{ getProductName(subOrder.product_id) }}
+                        </td>
 
->>>>>>> dev
+                    </tr>
+
                     <tr>
                         <td>Залог</td>
                         <td>
@@ -68,28 +59,20 @@
                             <span v-else>-</span>
                         </td>
                     </tr>
-<<<<<<< HEAD
-=======
 
->>>>>>> dev
                     <tr>
                         <td>Начало</td>
                         <td>{{ order.start_time }}</td>
                     </tr>
-<<<<<<< HEAD
-=======
 
->>>>>>> dev
                     <tr>
                         <td>Чистое время</td>
                         <td>{{ activeTime }}</td>
                     </tr>
-<<<<<<< HEAD
-=======
 
                     <tr>
                         <td>Стоимость проката</td>
-                        <td>{{ getBill(subOrder, order) }} р.</td>
+                        <td>{{ billRent }} р.</td>
                     </tr>
 
                     <tr v-if="accessories">
@@ -111,8 +94,21 @@
                         </td>
                     </tr>
 
+                    <tr>
+                        <td>Итого</td>
+                        <td>
+                            <span v-if="dontPay">{{ billRent + billAccess }} + {{ dontPay }} = {{ billRent + billAccess + dontPay }} р.</span>
+                            <span v-else>{{ billRent + billAccess }} р.</span>
+                        </td>
+                    </tr>
 
->>>>>>> dev
+                    <tr>
+                        <td>Скидка</td>
+                        <td>
+                            <span>{{ sale }} р.</span>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td>Аванс</td>
                         <td>
@@ -120,31 +116,8 @@
                             <span v-else>-</span>
                         </td>
                     </tr>
-<<<<<<< HEAD
-=======
                     
->>>>>>> dev
-                    <tr>
-                        <td>Скидка</td>
-                        <td>
-                            <span v-if="order.sale > 0">{{ order.sale }} р.</span>
-                            <span v-else>-</span>
-                        </td>
-                    </tr>
 
-<<<<<<< HEAD
-                    <tr>
-                        <td>Стоимость заказа</td>
-                        <td>{{ total }} р.</td>
-                    </tr>
-
-                    <tr class="details__bill">
-                        <td>К оплате</td>
-                        <td>{{ total - order.advance }} р.</td>
-                    </tr>
-            </table>
-            <div class="details__close" @click="close"></div>     
-=======
                     <tr class="details__bill">
                         <td>
                             <span v-if="total >= 0">
@@ -159,46 +132,21 @@
             </table>
 
             <div class="btn-group">
-
-                <button @click="pay('money')"><i class="fa fa-eur" aria-hidden="true"></i>Наличными</button>
-                <button @click="pay('card')"><i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой</button>
-                <button v-if="!isLast(subOrder)"@click="pay('dont pay')">Без оплаты</button>
+                <button class="resume__button" @click="pay('money')">
+                    <i class="fa fa-eur" aria-hidden="true"></i>Наличными
+                </button>
+                <button class="resume__button" @click="pay('card')">
+                    <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
+                </button>
+                <button class="resume__button" v-if="!isLast(subOrder)"@click="pay('dont pay')">
+                    Без оплаты
+                </button>
             </div>
->>>>>>> dev
         </div>
     </div> 
 </template>
 
 <script>
-<<<<<<< HEAD
-    import timeFormat from '../../functions/timeFormat'
-    import getTime    from '../../functions/getTime'
-
-    export default {
-        props: {
-            order:    Object,
-            subOrder: Object
-        },
-        data() {
-            return {
-                subOrders: this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id)
-            }
-        },
-
-        methods: {
-            ...getTime,
-            ...timeFormat,
-
-            getProductName(product_id) {
-                const product = this.$store.getters.products.find(i => i.id_rent == product_id)
-
-                return product.name
-            },
-            getClass(product_id) {
-                return {
-                    select : this.subOrder.product_id == product_id
-                }
-=======
     import timeFormat    from '../../functions/timeFormat'
     import calculateBill from '../../functions/calculateBill'
     import roundBill     from '../../functions/roundBill'
@@ -233,8 +181,6 @@
                 }
 
                 this.stopSubOrder(this.order, this.subOrder)
-
-                console.log(this.subOrder)
             }
         },
 
@@ -263,44 +209,11 @@
                 return this.subOrders.filter(i => i.status !== "END" && i.product_id != subOrder.product_id).length
                     ? false
                     : true
->>>>>>> dev
             },
 
             close() {
 
                 this.$emit('close')
-            },
-<<<<<<< HEAD
-        },
-
-        computed: {
-            total() {
-
-                return this.subOrders ? this.subOrders.reduce((acc, subOrder) => {
-                    return acc + +subOrder.bill
-                }, 0) : 0   
-            },
-
-
-
-            activeTime() {
-                const start = this.order.start_time
-                const end   = this.subOrder.end_time
-                const pause = this.subOrder.pause_time
-
-                const time = this.getTime(start, end)
-
-
-                return this.timeFormat(time - pause)
-            }
-=======
-
-            getBill(subOrder, order) {
-                // Обертка над calculateBill
-
-                const time = subOrder.end_time - Date.parse(order.start_time) - subOrder.pause_time
-
-                return +this.calculateBill(subOrder.tariff_id, time)
             },
 
             stopSubOrder(order, subOrder) {
@@ -309,28 +222,23 @@
                 * Если сабордер последний, то подсчитывается конечная стоимость с учетом аванса и неоплаченых товаров
                 */
 
-                const getTotal = () => {
-                    const advance = +order.advance
-
-                    return this.subOrders.reduce((acc, item) => {
-                        if (item.paid == 0) {
-                            acc += +item.bill_access + +item.bill_rent
-                        }
-
-                        return acc                            
-                    }, -advance)
-                }
-
                 subOrder.end_time = Date.now()
 
-                const billRent = this.getBill(subOrder, order)
+                const billRent = this.billRent
 
                 subOrder.bill_rent = billRent
                 subOrder.bill_access = this.billAccess
 
-                this.total = !this.isLast(subOrder) ? billRent + this.billAccess : getTotal()
+                const advance = +order.advance
+
+                this.total = !this.isLast(subOrder) 
+                    ? billRent + this.billAccess - this.sale
+                    : (billRent + this.billAccess - this.sale) + this.dontPay - advance
+
                 this.total = roundBill(this.total)
-                
+
+                subOrder.sale = this.sale
+
                 subOrder.status = "END"
             },
 
@@ -358,6 +266,13 @@
         },
 
         computed: {
+            billRent() {
+                // Обертка над calculateBill
+                const time = this.subOrder.end_time - Date.parse(this.order.start_time) - this.subOrder.pause_time
+
+                return +this.calculateBill(this.subOrder.tariff_id, time)
+            },
+
             billAccess() {
                 return this.accessories ? this.accessories.reduce((acc, item) => {
                     acc += item.type == "%" 
@@ -366,6 +281,31 @@
 
                     return acc
                 }, 0) : null
+            },
+
+            dontPay() {
+                // Перебираю все неоплаченные кроме текущего
+                return this.subOrders ? this.subOrders.reduce((acc, item) => {
+                    if (item.paid == 0 && item.product_id != this.subOrder.product_id) {
+                        acc += +item.bill_access + +item.bill_rent - +item.sale
+                    }
+
+                    return acc                            
+                }, 0) : 0
+            },
+
+            sale() {
+                if (!this.customer || !this.customer.sale) {
+                    return 0
+                }
+
+                const sale = (this.billRent + this.billAccess) * (this.customer.sale / 100)
+
+                return roundBill(sale)
+            },
+
+            customer() {
+                return this.$store.getters.customers.find(i => i.id_rent === this.order.customer_id)
             },
 
             accessories() {
@@ -396,13 +336,9 @@
             },
 
             subOrders() {
-
                 return this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id)
             }                
->>>>>>> dev
         }
-
-
     }
 </script>
 
@@ -473,8 +409,6 @@
     .select {
         outline: 1px solid #333;
     }
-<<<<<<< HEAD
-=======
 
     .accessories,
     .suborders {
@@ -490,8 +424,16 @@
         text-align: right;
     }
 
+    .btn-group {
+        display: flex;
+    }
+
+    .resume__button {
+        display: flex;
+    }
+
     .icon {
+        display: block;
         margin-right: 10px;
     }
->>>>>>> dev
 </style>
