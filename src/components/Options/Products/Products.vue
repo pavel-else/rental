@@ -8,7 +8,7 @@
                 <th>Тариф</th>
                 <th>Категория</th>
                 <th>Статус</th>
-                <th>Изменено</th>
+                <!-- <th>Изменено</th> -->
             </tr>
             <tr v-for="product in products" @click="onClick(product)">
                 <td>{{ product.id_rent }}</td>
@@ -17,7 +17,7 @@
                 <td>{{ product.tariff_ids }}</td>
                 <td>{{ product.categories }}</td>
                 <td>{{ product.status }}</td>
-                <td>{{ product.updated }}</td>
+                <!-- <td>{{ product.updated }}</td> -->
             </tr>
         </table>
         
@@ -63,7 +63,11 @@
 </script>
 <style scoped>
     td, th {
-        padding-left: 10px;
+        padding: 5px;
+    }
+
+    th {
+        padding-bottom: 10px;
     }
 
     tr:not(:first-child):hover {
@@ -78,6 +82,7 @@
     .products__button--add {
         align-self: flex-start;
         margin-top: 20px;
+        margin-left: 30px;
     }
 
 </style>

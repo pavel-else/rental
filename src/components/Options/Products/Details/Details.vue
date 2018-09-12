@@ -42,13 +42,15 @@
                         <td><input v-model="product.status"></td>
                     </tr>
                 </table>
-            </form>     
+            </form>
             
             <div class="btn-group">
                 <button @click="save" :disabled="!change">Сохранить</button>
                 <button @click="close">Отмена</button>
                 <button @click="remove" v-if="product.id_rent">Удалить</button>      
             </div>
+
+            <p class="products__updated" v-if="product.id_rent">Дата последнего изменения: {{ product.updated }}</p> 
 
             <div class="details__close" @click="close"></div>     
         </div>
@@ -115,6 +117,7 @@
                         cmd: 'setProduct',
                         value: this.product
                     })
+
                     this.$emit('close')
                 }
             },
@@ -160,6 +163,11 @@
     }
 
     .btn-group {
-    	margin-top: 10px;
+    	margin-top: 20px;
+    }
+    .products__updated {
+        font-size: 12px;
+        margin: 20px 0 0 0;
+        color: rgba(255, 255, 255, 0.5);
     }
 </style>
