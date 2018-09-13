@@ -559,6 +559,7 @@ trait SubOrders
     }
 
     private function abortSubOrder($subOrder) {
+        
     }
 
 }
