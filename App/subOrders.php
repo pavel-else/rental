@@ -2,7 +2,7 @@
 
 trait SubOrders
 {
-    private function getOrderProducts() {
+    private function getSubOrders() {
         $sql = '
             SELECT * 
             FROM `order_products` 
@@ -15,7 +15,7 @@ trait SubOrders
 
         $result = $this->pDB->get($sql, false, $d);
         
-        $log = $result ? "getOrderProducts completed" : "getOrderProducts failed";
+        $log = $result ? "getSubOrders completed" : "getSubOrders failed";
 
         $this->writeLog($log);
 
@@ -63,8 +63,8 @@ trait SubOrders
     }
 
     // productid -> id_rent
-    private function addOrderProduct($subOrder) {
-        $log = $this->scanProduct($subOrder);
+    private function addSubOrder($subOrder) {
+        $log = $this->scanSubOrder($subOrder);
 
         if ($log) {
             $this->writeLog($log);
@@ -95,7 +95,7 @@ trait SubOrders
                 $result = $this->pDB->get($sql, 0, $d);
 
                 if ($result) {
-                    $this->writeLog('addOrderProduct failed. free product not found');
+                    $this->writeLog('addSubOrder failed. free product not found');
                 }
 
                 return !$result;
@@ -118,7 +118,7 @@ trait SubOrders
                 $result = $this->pDB->get($sql, 0, $d);
 
                 if (!$result) {
-                    $this->writeLog('addOrderProduct failed. Order not found');
+                    $this->writeLog('addSubOrder failed. Order not found');
                 }
 
                 return $result;
@@ -189,7 +189,7 @@ trait SubOrders
             
             $result = $this->pDB->set($sql, $d);
 
-            $log = $result ? 'addOrderProduct complete' : 'addOrderProduct failed';
+            $log = $result ? 'addSubOrder complete' : 'addSubOrder failed';
 
             $this->writeLog($log);
 
@@ -218,27 +218,29 @@ trait SubOrders
         $find = $search($subOrder[order_id], $subOrder[product_id]);
 
 
-        $find ? $set($subOrder) : $this->writeLog('addOrderProduct failed. Duble products or empty order');
+        $find ? $set($subOrder) : $this->writeLog('addSubOrder failed. Duble products or empty order');
     }
 
-    private function scanProduct($product) {
+    private function scanSubOrder($subOrder) {
+        // Функция используется при добавлении и изменении сабордера
+        
         $log = [];
 
-        if (empty($product)) {
+        if (empty($subOrder)) {
             $log[] = "empty product";
 
             return $log; // все последующие не имеют смысла
         }
 
-        if (!$product[order_id]) {
+        if (!$subOrder[order_id]) {
             $log[] = "empty order_id";
         }
 
-        if (!$product[product_id]) {
+        if (!$subOrder[product_id]) {
             $log[] = "empty product_id";
         }
 
-        if (!$product[tariff_id]) {
+        if (!$subOrder[tariff_id]) {
             $log[] = "empty tariff_id";
         }
 
@@ -246,7 +248,7 @@ trait SubOrders
     }
 
     private function changeSubOrder($subOrder) {
-        $log = $this->scanProduct($subOrder);
+        $log = $this->scanSubOrder($subOrder);
 
         if ($log) {
             $this->writeLog($log);
@@ -334,16 +336,17 @@ trait SubOrders
         return $id ? $update($id, $subOrder) : $this->writeLog('changeSubOrder failed. Product not define in DB');
     }
 
-    private function deleteOrderProduct($product) {
+    private function deleteSubOrder($subOrder) {
+        // Функция используется при привязке сабордера к другому ордеру (splitOrder)
         
-        if (empty($product[product_id])) {
-            $this->writeLog('deleteOrderProducts failed! empty product_id');
+        if (empty($subOrder[product_id])) {
+            $this->writeLog('deleteSubOrders failed! empty product_id');
             
             return false;
         }
 
-        if (empty($product[order_id])) {
-            $this->writeLog('deleteOrderProducts failed! empty order_id');
+        if (empty($subOrder[order_id])) {
+            $this->writeLog('deleteSubOrders failed! empty order_id');
             
             return false;
         }
@@ -361,7 +364,7 @@ trait SubOrders
             );
 
             $result = $this->pDB->set($sql, $d);
-            $log = $result ? 'delete products' : 'delete products failed';
+            $log = $result ? 'delete subOrder' : 'delete subOrder failed';
             $this->writeLog($log);
 
             return $result;
@@ -387,7 +390,7 @@ trait SubOrders
             return $result[0][id];
         };
 
-        $id = $search($product[order_id], $product[product_id]);
+        $id = $search($subOrder[order_id], $subOrder[product_id]);
 
         return $id ? $delete($id) : false;
     }
@@ -570,7 +573,5 @@ trait SubOrders
 
         return $id ? $this->changeSubOrder($subOrder) : false;
     }
-
 }
-
 ?>

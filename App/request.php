@@ -79,20 +79,20 @@ class Request
                 break;
 
                 // SubOrders
-                case 'getOrderProducts':
-                    $this->response['order_products'] = $this->getOrderProducts();
+                case 'getSubOrders':
+                    $this->response['sub_orders'] = $this->getSubOrders();
                 break;
                 case 'getHistory':
                     $this->response['history'] = $this->getHistory($value);
                 break;
                 case 'addOrderProduct':
-                    $this->addOrderProduct($value);
+                    $this->addSubOrder($value);
                 break;
                 case 'changeOrderProduct':
                     $this->changeSubOrder($value);
                 break;
                 case 'deleteOrderProduct':
-                    $this->deleteOrderProduct($value);
+                    $this->deleteSubOrder($value);
                 break;
                 case 'stopOrder':
                     $this->stopOrder($value);
