@@ -223,7 +223,10 @@
             getSubOrders(order_id) {
                 const subOrders = this.$store.getters.orderProducts
 
-                return subOrders ? this.$store.getters.orderProducts.filter(i => i.order_id == order_id) : []   
+                return subOrders 
+                    ? this.$store.getters.orderProducts.filter(i => {
+                        return i.order_id === order_id && (i.status === 'ACTIVE' || i.status === 'PAUSE')
+                    }) : []   
             },
 
             title(customer_id) {

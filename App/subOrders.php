@@ -223,7 +223,7 @@ trait SubOrders
 
     private function scanSubOrder($subOrder) {
         // Функция используется при добавлении и изменении сабордера
-        
+
         $log = [];
 
         if (empty($subOrder)) {
@@ -569,9 +569,14 @@ trait SubOrders
     }
 
     private function abortSubOrder($subOrder) {
-        $id = $this->find('order_products', 5);
+        $id = $this->find('order_products', $subOrder[id_rent]);
 
-        return $id ? $this->changeSubOrder($subOrder) : false;
+        $result = $id ? $this->changeSubOrder($subOrder) : false;
+        $log = $result ? 'subOrder is aborting' : 'abortSubOrder is failed';
+
+        $this->writeLog($log);
+
+        return result;
     }
 }
 ?>

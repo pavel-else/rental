@@ -88,7 +88,10 @@ class Request
                 case 'addOrderProduct':
                     $this->addSubOrder($value);
                 break;
-                case 'changeOrderProduct':
+                case 'changeOrderProduct': //Deprecated
+                    $this->changeSubOrder($value);
+                break;
+                case 'changeSubOrder':
                     $this->changeSubOrder($value);
                 break;
                 case 'deleteOrderProduct':
@@ -165,14 +168,12 @@ class Request
             } 
         };
 
-
         foreach ($queue as $key => $cell) {
 
-            if (empty($cell[cmd])) {
-                break;
+            if ($cell[cmd]) {
+                $switch($cell[cmd], $cell[value]);
             }
 
-            $switch($cell[cmd], $cell[value]);
         }
 
         $this->getLogs();
