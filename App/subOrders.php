@@ -62,6 +62,7 @@ trait SubOrders
         return $result;
     }
 
+    // productid -> id_rent
     private function addOrderProduct($subOrder) {
         $log = $this->scanProduct($subOrder);
 
@@ -244,8 +245,8 @@ trait SubOrders
         return $log ? $log : false;
     }
 
-    private function changeOrderProduct($product) {
-        $log = $this->scanProduct($product);
+    private function changeSubOrder($subOrder) {
+        $log = $this->scanProduct($subOrder);
 
         if ($log) {
             $this->writeLog($log);
@@ -273,22 +274,25 @@ trait SubOrders
             return $result[0][id];
         };
 
-        $update = function ($id, $product) {
+        $update = function ($id, $subOrder) {
 
             $sql = '
                 UPDATE `order_products` 
                 SET  
-                    `id_rental_org` = :id_rental_org, 
                     `order_id`      = :order_id, 
                     `product_id`    = :product_id,
                     `tariff_id`     = :tariff_id,
+                    `accessories`   = :accessories, 
                     `bill`          = :bill,
+                    `bill_rent`     = :bill_rent,
+                    `bill_access`   = :bill_access,
                     `sale`          = :sale,
+                    `paid`          = :paid,
                     `pause_start`   = :pause_start,
                     `pause_time`    = :pause_time,
                     `end_time`      = :end_time,
-                    `status`        = :status,
-                    `accessories`   = :accessories 
+                    `note`          = :note,
+                    `status`        = :status 
                 WHERE
                     `id` = :id
                 AND
@@ -298,33 +302,36 @@ trait SubOrders
             $d = array(
                 'id'            => $id,
                 'id_rental_org' => $this->app_id,
-                'order_id'      => $product[order_id],
-                'product_id'    => $product[product_id],
-                'tariff_id'     => $product[tariff_id],
-                'bill'          => $product[bill],
-                'sale'          => $product[sale],
-                'pause_start'   => $product[pause_start],
-                'pause_start'   => $product[pause_start] ? date("Y-m-d H:i:s", $product[pause_start]) : NULL,
-                'pause_time'    => $product[pause_time],
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
-                'status'        => $product[status],
-                'accessories'   => $product[accessories]
+                'order_id'      => $subOrder[order_id],
+                'product_id'    => $subOrder[product_id],
+                'tariff_id'     => $subOrder[tariff_id],
+                'accessories'   => $subOrder[accessories],
+                'bill'          => $subOrder[bill],
+                'bill_rent'     => $subOrder[bill_rent],
+                'bill_access'   => $subOrder[bill_access],
+                'sale'          => $subOrder[sale],
+                'paid'          => $subOrder[paid],
+                'pause_start'   => $subOrder[pause_start] ? date("Y-m-d H:i:s", $subOrder[pause_start]) : NULL,
+                'pause_time'    => $subOrder[pause_time],
+                'end_time'      => $subOrder[end_time] ? date("Y-m-d H:i:s", $subOrder[end_time]) : NULL,
+                'note'          => $subOrder[note],
+                'status'        => $subOrder[status]
             );
 
             
             $result = $this->pDB->set($sql, $d);
 
-            $log = $result ? 'changeOrderProduct complete' : 'changeOrderProduct failed';
+            $log = $result ? 'changeSubOrder complete' : 'changeSubOrder failed';
 
             $this->writeLog($log);
 
             return $result;
         };
 
-        $id = $search($product[order_id], $product[product_id]);
+        $id = $search($subOrder[order_id], $subOrder[product_id]);
 
 
-        return $id ? $update($id, $product) : $this->writeLog('changeOrderProduct failed. Product not define in DB');
+        return $id ? $update($id, $subOrder) : $this->writeLog('changeSubOrder failed. Product not define in DB');
     }
 
     private function deleteOrderProduct($product) {
@@ -559,7 +566,9 @@ trait SubOrders
     }
 
     private function abortSubOrder($subOrder) {
-        
+        $id = $this->find('order_products', 5);
+
+        return $id ? $this->changeSubOrder($subOrder) : false;
     }
 
 }

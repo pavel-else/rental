@@ -270,7 +270,7 @@
                 // Обертка над calculateBill
                 const time = this.subOrder.end_time - Date.parse(this.order.start_time) - this.subOrder.pause_time
 
-                return +this.calculateBill(this.subOrder.tariff_id, time)
+                return +roundBill(this.calculateBill(this.subOrder.tariff_id, time))
             },
 
             billAccess() {

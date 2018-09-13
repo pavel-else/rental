@@ -198,7 +198,7 @@
                 if (answer) {
                     subOrder.note = answer
                     subOrder.status = 'DEL'
-                    subOrder.end_time = Date.now()
+                    subOrder.end_time = Math.floor(Date.now() / 1000)
 
                     this.$store.dispatch('send', {
                         cmd: 'abortSubOrder',

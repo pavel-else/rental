@@ -89,7 +89,7 @@ class Request
                     $this->addOrderProduct($value);
                 break;
                 case 'changeOrderProduct':
-                    $this->changeOrderProduct($value);
+                    $this->changeSubOrder($value);
                 break;
                 case 'deleteOrderProduct':
                     $this->deleteOrderProduct($value);
@@ -185,7 +185,7 @@ class Request
         echo json_encode($data);
     }
     
-    // /* Функция подключения БД */
+    /* Функция подключения БД */
     private function rent_connect_DB(){
         require_once('../../lib.db.php');
 
@@ -198,6 +198,25 @@ class Request
         }
 
         return $pDB;
+    }
+
+    /* Общая функция поиска id_rent в указанной таблице*/
+    private function find($tableName, $id_rent) {
+        $sql = "
+            SELECT `id` 
+            FROM $tableName 
+            WHERE `id_rental_org` = :id_rental_org
+            AND `id_rent`         = :id_rent
+        ";
+
+        $d = array(
+            'id_rental_org' => $this->app_id,
+            'id_rent'       => $id_rent
+        );
+
+        $result = $this->pDB->get($sql, 0, $d);
+
+        return $result[0][id];   
     }
 }
 
