@@ -62,8 +62,8 @@ trait SubOrders
         return $result;
     }
 
-    private function addOrderProduct($product) {
-        $log = $this->scanProduct($product);
+    private function addOrderProduct($subOrder) {
+        $log = $this->scanProduct($subOrder);
 
         if ($log) {
             $this->writeLog($log);
@@ -126,50 +126,63 @@ trait SubOrders
             return $searchInOrderProduct($product_id) && $searchInOrders($order_id);
         };
 
-        $set = function ($product) {
+        $set = function ($subOrder) {
 
             $sql = 'INSERT INTO `order_products` (
                 `id`, 
+                `id_rent`, 
                 `order_id`, 
                 `id_rental_org`, 
                 `product_id`,
                 `tariff_id`,
                 `bill`,
+                `bill_rent`, 
+                `bill_access`, 
+                `accessories`,
                 `sale`,
+                `paid`, 
                 `pause_start`,
                 `pause_time`,
                 `end_time`,
-                `status`, 
-                `accessories`
+                `note`, 
+                `status` 
             ) VALUES (
-                NULL, 
+                NULL,
+                :id_rent,  
                 :order_id, 
                 :id_rental_org, 
                 :product_id,
                 :tariff_id,
                 :bill,
+                :bill_rent,
+                :bill_access, 
+                :accessories, 
                 :sale,
+                :paid, 
                 :pause_start,
                 :pause_time,
-                :end_time,
-                :status,
-                :accessories
+                :end_time, 
+                :note, 
+                :status
             )';
 
             $d = array(
+                'id_rent'       => $subOrder[id_rent],
+                'order_id'      => $subOrder[order_id],
                 'id_rental_org' => $this->app_id,
-                'order_id'      => $product[order_id],
-                'product_id'    => $product[product_id],
-                'tariff_id'     => $product[tariff_id],
-                'bill'          => $product[bill],
-                'sale'          => $product[sale],
-                'pause_start'   => $product[pause_start],
-                'pause_start'   => $product[pause_start],
-                'pause_time'    => $product[pause_time],
-                'pause_time'    => $product[pause_time],
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
-                'status'        => $product[status],
-                'accessories'   => $product[accessories]
+                'product_id'    => $subOrder[product_id],
+                'tariff_id'     => $subOrder[tariff_id],
+                'accessories'   => $subOrder[accessories],
+                'bill'          => $subOrder[bill],
+                'bill_rent'     => $subOrder[bill_rent],
+                'bill_access'   => $subOrder[bill_access],
+                'sale'          => $subOrder[sale],
+                'paid'          => $subOrder[paid],
+                'pause_start'   => $subOrder[pause_start],
+                'pause_time'    => $subOrder[pause_time],
+                'end_time'      => $subOrder[end_time] ? date("Y-m-d H:i:s", $subOrder[end_time]) : NULL,
+                'note'          => $subOrder[note],
+                'status'        => $subOrder[status]
             );
 
             
@@ -191,7 +204,7 @@ trait SubOrders
             ';
 
             $subD = array(
-                'id_rent'       => $product[product_id],
+                'id_rent'       => $subOrder[product_id],
                 'id_rental_org' => $this->app_id,
                 'status'        => 'busy'
             );
@@ -201,10 +214,10 @@ trait SubOrders
             return $result;
         };
 
-        $find = $search($product[order_id], $product[product_id]);
+        $find = $search($subOrder[order_id], $subOrder[product_id]);
 
 
-        $find ? $set($product) : $this->writeLog('addOrderProduct failed. Duble products or empty order');
+        $find ? $set($subOrder) : $this->writeLog('addOrderProduct failed. Duble products or empty order');
     }
 
     private function scanProduct($product) {
@@ -544,6 +557,10 @@ trait SubOrders
         $setProductStatus($subOrder);
         $setOrderStatus($subOrder);
     }
+
+    private function abortSubOrder($subOrder) {
+    }
+
 }
 
 ?>

@@ -97,6 +97,9 @@ class Request
                 case 'stopOrder':
                     $this->stopOrder($value);
                 break;
+                case 'abortSubOrder':
+                    $this->abortSubOrder($value);
+                break;
                 
                 // Products
                 case 'getProducts':

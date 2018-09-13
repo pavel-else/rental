@@ -70,6 +70,7 @@
                 <div class="btn-group">
                     <button @click="toPrint">Печать</button>
                     <button @click.prevent="save">Сохранить</button>
+                    <button type="button" @click.prevent="abortSubOrder">Удалить товар</button>
                     <button type="button" @click.prevent="close">Отмена</button>
                 </div>
             </form>
@@ -178,11 +179,34 @@
               
                 this.close()
             },
+
             toPrint() {
                 this.print = true
             },
             closePrint() {
                 this.print = false
+            },
+
+            abortSubOrder() {
+                const subOrder = this.subOrder
+                console.log(subOrder)
+
+                const title = "Почему Вы хотите удалить этот товар?"
+                const def = "Причина удаления"
+                const answer = prompt(title, def)
+
+                if (answer) {
+                    subOrder.note = answer
+                    subOrder.status = 'DEL'
+                    subOrder.end_time = Date.now()
+
+                    this.$store.dispatch('send', {
+                        cmd: 'abortSubOrder',
+                        value: subOrder
+                    })
+
+                    this.$emit('close')
+                }
             },
 
             getPosition() {

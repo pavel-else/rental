@@ -118,14 +118,21 @@
                 },
 
                 subOrder: {
+                    id_rent:      null, // Сделать генератор ID
+                    order_id:     null,
                     product_id:   null,
                     tariff_id:    null,
-                    order_id:     null,
-                    status:       null,
                     accessories:  null,        
                     bill:         0,
+                    bill_rent:    0,
+                    bill_access:  0,
                     sale:         0,
+                    paid:         null,
+                    pause_start:  null,
                     pause_time:   0,
+                    end_time:     null,
+                    note:         null,
+                    status:       null,
                 },              
 
                 orders:    this.$store.getters.orders,
