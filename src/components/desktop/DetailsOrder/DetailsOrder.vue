@@ -185,7 +185,7 @@
 
             newOrder(order_id_position) {
                 this.order.status              = 'ACTIVE'
-                this.order.start_time          = Date.now()
+                this.order.start_time          = Date.now() + 120000
                 this.order.order_id            = this.getOrderId()
                 this.order.order_id_position   = this.getPosition('new')
 

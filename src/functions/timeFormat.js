@@ -1,6 +1,12 @@
 export default {
     timeFormat(ms /**number*/) {
-        if (ms < 0) ms = 0
+        let sign = ''
+
+        if (ms < 0) {
+            sign = '-'
+            ms = ms * -1
+        }
+
 
         function num(val) {
             val = Math.floor(val)
@@ -16,6 +22,6 @@ export default {
 
         let str = Math.floor(day) ? `${Math.floor(day)} дн. ` : ''
 
-        return `${str}${num(hours)}:${num(minutes)}:${num(seconds)}`
+        return `${sign} ${str}${num(hours)}:${num(minutes)}:${num(seconds)}`
     }
 }
