@@ -8,7 +8,7 @@ export default {
         }
 
 
-        function num(val) {
+        const num = (val) => {
             val = Math.floor(val)
 
             return val < 10 ? '0' + val : val

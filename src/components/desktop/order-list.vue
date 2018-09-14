@@ -7,6 +7,7 @@
             <tr 
                 class="table-tr" 
                 v-for="(order, index) in orders"
+                v-if="getSubOrders(order.order_id).length"
                 :title="title(order.customer_id)"
             >
                 <td class="td-1">

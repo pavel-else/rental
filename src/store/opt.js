@@ -13,12 +13,14 @@ export default {
         ],
 
         options: {
-            rent_min_time: 1800000, //min
-            rent_round_bill: 0,
+            rent_min_time:     0, //min
+            rent_round_bill:   0,
 
-            lastOrderID: null,
-            lastOrderTime: null,
-            lastOrderInterval: 180000, //ms       
+            lastOrderID:       null,
+            lastOrderTime:     null,
+            lastOrderInterval: 0, //ms 
+
+            registration_time: 0,      
 
             now: Date.now(),
         },
@@ -74,17 +76,6 @@ export default {
                 discount: 10
             }
         ],
-
-        // accessories: [
-        //     {
-        //         id: 1,
-        //         name: 'Детское кресло'
-        //     },
-        //     {
-        //         id: 2,
-        //         name: 'Шлем'
-        //     }
-        // ]
     },
 
     mutations: {
@@ -96,8 +87,6 @@ export default {
             options.map(opt => {
                 state.options[opt.name] = opt.value
             })
-
-            console.log('set options')
         },
         setOption(state, {option, value}) {
             if (!option) {

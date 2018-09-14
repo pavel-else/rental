@@ -185,7 +185,7 @@
 
             newOrder(order_id_position) {
                 this.order.status              = 'ACTIVE'
-                this.order.start_time          = Date.now() + 120000
+                this.order.start_time          = Date.now() + this.registrationTime
                 this.order.order_id            = this.getOrderId()
                 this.order.order_id_position   = this.getPosition('new')
 
@@ -200,7 +200,6 @@
                 this.subOrder.pause_time = 0
 
                 this.status = 'newOrder'
-                console.log(this.subOrder)
             },
 
             addSubOrder(order_id) {
@@ -285,8 +284,6 @@
                 this.orders.find(i => i.order_id == order_id) ?
                     this.addSubOrder(order_id) :
                     this.newOrder(order_id, order_id_position)
-
-                console.log(this.status)
             },
                 
             setCustomer(customer) {
@@ -308,7 +305,6 @@
 
             setAccessories(accessories) {
                 this.subOrder.accessories = accessories
-                console.log(this.subOrder.accessories)
             },
 
             setTariff(tariff) {
@@ -341,6 +337,9 @@
                     return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
                 })
             },
+            registrationTime() {
+                return +this.$store.getters.options.registration_time
+            }
         },
     }
 </script>
