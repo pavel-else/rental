@@ -7,6 +7,7 @@
             <tr 
                 class="table-tr" 
                 v-for="(order, index) in orders"
+                v-if="getSubOrders(order.order_id).length"
                 :title="title(order.customer_id)"
             >
                 <td class="td-1">
@@ -223,7 +224,10 @@
             getSubOrders(order_id) {
                 const subOrders = this.$store.getters.orderProducts
 
-                return subOrders ? this.$store.getters.orderProducts.filter(i => i.order_id == order_id) : []   
+                return subOrders 
+                    ? this.$store.getters.orderProducts.filter(i => {
+                        return i.order_id === order_id && (i.status === 'ACTIVE' || i.status === 'PAUSE')
+                    }) : []   
             },
 
             title(customer_id) {

@@ -68,9 +68,10 @@
                     </tr>
                 </table>
                 <div class="btn-group">
-                    <button @click="toPrint">Печать</button>
-                    <button @click.prevent="save">Сохранить</button>
-                    <button type="button" @click.prevent="close">Отмена</button>
+                    <button class="change-order__button" @click="toPrint">Печать</button>
+                    <button class="change-order__button" @click.prevent="save">Сохранить</button>
+                    <button class="change-order__button" @click.prevent="abortSubOrder">Удалить товар</button>
+                    <button class="change-order__button" @click.prevent="close">Закрыть</button>
                 </div>
             </form>
 
@@ -113,7 +114,6 @@
                 product:  {},
 
                 orders:    this.$store.getters.orders,
-                subOrders: this.$store.getters.orderProducts,
                 products:  this.$store.getters.products,
 
                 status: {
@@ -178,11 +178,51 @@
               
                 this.close()
             },
+
             toPrint() {
                 this.print = true
             },
             closePrint() {
                 this.print = false
+            },
+
+            abortSubOrder() {
+                const subOrder = this.subOrder
+                const order    = this.order
+
+                const title = "Почему Вы хотите удалить этот товар?"
+                const def = "Причина удаления"
+                const answer = prompt(title, def)
+
+                if (!answer) {
+                    return 
+                }
+
+                const cmd = []
+
+                // SUBORDER
+                subOrder.note = answer
+                subOrder.status = 'DEL'
+                subOrder.end_time = Math.floor(Date.now() / 1000)
+                subOrder.pause_start = Date.parse(subOrder.pause_start) / 1000
+                cmd.push({cmd: 'changeSubOrder', value: subOrder})
+
+                // ORDER
+                // Если сабордер единственный, деактивируем ордер
+                if (this.subOrders.length < 1) {
+                    order.status = 'DEL'
+                    cmd.push({cmd: 'changeOrder', value: order})
+                }
+
+                // PRODUCT
+                this.product.status = 'free'                      
+                this.product.updated = Date.parse(this.product.updated) / 1000                      
+                cmd.push({cmd: 'setProduct', value: this.product})
+                
+
+                this.$store.dispatch('send', cmd)
+
+                this.$emit('close')
             },
 
             getPosition() {
@@ -299,6 +339,11 @@
                     return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
                 })
             },
+            subOrders() {
+                return this.$store.getters.subOrders.filter(i => {
+                    return i.order_id === this.subOrder.order_id && i.status === 'ACTIVE'
+                })
+            }
         },
     }
 </script>
@@ -316,6 +361,10 @@
     .btn-group {
         margin-top: 20px;
     }
+    .change-order__button {
+        font-size: 12px;
+    }
+
     .add-order__input {
         width: 300px;
         min-height: 40px;

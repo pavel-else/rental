@@ -2,7 +2,7 @@
 
 trait SubOrders
 {
-    private function getOrderProducts() {
+    private function getSubOrders() {
         $sql = '
             SELECT * 
             FROM `order_products` 
@@ -15,7 +15,7 @@ trait SubOrders
 
         $result = $this->pDB->get($sql, false, $d);
         
-        $log = $result ? "getOrderProducts completed" : "getOrderProducts failed";
+        $log = $result ? "getSubOrders completed" : "getSubOrders failed";
 
         $this->writeLog($log);
 
@@ -62,8 +62,9 @@ trait SubOrders
         return $result;
     }
 
-    private function addOrderProduct($product) {
-        $log = $this->scanProduct($product);
+    // productid -> id_rent
+    private function addSubOrder($subOrder) {
+        $log = $this->scanSubOrder($subOrder);
 
         if ($log) {
             $this->writeLog($log);
@@ -94,7 +95,7 @@ trait SubOrders
                 $result = $this->pDB->get($sql, 0, $d);
 
                 if ($result) {
-                    $this->writeLog('addOrderProduct failed. free product not found');
+                    $this->writeLog('addSubOrder failed. free product not found');
                 }
 
                 return !$result;
@@ -117,7 +118,7 @@ trait SubOrders
                 $result = $this->pDB->get($sql, 0, $d);
 
                 if (!$result) {
-                    $this->writeLog('addOrderProduct failed. Order not found');
+                    $this->writeLog('addSubOrder failed. Order not found');
                 }
 
                 return $result;
@@ -126,56 +127,69 @@ trait SubOrders
             return $searchInOrderProduct($product_id) && $searchInOrders($order_id);
         };
 
-        $set = function ($product) {
+        $set = function ($subOrder) {
 
             $sql = 'INSERT INTO `order_products` (
                 `id`, 
+                `id_rent`, 
                 `order_id`, 
                 `id_rental_org`, 
                 `product_id`,
                 `tariff_id`,
                 `bill`,
+                `bill_rent`, 
+                `bill_access`, 
+                `accessories`,
                 `sale`,
+                `paid`, 
                 `pause_start`,
                 `pause_time`,
                 `end_time`,
-                `status`, 
-                `accessories`
+                `note`, 
+                `status` 
             ) VALUES (
-                NULL, 
+                NULL,
+                :id_rent,  
                 :order_id, 
                 :id_rental_org, 
                 :product_id,
                 :tariff_id,
                 :bill,
+                :bill_rent,
+                :bill_access, 
+                :accessories, 
                 :sale,
+                :paid, 
                 :pause_start,
                 :pause_time,
-                :end_time,
-                :status,
-                :accessories
+                :end_time, 
+                :note, 
+                :status
             )';
 
             $d = array(
+                'id_rent'       => $subOrder[id_rent],
+                'order_id'      => $subOrder[order_id],
                 'id_rental_org' => $this->app_id,
-                'order_id'      => $product[order_id],
-                'product_id'    => $product[product_id],
-                'tariff_id'     => $product[tariff_id],
-                'bill'          => $product[bill],
-                'sale'          => $product[sale],
-                'pause_start'   => $product[pause_start],
-                'pause_start'   => $product[pause_start],
-                'pause_time'    => $product[pause_time],
-                'pause_time'    => $product[pause_time],
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
-                'status'        => $product[status],
-                'accessories'   => $product[accessories]
+                'product_id'    => $subOrder[product_id],
+                'tariff_id'     => $subOrder[tariff_id],
+                'accessories'   => $subOrder[accessories],
+                'bill'          => $subOrder[bill],
+                'bill_rent'     => $subOrder[bill_rent],
+                'bill_access'   => $subOrder[bill_access],
+                'sale'          => $subOrder[sale],
+                'paid'          => $subOrder[paid],
+                'pause_start'   => $subOrder[pause_start],
+                'pause_time'    => $subOrder[pause_time],
+                'end_time'      => $subOrder[end_time] ? date("Y-m-d H:i:s", $subOrder[end_time]) : NULL,
+                'note'          => $subOrder[note],
+                'status'        => $subOrder[status]
             );
 
             
             $result = $this->pDB->set($sql, $d);
 
-            $log = $result ? 'addOrderProduct complete' : 'addOrderProduct failed';
+            $log = $result ? 'addSubOrder complete' : 'addSubOrder failed';
 
             $this->writeLog($log);
 
@@ -191,7 +205,7 @@ trait SubOrders
             ';
 
             $subD = array(
-                'id_rent'       => $product[product_id],
+                'id_rent'       => $subOrder[product_id],
                 'id_rental_org' => $this->app_id,
                 'status'        => 'busy'
             );
@@ -201,38 +215,40 @@ trait SubOrders
             return $result;
         };
 
-        $find = $search($product[order_id], $product[product_id]);
+        $find = $search($subOrder[order_id], $subOrder[product_id]);
 
 
-        $find ? $set($product) : $this->writeLog('addOrderProduct failed. Duble products or empty order');
+        $find ? $set($subOrder) : $this->writeLog('addSubOrder failed. Duble products or empty order');
     }
 
-    private function scanProduct($product) {
+    private function scanSubOrder($subOrder) {
+        // Функция используется при добавлении и изменении сабордера
+
         $log = [];
 
-        if (empty($product)) {
+        if (empty($subOrder)) {
             $log[] = "empty product";
 
             return $log; // все последующие не имеют смысла
         }
 
-        if (!$product[order_id]) {
+        if (!$subOrder[order_id]) {
             $log[] = "empty order_id";
         }
 
-        if (!$product[product_id]) {
+        if (!$subOrder[product_id]) {
             $log[] = "empty product_id";
         }
 
-        if (!$product[tariff_id]) {
+        if (!$subOrder[tariff_id]) {
             $log[] = "empty tariff_id";
         }
 
         return $log ? $log : false;
     }
 
-    private function changeOrderProduct($product) {
-        $log = $this->scanProduct($product);
+    private function changeSubOrder($subOrder) {
+        $log = $this->scanSubOrder($subOrder);
 
         if ($log) {
             $this->writeLog($log);
@@ -260,22 +276,25 @@ trait SubOrders
             return $result[0][id];
         };
 
-        $update = function ($id, $product) {
+        $update = function ($id, $subOrder) {
 
             $sql = '
                 UPDATE `order_products` 
                 SET  
-                    `id_rental_org` = :id_rental_org, 
                     `order_id`      = :order_id, 
                     `product_id`    = :product_id,
                     `tariff_id`     = :tariff_id,
+                    `accessories`   = :accessories, 
                     `bill`          = :bill,
+                    `bill_rent`     = :bill_rent,
+                    `bill_access`   = :bill_access,
                     `sale`          = :sale,
+                    `paid`          = :paid,
                     `pause_start`   = :pause_start,
                     `pause_time`    = :pause_time,
                     `end_time`      = :end_time,
-                    `status`        = :status,
-                    `accessories`   = :accessories 
+                    `note`          = :note,
+                    `status`        = :status 
                 WHERE
                     `id` = :id
                 AND
@@ -285,45 +304,49 @@ trait SubOrders
             $d = array(
                 'id'            => $id,
                 'id_rental_org' => $this->app_id,
-                'order_id'      => $product[order_id],
-                'product_id'    => $product[product_id],
-                'tariff_id'     => $product[tariff_id],
-                'bill'          => $product[bill],
-                'sale'          => $product[sale],
-                'pause_start'   => $product[pause_start],
-                'pause_start'   => $product[pause_start] ? date("Y-m-d H:i:s", $product[pause_start]) : NULL,
-                'pause_time'    => $product[pause_time],
-                'end_time'      => $product[end_time] ? date("Y-m-d H:i:s", $product[end_time]) : NULL,
-                'status'        => $product[status],
-                'accessories'   => $product[accessories]
+                'order_id'      => $subOrder[order_id],
+                'product_id'    => $subOrder[product_id],
+                'tariff_id'     => $subOrder[tariff_id],
+                'accessories'   => $subOrder[accessories],
+                'bill'          => $subOrder[bill],
+                'bill_rent'     => $subOrder[bill_rent],
+                'bill_access'   => $subOrder[bill_access],
+                'sale'          => $subOrder[sale],
+                'paid'          => $subOrder[paid],
+                'pause_start'   => $subOrder[pause_start] ? date("Y-m-d H:i:s", $subOrder[pause_start]) : NULL,
+                'pause_time'    => $subOrder[pause_time],
+                'end_time'      => $subOrder[end_time] ? date("Y-m-d H:i:s", $subOrder[end_time]) : NULL,
+                'note'          => $subOrder[note],
+                'status'        => $subOrder[status]
             );
 
             
             $result = $this->pDB->set($sql, $d);
 
-            $log = $result ? 'changeOrderProduct complete' : 'changeOrderProduct failed';
+            $log = $result ? 'changeSubOrder complete' : 'changeSubOrder failed';
 
             $this->writeLog($log);
 
             return $result;
         };
 
-        $id = $search($product[order_id], $product[product_id]);
+        $id = $search($subOrder[order_id], $subOrder[product_id]);
 
 
-        return $id ? $update($id, $product) : $this->writeLog('changeOrderProduct failed. Product not define in DB');
+        return $id ? $update($id, $subOrder) : $this->writeLog('changeSubOrder failed. Product not define in DB');
     }
 
-    private function deleteOrderProduct($product) {
+    private function deleteSubOrder($subOrder) {
+        // Функция используется при привязке сабордера к другому ордеру (splitOrder)
         
-        if (empty($product[product_id])) {
-            $this->writeLog('deleteOrderProducts failed! empty product_id');
+        if (empty($subOrder[product_id])) {
+            $this->writeLog('deleteSubOrders failed! empty product_id');
             
             return false;
         }
 
-        if (empty($product[order_id])) {
-            $this->writeLog('deleteOrderProducts failed! empty order_id');
+        if (empty($subOrder[order_id])) {
+            $this->writeLog('deleteSubOrders failed! empty order_id');
             
             return false;
         }
@@ -341,7 +364,7 @@ trait SubOrders
             );
 
             $result = $this->pDB->set($sql, $d);
-            $log = $result ? 'delete products' : 'delete products failed';
+            $log = $result ? 'delete subOrder' : 'delete subOrder failed';
             $this->writeLog($log);
 
             return $result;
@@ -367,7 +390,7 @@ trait SubOrders
             return $result[0][id];
         };
 
-        $id = $search($product[order_id], $product[product_id]);
+        $id = $search($subOrder[order_id], $subOrder[product_id]);
 
         return $id ? $delete($id) : false;
     }
@@ -544,6 +567,16 @@ trait SubOrders
         $setProductStatus($subOrder);
         $setOrderStatus($subOrder);
     }
-}
 
+    private function abortSubOrder($subOrder) {
+        $id = $this->find('order_products', $subOrder[id_rent]);
+
+        $result = $id ? $this->changeSubOrder($subOrder) : false;
+        $log = $result ? 'subOrder is aborting' : 'abortSubOrder is failed';
+
+        $this->writeLog($log);
+
+        return result;
+    }
+}
 ?>

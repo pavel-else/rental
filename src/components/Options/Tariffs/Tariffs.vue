@@ -103,7 +103,7 @@
     }
     tr:not(:first-child):hover {
         cursor: pointer;
-        outline: 1px solid rgba(0,0,0,0.2);
+        outline: 1px solid #333;
     }
     
 </style>

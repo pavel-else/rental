@@ -79,23 +79,29 @@ class Request
                 break;
 
                 // SubOrders
-                case 'getOrderProducts':
-                    $this->response['order_products'] = $this->getOrderProducts();
+                case 'getSubOrders':
+                    $this->response['sub_orders'] = $this->getSubOrders();
                 break;
                 case 'getHistory':
                     $this->response['history'] = $this->getHistory($value);
                 break;
                 case 'addOrderProduct':
-                    $this->addOrderProduct($value);
+                    $this->addSubOrder($value);
                 break;
-                case 'changeOrderProduct':
-                    $this->changeOrderProduct($value);
+                case 'changeOrderProduct': //Deprecated
+                    $this->changeSubOrder($value);
+                break;
+                case 'changeSubOrder':
+                    $this->changeSubOrder($value);
                 break;
                 case 'deleteOrderProduct':
-                    $this->deleteOrderProduct($value);
+                    $this->deleteSubOrder($value);
                 break;
                 case 'stopOrder':
                     $this->stopOrder($value);
+                break;
+                case 'abortSubOrder':
+                    $this->abortSubOrder($value);
                 break;
                 
                 // Products
@@ -162,14 +168,12 @@ class Request
             } 
         };
 
-
         foreach ($queue as $key => $cell) {
 
-            if (empty($cell[cmd])) {
-                break;
+            if ($cell[cmd]) {
+                $switch($cell[cmd], $cell[value]);
             }
 
-            $switch($cell[cmd], $cell[value]);
         }
 
         $this->getLogs();
@@ -182,7 +186,7 @@ class Request
         echo json_encode($data);
     }
     
-    // /* Функция подключения БД */
+    /* Функция подключения БД */
     private function rent_connect_DB(){
         require_once('../../lib.db.php');
 
@@ -195,6 +199,25 @@ class Request
         }
 
         return $pDB;
+    }
+
+    /* Общая функция поиска id_rent в указанной таблице*/
+    private function find($tableName, $id_rent) {
+        $sql = "
+            SELECT `id` 
+            FROM $tableName 
+            WHERE `id_rental_org` = :id_rental_org
+            AND `id_rent`         = :id_rent
+        ";
+
+        $d = array(
+            'id_rental_org' => $this->app_id,
+            'id_rent'       => $id_rent
+        );
+
+        $result = $this->pDB->get($sql, 0, $d);
+
+        return $result[0][id];   
     }
 }
 

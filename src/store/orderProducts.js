@@ -1,21 +1,20 @@
-export default {  
+export default {
     state: {
-        orderProducts: []
+        subOrders: []
     },
     mutations: {
-        setOrderProducts(state, products) {
-            state.orderProducts = products
-            console.log('set orderProducts')
+        setSubOrders(state, subOrders) {
+            state.subOrders = subOrders
+            console.log('set subOrders')
         }
     },
     actions: {
-        setOrderProducts({commit}, products) {
-            commit('setOrderProducts', products)
+        setSubOrders({commit}, subOrders) {
+            commit('setSubOrders', subOrders)
         }
     },
     getters: {
-        orderProducts: state => state.orderProducts
+        orderProducts: state => state.subOrders,
+        subOrders: state => state.subOrders
     }
 }
-
-

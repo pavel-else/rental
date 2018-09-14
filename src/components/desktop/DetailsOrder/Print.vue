@@ -71,9 +71,9 @@
                             </td>
                             <td>
                                 Арендатор: {{ renter }}<br>
-                                Паспорт: {{ customer.passport }}<br>
-                                Место жительства: {{ customer.address }}<br>
-                                Телефон: {{ customer.phone }}
+                                Паспорт: {{ passport }}<br>
+                                Место жительства: {{ address }}<br>
+                                Телефон: {{ phone }}
                             </td>
                         </tr>                        
                         <tr>
@@ -132,7 +132,23 @@
                     ? this.order.customer_name 
                     : '_______________________'
             },
+            passport() {
+                return this.customer ? this.customer.passport : ''
+            },
+
+            address() {
+                return this.customer ? this.customer.address : ''
+            },
+            phone() {
+                return this.customer ? this.customer.phone : ''
+            },
+
+
             renter_small() {
+                if (!this.customer) {
+                    return '_______________________'
+                }
+
                 const fname = this.customer.fname
                 const sname = this.customer.sname ? this.customer.sname[0] + '.' : ''
                 const tname = this.customer.tname ? this.customer.tname[0] + '.' : ''

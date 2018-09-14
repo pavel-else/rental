@@ -100,7 +100,7 @@
 
                 this.$emit('close')
             },
-            close() {                
+            close() {
                 if (!this.change) {
                     this.$emit('close')
                     return
@@ -111,18 +111,10 @@
                 }
             },
             remove() {
-                const title = "Почему Вы хотите удалить этот товар?"
-                const def = "Причина удаления"
-                const answer = prompt(title, def)
-
-                if (answer) {
-                    this.product.note = answer
-                    this.product.status = 'deleted'
-                    this.product.updated = Math.floor(Date.now() / 1000)
-
+                if (confirm('Вы уверены, что хотите безвозвратно удалить товар?')) {
                     this.$store.dispatch('send', {
-                        cmd: 'setProduct',
-                        value: this.product
+                        cmd: 'deleteProduct',
+                        value: this.product.id_rent
                     })
 
                     this.$emit('close')

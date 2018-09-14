@@ -125,22 +125,23 @@ trait Orders
         $update = function($id, $order) {
 
             $sql = '
-                UPDATE `orders` 
+                UPDATE 
+                    `orders` 
                 SET 
-                `order_id`          = :order_id,
-                `order_id_position` = :order_id_position,
-                `id_rental_org`     = :id_rental_org,
-                `status`            = :status,
-                `customer_id`       = :customer_id,
-                `customer_name`     = :customer_name,
-                `advance`           = :advance,
-                `deposit`           = :deposit,      
-                `note`              = :note,     
-                `promotion`         = :promotion,        
-                `accessories`       = :accessories
-
-                WHERE `id` = :id 
-                AND `id_rental_org` = :id_rental_org
+                    `order_id`          = :order_id,
+                    `order_id_position` = :order_id_position,
+                    `id_rental_org`     = :id_rental_org,
+                    `status`            = :status,
+                    `customer_id`       = :customer_id,
+                    `customer_name`     = :customer_name,
+                    `advance`           = :advance,
+                    `deposit`           = :deposit,      
+                    `note`              = :note,     
+                    `promotion`         = :promotion
+                WHERE 
+                    `id` = :id 
+                AND 
+                    `id_rental_org` = :id_rental_org
             ';
 
             $d = array(
@@ -154,8 +155,7 @@ trait Orders
                 'advance'           => $order[advance],
                 'deposit'           => $order[deposit],      
                 'note'              => $order[note],     
-                'promotion'         => $order[promotion],        
-                'accessories'       => $order[accessories]
+                'promotion'         => $order[promotion]
             );
 
             return $this->pDB->set($sql, $d);
@@ -185,17 +185,20 @@ trait Orders
                 FROM `order_products` 
                 WHERE `id_rental_org` = :id_rental_org 
                 AND `order_id` = :order_id
-                AND `end_time` IS NOT NULL
+                AND `status`   = :status
             ';
 
             $d = array(
                 'id_rental_org' => $this->app_id,
-                'order_id'      => $order_id
+                'order_id'      => $order_id,
+                'status'        => 'ACTIVE',
             );
 
             $result = $this->pDB->get($sql, 0, $d);
 
-            $log = $result ? 'Order[subOrder]' : 'order[]';
+            $log = $result 
+                ? 'При попытке удалить ордер найдены активные сабордеры' 
+                : 'При попытке удалить ордер активные сабордеры найдены не были';
 
             $this->writeLog($log);
 
@@ -207,24 +210,24 @@ trait Orders
                 SELECT `id` 
                 FROM `orders` 
                 WHERE `id_rental_org` = :id_rental_org 
-                AND `order_id` = :order_id
+                AND `order_id`        = :order_id
             ';
 
             $d = array(
                 'id_rental_org' => $this->app_id,
-                'order_id' => $order_id
+                'order_id'      => $order_id
             );
 
             $result = $this->pDB->get($sql, 0, $d);
 
-            return $result;
+            return $result[0][id];
         };
 
         $delete = function ($id) {
             $sql = '
                 DELETE FROM `orders` 
                 WHERE `id_rental_org` = :id_rental_org 
-                AND `id` = :id
+                AND `id`              = :id
             ';
 
             $d = array(
@@ -235,9 +238,11 @@ trait Orders
             return $this->pDB->set($sql, $d);
         };
 
-        if (!$cheack($order_id)) {
-            $result = $delete($search($order_id));            
-        }
+        // Если нет активных ордеров
+        $result = $cheack($order_id)
+            ? false
+            : $delete($search($order_id));          
+
            
         $log = $result ? "deleteOrder completed." : "deleteOrder failed.";
 

@@ -79,6 +79,7 @@
 
 <script>
     import getOrderId        from '../../../functions/getOrderId'
+    import getSubOrderId     from '../../../functions/getSubOrderId'
     import copyObject        from '../../../functions/copyObject'
 
     import Position          from './idPosition/idPosition'
@@ -118,14 +119,21 @@
                 },
 
                 subOrder: {
+                    id_rent:      null, // Сделать генератор ID
+                    order_id:     null,
                     product_id:   null,
                     tariff_id:    null,
-                    order_id:     null,
-                    status:       null,
                     accessories:  null,        
                     bill:         0,
+                    bill_rent:    0,
+                    bill_access:  0,
                     sale:         0,
+                    paid:         null,
+                    pause_start:  null,
                     pause_time:   0,
+                    end_time:     null,
+                    note:         null,
+                    status:       null,
                 },              
 
                 orders:    this.$store.getters.orders,
@@ -137,11 +145,12 @@
         created() {
             this.isSerial() ? 
                 this.addSubOrder(this.getLastId()) : 
-                this.newOrder(this.getOrderId('new'), this.getPosition('new'))   
+                this.newOrder()   
         },
         
         methods: {
             ...getOrderId,
+            ...getSubOrderId,
             ...copyObject,
 
             close() {
@@ -174,15 +183,16 @@
                 this.close()
             },
 
-            newOrder(order_id, order_id_position) {
+            newOrder(order_id_position) {
                 this.order.status              = 'ACTIVE'
-                this.order.start_time          = Date.now()
-                this.order.order_id            = order_id
-                this.order.order_id_position   = order_id_position
+                this.order.start_time          = Date.now() + this.registrationTime
+                this.order.order_id            = this.getOrderId()
+                this.order.order_id_position   = this.getPosition('new')
 
                 this.$set(this.order, 'customer_id', null)
 
                 
+                this.subOrder.id_rent    = this.getSubOrderId()
                 this.subOrder.product_id = this.product.id_rent
                 this.subOrder.tariff_id  = this.product.tariff_default
                 this.subOrder.order_id   = this.order.order_id
@@ -207,6 +217,7 @@
 
                 this.order = this.copyObject(order)
 
+                this.subOrder.id_rent    = this.getSubOrderId()
                 this.subOrder.product_id = this.product.id_rent
                 this.subOrder.tariff_id  = this.product.tariff_default
                 this.subOrder.order_id   = this.order.order_id
@@ -214,7 +225,7 @@
                 this.subOrder.pause_time = 0
 
                 this.status = 'addSubOrder'
-                console.log(this.order)
+                console.log(this.subOrder)
             },
 
             isSerial() {
@@ -273,8 +284,6 @@
                 this.orders.find(i => i.order_id == order_id) ?
                     this.addSubOrder(order_id) :
                     this.newOrder(order_id, order_id_position)
-
-                console.log(this.status)
             },
                 
             setCustomer(customer) {
@@ -296,7 +305,6 @@
 
             setAccessories(accessories) {
                 this.subOrder.accessories = accessories
-                console.log(this.subOrder.accessories)
             },
 
             setTariff(tariff) {
@@ -329,6 +337,9 @@
                     return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
                 })
             },
+            registrationTime() {
+                return +this.$store.getters.options.registration_time
+            }
         },
     }
 </script>

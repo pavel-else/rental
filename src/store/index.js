@@ -75,7 +75,7 @@ const store = new Vuex.Store({
                     commit('setTariffs',       r.data.tariffs)
                     commit('setCategories',    r.data.categories)
                     commit('setCustomers',     r.data.customers)
-                    commit('setOrderProducts', r.data.order_products)
+                    commit('setSubOrders',     r.data.sub_orders)
                     commit('setOrders',        r.data.orders)
                     commit('setAccessories',   r.data.accessories)
                 })
@@ -84,7 +84,7 @@ const store = new Vuex.Store({
             const makeUpd = () => {
                 cmds = [
                     'getProducts',
-                    'getOrderProducts',
+                    'getSubOrders',
                     'getOrders', 
                     'getCustomers', 
                     'getHistory', 
