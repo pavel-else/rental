@@ -44,7 +44,7 @@
                             <i 
                                 class="icon far fa-stop-circle"
                                 :class="{ icon__active: subOrder.end_time }"
-                                @click="stopOrder(order, subOrder, 'stopOrder')" 
+                                @click="stopOrder(order, subOrder)" 
                             >
                             </i>                          
                         </td>
@@ -52,11 +52,11 @@
                 </td>
 
                 <td class="td-7">
-                    <!-- <i 
-                         class="icon far fa-stop-circle"
-                         @click="stopOrder(order)" 
-                     >
-                     </i>  -->  
+                    <i 
+                        class="icon far fa-stop-circle"
+                        @click="stopAllOrder(order)" 
+                    >
+                    </i>   
                 </td>              
             </tr>
         </table>
@@ -202,18 +202,21 @@
                 })
             },
 
-            stopOrder(order, subOrder, cmd) {
+            stopOrder(order, subOrder) {
                 /*
                 * Функция передает данные в модуль resume.vue
                 */
 
-                if (cmd == 'stopOrder') {
+                this.cmd = 'stopOrder'
+                this.order = order
+                this.subOrder = subOrder
+                this.showResume = true              
+            },
 
-                    this.cmd = cmd
-                    this.order = order
-                    this.subOrder = subOrder
-                    this.showResume = true
-                }               
+            stopAllOrder(order) {
+                this.cmd = 'stopAllOrder'
+                this.order = order
+                this.showResume = true
             },
 
             onClose() {

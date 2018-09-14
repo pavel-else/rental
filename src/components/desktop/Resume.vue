@@ -165,20 +165,46 @@
                 order: {},
                 subOrder: {},
 
-                total: 0
+                total: 0,
+
+                cmds: []
             }
         },
 
         created() {
             console.log('cmd = ', this.cmd)
 
-            if (this.cmd == 'stopOrder') {                
+            if (this.cmd === 'stopOrder') {                
                 this.order = this._order
                 this.subOrder = this._subOrder
 
                 if (this.subOrder.status == "PAUSE") {
                     pause(this.subOrder)
                 }
+
+                this.stopSubOrder(this.order, this.subOrder)
+            }
+
+            if (this.cmd === 'stopAllOrder') {                
+
+                const subOrders = this.$store.getters.subOrders.filter(i => {
+                    return i.order_id === this._order.order_id && (i.status === 'ACTIVE' || i.status === 'PAUSE')
+                })
+
+                if (!subOrders.length) {
+                    return 
+                }
+
+                this.order = this._order
+
+                for (let i = subOrders.length - 1; i > 0; i--) {
+                    this.subOrder = subOrders[i]
+                    this.stopSubOrder(this._order, this.subOrder)
+                    
+                    this.cmds.push({cmd: 'stopOrder', value: this.subOrder})
+                }
+
+                this.subOrder = subOrders[0]
 
                 this.stopSubOrder(this.order, this.subOrder)
             }
@@ -191,7 +217,7 @@
             getProductName(product_id) {
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
-                return product.name
+                return product ? product.name : ''
             },
 
             getClass(product_id) {
@@ -212,7 +238,6 @@
             },
 
             close() {
-
                 this.$emit('close')
             },
 
@@ -240,10 +265,11 @@
                 subOrder.sale = this.sale
 
                 subOrder.status = "END"
+
+                return subOrder
             },
 
             pay(type) {
-
                 if (type === 'money') {
                     this.subOrder.paid = true
                 }
@@ -256,10 +282,9 @@
                     this.subOrder.paid = false
                 }
 
-                this.$store.dispatch('send', {
-                    cmd: 'stopOrder',
-                    value: this.subOrder
-                })
+                this.cmds.push({cmd: 'stopOrder', value: this.subOrder})
+
+                this.$store.dispatch('send', this.cmds)
 
                 this.close()
             }
@@ -284,12 +309,13 @@
             },
 
             dontPay() {
-                // Перебираю все неоплаченные кроме текущего
+                // Перебираю все неоплаченные
                 return this.subOrders ? this.subOrders.reduce((acc, item) => {
-                    if (item.paid == 0 && item.product_id != this.subOrder.product_id) {
+                    if (item.paid == 0) {
                         acc += +item.bill_access + +item.bill_rent - +item.sale
                     }
 
+                console.log(acc)
                     return acc                            
                 }, 0) : 0
             },
@@ -336,7 +362,7 @@
             },
 
             subOrders() {
-                return this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id)
+                return this.$store.getters.subOrders.filter(i => i.order_id == this.order.order_id)
             }                
         }
     }

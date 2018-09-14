@@ -128,7 +128,7 @@
                     bill_rent:    0,
                     bill_access:  0,
                     sale:         0,
-                    paid:         null,
+                    paid:         false,
                     pause_start:  null,
                     pause_time:   0,
                     end_time:     null,
@@ -162,13 +162,17 @@
 
                 // newOrder
                 if (this.status == 'newOrder') {
+
+                    const options = {
+                        lastOrderTime: Date.now(),
+                        lastOrderID: this.order.order_id
+                    }
+
                     this.$store.dispatch('send', [
                         {cmd: 'newOrder',        value: this.order},
                         {cmd: 'addOrderProduct', value: this.subOrder},
+                        {cmd: 'setOptions',      value: options},
                     ])
-
-                    this.$store.commit('setOption', {option: 'lastOrderTime', value: Date.now()})
-                    this.$store.commit('setOption', {option: 'lastOrderID', value: this.order.order_id})
                 }
 
                 // addSubOrder
@@ -229,6 +233,7 @@
             },
 
             isSerial() {
+                console.log(this.$store.getters.options)
                 const lastTime = this.$store.getters.options.lastOrderTime || false
                 const interval = this.$store.getters.options.lastOrderInterval
                 const now      = this.$store.getters.options.now
