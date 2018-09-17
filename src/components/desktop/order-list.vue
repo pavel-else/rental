@@ -208,24 +208,14 @@
                 const subOrders = this.getSubOrders(order.order_id)
 
 
-                for (let i = subOrders.length - 1; i > 0; i--) {
-                    console.log(i)
-                    this.stopSubOrder(order, subOrders[i])
+                for (let i = subOrders.length - 1; i >= 0; i--) {
+                    this.stopSubOrder(order, subOrders[i], true)
                 }
 
                 this.order = order
                 this.subOrder = subOrders[0]
                 this.showResume = true           
             },
-
-            // stopOrder(order) {
-            //     // Функция прогоняет все сабордеры кроме последнего через стоп.
-            //     const stopSubOrders = this.$store.getters.subOrders.filter(i => {
-            //         return i.order_id == order.order_id && (i.status === "ACTIVE" || i.status === "PAUSE")
-            //     })
-
-            //     this.stopSubOrder(order, stopSubOrders[0])
-            // },
 
             onClose() {
                 this.order = null

@@ -4,7 +4,7 @@ import activateProduct from './activateProduct'
 import roundBill       from '../../../functions/roundBill'
 
 export default {
-    stopSubOrder(order, subOrder) {
+    stopSubOrder(order, subOrder, send) {
         /*
         * Функция должна:
         * 1) Проставить Время остановки
@@ -50,7 +50,7 @@ export default {
 
             return accessories ? accessories.reduce((acc, item) => {
                 acc += item.type == "%" 
-                    ? this.subOrder.bill_rent * (item.value / 100)
+                    ? subOrder.bill_rent * (item.value / 100)
                     : +item.value
 
                 return acc
@@ -86,6 +86,9 @@ export default {
 
 
         // 8) Передавать данные на отправку
-        this.$store.dispatch('send', cmds)
+        if (send) {
+            this.$store.dispatch('send', cmds)
+        }
+        console.log(subOrder)
     }
 }
