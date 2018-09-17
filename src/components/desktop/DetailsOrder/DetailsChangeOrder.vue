@@ -15,6 +15,12 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Статус</td>
+                        <td>
+                            {{ subOrder.status }}
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Аванс</td>
                         <td>
                             <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="status.changeOrder = true">

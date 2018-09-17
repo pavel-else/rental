@@ -150,7 +150,7 @@
     import timeFormat    from '../../functions/timeFormat'
     import calculateBill from '../../functions/calculateBill'
     import roundBill     from '../../functions/roundBill'
-    import pause         from './pause'
+    import pause         from './functions/pause'
 
 
     export default {

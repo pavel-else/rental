@@ -40,21 +40,21 @@
                             >
                             </i>
                         </td>
-                        <td class="td-6 td-6-2">                            
+<!--                         <td class="td-6 td-6-2">                            
                             <i 
                                 class="icon far fa-stop-circle"
                                 :class="{ icon__active: subOrder.end_time }"
                                 @click="stopOrder(order, subOrder)" 
                             >
                             </i>                          
-                        </td>
+                        </td> -->
                     </tr>
                 </td>
 
                 <td class="td-7">
                     <i 
                         class="icon far fa-stop-circle"
-                        @click="stopAllOrder(order)" 
+                        @click="stopOrder(order)" 
                     >
                     </i>   
                 </td>              
@@ -69,14 +69,15 @@
         >
         </DetailsOrder>
 
-        <Resume :cmd="cmd" :_order="order" :_subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
+        <Resume :_order="order" :_subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
     </div>
 </template>
 
 <script>
-    import Resume       from './Resume'
-    import DetailsOrder from  './DetailsOrder/DetailsChangeOrder'
-    import Icon         from  './Icon/Icon'
+    import Resume        from './Resume'
+    import stopSubOrder  from './functions/stopSubOrder'
+    import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
+    import Icon          from  './Icon/Icon'
 
     import calculateBill from '../../functions/calculateBill'
     import billAccess    from '../../functions/billAccess'
@@ -108,6 +109,7 @@
             ...timeFormat,
             ...calculateBill,
             ...billAccess,
+            ...stopSubOrder,
 
             toChange(order, subOrder) {
                 this.order = order
@@ -202,22 +204,28 @@
                 })
             },
 
-            stopOrder(order, subOrder) {
-                /*
-                * Функция передает данные в модуль resume.vue
-                */
+            stopOrder(order) {
+                const subOrders = this.getSubOrders(order.order_id)
 
-                this.cmd = 'stopOrder'
+
+                for (let i = subOrders.length - 1; i > 0; i--) {
+                    console.log(i)
+                    this.stopSubOrder(order, subOrders[i])
+                }
+
                 this.order = order
-                this.subOrder = subOrder
-                this.showResume = true              
+                this.subOrder = subOrders[0]
+                this.showResume = true           
             },
 
-            stopAllOrder(order) {
-                this.cmd = 'stopAllOrder'
-                this.order = order
-                this.showResume = true
-            },
+            // stopOrder(order) {
+            //     // Функция прогоняет все сабордеры кроме последнего через стоп.
+            //     const stopSubOrders = this.$store.getters.subOrders.filter(i => {
+            //         return i.order_id == order.order_id && (i.status === "ACTIVE" || i.status === "PAUSE")
+            //     })
+
+            //     this.stopSubOrder(order, stopSubOrders[0])
+            // },
 
             onClose() {
                 this.order = null
@@ -225,12 +233,9 @@
             },
 
             getSubOrders(order_id) {
-                const subOrders = this.$store.getters.orderProducts
-
-                return subOrders 
-                    ? this.$store.getters.orderProducts.filter(i => {
-                        return i.order_id === order_id && (i.status === 'ACTIVE' || i.status === 'PAUSE')
-                    }) : []   
+                return this.$store.getters.subOrders.filter(i => {
+                    return i.order_id === order_id && (i.status === "ACTIVE" || i.status === "PAUSE")
+                })   
             },
 
             title(customer_id) {

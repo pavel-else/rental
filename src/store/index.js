@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import products        from './products'
-import orderProducts   from './orderProducts'
+import subOrders   from './subOrders'
 import customers       from './Customers/customers'
 import orders          from './orders'
 import options         from './opt'
@@ -18,7 +18,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     modules: {
         products,
-        orderProducts,
+        subOrders,
         customers,
         orders,
         options,
