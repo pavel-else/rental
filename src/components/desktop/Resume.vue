@@ -33,78 +33,63 @@
                         <td>Чистое время</td>
                         <td>{{ activeTime }}</td>
                     </tr>
-                    <tr v-if="isLast(subOrder) && subOrders.length > 1">
-                        <td>Товары</td>
-                        <td class="suborders">
-                            <table class="table-suborders">
-                                <tr v-for="item in subOrders">
-                                    <td>
-                                        <span v-if="item.paid == 1" title="Оплачено">+</span>
-                                        <span v-else title="Не оплачено">-</span>
-                                    </td>
-                                    <td>{{ productNames[item.product_id] }}</td>
-                                    <td v-if="item.bill > 0"> _ </td>
-                                    <td>
-                                        <span v-if="item.bill_rent > 0" title="Прокат">
-                                            {{ +item.bill_rent + +item.bill_access}}  - {{ item.sale }}
-                                        </span>
-                                        р.
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
 
                     <tr>
-                        <td>Стоимость проката</td>
-                        <td>{{ billRent }} р.</td>
-                    </tr>
+                        <td colspan="2">
+                            <p>Товары</p>
+                            <table class="suborders">
+                                <tr v-for="(item, index) in subOrders">
+                                    <td class="suborders__td--descript">
+                                        <span v-if="item.id_rent === _subOrder.id_rent">></span>
+                                    </td>
+                                    <td class="suborders__td">
+                                        {{ productNames[item.product_id] }}
+                                    </td>
+                                    <td class="suborders__td suborders__td--number" title="Прокат">
+                                        {{ item.bill_rent }}
+                                    </td>
+                                    <td class="suborders__td suborders__td--sign">+</td>
+                                    <td class="suborders__td suborders__td--number" title="Аксессуары">
+                                        {{ item.bill_access }}
+                                    </td>
+                                    <td class="suborders__td suborders__td--sign">=</td>
+                                    <td class="suborders__td suborders__td--number">
+                                        {{ +item.bill_rent + +item.bill_access }}
+                                    </td>
+                                    <td class="suborders__td suborders__td--paid" v-if="item.paid === '1'">
+                                        ✓
+                                    </td>
 
-                    <tr v-if="accessories">
-                        <td>Аксессуары</td>
-                        <td>
-                            <table class="accessories">
-                                <tr 
-                                    class="accessories__tr"
-                                    v-for="item in accessories"
-                                >
-                                    <td>{{ item.name }}</td>
-                                    <td> _ </td>
-                                    <td>{{ item.value }} {{ item.type }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" class="accessories__td--result"><b>= {{ billAccess }} р</b></td>
-                                </tr>                    
+                                    <td></td>
+                                    <td colspan="3"><b>Итого</b></td>
+                                    <td class="suborders__td suborders__td--rentbill" colspan="3">
+                                        <b>{{ billRent }} р.</b>
+                                    </td>
+                                </tr>
                             </table>
                         </td>
                     </tr>
 
-                    <tr>
-                        <td>Итого</td>
-                        <td>
-                            <span v-if="dontPay">{{ bill }} + {{ dontPay - bill }} = {{ dontPay }} р.</span>
-                        </td>
-                    </tr>
-
-                    <tr>
+                    <tr v-if="sale > 0">
                         <td>Скидка</td>
                         <td>
                             <span>{{ sale }} р.</span>
                         </td>
                     </tr>
 
-                    <tr>
+                    <tr v-if="order.advance > 0">
                         <td>Аванс</td>
                         <td>
-                            <span v-if="order.advance > 0">{{ order.advance }} р.</span>
-                            <span v-else>-</span>
+                            <span>{{ order.advance }} р.</span>
                         </td>
                     </tr>
                     
 
                     <tr class="details__bill">
                         <td>
-                            <span v-if="dontPay >= 0">
+                            <span v-if="total >= 0">
                                 К оплате
                             </span>
                             <span v-else>Сдача</span>
@@ -170,8 +155,6 @@
             if (this.subOrder.status == "PAUSE") {
                 pause(this.subOrder)
             }
-
-            this.stopSubOrder(this.order, this.subOrder, false)
         },
 
         methods: {
@@ -217,15 +200,10 @@
         computed: {
             billRent() {
                 // Обертка над calculateBill
-                return this.subOrder.bill_rent
-            },
-
-            billAccess() {
-                return this.subOrder.bill_access
-            },
-
-            bill() {
-                return this.billRent + this.billAccess
+                return this.subOrders.reduce((acc, item) => {
+                    acc += +item.bill_rent + +item.bill_access
+                    return acc
+                }, 0)
             },
 
             dontPay() {
@@ -241,10 +219,14 @@
             },
 
             sale() {
-                return Math.floor(getSale(this.bill, this.order))
+                return this.subOrders.reduce((acc, item) => {
+                    acc += +item.sale
+                    return acc
+                }, 0)
             },
+
             total() {
-                return roundBill(this.dontPay - this.sale)
+                return roundBill(this.billRent - this.sale) - +this.order.advance
             },
 
             customer() {
@@ -353,9 +335,34 @@
         outline: 1px solid #333;
     }
 
-    .accessories,
-    .suborders {
+    .accessories {
         font-size: 14px;
+    }
+
+    .suborders {
+        /*border: 1px solid #333;*/
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .suborders__td {
+        padding: 2px 4px;
+    }
+    .suborders__td--descript {
+        padding: 0;
+        vertical-align: middle;
+    }
+    .suborders__td--number {
+        padding: 2px 4px;
+        text-align: center;
+    }
+    .suborders__td--sign {
+        font-size: 12px;
+        padding: 0;
+    }
+    .suborders__td--rentbill {
+        text-align: right;;
     }
 
     .accessories__tr td {
