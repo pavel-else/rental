@@ -30,8 +30,8 @@
 </script>
 
 <style scoped>
- .products__product:hover {
-    cursor: pointer;
-    outline: 1px solid rgba(0, 0, 0, 0.3);
- }
+    .products__product:hover {
+        cursor: pointer;
+        outline: 1px solid rgba(0, 0, 0, 0.3);
+    }
 </style>

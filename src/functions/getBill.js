@@ -15,6 +15,7 @@ export default  function getBill(tariff_id, time /*ms*/) {
     const h = (tariff, time) => {
         /*
         * Функция возвращает стоимость почасового проката
+        * 0. Если время отрицательно - возврат 0
         * 1. Если откатано меньше минималки - возврат минимальной суммы
         * 2. Иначе в счетчике последовательно складываем стоимости каждого часа
         * 3. Последний час будет неполный, поэтому он просчитывается вне счетчика
@@ -28,6 +29,9 @@ export default  function getBill(tariff_id, time /*ms*/) {
         
         //console.log('time', time)
 
+        if (time < 0) {
+            return 0
+        }
         if (time < minTime) {
             return tariff._h_min
         }

@@ -74,14 +74,32 @@
                     </tr>
                 </table>
                 <div class="btn-group">
-                    <button class="change-order__button" @click="toPrint">Печать</button>
-                    <button class="change-order__button" @click.prevent="save">Сохранить</button>
-                    <button class="change-order__button" @click.prevent="abortSubOrder">Удалить товар</button>
-                    <button class="change-order__button" @click.prevent="close">Закрыть</button>
+                    <button class="change-order__button" @click="toPrint">
+                        Печать
+                    </button>
+
+                    <button class="change-order__button" @click.prevent="save">
+                        Сохранить                        
+                    </button>
+
+                    <button class="change-order__button" @click.prevent="abortSubOrder">
+                        Удалить товар
+                    </button>
+
+                    <button class="change-order__button" @click.prevent="stop()">
+                        Стоп
+                    </button>
+
+                    <button class="change-order__button" @click.prevent="abortSubOrder">
+                        Пауза
+                    </button>
                 </div>
+
+                <button class="details__close" @click.prevent="close"></button>
             </form>
 
             <Print v-if="print" :order="order" @close="closePrint"></Print>
+            <Resume :_order="order" :_subOrder="subOrder" @close="closeResume" v-if="showResume"></Resume>
         </div>
     </div>
 </template>
@@ -97,6 +115,8 @@
     import SelectPromotion   from './SelectPromotion'
     import SelectDeposit     from './SelectDeposit'
     import Print             from './Print'
+    import stopSubOrder      from '../functions/stopSubOrder'
+    import Resume            from '../Resume'
 
     export default {
         props: {
@@ -111,8 +131,10 @@
             SelectTariff,
             SelectPromotion,
             SelectDeposit,
-            Print
+            Print,
+            Resume
         },
+
         data() {
             return {
                 order:    {}, 
@@ -129,6 +151,7 @@
                 },
 
                 print: false,
+                showResume: false,
             }
         },
 
@@ -140,6 +163,7 @@
 
         methods: {
             ...getOrderId,
+            ...stopSubOrder,
 
             close() {
                 this.$emit('close')
@@ -191,6 +215,10 @@
             closePrint() {
                 this.print = false
             },
+            closeResume() {
+                this.showResume = false
+                this.close()
+            },
 
             abortSubOrder() {
                 const subOrder = this.subOrder
@@ -229,6 +257,11 @@
                 this.$store.dispatch('send', cmd)
 
                 this.$emit('close')
+            },
+
+            stop() {
+                this.stopSubOrder(this.order, this.subOrder)
+                this.showResume = true
             },
 
             getPosition() {
@@ -296,7 +329,7 @@
                 this.status.changeOrder = true
             },             
 
-            setPromotion(promotion) {                 
+            setPromotion(promotion) {
                 if (!promotion) {
                     return                 
                 }
@@ -369,6 +402,10 @@
     }
     .change-order__button {
         font-size: 12px;
+    }
+
+    .icon {
+        font-size: 20px;
     }
 
     .add-order__input {

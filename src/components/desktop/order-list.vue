@@ -28,27 +28,16 @@
                         <td class="td-4" @click="toChange(order, subOrder)" >{{ getTimePlay(order, subOrder) }}</td>
 
                         <td class="td-5" @click="toChange(order, subOrder)" >
-                            {{ getBill(order, subOrder) }} р
+                            {{ getBillWrap(order, subOrder) }} р
                         </td>                          
-
-                        <td class="td-6 td-6-1">
-                            <i 
-                                class="icon far fa-pause-circle"
-                                :class="{ icon__active: subOrder.status == 'PAUSE' }"
-                                @click="pause(subOrder)" 
-                                v-if="!subOrder.end_time"
-                            >
-                            </i>
-                        </td>
-<!--                         <td class="td-6 td-6-2">                            
-                            <i 
-                                class="icon far fa-stop-circle"
-                                :class="{ icon__active: subOrder.end_time }"
-                                @click="stopOrder(order, subOrder)" 
-                            >
-                            </i>                          
-                        </td> -->
                     </tr>
+                </td>
+
+                <td class="td-6 td-6-1">
+                    <i 
+                        class="icon far fa-pause-circle"
+                    >
+                    </i>
                 </td>
 
                 <td class="td-7">
@@ -66,6 +55,7 @@
             :dataOrder="order" 
             :dataSubOrder="subOrder" 
             @close="closeDetails"
+            @openResume="openResume($event)"
         >
         </DetailsOrder>
 
@@ -79,8 +69,7 @@
     import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
     import Icon          from  './Icon/Icon'
 
-    import calculateBill from '../../functions/calculateBill'
-    import billAccess    from '../../functions/billAccess'
+    import getBill       from '../../functions/getBill'
     import timeFormat    from '../../functions/timeFormat'
     import getTime       from '../../functions/getTime'
     import roundBill     from '../../functions/roundBill'
@@ -107,14 +96,19 @@
         methods: {
             ...getTime,
             ...timeFormat,
-            ...calculateBill,
-            ...billAccess,
             ...stopSubOrder,
 
             toChange(order, subOrder) {
                 this.order = order
                 this.subOrder = subOrder
                 this.showDetails = true
+            },
+
+            openResume(e) {
+                console.log(e)
+                this.order = e.order
+                this.subOrder = e.subOrder
+                this.showResume = true
             },
 
             closeDetails() {
@@ -152,7 +146,7 @@
                 }
             },
 
-            getBill(order, subOrder) {
+            getBillWrap(order, subOrder) {
                 let time
                 
                 if (subOrder.status == "ACTIVE") {
@@ -168,7 +162,7 @@
                 }
 
 
-                return roundBill(this.calculateBill(subOrder.tariff_id, time))
+                return roundBill(getBill(subOrder.tariff_id, time))
             },
 
             pause(subOrder) {
@@ -209,7 +203,7 @@
 
 
                 for (let i = subOrders.length - 1; i >= 0; i--) {
-                    this.stopSubOrder(order, subOrders[i], true)
+                    this.stopSubOrder(order, subOrders[i], /*send=*/true)
                 }
 
                 this.order = order
@@ -266,6 +260,10 @@
 </script>
 
 <style scoped>
+    .order-list {
+        width: 480px;
+    }
+
     .empty {
         padding: 0 20px;
     }

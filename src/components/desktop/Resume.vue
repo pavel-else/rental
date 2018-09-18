@@ -15,7 +15,6 @@
                         </td>
                     </tr>
 
-
                     <tr>
                         <td>Залог</td>
                         <td>
@@ -56,7 +55,11 @@
                                     <td class="suborders__td suborders__td--number">
                                         {{ +item.bill_rent + +item.bill_access }}
                                     </td>
-                                    <td class="suborders__td suborders__td--paid" v-if="item.paid === '1'">
+                                    <td 
+                                        class="suborders__td suborders__td--paid" 
+                                        v-if="item.paid === '1'" 
+                                        title="Оплачено"
+                                    >
                                         ✓
                                     </td>
 
@@ -73,13 +76,22 @@
                     </tr>
 
                     <tr v-if="sale > 0">
-                        <td>Скидка</td>
+                        <td>Общая скидка</td>
                         <td>
                             <span>{{ sale }} р.</span>
                         </td>
                     </tr>
 
-                    <tr v-if="order.advance > 0">
+                    <tr v-if="paidBefore > 0">
+                        <td>Оплачено ранее</td>
+                        <td>
+                            <span>{{ paidBefore }}</span>
+                            <span v-if="saledBefore" :title="'С учетом скидки ' + saledBefore + ' р.'">({{ paidBefore - saledBefore }})</span>
+                             р.
+                        </td>
+                    </tr>
+
+                    <tr v-if="isLast() && order.advance > 0">
                         <td>Аванс</td>
                         <td>
                             <span>{{ order.advance }} р.</span>
@@ -107,7 +119,7 @@
                 <button class="resume__button" @click="pay('card')">
                     <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
                 </button>
-                <button class="resume__button" v-if="!isLast(subOrder)"@click="pay('dont pay')">
+                <button class="resume__button" v-if="!isLast()"@click="pay('dont pay')">
                     Без оплаты
                 </button>
             </div>
@@ -117,7 +129,6 @@
 
 <script>
     import timeFormat    from '../../functions/timeFormat'
-    import calculateBill from '../../functions/calculateBill'
     import roundBill     from '../../functions/roundBill'
     import pause         from './functions/pause'
     import stopSubOrder  from './functions/stopSubOrder'
@@ -126,7 +137,6 @@
 
     export default {
         props: {
-            cmd:       String,
             _order:    Object,
             _subOrder: Object
         },
@@ -159,15 +169,13 @@
 
         methods: {
             ...timeFormat,
-            ...calculateBill,
             ...stopSubOrder,
 
-            isLast(subOrder) {
+            isLast() {
                 /*
                 * Функция проверки ордера - закрывается последний сабордер?
                 */
-
-                return this.subOrders.filter(i => i.status !== "END" && i.id_rent != subOrder.id_rent).length
+                return this.subOrders.find(i => i.status === "ACTIVE" || i.status === "PAUSE")
                     ? false
                     : true
             },
@@ -199,34 +207,53 @@
 
         computed: {
             billRent() {
-                // Обертка над calculateBill
-                return this.subOrders.reduce((acc, item) => {
-                    acc += +item.bill_rent + +item.bill_access
-                    return acc
-                }, 0)
+                return this.isLast() 
+                    ? this.subOrders.reduce((acc, item) => {
+                        acc += +item.bill_rent + +item.bill_access
+                        return acc
+                    }, 0)
+                    : +this.subOrder.bill_rent + this.subOrder.bill_access
             },
 
-            dontPay() {
-                // Перебираю все неоплаченные
+            paidBefore() {
+                // Перебираю все оплаченые
                 return this.subOrders ? this.subOrders.reduce((acc, item) => {
-                    if (item.paid == 0) {
-                        acc += +item.bill_access + +item.bill_rent - +item.sale
+                    if (item.paid == 1) {
+                        acc += +item.bill_access + +item.bill_rent
                     }
 
                     //console.log(item)
                     return acc                            
                 }, 0) : 0
             },
+            saledBefore() {
+                // Перебираю все оплаченые
+                return this.subOrders ? this.subOrders.reduce((acc, item) => {
+                    if (item.paid == 1) {
+                        acc += +item.sale
+                    }
+
+                    return acc                            
+                }, 0) : 0
+            },
 
             sale() {
-                return this.subOrders.reduce((acc, item) => {
-                    acc += +item.sale
-                    return acc
-                }, 0)
+                return this.isLast() 
+                    ? this.subOrders.reduce((acc, item) => {
+                        acc += +item.sale
+                        return acc
+                    }, 0)
+                    : +this.subOrder.sale
+            },
+
+            advance() {
+                return this.isLast() ? this.order.advance : 0
             },
 
             total() {
-                return roundBill(this.billRent - this.sale) - +this.order.advance
+                return this.isLast 
+                    ? roundBill((this.billRent - this.paidBefore) - (this.sale - this.saledBefore)) - +this.advance
+                    : this.billRent - this.sale
             },
 
             customer() {
@@ -362,7 +389,10 @@
         padding: 0;
     }
     .suborders__td--rentbill {
-        text-align: right;;
+        text-align: right;
+    }
+    .suborders__td--paid {
+        vertical-align: top;
     }
 
     .accessories__tr td {

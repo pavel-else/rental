@@ -5,6 +5,7 @@ import roundBill       from '../../../functions/roundBill'
 
 export default {
     stopSubOrder(order, subOrder, send) {
+        
         /*
         * Функция должна:
         * 1) Проставить Время остановки
@@ -38,7 +39,6 @@ export default {
                     return null
                 }
 
-                console.log(subOrder.accessories)
                 const split = subOrder.accessories.split(',') // [1, 2]
 
                 return split.map(i => {
@@ -89,6 +89,5 @@ export default {
         if (send) {
             this.$store.dispatch('send', cmds)
         }
-        console.log(subOrder)
     }
 }
