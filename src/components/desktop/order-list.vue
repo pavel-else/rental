@@ -20,8 +20,8 @@
                     <tr 
                         class="product-tr"
                         v-for="subOrder in getSubOrders(order.order_id)" 
-                        :key="subOrder.product_id" 
-                                              
+                        :key="subOrder.id_rent" 
+                        :class="subOrder.status === 'PAUSE' ? 'suborder--pause' : 'suborder--active'"
                     >
                         <td class="td-3" @click="toChange(order, subOrder)" >{{ getProductName(subOrder.product_id) }}</td>
 
@@ -36,6 +36,7 @@
                 <td class="td-6 td-6-1">
                     <i 
                         class="icon far fa-pause-circle"
+                        @click="pauseOrder(order)"
                     >
                     </i>
                 </td>
@@ -73,6 +74,8 @@
     import timeFormat    from '../../functions/timeFormat'
     import getTime       from '../../functions/getTime'
     import roundBill     from '../../functions/roundBill'
+    import pause         from './functions/pause'
+
 
     export default {
         components: {
@@ -105,7 +108,6 @@
             },
 
             openResume(e) {
-                console.log(e)
                 this.order = e.order
                 this.subOrder = e.subOrder
                 this.showResume = true
@@ -131,10 +133,12 @@
                 }
 
                 if (subOrder.status == "PAUSE") {
-                    const oldPause = subOrder.pause_time
-                    const newPause = Date.now() - Date.parse(subOrder.pause_start)
-                    const pause = +oldPause + newPause
-                    //console.log(time - pause)
+                    // Товар может находиться в паузе несколько раз
+                    // Пауза равна сумме всех времменных интервалов
+                    // Последний интервал вычисляется как ВремяСейчас минус ВремяСтартаПоследнейПаузы 
+
+                    const lastPause = Date.now() - +subOrder.pause_start
+                    const pause = +subOrder.pause_time + lastPause
 
                     if (time && pause) {
                         return this.timeFormat(time - pause)
@@ -165,37 +169,37 @@
                 return roundBill(getBill(subOrder.tariff_id, time))
             },
 
-            pause(subOrder) {
-                if (subOrder.status != 'ACTIVE' && subOrder.status != 'PAUSE') {
-                    console.log('unknown status - ', subOrder.status)
+            pauseOrder(order) {
+                // Если в ордере есть активные сабордеры - делаем паузу для всех активных 
+                // Если нету, снимаем все с паузы
+
+                const subOrders = this.$store.getters.subOrders.filter(i => {
+                    return i.order_id === order.order_id
+                })
+
+                if (subOrders.length === 0) {
                     return
                 }
 
+                const activeList = subOrders.filter( i => i.status === "ACTIVE")
+                const pauseList  = subOrders.filter( i => i.status === "PAUSE")
+
                 const makePause = () => {
-                    subOrder.status = "PAUSE"
-                    subOrder.pause_start = Date.now() / 1000        
+                    return activeList.map(i => {
+                        pause(i)
+                        return {cmd: 'changeSubOrder', value: i}
+                    })
                 }
-
                 const makeActive = () => {
-                    subOrder.status = "ACTIVE"
-
-                    const pause = Date.now() - Date.parse(subOrder.pause_start)
-                    console.log(pause)
-
-                    subOrder.pause_time = +subOrder.pause_time + pause
-
-                    subOrder.pause_start = null
-
-                    console.log(subOrder)
+                    return pauseList.map(i => {
+                        pause(i)
+                        return {cmd: 'changeSubOrder', value: i}
+                    })
                 }
 
-                subOrder.status == "ACTIVE" ? makePause() : makeActive()
-
-
-                this.$store.dispatch('send', {
-                    cmd: 'changeOrderProduct',
-                    value: subOrder
-                })
+                const cmds = activeList.length ? makePause() : makeActive()
+                
+                this.$store.dispatch('send', cmds)
             },
 
             stopOrder(order) {
@@ -337,5 +341,9 @@
     .product-tr:hover {
         cursor: pointer;
         border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .suborder--pause {
+        color: rgba(255, 255, 255, 0.5);
     }
 </style>

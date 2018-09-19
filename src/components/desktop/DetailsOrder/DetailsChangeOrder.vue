@@ -90,7 +90,7 @@
                         Стоп
                     </button>
 
-                    <button class="change-order__button" @click.prevent="abortSubOrder">
+                    <button class="change-order__button" @click.prevent="pauseSubOrder()">
                         Пауза
                     </button>
                 </div>
@@ -116,6 +116,7 @@
     import SelectDeposit     from './SelectDeposit'
     import Print             from './Print'
     import stopSubOrder      from '../functions/stopSubOrder'
+    import pause             from '../functions/pause'
     import Resume            from '../Resume'
 
     export default {
@@ -262,6 +263,12 @@
             stop() {
                 this.stopSubOrder(this.order, this.subOrder)
                 this.showResume = true
+            },
+
+            pauseSubOrder() {
+                pause(this.subOrder)
+                
+                this.$store.dispatch('send', {cmd: 'changeSubOrder', value: this.subOrder})
             },
 
             getPosition() {

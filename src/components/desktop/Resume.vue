@@ -44,16 +44,34 @@
                                     <td class="suborders__td">
                                         {{ productNames[item.product_id] }}
                                     </td>
-                                    <td class="suborders__td suborders__td--number" title="Прокат">
+                                    <td 
+                                        class="suborders__td suborders__td--number" 
+                                        title="Прокат" 
+                                        v-if="item.bill_access > 0"
+                                    >
                                         {{ item.bill_rent }}
                                     </td>
-                                    <td class="suborders__td suborders__td--sign">+</td>
-                                    <td class="suborders__td suborders__td--number" title="Аксессуары">
+                                    <td 
+                                        class="suborders__td suborders__td--sign" 
+                                        v-if="item.bill_access > 0"
+                                    >
+                                        +
+                                    </td>
+                                    <td 
+                                        class="suborders__td suborders__td--number" 
+                                        title="Аксессуары" 
+                                        v-if="item.bill_access > 0"
+                                    >
                                         {{ item.bill_access }}
                                     </td>
-                                    <td class="suborders__td suborders__td--sign">=</td>
+                                    <td 
+                                        class="suborders__td suborders__td--sign" 
+                                        v-if="item.bill_access > 0"
+                                    >
+                                        =
+                                    </td>
                                     <td class="suborders__td suborders__td--number">
-                                        {{ +item.bill_rent + +item.bill_access }}
+                                        {{ +item.bill_rent + +item.bill_access }} р.
                                     </td>
                                     <td 
                                         class="suborders__td suborders__td--paid" 

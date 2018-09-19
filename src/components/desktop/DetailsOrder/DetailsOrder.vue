@@ -129,7 +129,7 @@
                     bill_access:  0,
                     sale:         0,
                     paid:         false,
-                    pause_start:  null,
+                    pause_start:  0,
                     pause_time:   0,
                     end_time:     null,
                     note:         null,
