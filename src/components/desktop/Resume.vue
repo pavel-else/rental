@@ -41,9 +41,10 @@
                                     <td class="suborders__td--descript">
                                         <span v-if="item.id_rent === _subOrder.id_rent">></span>
                                     </td>
-                                    <td class="suborders__td">
+                                    <td class="suborders__td suborders__td--name">
                                         {{ productNames[item.product_id] }}
                                     </td>
+
                                     <td 
                                         class="suborders__td suborders__td--number" 
                                         title="Прокат" 
@@ -71,7 +72,7 @@
                                         =
                                     </td>
                                     <td class="suborders__td suborders__td--number">
-                                        {{ +item.bill_rent + +item.bill_access }} р.
+                                        {{ +item.bill_rent + +item.bill_access }}
                                     </td>
                                     <td 
                                         class="suborders__td suborders__td--paid" 
@@ -393,6 +394,9 @@
 
     .suborders__td {
         padding: 2px 4px;
+    }
+    .suborders__td--name {
+        padding-right: 20px;
     }
     .suborders__td--descript {
         padding: 0;
