@@ -20,43 +20,33 @@
                     <tr 
                         class="product-tr"
                         v-for="subOrder in getSubOrders(order.order_id)" 
-                        :key="subOrder.product_id" 
-                                              
+                        :key="subOrder.id_rent" 
+                        :class="subOrder.status === 'PAUSE' ? 'suborder--pause' : 'suborder--active'"
                     >
                         <td class="td-3" @click="toChange(order, subOrder)" >{{ getProductName(subOrder.product_id) }}</td>
 
                         <td class="td-4" @click="toChange(order, subOrder)" >{{ getTimePlay(order, subOrder) }}</td>
 
                         <td class="td-5" @click="toChange(order, subOrder)" >
-                            {{ getBill(order, subOrder) }} р
+                            {{ getBillWrap(order, subOrder) }} р
                         </td>                          
-
-                        <td class="td-6 td-6-1">
-                            <i 
-                                class="icon far fa-pause-circle"
-                                :class="{ icon__active: subOrder.status == 'PAUSE' }"
-                                @click="pause(subOrder)" 
-                                v-if="!subOrder.end_time"
-                            >
-                            </i>
-                        </td>
-                        <td class="td-6 td-6-2">                            
-                            <i 
-                                class="icon far fa-stop-circle"
-                                :class="{ icon__active: subOrder.end_time }"
-                                @click="stopOrder(order, subOrder, 'stopOrder')" 
-                            >
-                            </i>                          
-                        </td>
                     </tr>
                 </td>
 
+                <td class="td-6 td-6-1">
+                    <i 
+                        class="icon far fa-pause-circle"
+                        @click="pauseOrder(order)"
+                    >
+                    </i>
+                </td>
+
                 <td class="td-7">
-                    <!-- <i 
-                         class="icon far fa-stop-circle"
-                         @click="stopOrder(order)" 
-                     >
-                     </i>  -->  
+                    <i 
+                        class="icon far fa-stop-circle"
+                        @click="stopOrder(order)" 
+                    >
+                    </i>   
                 </td>              
             </tr>
         </table>
@@ -66,23 +56,25 @@
             :dataOrder="order" 
             :dataSubOrder="subOrder" 
             @close="closeDetails"
+            @openResume="openResume($event)"
         >
         </DetailsOrder>
 
-        <Resume :cmd="cmd" :_order="order" :_subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
+        <Resume :_order="order" :_subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
     </div>
 </template>
 
 <script>
-    import Resume       from './Resume'
-    import DetailsOrder from  './DetailsOrder/DetailsChangeOrder'
-    import Icon         from  './Icon/Icon'
+    import Resume        from './Resume'
+    import stopSubOrder  from './functions/stopSubOrder'
+    import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
+    import Icon          from  './Icon/Icon'
 
-    import calculateBill from '../../functions/calculateBill'
-    import billAccess    from '../../functions/billAccess'
+    import getBill       from '../../functions/getBill'
     import timeFormat    from '../../functions/timeFormat'
-    import getTime       from '../../functions/getTime'
     import roundBill     from '../../functions/roundBill'
+    import pause         from './functions/pause'
+
 
     export default {
         components: {
@@ -98,21 +90,23 @@
 
                 showDetails: false,
                 showResume: false,
-
-                cmd: null
             }
         },
 
         methods: {
-            ...getTime,
             ...timeFormat,
-            ...calculateBill,
-            ...billAccess,
+            ...stopSubOrder,
 
             toChange(order, subOrder) {
                 this.order = order
                 this.subOrder = subOrder
                 this.showDetails = true
+            },
+
+            openResume(e) {
+                this.order = e.order
+                this.subOrder = e.subOrder
+                this.showResume = true
             },
 
             closeDetails() {
@@ -135,10 +129,12 @@
                 }
 
                 if (subOrder.status == "PAUSE") {
-                    const oldPause = subOrder.pause_time
-                    const newPause = Date.now() - Date.parse(subOrder.pause_start)
-                    const pause = +oldPause + newPause
-                    //console.log(time - pause)
+                    // Товар может находиться в паузе несколько раз
+                    // Пауза равна сумме всех времменных интервалов
+                    // Последний интервал вычисляется как ВремяСейчас минус ВремяСтартаПоследнейПаузы 
+
+                    const lastPause = Date.now() - +subOrder.pause_start
+                    const pause = +subOrder.pause_time + lastPause
 
                     if (time && pause) {
                         return this.timeFormat(time - pause)
@@ -150,7 +146,7 @@
                 }
             },
 
-            getBill(order, subOrder) {
+            getBillWrap(order, subOrder) {
                 let time
                 
                 if (subOrder.status == "ACTIVE") {
@@ -158,7 +154,7 @@
                 }
 
                 if (subOrder.status == "PAUSE") {
-                    time = Date.parse(subOrder.pause_start) - Date.parse(order.start_time)
+                    time = subOrder.pause_start - Date.parse(order.start_time)
                 }
 
                 if (subOrder.status == "END") {
@@ -166,54 +162,53 @@
                 }
 
 
-                return roundBill(this.calculateBill(subOrder.tariff_id, time))
+                return roundBill(getBill(subOrder.tariff_id, time))
             },
 
-            pause(subOrder) {
-                if (subOrder.status != 'ACTIVE' && subOrder.status != 'PAUSE') {
-                    console.log('unknown status - ', subOrder.status)
+            pauseOrder(order) {
+                // Если в ордере есть активные сабордеры - делаем паузу для всех активных 
+                // Если нету, снимаем все с паузы
+
+                const subOrders = this.$store.getters.subOrders.filter(i => {
+                    return i.order_id === order.order_id
+                })
+
+                if (subOrders.length === 0) {
                     return
                 }
 
+                const activeList = subOrders.filter( i => i.status === "ACTIVE")
+                const pauseList  = subOrders.filter( i => i.status === "PAUSE")
+
                 const makePause = () => {
-                    subOrder.status = "PAUSE"
-                    subOrder.pause_start = Date.now() / 1000        
+                    return activeList.map(i => {
+                        pause(i)
+                        return {cmd: 'changeSubOrder', value: i}
+                    })
                 }
-
                 const makeActive = () => {
-                    subOrder.status = "ACTIVE"
-
-                    const pause = Date.now() - Date.parse(subOrder.pause_start)
-                    console.log(pause)
-
-                    subOrder.pause_time = +subOrder.pause_time + pause
-
-                    subOrder.pause_start = null
-
-                    console.log(subOrder)
+                    return pauseList.map(i => {
+                        pause(i)
+                        return {cmd: 'changeSubOrder', value: i}
+                    })
                 }
 
-                subOrder.status == "ACTIVE" ? makePause() : makeActive()
-
-
-                this.$store.dispatch('send', {
-                    cmd: 'changeOrderProduct',
-                    value: subOrder
-                })
+                const cmds = activeList.length ? makePause() : makeActive()
+                
+                this.$store.dispatch('send', cmds)
             },
 
-            stopOrder(order, subOrder, cmd) {
-                /*
-                * Функция передает данные в модуль resume.vue
-                */
+            stopOrder(order) {
+                const subOrders = this.getSubOrders(order.order_id)
 
-                if (cmd == 'stopOrder') {
 
-                    this.cmd = cmd
-                    this.order = order
-                    this.subOrder = subOrder
-                    this.showResume = true
-                }               
+                for (let i = subOrders.length - 1; i >= 0; i--) {
+                    this.stopSubOrder(order, subOrders[i], /*send=*/true)
+                }
+
+                this.order = order
+                this.subOrder = subOrders[0]
+                this.showResume = true           
             },
 
             onClose() {
@@ -222,12 +217,9 @@
             },
 
             getSubOrders(order_id) {
-                const subOrders = this.$store.getters.orderProducts
-
-                return subOrders 
-                    ? this.$store.getters.orderProducts.filter(i => {
-                        return i.order_id === order_id && (i.status === 'ACTIVE' || i.status === 'PAUSE')
-                    }) : []   
+                return this.$store.getters.subOrders.filter(i => {
+                    return i.order_id === order_id && (i.status === "ACTIVE" || i.status === "PAUSE")
+                })   
             },
 
             title(customer_id) {
@@ -241,18 +233,6 @@
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
                 return product.name
-            },
-
-            getAccessories(subOrder) {
-                if (!subOrder.accessories) {
-                    return null
-                }
-
-                const split = subOrder.accessories.split(',') // [1, 2]
-
-                return split.map(i => {
-                    return this.$store.getters.accessories.find(j => j.id_rent == i)
-                })
             },
         },
 
@@ -268,6 +248,10 @@
 </script>
 
 <style scoped>
+    .order-list {
+        width: 480px;
+    }
+
     .empty {
         padding: 0 20px;
     }
@@ -341,5 +325,9 @@
     .product-tr:hover {
         cursor: pointer;
         border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .suborder--pause {
+        color: rgba(255, 255, 255, 0.5);
     }
 </style>

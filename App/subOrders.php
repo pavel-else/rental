@@ -313,7 +313,7 @@ trait SubOrders
                 'bill_access'   => $subOrder[bill_access],
                 'sale'          => $subOrder[sale],
                 'paid'          => $subOrder[paid],
-                'pause_start'   => $subOrder[pause_start] ? date("Y-m-d H:i:s", $subOrder[pause_start]) : NULL,
+                'pause_start'   => $subOrder[pause_start],
                 'pause_time'    => $subOrder[pause_time],
                 'end_time'      => $subOrder[end_time] ? date("Y-m-d H:i:s", $subOrder[end_time]) : NULL,
                 'note'          => $subOrder[note],

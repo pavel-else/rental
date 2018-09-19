@@ -15,6 +15,12 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Статус</td>
+                        <td>
+                            {{ subOrder.status }}
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Аванс</td>
                         <td>
                             <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="status.changeOrder = true">
@@ -68,14 +74,32 @@
                     </tr>
                 </table>
                 <div class="btn-group">
-                    <button class="change-order__button" @click="toPrint">Печать</button>
-                    <button class="change-order__button" @click.prevent="save">Сохранить</button>
-                    <button class="change-order__button" @click.prevent="abortSubOrder">Удалить товар</button>
-                    <button class="change-order__button" @click.prevent="close">Закрыть</button>
+                    <button class="change-order__button" @click="toPrint">
+                        Печать
+                    </button>
+
+                    <button class="change-order__button" @click.prevent="save">
+                        Сохранить                        
+                    </button>
+
+                    <button class="change-order__button" @click.prevent="abortSubOrder">
+                        Удалить товар
+                    </button>
+
+                    <button class="change-order__button" @click.prevent="stop()">
+                        Стоп
+                    </button>
+
+                    <button class="change-order__button" @click.prevent="pauseSubOrder()">
+                        Пауза
+                    </button>
                 </div>
+
+                <button class="details__close" @click.prevent="close"></button>
             </form>
 
             <Print v-if="print" :order="order" @close="closePrint"></Print>
+            <Resume :_order="order" :_subOrder="subOrder" @close="closeResume" v-if="showResume"></Resume>
         </div>
     </div>
 </template>
@@ -91,6 +115,9 @@
     import SelectPromotion   from './SelectPromotion'
     import SelectDeposit     from './SelectDeposit'
     import Print             from './Print'
+    import stopSubOrder      from '../functions/stopSubOrder'
+    import pause             from '../functions/pause'
+    import Resume            from '../Resume'
 
     export default {
         props: {
@@ -105,8 +132,10 @@
             SelectTariff,
             SelectPromotion,
             SelectDeposit,
-            Print
+            Print,
+            Resume
         },
+
         data() {
             return {
                 order:    {}, 
@@ -123,6 +152,7 @@
                 },
 
                 print: false,
+                showResume: false,
             }
         },
 
@@ -134,6 +164,7 @@
 
         methods: {
             ...getOrderId,
+            ...stopSubOrder,
 
             close() {
                 this.$emit('close')
@@ -184,6 +215,60 @@
             },
             closePrint() {
                 this.print = false
+            },
+            closeResume() {
+                this.showResume = false
+                this.close()
+            },
+
+            abortSubOrder() {
+                const subOrder = this.subOrder
+                const order    = this.order
+
+                const title = "Почему Вы хотите удалить этот товар?"
+                const def = "Причина удаления"
+                const answer = prompt(title, def)
+
+                if (!answer) {
+                    return 
+                }
+
+                const cmd = []
+
+                // SUBORDER
+                subOrder.note = answer
+                subOrder.status = 'DEL'
+                subOrder.end_time = Math.floor(Date.now() / 1000)
+                subOrder.pause_start = Date.parse(subOrder.pause_start) / 1000
+                cmd.push({cmd: 'changeSubOrder', value: subOrder})
+
+                // ORDER
+                // Если сабордер единственный, деактивируем ордер
+                if (this.subOrders.length < 1) {
+                    order.status = 'DEL'
+                    cmd.push({cmd: 'changeOrder', value: order})
+                }
+
+                // PRODUCT
+                this.product.status = 'free'                      
+                this.product.updated = Date.parse(this.product.updated) / 1000                      
+                cmd.push({cmd: 'setProduct', value: this.product})
+                
+
+                this.$store.dispatch('send', cmd)
+
+                this.$emit('close')
+            },
+
+            stop() {
+                this.stopSubOrder(this.order, this.subOrder)
+                this.showResume = true
+            },
+
+            pauseSubOrder() {
+                pause(this.subOrder)
+                
+                this.$store.dispatch('send', {cmd: 'changeSubOrder', value: this.subOrder})
             },
 
             abortSubOrder() {
@@ -290,7 +375,7 @@
                 this.status.changeOrder = true
             },             
 
-            setPromotion(promotion) {                 
+            setPromotion(promotion) {
                 if (!promotion) {
                     return                 
                 }

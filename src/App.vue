@@ -76,6 +76,7 @@ export default {
         border-radius: 5px;
         padding: 5px 15px;
         margin-right: 10px;
+        display: inline-flex;
     }
 
     i {
@@ -154,12 +155,12 @@ export default {
         border: 3px solid lightgray;
         color: #333;
     }
-    .black button {
+    button {
         background-color: #000;
         border: 3px solid #333;
         color: rgba(255, 255, 255, 0.8);
     }
-    .black button:hover {
+    button:hover {
         border: 3px solid rgba(255, 255, 255, 0.8);
     }
 
@@ -230,10 +231,13 @@ export default {
     }
 
     .details__close {
+        margin: 0;
+        padding: 0;
         width: 20px;
         height: 20px;
+        box-sizing: border-box;
         border-radius: 50%;
-        border: 1px solid lightgray;
+        border: 2px solid lightgray;
         position: absolute;
         top: 3px;
         right: 3px;
@@ -242,7 +246,9 @@ export default {
     .details__close:hover {
         opacity: 1;
         cursor: pointer;
+        border: 2px solid lightgray;
     }
+
     .details__close::after,
     .details__close::before {
         display: block;
@@ -250,7 +256,7 @@ export default {
         content: '';
         width: 80%;
         height: 2px;
-        top: 9px;
+        top: 7px;
         left: 2px;
         background-color: lightgray;
     }

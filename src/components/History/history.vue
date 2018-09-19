@@ -15,12 +15,13 @@
                 <td class="">{{ item.order_id }}</td>
                 <td class="">{{ item.customer_name }}</td>
                 <td class="">{{ item.start_time }}</td>
-                <td class="history__td history__td--time">{{ getTimePlay(item) }}</td>
+
+                <td class="history__td history__td--time">{{ item.play_time }}</td>
                 <td>
                     {{getName(item)}}
                     <span v-if="item.products.length > 1"> и еще {{ item.products.length - 1 }} шт</span>
                 </td>
-                <td>{{ item.bill }}</td>
+                <td>{{ item.bill }} р.</td>
                 <td>{{ item.status }}</td>
             </tr>
         </table>
@@ -31,8 +32,8 @@
 </template>
 
 <script>
-    import Details from './Details'
-    import getTime from '../../functions/getTime'
+    import Details    from './Details'
+    import getTime    from '../../functions/getTime'
     import timeFormat from '../../functions/timeFormat'
 
     export default {
@@ -50,17 +51,12 @@
             ...timeFormat,
 
             getTimePlay(order) {
-                const start = order.start_time
+                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id == order.order_id)
+                const start = Date.parse(order.start_time)
 
-                const end = order.products.reduce((acc, product) => {
-                    const end = Date.parse(product.end_time)
+                const end = Math.max(subOrders.map(i => Date.parse(i.end_time)))
 
-                    acc = acc < end ? end : acc
-
-                    return acc
-                }, null)
-
-                const time = this.getTime(start, new Date(end))
+                const time = start - Date.parse(end)
 
                 return this.timeFormat(time)
             },
@@ -70,7 +66,6 @@
             },
 
             onClick(order) {
-                //console.log(item)
                 this.order = order
                 this.show = true
             },
@@ -80,12 +75,23 @@
         },
         computed: {
             history() {
-                const history = this.$store.getters.history
-                //if (typeof(history) !== 'array') return {}
+                let history = this.$store.getters.history
 
-                const result = history.filter(o => o.order_id > 780)
+                history = history.filter(o => o.order_id > 1700)
+                history = history.map(i => {
+                    i.subOrders = this.$store.getters.subOrders.filter(j => j.order_id === i.order_id)
+                    i.end_time = Math.max(...i.subOrders.map(j => Date.parse(j.end_time) || 0)) || Date.now()
+                    i.play_time = i.end_time > 0 ? this.timeFormat(i.end_time - Date.parse(i.start_time)) : 0
 
-                return result
+                    i.bill = i.subOrders.reduce((acc, item) => {
+                        acc += +item.bill_rent + +item.bill_access - +item.sale
+                        return acc
+                    }, 0)
+
+                    return i
+                })
+
+                return history
             },
         }
     }
@@ -99,13 +105,9 @@
         box-shadow: 0px 0px 1px 0px;
     }
 
-    .white .history__table td {
-        border: 1px solid lightgray;
-        padding: 2px 5px;
-    }
     .black .history__table td {
-        border: 1px solid #333;
-        padding: 5px;
+
+        padding: 5px 10px;
     }
     .history__td--time {
         text-align: right;
