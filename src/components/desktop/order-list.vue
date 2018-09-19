@@ -72,7 +72,6 @@
 
     import getBill       from '../../functions/getBill'
     import timeFormat    from '../../functions/timeFormat'
-    import getTime       from '../../functions/getTime'
     import roundBill     from '../../functions/roundBill'
     import pause         from './functions/pause'
 
@@ -91,13 +90,10 @@
 
                 showDetails: false,
                 showResume: false,
-
-                cmd: null
             }
         },
 
         methods: {
-            ...getTime,
             ...timeFormat,
             ...stopSubOrder,
 
@@ -158,7 +154,8 @@
                 }
 
                 if (subOrder.status == "PAUSE") {
-                    time = Date.parse(subOrder.pause_start) - Date.parse(order.start_time)
+                    time = subOrder.pause_start - Date.parse(order.start_time)
+                    console.log(time)
                 }
 
                 if (subOrder.status == "END") {
@@ -237,18 +234,6 @@
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
                 return product.name
-            },
-
-            getAccessories(subOrder) {
-                if (!subOrder.accessories) {
-                    return null
-                }
-
-                const split = subOrder.accessories.split(',') // [1, 2]
-
-                return split.map(i => {
-                    return this.$store.getters.accessories.find(j => j.id_rent == i)
-                })
             },
         },
 
