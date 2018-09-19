@@ -21,7 +21,7 @@
                     {{getName(item)}}
                     <span v-if="item.products.length > 1"> и еще {{ item.products.length - 1 }} шт</span>
                 </td>
-                <td>{{ item.bill }}</td>
+                <td>{{ item.bill }} р.</td>
                 <td>{{ item.status }}</td>
             </tr>
         </table>
@@ -56,10 +56,7 @@
 
                 const end = Math.max(subOrders.map(i => Date.parse(i.end_time)))
 
-                console.log(subOrders)
-
                 const time = start - Date.parse(end)
-
 
                 return this.timeFormat(time)
             },
@@ -69,7 +66,6 @@
             },
 
             onClick(order) {
-                //console.log(item)
                 this.order = order
                 this.show = true
             },
@@ -87,7 +83,10 @@
                     i.end_time = Math.max(...i.subOrders.map(j => Date.parse(j.end_time) || 0)) || Date.now()
                     i.play_time = i.end_time > 0 ? this.timeFormat(i.end_time - Date.parse(i.start_time)) : 0
 
-                    i.bill = subOrders.reduce()
+                    i.bill = i.subOrders.reduce((acc, item) => {
+                        acc += +item.bill_rent + +item.bill_access - +item.sale
+                        return acc
+                    }, 0)
 
                     return i
                 })
@@ -106,13 +105,9 @@
         box-shadow: 0px 0px 1px 0px;
     }
 
-    .white .history__table td {
-        border: 1px solid lightgray;
-        padding: 2px 5px;
-    }
     .black .history__table td {
-        border: 1px solid #333;
-        padding: 5px;
+
+        padding: 5px 10px;
     }
     .history__td--time {
         text-align: right;
