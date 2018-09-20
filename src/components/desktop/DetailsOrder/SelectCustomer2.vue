@@ -5,6 +5,7 @@
             v-model.trim="input"
             @input="change()"
             @focus="focus()"
+            @blur="blur()"
         >
         <ul class="result__list" v-if="show">
             <li 
@@ -31,6 +32,10 @@
             focus() {
                 this.change()
             },
+            blur() {
+                
+            },
+
             change() {
                 this.result = this.search(this.input)
                 this.show = true

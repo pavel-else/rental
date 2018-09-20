@@ -23,13 +23,13 @@
                     <tr>
                         <td>Клиент</td>
                         <td>
-<!--                             <SelectCustomer 
+                            <SelectCustomer 
                                 v-if="show"
                                 :data="customers"
                                 :default="order.customer_id"
                                 @setCustomer="setCustomer($event)" 
                             >
-                            </SelectCustomer> -->
+                            </SelectCustomer>
                             <SelectCustomer2></SelectCustomer2>
                         </td>
                     </tr>

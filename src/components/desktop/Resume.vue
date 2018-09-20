@@ -18,7 +18,7 @@
                     <tr>
                         <td>Залог</td>
                         <td>
-                            <span v-if="order.deposit">{{ order.deposit }}</span>
+                            <span v-if="deposit">{{ deposit.name }}</span>
                             <span v-else>-</span>
                         </td>
                     </tr>
@@ -304,6 +304,9 @@
                 // console.log(this.timeFormat(time))
 
                 return this.timeFormat(time)
+            },
+            deposit() {
+                return this.$store.getters.deposits.find(i => i.id_rent === +this.order.deposit)
             },
 
             subOrders() {
