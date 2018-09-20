@@ -2,9 +2,12 @@
     <div class="product-list">
         <h3>Свободныe</h3>
         <table class="table table-bordered">
-            <tr v-for="(item, index) in filterProducts" @click="onClick(item)" class="products__product">
-                <td>{{ index + 1 }}</td>
-                <td>{{ item.name }}</td>
+            <tr
+                v-for="(item, index) in filterProducts" 
+                @click="onClick(item)" 
+                class="products__product"
+            >
+                <td class="products__td">{{ item.name }}</td>
             </tr>
         </table>
     </div>
@@ -30,8 +33,11 @@
 </script>
 
 <style scoped>
+    .products__td {
+        padding: 5px 10px;
+    }
     .products__product:hover {
         cursor: pointer;
-        outline: 1px solid rgba(0, 0, 0, 0.3);
+        outline: 1px solid #333;
     }
 </style>

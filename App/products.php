@@ -7,7 +7,8 @@ trait Products
             SELECT * 
             FROM `products` 
             WHERE `id_rental_org` = :id_rental_org 
-            AND NOT `status`      = :status
+            AND NOT `status`      = :status 
+            ORDER BY `name`
         ';
 
         $d = array (
