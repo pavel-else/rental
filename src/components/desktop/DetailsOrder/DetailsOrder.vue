@@ -24,11 +24,13 @@
                         <td>Клиент</td>
                         <td>
                             <SelectCustomer 
+                                v-if="show"
                                 :data="customers"
                                 :default="order.customer_id"
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
+                            <!-- <SelectCustomer2></SelectCustomer2> -->
                         </td>
                     </tr>
                     <tr>
@@ -84,6 +86,7 @@
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
+    import SelectCustomer2    from './SelectCustomer2'
     import SelectAccessories from './SelectAccessories'
     import SelectTariff      from './SelectTariff'
     import SelectPromotion   from './SelectPromotion'
@@ -97,6 +100,7 @@
         components: {
             Position,
             SelectCustomer,
+            SelectCustomer2,
             SelectAccessories,
             SelectTariff,
             SelectPromotion,
@@ -138,7 +142,8 @@
 
                 orders:    this.$store.getters.orders,
 
-                status: null
+                status: null,
+                show: true
             }
         },
 
