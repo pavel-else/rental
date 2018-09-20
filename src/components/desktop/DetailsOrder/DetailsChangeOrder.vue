@@ -35,6 +35,11 @@
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
+                            <!-- <SelectCustomer2
+                                :default="order.customer_id"
+                                @setCustomer="setCustomer($event)"
+                            >
+                            </SelectCustomer2> -->
                         </td>
                     </tr>
                     <tr>
@@ -110,6 +115,7 @@
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
+    import SelectCustomer2    from './SelectCustomer2'
     import SelectAccessories from './SelectAccessories'
     import SelectTariff      from './SelectTariff'
     import SelectPromotion   from './SelectPromotion'
@@ -128,6 +134,7 @@
         components: {
             Position,
             SelectCustomer,
+            SelectCustomer2,
             SelectAccessories,
             SelectTariff,
             SelectPromotion,

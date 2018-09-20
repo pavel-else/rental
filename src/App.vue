@@ -47,6 +47,11 @@ export default {
         color: rgba(255, 255, 255, 0.8);
     }
 
+    button, i, input, ul, li {
+        font-family: Roboto Condensed;
+        font-size: 14px;
+    }
+
     h1, h2 {
         font-weight: normal;
     }
@@ -71,7 +76,6 @@ export default {
     }
 
     button {
-        font-family: Roboto Condensed;
         border: none;
         border-radius: 5px;
         padding: 5px 15px;
@@ -79,9 +83,6 @@ export default {
         display: inline-flex;
     }
 
-    i {
-        font-family: Roboto Condensed;
-    }
 
     button:hover {
         cursor: pointer;
@@ -92,6 +93,7 @@ export default {
         border: 1px solid #333;
         color: rgba(255, 255, 255, 0.8);
         padding: 5px;
+        font-family: 
     }
 
     .checkbox {

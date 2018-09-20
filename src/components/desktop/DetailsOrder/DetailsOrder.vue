@@ -24,13 +24,15 @@
                         <td>Клиент</td>
                         <td>
                             <SelectCustomer 
-                                v-if="show"
                                 :data="customers"
                                 :default="order.customer_id"
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
-                            <SelectCustomer2></SelectCustomer2>
+                            <!-- <SelectCustomer2
+                                :default="order.customer_id"
+                                @setCustomer="setCustomer($event)"
+                            ></SelectCustomer2> -->
                         </td>
                     </tr>
                     <tr>
@@ -143,7 +145,6 @@
                 orders:    this.$store.getters.orders,
 
                 status: null,
-                show: true
             }
         },
 
