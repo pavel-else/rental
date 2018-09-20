@@ -79,6 +79,9 @@
         max-height: 200px;
         overflow-x: hidden;
         overflow-y: scroll;
+
+        border: 1px solid #333;
+        background-color: #000;
     }
     .result__item {
         display: block;

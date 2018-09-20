@@ -307,7 +307,9 @@
             },
 
             subOrders() {
-                return this.$store.getters.subOrders.filter(i => i.order_id == this.order.order_id)
+                return this.$store.getters.subOrders.filter(i => {
+                    return i.order_id == this.order.order_id && i.status !== "DEL"
+                })
             }                
         }
     }

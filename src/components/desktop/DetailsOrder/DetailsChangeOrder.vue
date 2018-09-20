@@ -387,8 +387,15 @@
             },
             subOrders() {
                 return this.$store.getters.subOrders.filter(i => {
-                    return i.order_id === this.subOrder.order_id && i.status === 'ACTIVE'
+                    return i.order_id === this.subOrder.order_id && (i.status === 'ACTIVE' || i.status === 'PAUSE')
                 })
+            },
+            activeSubOrders() {
+                return this.subOrders.filter(i => i.status === "ACTIVE")
+            },
+
+            activeSubOrders() {
+                return this.subOrders.filter(i => i.status === "PAUSE")
             }
         },
     }
