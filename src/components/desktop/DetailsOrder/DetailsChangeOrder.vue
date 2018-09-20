@@ -1,7 +1,7 @@
 <template>
     <div class="canvas">
         <div class="add-order details">
-            <h3>Детали заказа<span> - #{{ order.order_id }}</span></h3>
+            <h3>Детали заказа<span> - #{{ order.order_id }} / {{ subOrder.id_rent }}</span></h3>
             <form @submit.prevent="">
                 <table>
                     <tr>
@@ -269,45 +269,6 @@
                 pause(this.subOrder)
                 
                 this.$store.dispatch('send', {cmd: 'changeSubOrder', value: this.subOrder})
-            },
-
-            abortSubOrder() {
-                const subOrder = this.subOrder
-                const order    = this.order
-
-                const title = "Почему Вы хотите удалить этот товар?"
-                const def = "Причина удаления"
-                const answer = prompt(title, def)
-
-                if (!answer) {
-                    return 
-                }
-
-                const cmd = []
-
-                // SUBORDER
-                subOrder.note = answer
-                subOrder.status = 'DEL'
-                subOrder.end_time = Math.floor(Date.now() / 1000)
-                subOrder.pause_start = Date.parse(subOrder.pause_start) / 1000
-                cmd.push({cmd: 'changeSubOrder', value: subOrder})
-
-                // ORDER
-                // Если сабордер единственный, деактивируем ордер
-                if (this.subOrders.length < 1) {
-                    order.status = 'DEL'
-                    cmd.push({cmd: 'changeOrder', value: order})
-                }
-
-                // PRODUCT
-                this.product.status = 'free'                      
-                this.product.updated = Date.parse(this.product.updated) / 1000                      
-                cmd.push({cmd: 'setProduct', value: this.product})
-                
-
-                this.$store.dispatch('send', cmd)
-
-                this.$emit('close')
             },
 
             getPosition() {
