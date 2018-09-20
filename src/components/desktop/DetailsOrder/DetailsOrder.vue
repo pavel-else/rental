@@ -285,10 +285,13 @@
             },
 
             setPosition({order_id, order_id_position}) {
+                if (this.orders.find(i => i.order_id == order_id)) {
+                    this.addSubOrder(order_id)                    
+                } else {
+                    this.order.customer_id =111
 
-                this.orders.find(i => i.order_id == order_id) ?
-                    this.addSubOrder(order_id) :
-                    this.newOrder(order_id, order_id_position)
+                    //this.newOrder(order_id, order_id_position)
+                }
             },
                 
             setCustomer(customer) {

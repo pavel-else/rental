@@ -155,7 +155,6 @@
 
                 if (subOrder.status == "PAUSE") {
                     time = subOrder.pause_start - Date.parse(order.start_time)
-                    console.log(time)
                 }
 
                 if (subOrder.status == "END") {

@@ -83,13 +83,12 @@ trait SubOrders
                     SELECT `id` 
                     FROM `order_products` 
                     WHERE `id_rental_org` = :id_rental_org 
-                    AND `product_id`      = :product_id 
-                    AND `end_time` IS NULL
+                    AND `status`          = :status
                 ';
 
                 $d = array(
                     'id_rental_org' => $this->app_id,
-                    'product_id'    => $product_id
+                    'status'        => $status
                 );
 
                 $result = $this->pDB->get($sql, 0, $d);
