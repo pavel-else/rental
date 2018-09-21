@@ -23,15 +23,19 @@
                     <tr>
                         <td>Аванс</td>
                         <td>
-                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="status.changeOrder = true">
+                            <input 
+                                class="add-order__input add-order__input--advance" 
+                                v-model="order.advance" 
+                                placeholder="0 руб"
+                            >
+
                         </td>
                     </tr>
                     <tr>
                         <td>Клиент</td>
                         <td>
                             <SelectCustomer 
-                                :data="customers"
-                                :default="order.customer_id"
+                                :customer="order.customer_id"
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
@@ -40,25 +44,43 @@
                     <tr>
                         <td>Залог</td>
                         <td>
-                            <SelectDeposit :data="deposits" :default="order.deposit" @setDeposit="setDeposit($event)"></SelectDeposit>
+                            <SelectDeposit 
+                                :deposit="order.deposit" 
+                                @setDeposit="setDeposit($event)"
+                            >
+                            </SelectDeposit>
                         </td>
                     </tr>
                     <tr>
                         <td>Примечание</td>
                         <td>
-                            <textarea class="add-order__input add-order__input--note" cols="30" rows="3" v-model="order.note"></textarea>
+                            <textarea 
+                                class="add-order__input add-order__input--note" 
+                                cols="30" 
+                                rows="3" 
+                                v-model="order.note"
+                            >
+                            </textarea>
                         </td>
                     </tr>
                     <tr>
                         <td>Акция</td>
                         <td>
-                            <SelectPromotion :data="promotions" :default="order.promotion" @setPromotion="setPromotion($event)"></SelectPromotion>
+                            <SelectPromotion 
+                                :promotion="order.promotion" 
+                                @setPromotion="setPromotion($event)"
+                            >
+                            </SelectPromotion>
                         </td>
                     </tr>
                     <tr>
                         <td>Аксессуары</td>
                         <td>
-                            <SelectAccessories :data="accessories" :default="subOrder.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
+                            <SelectAccessories 
+                                :accessory="subOrder.accessories" 
+                                @setAccessories="setAccessories($event)"
+                            >
+                            </SelectAccessories>
                         </td>
                     </tr>
                     <tr>
@@ -66,7 +88,7 @@
                         <td>
                             <SelectTariff 
                                 :data-tariffs="tariffs" 
-                                :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default" 
+                                :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default"
                                 @setTariff="setTariff($event)"
                             >
                             </SelectTariff>
@@ -110,6 +132,7 @@
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
+    import SelectCustomer2    from './SelectCustomer2'
     import SelectAccessories from './SelectAccessories'
     import SelectTariff      from './SelectTariff'
     import SelectPromotion   from './SelectPromotion'
@@ -128,6 +151,7 @@
         components: {
             Position,
             SelectCustomer,
+            SelectCustomer2,
             SelectAccessories,
             SelectTariff,
             SelectPromotion,
@@ -387,8 +411,15 @@
             },
             subOrders() {
                 return this.$store.getters.subOrders.filter(i => {
-                    return i.order_id === this.subOrder.order_id && i.status === 'ACTIVE'
+                    return i.order_id === this.subOrder.order_id && (i.status === 'ACTIVE' || i.status === 'PAUSE')
                 })
+            },
+            activeSubOrders() {
+                return this.subOrders.filter(i => i.status === "ACTIVE")
+            },
+
+            activeSubOrders() {
+                return this.subOrders.filter(i => i.status === "PAUSE")
             }
         },
     }

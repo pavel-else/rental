@@ -17,15 +17,18 @@
                     <tr>
                         <td>Аванс</td>
                         <td>
-                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб">
+                            <input 
+                                class="add-order__input add-order__input--advance" 
+                                v-model="order.advance" 
+                                placeholder="0 руб"
+                            >
                         </td>
                     </tr>
                     <tr>
                         <td>Клиент</td>
                         <td>
                             <SelectCustomer 
-                                :data="customers"
-                                :default="order.customer_id"
+                                :customer="order.customer_id"
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
@@ -34,34 +37,51 @@
                     <tr>
                         <td>Залог</td>
                         <td>
-                            <SelectDeposit :data="deposits" :default="order.deposit" @setDeposit="setDeposit($event)"></SelectDeposit>
+                            <SelectDeposit 
+                                :deposit="order.deposit" 
+                                @setDeposit="setDeposit($event)"
+                            >
+                            </SelectDeposit>
                         </td>
                     </tr>
                     <tr>
                         <td>Примечание</td>
                         <td>
-                            <textarea class="add-order__input add-order__input--note" cols="30" rows="3" v-model="order.note"></textarea>
+                            <textarea 
+                                class="add-order__input add-order__input--note" 
+                                cols="30" 
+                                rows="3" 
+                                v-model="order.note"
+                            >
+                            </textarea>
                         </td>
                     </tr>
                     <tr>
                         <td>Акция</td>
                         <td>
-                            <SelectPromotion :data="promotions" :default="order.promotion" @setPromotion="setPromotion($event)"></SelectPromotion>
+                            <SelectPromotion 
+                                :promotion="order.promotion" 
+                                @setPromotion="setPromotion($event)"
+                            >
+                            </SelectPromotion>
                         </td>
                     </tr>
                     <tr>
                         <td>Аксессуары</td>
                         <td>
-                            <SelectAccessories :data="accessories" :default="subOrder.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
+                            <SelectAccessories 
+                                :accessory="subOrder.accessories" 
+                                @setAccessories="setAccessories($event)"
+                            >
+                            </SelectAccessories>
                         </td>
                     </tr>
                     <tr>
                         <td>Тарифный план</td>
                         <td>
                             <SelectTariff 
-                                v-if=""
                                 :data-tariffs="tariffs" 
-                                :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default" 
+                                :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default"
                                 @setTariff="setTariff($event)"
                             >
                             </SelectTariff>
@@ -81,6 +101,8 @@
     import getOrderId        from '../../../functions/getOrderId'
     import getSubOrderId     from '../../../functions/getSubOrderId'
     import copyObject        from '../../../functions/copyObject'
+
+    import initOrder         from '../functions/initOrder'
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
@@ -119,7 +141,7 @@
                 },
 
                 subOrder: {
-                    id_rent:      null, // Сделать генератор ID
+                    id_rent:      null,
                     order_id:     null,
                     product_id:   null,
                     tariff_id:    null,
@@ -136,9 +158,7 @@
                     status:       null,
                 },              
 
-                orders:    this.$store.getters.orders,
-
-                status: null
+                status: null,
             }
         },
 
@@ -181,6 +201,7 @@
 
                     this.$store.dispatch('send', [
                         {cmd: 'addOrderProduct', value: this.subOrder},
+                        {cmd: 'changeOrder',     value: this.order},
                     ])
                 }
 
@@ -188,10 +209,12 @@
             },
 
             newOrder(order_id_position) {
+                initOrder(this.order)
+
                 this.order.status              = 'ACTIVE'
                 this.order.start_time          = Date.now() + this.registrationTime
                 this.order.order_id            = this.getOrderId()
-                this.order.order_id_position   = this.getPosition('new')
+                this.order.order_id_position   = order_id_position || this.getPosition('new')
 
                 this.$set(this.order, 'customer_id', null)
 
@@ -207,7 +230,6 @@
             },
 
             addSubOrder(order_id) {
-
                 if (!order_id) {
                     console.log('empty order_id!')
                     return
@@ -241,7 +263,7 @@
                 const order    = this.orders.find(i => i.order_id == lastID)
 
                 // Если последний ордер уже закрыт
-                if (!order || order.status == 'END') {
+                if (!order || order.status === 'END' || order.status === 'DEL') {
                     return false
                 }
 
@@ -285,30 +307,28 @@
             },
 
             setPosition({order_id, order_id_position}) {
-                if (this.orders.find(i => i.order_id == order_id)) {
-                    this.addSubOrder(order_id)                    
-                } else {
-                    this.order.customer_id =111
-
-                    //this.newOrder(order_id, order_id_position)
-                }
+                this.orders.find(i => i.order_id == order_id)
+                    ? this.addSubOrder(order_id)                    
+                    : this.newOrder(order_id_position)
             },
                 
             setCustomer(customer) {
-                this.order.customer_id = customer.id_rent 
-                this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
+                if (customer) {
+                    this.order.customer_id = customer.id_rent 
+                    this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
+                }
             },
 
             setDeposit(deposit) {
-                this.order.deposit = deposit.id_rent
+                if (deposit) {
+                    this.order.deposit = deposit.id_rent
+                }
             },             
 
             setPromotion(promotion) {                 
-                if (!promotion) {
-                    return                 
+                if (promotion) {
+                    this.order.promotion = promotion.id               
                 }
-
-                this.order.promotion = promotion.id
             },
 
             setAccessories(accessories) {
@@ -321,6 +341,9 @@
         },
 
         computed: {
+            orders() {
+                return this.$store.getters.orders
+            },
             customers() {
                 return this.$store.getters.customers
             },

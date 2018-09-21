@@ -29,34 +29,34 @@
     import Multiselect from 'vue-multiselect'
 
     export default {
-        props: {
-            data: Array, //accessories
-            default: null
-        },
         components: { Multiselect },
+        props: {
+            accessory: null
+        },
         data () {
             return {
-                value: null,                  
-                options: this.data
+                value: this.split(this.accessory),                  
+                options: this.$store.getters.accessories
             }
-        },
-        created() {
-            if(!this.default) {
-                return null
-            }
-
-            const split = this.default.split(',') // [1, 2]
-
-            this.value = split.map(i => {
-                return this.$store.getters.accessories.find(j => j.id_rent == i)
-            })
         },
         methods: {
+            split(accessory) {
+                if (!accessory) {
+                    return []
+                }
+
+                const split = accessory.split(',') // [1, 2]
+
+                return split.map(i => {
+                    return this.$store.getters.accessories.find(j => j.id_rent == i)
+                })
+            },
             type(type) {
                 return type == '%' ? '%' : 'p.'
             }
         },
         watch: {
+            // accessory не требует слежения
             value() {
                 this.$emit('setAccessories', this.value.map(i => i.id_rent).join())
             }

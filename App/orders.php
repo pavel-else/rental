@@ -264,8 +264,8 @@ trait Orders
         $newSubOrder[order_id] = $order[order_id];
 
         $this->newOrder($order);
-        $this->deleteOrderProduct($oldSubOrder);
-        $this->addOrderProduct($newSubOrder);
+        $this->deleteSubOrder($oldSubOrder);
+        $this->addSubOrder($newSubOrder);
         $this->deleteOrder($order[old_id]);
     }     
 

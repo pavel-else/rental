@@ -21,14 +21,13 @@
 
     export default {
         props: {
-            data: Array, //customers
-            default: null
+            customer: null
         },
         components: { Multiselect },
         data () {
             return {
-                value: this.$store.getters.customers.find(i => i.id_rent == this.default),                  
-                options: this.data
+                value: this.$store.getters.customers.find(i => i.id_rent == this.customer),                
+                options: this.$store.getters.customers
             }
         },
         methods: {
@@ -37,6 +36,11 @@
             }
         },
         watch: {
+            customer() {
+                this.value = this.customer 
+                    ? this.$store.getters.customers.find(i => i.id_rent == this.customer)
+                    : null
+            },
             value() {
                 this.$emit('setCustomer', this.value)
             }
