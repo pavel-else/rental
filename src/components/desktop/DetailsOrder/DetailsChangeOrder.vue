@@ -44,7 +44,11 @@
                     <tr>
                         <td>Залог</td>
                         <td>
-                            <SelectDeposit :data="deposits" :default="order.deposit" @setDeposit="setDeposit($event)"></SelectDeposit>
+                            <SelectDeposit 
+                                :deposit="order.deposit" 
+                                @setDeposit="setDeposit($event)"
+                            >
+                            </SelectDeposit>
                         </td>
                     </tr>
                     <tr>

@@ -19,21 +19,19 @@
 
     export default {
         props: {
-            data: Array, //deposits
-            default: null
+            deposit: null
         },
         components: { Multiselect },
         data () {
             return {
-                //deprecated
-                // Должен приходить id/
-                // Переделать, как будет готова таблица в БД
-                value: this.data.find(d => d.id_rent == this.default), 
-                                 
-                options: this.data
+                value: this.$store.getters.deposits.find(i => i.id_rent == this.deposit),
+                options: this.$store.getters.deposits
             }
         },
         watch: {
+            deposit() {
+                this.value = this.$store.getters.deposits.find(i => i.id_rent == this.deposit) 
+            },
             value() {
                 this.$emit('setDeposit', this.value)
             }

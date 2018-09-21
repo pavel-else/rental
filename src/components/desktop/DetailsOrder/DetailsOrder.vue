@@ -37,7 +37,11 @@
                     <tr>
                         <td>Залог</td>
                         <td>
-                            <SelectDeposit :data="deposits" :default="order.deposit" @setDeposit="setDeposit($event)"></SelectDeposit>
+                            <SelectDeposit 
+                                :deposit="order.deposit" 
+                                @setDeposit="setDeposit($event)"
+                            >
+                            </SelectDeposit>
                         </td>
                     </tr>
                     <tr>
@@ -250,7 +254,7 @@
                 const order    = this.orders.find(i => i.order_id == lastID)
 
                 // Если последний ордер уже закрыт
-                if (!order || order.status == 'END') {
+                if (!order || order.status === 'END' || order.status === 'DEL') {
                     return false
                 }
 
@@ -300,14 +304,16 @@
             },
                 
             setCustomer(customer) {
-                if(customer) {
+                if (customer) {
                     this.order.customer_id = customer.id_rent 
                     this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
                 }
             },
 
             setDeposit(deposit) {
-                this.order.deposit = deposit.id_rent
+                if (deposit) {
+                    this.order.deposit = deposit.id_rent
+                }
             },             
 
             setPromotion(promotion) {                 
