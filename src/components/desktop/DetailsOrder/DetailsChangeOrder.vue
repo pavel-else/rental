@@ -70,7 +70,11 @@
                     <tr>
                         <td>Аксессуары</td>
                         <td>
-                            <SelectAccessories :data="accessories" :default="subOrder.accessories" @setAccessories="setAccessories($event)"></SelectAccessories>
+                            <SelectAccessories 
+                                :accessory="subOrder.accessories" 
+                                @setAccessories="setAccessories($event)"
+                            >
+                            </SelectAccessories>
                         </td>
                     </tr>
                     <tr>
@@ -78,7 +82,7 @@
                         <td>
                             <SelectTariff 
                                 :data-tariffs="tariffs" 
-                                :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default" 
+                                :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default"
                                 @setTariff="setTariff($event)"
                             >
                             </SelectTariff>
