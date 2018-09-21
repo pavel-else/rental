@@ -53,7 +53,11 @@
                     <tr>
                         <td>Акция</td>
                         <td>
-                            <SelectPromotion :data="promotions" :default="order.promotion" @setPromotion="setPromotion($event)"></SelectPromotion>
+                            <SelectPromotion 
+                                :promotion="order.promotion" 
+                                @setPromotion="setPromotion($event)"
+                            >
+                            </SelectPromotion>
                         </td>
                     </tr>
                     <tr>
@@ -317,11 +321,10 @@
             },             
 
             setPromotion(promotion) {                 
-                if (!promotion) {
-                    return                 
+                if (promotion) {
+                    this.order.promotion = promotion.id               
                 }
 
-                this.order.promotion = promotion.id
             },
 
             setAccessories(accessories) {

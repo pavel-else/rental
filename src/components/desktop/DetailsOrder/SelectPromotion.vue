@@ -19,17 +19,19 @@
 
     export default {
         props: {
-            data: Array,
-            default: null
+            promotion: null
         },
         components: { Multiselect },
         data () {
             return {
-                value: this.data.find(i => i.id == this.default),                    
-                options: this.data
+                value: this.$store.getters.promotions.find(i => i.id == this.promotion),                    
+                options: this.$store.getters.promotions
             }
         },
         watch: {
+            promotion() {
+                this.value = this.$store.getters.promotions.find(i => i.id == this.promotion)
+            },
             value() {
                 this.$emit('setPromotion', this.value)
             }

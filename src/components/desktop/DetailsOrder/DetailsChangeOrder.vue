@@ -60,7 +60,11 @@
                     <tr>
                         <td>Акция</td>
                         <td>
-                            <SelectPromotion :data="promotions" :default="order.promotion" @setPromotion="setPromotion($event)"></SelectPromotion>
+                            <SelectPromotion 
+                                :promotion="order.promotion" 
+                                @setPromotion="setPromotion($event)"
+                            >
+                            </SelectPromotion>
                         </td>
                     </tr>
                     <tr>
