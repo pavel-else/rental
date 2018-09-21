@@ -86,6 +86,8 @@
     import getSubOrderId     from '../../../functions/getSubOrderId'
     import copyObject        from '../../../functions/copyObject'
 
+    import initOrder         from '../functions/initOrder'
+
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
     import SelectCustomer2    from './SelectCustomer2'
@@ -194,10 +196,12 @@
             },
 
             newOrder(order_id_position) {
+                initOrder(this.order)
+
                 this.order.status              = 'ACTIVE'
                 this.order.start_time          = Date.now() + this.registrationTime
                 this.order.order_id            = this.getOrderId()
-                this.order.order_id_position   = this.getPosition('new')
+                this.order.order_id_position   = order_id_position || this.getPosition('new')
 
                 this.$set(this.order, 'customer_id', null)
 
@@ -291,13 +295,9 @@
             },
 
             setPosition({order_id, order_id_position}) {
-                if (this.orders.find(i => i.order_id == order_id)) {
-                    this.addSubOrder(order_id)                    
-                } else {
-                    this.order.customer_id =111
-
-                    //this.newOrder(order_id, order_id_position)
-                }
+                this.orders.find(i => i.order_id == order_id)
+                    ? this.addSubOrder(order_id)                    
+                    : this.newOrder(order_id_position)
             },
                 
             setCustomer(customer) {
