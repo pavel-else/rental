@@ -23,7 +23,12 @@
                     <tr>
                         <td>Аванс</td>
                         <td>
-                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб" @input="status.changeOrder = true">
+                            <input 
+                                class="add-order__input add-order__input--advance" 
+                                v-model="order.advance" 
+                                placeholder="0 руб"
+                            >
+
                         </td>
                     </tr>
                     <tr>
@@ -54,7 +59,13 @@
                     <tr>
                         <td>Примечание</td>
                         <td>
-                            <textarea class="add-order__input add-order__input--note" cols="30" rows="3" v-model="order.note"></textarea>
+                            <textarea 
+                                class="add-order__input add-order__input--note" 
+                                cols="30" 
+                                rows="3" 
+                                v-model="order.note"
+                            >
+                            </textarea>
                         </td>
                     </tr>
                     <tr>

@@ -17,7 +17,11 @@
                     <tr>
                         <td>Аванс</td>
                         <td>
-                            <input class="add-order__input add-order__input--advance" v-model="order.advance" placeholder="0 руб">
+                            <input 
+                                class="add-order__input add-order__input--advance" 
+                                v-model="order.advance" 
+                                placeholder="0 руб"
+                            >
                         </td>
                     </tr>
                     <tr>
@@ -28,10 +32,6 @@
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
-                            <!-- <SelectCustomer2
-                                :default="order.customer_id"
-                                @setCustomer="setCustomer($event)"
-                            ></SelectCustomer2> -->
                         </td>
                     </tr>
                     <tr>
@@ -47,7 +47,13 @@
                     <tr>
                         <td>Примечание</td>
                         <td>
-                            <textarea class="add-order__input add-order__input--note" cols="30" rows="3" v-model="order.note"></textarea>
+                            <textarea 
+                                class="add-order__input add-order__input--note" 
+                                cols="30" 
+                                rows="3" 
+                                v-model="order.note"
+                            >
+                            </textarea>
                         </td>
                     </tr>
                     <tr>
@@ -100,7 +106,6 @@
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
-    import SelectCustomer2    from './SelectCustomer2'
     import SelectAccessories from './SelectAccessories'
     import SelectTariff      from './SelectTariff'
     import SelectPromotion   from './SelectPromotion'
@@ -114,7 +119,6 @@
         components: {
             Position,
             SelectCustomer,
-            SelectCustomer2,
             SelectAccessories,
             SelectTariff,
             SelectPromotion,
@@ -137,7 +141,7 @@
                 },
 
                 subOrder: {
-                    id_rent:      null, // Сделать генератор ID
+                    id_rent:      null,
                     order_id:     null,
                     product_id:   null,
                     tariff_id:    null,
@@ -153,8 +157,6 @@
                     note:         null,
                     status:       null,
                 },              
-
-                orders:    this.$store.getters.orders,
 
                 status: null,
             }
@@ -199,6 +201,7 @@
 
                     this.$store.dispatch('send', [
                         {cmd: 'addOrderProduct', value: this.subOrder},
+                        {cmd: 'changeOrder',     value: this.order},
                     ])
                 }
 
@@ -327,7 +330,6 @@
                 if (promotion) {
                     this.order.promotion = promotion.id               
                 }
-
             },
 
             setAccessories(accessories) {
@@ -340,6 +342,9 @@
         },
 
         computed: {
+            orders() {
+                return this.$store.getters.orders
+            },
             customers() {
                 return this.$store.getters.customers
             },
