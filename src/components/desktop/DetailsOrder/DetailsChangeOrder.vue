@@ -30,8 +30,7 @@
                         <td>Клиент</td>
                         <td>
                             <SelectCustomer 
-                                :data="customers"
-                                :default="order.customer_id"
+                                :customer="order.customer_id"
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>

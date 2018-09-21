@@ -24,8 +24,7 @@
                         <td>Клиент</td>
                         <td>
                             <SelectCustomer 
-                                :data="customers"
-                                :default="order.customer_id"
+                                :customer="order.customer_id"
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
@@ -301,8 +300,10 @@
             },
                 
             setCustomer(customer) {
-                this.order.customer_id = customer.id_rent 
-                this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
+                if(customer) {
+                    this.order.customer_id = customer.id_rent 
+                    this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
+                }
             },
 
             setDeposit(deposit) {
