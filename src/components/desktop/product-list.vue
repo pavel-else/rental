@@ -34,7 +34,7 @@
 
 <style scoped>
     .products__td {
-        padding: 5px 10px;
+        padding: 0px 10px 5px;
     }
     .products__product:hover {
         cursor: pointer;

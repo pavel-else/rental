@@ -31,7 +31,9 @@
                         <td>Клиент</td>
                         <td>
                             <SelectCustomer 
+                                id="select_customer"
                                 :customer="order.customer_id"
+                                :focus="true"
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>

@@ -2,6 +2,7 @@
 <template>
     <div>
         <multiselect 
+            id="asdf"
             v-model="value" 
             deselect-label="" 
             track-by="fname" 
@@ -11,6 +12,7 @@
             :options="options" 
             :searchable="true"
             :allow-empty="false"
+            ref="vms"
         >
         </multiselect>
     </div>
@@ -21,9 +23,15 @@
 
     export default {
         props: {
-            customer: null
+            customer: null,
+            focus: Boolean
         },
         components: { Multiselect },
+
+        mounted() {
+            this.focus ? this.$refs.vms.$el.focus() : null
+        },
+
         data () {
             return {
                 value: this.$store.getters.customers.find(i => i.id_rent == this.customer),                
