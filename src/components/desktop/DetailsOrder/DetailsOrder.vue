@@ -1,7 +1,10 @@
 <template>
     <div class="canvas">
         <div class="add-order details">
-            <h3>Детали заказа<span> - #{{ order.order_id }}</span></h3>
+            <h3>
+                <span v-if="status === 'newOrder'">Новый заказ #{{ order.order_id }}</span>
+                <span v-else>Добавить товар к заказу #{{ order.order_id }}</span>
+            </h3>
             <form @submit.prevent="">
                 <table>
                     <tr>
