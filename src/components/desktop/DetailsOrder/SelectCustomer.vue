@@ -13,6 +13,7 @@
             :searchable="true"
             :allow-empty="false"
             ref="vms"
+            @select="f($event)"
         >
         </multiselect>
     </div>
@@ -41,6 +42,9 @@
         methods: {
             fullName({fname, sname, tname}) {
                 return `${fname} ${sname} ${tname}`
+            },
+            f(e) {
+                console.log('fff', e)
             }
         },
         watch: {
@@ -51,6 +55,9 @@
             },
             value() {
                 this.$emit('setCustomer', this.value)
+                if (!this.value) {
+                    console.log('empty value')
+                }
             }
         }
     }

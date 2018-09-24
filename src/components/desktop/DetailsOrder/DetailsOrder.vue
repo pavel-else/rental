@@ -28,7 +28,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Клиент</td>
+                        <td class="customer">Клиент</td>
                         <td>
                             <SelectCustomer 
                                 id="select_customer"
@@ -451,5 +451,28 @@
     }
     .black .multiselect__single {
         background-color: #000;
+    }
+
+    .customer::after {
+        display: inline-block;
+        content: '+';
+        border: 1px solid #333;
+        border-radius: 50%;
+        font-size: 8px;
+        width: 8px;
+        height: 8px;
+        line-height: 8px;
+        padding: 0;
+        margin-left: 8px;
+        text-align: center;
+        vertical-align: middle;
+        color: #333;
+    }
+    .customer:hover {
+        cursor: pointer;
+    }
+    .customer:hover::after{
+        border-color: lightgray;
+        color: lightgray;
     }
 </style>

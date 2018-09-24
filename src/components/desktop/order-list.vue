@@ -8,7 +8,7 @@
                 class="table-tr" 
                 v-for="(order, index) in orders"
                 v-if="getSubOrders(order.order_id).length"
-                :title="title(order.customer_id)"
+                :title="title(order)"
             >
                 <td class="td-1">
                     <Icon :id="order.order_id_position" :show="true"></Icon>
@@ -222,11 +222,14 @@
                 })   
             },
 
-            title(customer_id) {
+            title(order) {
                 const customers = this.$store.getters.customers
-                const customer = customers.find(i => i.id_rent == customer_id)
+                const customer = customers.find(i => i.id_rent == order.customer_id)
+                const note = order.note
 
-                return customer ? `${customer.fname} ${customer.sname[0]}. ${customer.tname[0]}.  ${customer.phone}` : 'Клиент не указан'
+                return customer 
+                    ? `${customer.fname} ${customer.sname[0]}. ${customer.tname[0]}. ${customer.phone} ` 
+                    : `${note}`
             },
 
             getProductName(product_id) {
