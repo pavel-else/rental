@@ -447,10 +447,13 @@
         font-size: 12px;
     }
 
+<<<<<<< HEAD
     .icon {
         font-size: 20px;
     }
 
+=======
+>>>>>>> master
     .add-order__input {
         width: 300px;
         min-height: 40px;
