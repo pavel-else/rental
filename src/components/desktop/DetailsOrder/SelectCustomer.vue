@@ -2,7 +2,6 @@
 <template>
     <div>
         <multiselect 
-            id="asdf"
             v-model="value" 
             deselect-label="" 
             track-by="fname" 
@@ -69,5 +68,22 @@
 <style>
     .multiselect__input {
         background-color: #000 !important;
+    }
+    
+    /* убрать надпись 'Press Enter to select'*/
+    .multiselect__option--highlight::after {
+        display: none;
+    }
+    /* убрать надпись 'selected'*/
+    .multiselect__option--selected::after {
+        display: none;
+    }
+
+    /*убрать надпись NOT FOUND*/
+    .multiselect__content li:not(.multiselect__element) span {
+        display: none;
+    }
+    .multiselect__content li:not(.multiselect__element)::before {
+        content: 'нет совпадений';
     }
 </style>
