@@ -7,6 +7,10 @@
                 @click="onClick(item)" 
                 class="products__product"
             >
+                <td class="products__td products__td--icon">
+                    <Bike :bike="item" :id="index" :name="'bike' + index"></Bike> 
+                    <Resume></Resume>   
+                </td>
                 <td class="products__td">{{ item.name }}</td>
             </tr>
         </table>
@@ -14,11 +18,17 @@
 </template>
 
 <script>
+    import Bike from './Bike'
+    import Resume from './Resume'
+
     export default {
+        component: {
+            Bike,
+            Resume
+        },
         methods: {
             onClick(item) {
                 this.$emit('addOrder', item)
-                //console.log(item)
             }
         },
         computed: {
@@ -34,7 +44,7 @@
 
 <style scoped>
     .products__td {
-        padding: 0px 10px 5px;
+        padding: 0px 0px 10px 5px;
     }
     .products__product:hover {
         cursor: pointer;

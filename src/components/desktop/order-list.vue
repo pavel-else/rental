@@ -291,7 +291,7 @@
                         : false
                 }
 
-                const r = this.$store.getters.subOrders.reduce((acc, item) => {
+                return this.$store.getters.subOrders.reduce((acc, item) => {
                     if (!check(item)) {
                         return acc
                     }
@@ -301,8 +301,6 @@
                     acc[item.order_id] ? acc[item.order_id].push(item) : acc[item.order_id] = [item]
                     return acc
                 }, {})
-                console.log(r)
-                return r
             },
 
             products() {
