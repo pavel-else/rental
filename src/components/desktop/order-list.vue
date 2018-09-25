@@ -7,23 +7,23 @@
             <tr 
                 class="table-tr" 
                 v-for="(order, index) in orders"
-                v-if="getSubOrders(order.order_id).length"
+                v-if="subOrders.length"
                 :title="title(order)"
             >
                 <td class="td-1">
                     <Icon :id="order.order_id_position" :show="true"></Icon>
                 </td>
 
-                <td class="td-2">{{ order.start_time }}</td>
+                <td class="td-2">{{ order.format_start_time }}</td>
 
                 <td>
                     <tr 
                         class="product-tr"
-                        v-for="subOrder in getSubOrders(order.order_id)" 
+                        v-for="subOrder in subOrders[order.order_id]" 
                         :key="subOrder.id_rent" 
                         :class="subOrder.status === 'PAUSE' ? 'suborder--pause' : 'suborder--active'"
                     >
-                        <td class="td-3" @click="toChange(order, subOrder)" >{{ getProductName(subOrder.product_id) }}</td>
+                        <td class="td-3" @click="toChange(order, subOrder)" >{{ subOrder.product_name }}</td>
 
                         <td class="td-4" @click="toChange(order, subOrder)" >{{ getTimePlay(order, subOrder) }}</td>
 
@@ -113,6 +113,36 @@
                 this.subOrder = null
                 this.order = null
                 this.showDetails = false
+            },
+
+            startTime(time) {
+                console.log('call')
+                if (!time) {
+                    return ''
+                }
+
+                const format = (date) => {
+                    return date < 10 
+                        ? `0${date}`
+                        : `${date}`
+                }
+
+                const today = new Date()
+                const todayY = format(today.getFullYear())
+                const todayM = format(today.getMonth() + 1)
+                const todayD = format(today.getDate())
+
+                const orderDate = new Date(time)
+                const orderY = format(orderDate.getFullYear())
+                const orderM = format(orderDate.getMonth() + 1)
+                const orderD = format(orderDate.getDate())
+                const orderH = format(orderDate.getHours())
+                const orderMin = format(orderDate.getMinutes())
+
+
+                return todayD == orderD && todayM == +orderM && todayY == orderY
+                    ? `${orderH}:${orderMin}`
+                    : `${orderD}.${orderM}.${orderY} \n ${orderH}:${orderMin}`
             },
 
             getTimePlay(order, subOrder) {
@@ -225,7 +255,7 @@
             title(order) {
                 const customers = this.$store.getters.customers
                 const customer = customers.find(i => i.id_rent == order.customer_id)
-                const note = order.note
+                const note = order.note ? order.note : ''
 
                 return customer 
                     ? `${customer.fname} ${customer.sname[0]}. ${customer.tname[0]}. ${customer.phone} ` 
@@ -233,6 +263,7 @@
             },
 
             getProductName(product_id) {
+                console.log(product_id)
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
                 return product.name
@@ -241,8 +272,33 @@
 
         computed: {
             orders() {
-                return this.$store.getters.orders
+                const orders = this.$store.getters.orders
+
+                return orders.map(i => {
+                    i.format_start_time = this.startTime(i.start_time)
+                    return i
+                })
             },
+            subOrders() {
+                const check = item => {
+                    return this.orders.find(i => i.order_id === item.order_id)
+                        && item.status === "ACTIVE" || item.status === "PAUSE"
+                        ? true
+                        : false
+                }
+
+                return this.$store.getters.subOrders.reduce((acc, item) => {
+                    if (!check(item)) {
+                        return acc
+                    }
+
+                    item.product_name = this.getProductName(item.product_id)
+                    
+                    acc[item.order_id] ? acc[item.order_id].push(item) : acc[item.order_id] = [item]
+                    return acc
+                }, [])
+            },
+
             products() {
                 return this.$store.getters.products
             },

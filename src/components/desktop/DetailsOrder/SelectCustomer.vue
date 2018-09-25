@@ -12,7 +12,6 @@
             :searchable="true"
             :allow-empty="false"
             ref="vms"
-            @select="f($event)"
         >
         </multiselect>
     </div>
@@ -42,9 +41,6 @@
             fullName({fname, sname, tname}) {
                 return `${fname} ${sname} ${tname}`
             },
-            f(e) {
-                console.log('fff', e)
-            }
         },
         watch: {
             customer() {
