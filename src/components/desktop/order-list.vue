@@ -7,8 +7,8 @@
             <tr 
                 class="table-tr" 
                 v-for="(order, index) in orders"
-                v-if="subOrders.length"
-                :title="title(order)"
+                v-if="subOrders[order.order_id]"
+                :title="order.title"
             >
                 <td class="td-1">
                     <Icon :id="order.order_id_position" :show="true"></Icon>
@@ -115,8 +115,7 @@
                 this.showDetails = false
             },
 
-            startTime(time) {
-                console.log('call')
+            getStartTime(time) {
                 if (!time) {
                     return ''
                 }
@@ -252,7 +251,7 @@
                 })   
             },
 
-            title(order) {
+            getTitle(order) {
                 const customers = this.$store.getters.customers
                 const customer = customers.find(i => i.id_rent == order.customer_id)
                 const note = order.note ? order.note : ''
@@ -263,7 +262,6 @@
             },
 
             getProductName(product_id) {
-                console.log(product_id)
                 const product = this.$store.getters.products.find(i => i.id_rent == product_id)
 
                 return product.name
@@ -271,23 +269,29 @@
         },
 
         computed: {
+            /**
+            * Каждый раз при ререндеринге компонента будут вызываться все методы, обозначенные в шаблоне.
+            * С точки зрения оптимизации, лучше сразу при создании просчитывать свойства объекта
+            */
             orders() {
-                const orders = this.$store.getters.orders
+                return this.$store.getters.orders.reduce((acc, i) => {
+                    i.format_start_time = this.getStartTime(i.start_time)
+                    i.title = this.getTitle(i)
 
-                return orders.map(i => {
-                    i.format_start_time = this.startTime(i.start_time)
-                    return i
-                })
+                    acc[i.order_id] = i
+                    return acc
+                }, {})
             },
             subOrders() {
                 const check = item => {
-                    return this.orders.find(i => i.order_id === item.order_id)
-                        && item.status === "ACTIVE" || item.status === "PAUSE"
+
+                    return this.orders[item.order_id]
+                        && (item.status === "ACTIVE" || item.status === "PAUSE")
                         ? true
                         : false
                 }
 
-                return this.$store.getters.subOrders.reduce((acc, item) => {
+                const r = this.$store.getters.subOrders.reduce((acc, item) => {
                     if (!check(item)) {
                         return acc
                     }
@@ -296,7 +300,9 @@
                     
                     acc[item.order_id] ? acc[item.order_id].push(item) : acc[item.order_id] = [item]
                     return acc
-                }, [])
+                }, {})
+                console.log(r)
+                return r
             },
 
             products() {
