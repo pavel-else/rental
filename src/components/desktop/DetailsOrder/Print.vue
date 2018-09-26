@@ -17,7 +17,7 @@
                 <p class="print__p">
                     1.1. Арендодатель сдает в прокат (во временное пользование за плату) имущество: {{ products_name }} в полной исправности, оцениваемое в сумме {{ products_cost }} рублей.<br>
                     1.2. Дата и время передачи имущества в аренду: {{ order.start_time }}<br>
-                    1.3. Залоговый документ: <br>
+                    1.3. Залоговый документ: {{ deposit }}<br>
                     1.4. Арендатор принимает в прокат Имущество и оплачивает его в соответствии с условиями настоящего Договора. Сдача Имущества в прокат не влечет за собой передачи права собственности на него.<br>
                 </p>                
 
@@ -164,7 +164,7 @@
             },
             products_name() {
                 return this.products.reduce((acc, item) => {
-                    acc += `${item.name}(${item.cost} руб.), `
+                    acc += `${item.name} (${this.products_cost} руб.), `
 
                     return acc
                 }, '')
@@ -178,6 +178,10 @@
             },
             customer() {
                 return this.$store.getters.customers.find(i => i.id_rent == this.order.customer_id)
+            },
+            deposit () {                
+                const deposit = this.$store.getters.deposits.find(i => i.id_rent == this.order.deposit)
+                return deposit ? deposit.name : '______________'
             }
         }
     }

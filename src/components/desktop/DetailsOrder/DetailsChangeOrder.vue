@@ -39,6 +39,11 @@
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
+                            <!-- <SelectCustomer2
+                                :default="order.customer_id"
+                                @setCustomer="setCustomer($event)"
+                            >
+                            </SelectCustomer2> -->
                         </td>
                     </tr>
                     <tr>
@@ -442,6 +447,13 @@
         font-size: 12px;
     }
 
+<<<<<<< HEAD
+    .icon {
+        font-size: 20px;
+    }
+
+=======
+>>>>>>> master
     .add-order__input {
         width: 300px;
         min-height: 40px;

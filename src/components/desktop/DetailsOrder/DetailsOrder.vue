@@ -1,7 +1,10 @@
 <template>
     <div class="canvas">
         <div class="add-order details">
-            <h3>Детали заказа<span> - #{{ order.order_id }}</span></h3>
+            <h3>
+                <span v-if="status === 'newOrder'">Новый заказ #{{ order.order_id }}</span>
+                <span v-else>Добавить товар к заказу #{{ order.order_id }}</span>
+            </h3>
             <form @submit.prevent="">
                 <table>
                     <tr>
@@ -25,10 +28,12 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Клиент</td>
+                        <td class="customer">Клиент</td>
                         <td>
                             <SelectCustomer 
+                                id="select_customer"
                                 :customer="order.customer_id"
+                                :focus="true"
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
@@ -255,7 +260,6 @@
             },
 
             isSerial() {
-                console.log(this.$store.getters.options)
                 const lastTime = this.$store.getters.options.lastOrderTime || false
                 const interval = this.$store.getters.options.lastOrderInterval
                 const now      = this.$store.getters.options.now
@@ -446,5 +450,28 @@
     }
     .black .multiselect__single {
         background-color: #000;
+    }
+
+    .customer::after {
+        display: inline-block;
+        content: '+';
+        border: 1px solid #333;
+        border-radius: 50%;
+        font-size: 8px;
+        width: 8px;
+        height: 8px;
+        line-height: 8px;
+        padding: 0;
+        margin-left: 8px;
+        text-align: center;
+        vertical-align: middle;
+        color: #333;
+    }
+    .customer:hover {
+        cursor: pointer;
+    }
+    .customer:hover::after{
+        border-color: lightgray;
+        color: lightgray;
     }
 </style>

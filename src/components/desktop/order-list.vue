@@ -7,23 +7,23 @@
             <tr 
                 class="table-tr" 
                 v-for="(order, index) in orders"
-                v-if="getSubOrders(order.order_id).length"
-                :title="title(order.customer_id)"
+                v-if="subOrders[order.order_id]"
+                :title="order.title"
             >
                 <td class="td-1">
                     <Icon :id="order.order_id_position" :show="true"></Icon>
                 </td>
 
-                <td class="td-2">{{ order.start_time }}</td>
+                <td class="td-2">{{ order.format_start_time }}</td>
 
                 <td>
                     <tr 
                         class="product-tr"
-                        v-for="subOrder in getSubOrders(order.order_id)" 
+                        v-for="subOrder in subOrders[order.order_id]" 
                         :key="subOrder.id_rent" 
                         :class="subOrder.status === 'PAUSE' ? 'suborder--pause' : 'suborder--active'"
                     >
-                        <td class="td-3" @click="toChange(order, subOrder)" >{{ getProductName(subOrder.product_id) }}</td>
+                        <td class="td-3" @click="toChange(order, subOrder)" >{{ subOrder.product_name }}</td>
 
                         <td class="td-4" @click="toChange(order, subOrder)" >{{ getTimePlay(order, subOrder) }}</td>
 
@@ -68,7 +68,7 @@
     import Resume        from './Resume'
     import stopSubOrder  from './functions/stopSubOrder'
     import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
-    import Icon          from  './Icon/Icon'
+    import Icon          from  '../Icon/Icon'
 
     import getBill       from '../../functions/getBill'
     import timeFormat    from '../../functions/timeFormat'
@@ -113,6 +113,35 @@
                 this.subOrder = null
                 this.order = null
                 this.showDetails = false
+            },
+
+            getStartTime(time) {
+                if (!time) {
+                    return ''
+                }
+
+                const format = (date) => {
+                    return date < 10 
+                        ? `0${date}`
+                        : `${date}`
+                }
+
+                const today = new Date()
+                const todayY = format(today.getFullYear())
+                const todayM = format(today.getMonth() + 1)
+                const todayD = format(today.getDate())
+
+                const orderDate = new Date(time)
+                const orderY = format(orderDate.getFullYear())
+                const orderM = format(orderDate.getMonth() + 1)
+                const orderD = format(orderDate.getDate())
+                const orderH = format(orderDate.getHours())
+                const orderMin = format(orderDate.getMinutes())
+
+
+                return todayD == orderD && todayM == +orderM && todayY == orderY
+                    ? `${orderH}:${orderMin}`
+                    : `${orderD}.${orderM}.${orderY} \n ${orderH}:${orderMin}`
             },
 
             getTimePlay(order, subOrder) {
@@ -222,11 +251,14 @@
                 })   
             },
 
-            title(customer_id) {
+            getTitle(order) {
                 const customers = this.$store.getters.customers
-                const customer = customers.find(i => i.id_rent == customer_id)
+                const customer = customers.find(i => i.id_rent == order.customer_id)
+                const note = order.note ? order.note : ''
 
-                return customer ? `${customer.fname} ${customer.sname[0]}. ${customer.tname[0]}.  ${customer.phone}` : 'Клиент не указан'
+                return customer 
+                    ? `${customer.fname} ${customer.sname[0]}. ${customer.tname[0]}. ${customer.phone} ` 
+                    : `${note}`
             },
 
             getProductName(product_id) {
@@ -237,9 +269,40 @@
         },
 
         computed: {
+            /**
+            * Каждый раз при ререндеринге компонента будут вызываться все методы, обозначенные в шаблоне.
+            * С точки зрения оптимизации, лучше сразу при создании просчитывать свойства объекта
+            */
             orders() {
-                return this.$store.getters.orders
+                return this.$store.getters.orders.reduce((acc, i) => {
+                    i.format_start_time = this.getStartTime(i.start_time)
+                    i.title = this.getTitle(i)
+
+                    acc[i.order_id] = i
+                    return acc
+                }, {})
             },
+            subOrders() {
+                const check = item => {
+
+                    return this.orders[item.order_id]
+                        && (item.status === "ACTIVE" || item.status === "PAUSE")
+                        ? true
+                        : false
+                }
+
+                return this.$store.getters.subOrders.reduce((acc, item) => {
+                    if (!check(item)) {
+                        return acc
+                    }
+
+                    item.product_name = this.getProductName(item.product_id)
+                    
+                    acc[item.order_id] ? acc[item.order_id].push(item) : acc[item.order_id] = [item]
+                    return acc
+                }, {})
+            },
+
             products() {
                 return this.$store.getters.products
             },

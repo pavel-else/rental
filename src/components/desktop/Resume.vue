@@ -95,7 +95,7 @@
                     </tr>
 
                     <tr v-if="sale > 0">
-                        <td>Общая скидка</td>
+                        <td>Общая скидка ({{ customer.sale }}%)</td>
                         <td>
                             <span>{{ sale }} р.</span>
                         </td>

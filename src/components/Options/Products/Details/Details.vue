@@ -6,7 +6,6 @@
                 <span v-else>Новый товар</span>
             </h3>
             <form @input="onChange">
-
                 <table>
                     <tr>
                         <td>id</td>
@@ -15,6 +14,10 @@
                     <tr>
                         <td>Название</td>
                         <td><input v-model="product.name"></td>
+                    </tr>
+                    <tr>
+                        <td>Цвет</td>
+                        <td><Palette :_color="data.color" @setColor="setColor($event)"></Palette></td>
                     </tr>
                     <tr>
                         <td>Стоимость</td>
@@ -69,18 +72,19 @@
 
     import Tariffs    from './prod_tariffs'
     import Categories from './prod_categories'
+    import Palette    from './Palette'
 
     export default {
         props: {
-            data: Object
+            data: Object // Product
         },
         components: {
             Tariffs,
-            Categories
+            Categories,
+            Palette
         },
         data() {
             return {
-                // Не смог по-нормальному скопировать объект без геттеров, поэтому так
                 product: this.copyObject(this.data),
                 change: false
             }
@@ -136,6 +140,10 @@
             },
             setCategories(ids) {
                 this.product.categories = ids
+            },
+            setColor(color) {
+                this.product.color = color
+                this.change = true
             }
         },
         computed: {
@@ -151,7 +159,7 @@
 
 <style scoped>
     .details {
-        width: 300px;
+        width: 350px;
         margin-top: 60px;
     }
     input {

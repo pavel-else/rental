@@ -7,18 +7,29 @@
                 @click="onClick(item)" 
                 class="products__product"
             >
+                <td class="products__td products__td--icon">
+                    <Bike :color="item.color"></Bike>
+                </td>
+
                 <td class="products__td">{{ item.name }}</td>
             </tr>
         </table>
+                    
     </div>
 </template>
 
 <script>
+    import Bike   from '../Bike'
+    import Resume from './Resume'
+
     export default {
+        components: {
+            Bike,
+            Resume
+        },
         methods: {
             onClick(item) {
                 this.$emit('addOrder', item)
-                //console.log(item)
             }
         },
         computed: {
@@ -27,6 +38,41 @@
 
                 return list ? list.filter(item => item.status == 'free') : []
             },
+        },
+        directives: {
+            focus: {
+                inserted(el) {
+                    el.focus()
+                }
+            },
+            ondelay: {
+                bind(el, options) {
+                    let timer
+                    let timeOut = 0
+
+                    for (let name in options.modifiers) {
+                        if (!isNaN(+name)) {
+                            timeOut = parseInt(name)
+                        } 
+                    }
+
+                    let callback = (e) => {
+                        if (timer !== undefined) {
+                            clearInterval(timer)
+                        }
+
+                        if (options.modifiers.prevent) {
+                            e.preventDefault()
+                        }
+
+                        timer = setTimeout( () => {
+                            options.value.call(this, e)
+                        }, timeOut)
+                    }
+
+                    el.addEventListener(options.arg, callback)                    
+                }
+            }
         }
 
     }
@@ -34,7 +80,7 @@
 
 <style scoped>
     .products__td {
-        padding: 5px 10px;
+        padding: 0px 0px 10px 5px;
     }
     .products__product:hover {
         cursor: pointer;

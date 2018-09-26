@@ -46,11 +46,11 @@
                         <td><input type="date" v-model="C.birth_date" placeholder="Дата рождения"></td>
                     </tr>
                     <tr>
-                        <td>Скидка</td>                
+                        <td>Скидка, %</td>                
                         <td><input type="text" v-model="C.sale" placeholder="Скидка, %"></td>
                     </tr>
                     <tr>
-                        <td>Баланс</td>                
+                        <td>Баланс, р.</td>                
                         <td><input type="text" v-model="C.balance" placeholder="Текущий баланс, руб"></td>
                     </tr>
                     <tr>
