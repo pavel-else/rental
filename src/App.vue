@@ -22,6 +22,8 @@ export default {
         Test
     },
 
+
+
     created() {
         //Запрос данных для инициализации и обновления компонентов приложения
         this.$store.dispatch('upd')

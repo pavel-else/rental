@@ -260,7 +260,6 @@
             },
 
             isSerial() {
-                console.log(this.$store.getters.options)
                 const lastTime = this.$store.getters.options.lastOrderTime || false
                 const interval = this.$store.getters.options.lastOrderInterval
                 const now      = this.$store.getters.options.now
