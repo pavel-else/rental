@@ -68,7 +68,7 @@
     import Resume        from './Resume'
     import stopSubOrder  from './functions/stopSubOrder'
     import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
-    import Icon          from  './Icon/Icon'
+    import Icon          from  '../Icon/Icon'
 
     import getBill       from '../../functions/getBill'
     import timeFormat    from '../../functions/timeFormat'

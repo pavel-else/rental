@@ -84,6 +84,7 @@ trait Products
                 `status`,
                 `tariff_ids`,
                 `tariff_default`,
+                `color`, 
                 `note`, 
                 `updated`
             ) VALUES (
@@ -95,6 +96,7 @@ trait Products
                 :status,
                 :tariff_ids,
                 :tariff_default,
+                :color, 
                 :note,
                 :updated
             )';
@@ -107,6 +109,7 @@ trait Products
                 'status'        => $product[status],
                 'tariff_ids'    => $product[tariff_ids],
                 'tariff_default'=> $product[tariff_default],
+                'color'         => $product[color],
                 'note'          => $product[note],
                 'updated'       => date("Y-m-d H:i:s", $product[updated]),
             );
@@ -135,6 +138,7 @@ trait Products
                     `status`        = :status,
                     `tariff_ids`    = :tariff_ids,
                     `tariff_default`= :tariff_default,
+                    `color`         = :color, 
                     `categories`    = :categories,
                     `note`          = :note,
                     `updated`       = :updated 
@@ -151,6 +155,7 @@ trait Products
                 'status'        => $product[status],
                 'tariff_ids'    => $product[tariff_ids],
                 'tariff_default'=> $product[tariff_default],
+                'color'         => $product[color],
                 'categories'    => $product[categories],
                 'note'          => $product[note],
                 'updated'       => date("Y-m-d H:i:s", $product[updated]),

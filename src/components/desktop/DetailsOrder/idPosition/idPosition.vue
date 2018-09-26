@@ -23,7 +23,7 @@
 
 <script>
     import getOrderId from '../../../../functions/getOrderId'
-    import Icon from '../../Icon/Icon'
+    import Icon from '../../../Icon/Icon'
 
     export default {
         props: {

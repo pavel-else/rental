@@ -8,7 +8,7 @@
                 class="products__product"
             >
                 <td class="products__td products__td--icon">
-                    <Bike :bike="item"></Bike>
+                    <Bike :color="item.color"></Bike>
                 </td>
 
                 <td class="products__td">{{ item.name }}</td>
@@ -19,9 +19,8 @@
 </template>
 
 <script>
-    import Bike from './Bike'
+    import Bike   from '../Bike'
     import Resume from './Resume'
-    import Icon from './Icon/Icon'
 
     export default {
         components: {

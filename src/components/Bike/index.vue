@@ -34,18 +34,13 @@
 <script>
     export default {
         props: {
-            bike: Object
+            color: String
         },
         data() {
             return {
 
             }
         },
-        computed: {
-            color() {
-                return this.bike.color ? this.bike.color : '#333'
-            }
-        }
     }
 </script>
 

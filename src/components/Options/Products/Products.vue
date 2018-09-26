@@ -1,30 +1,22 @@
 <template>
     <div class="option option-products">
-        <table>
-            <!-- <tr> -->
-                <!-- <th>id</th> -->
-                <!-- <th>Название</th> -->
-                <!-- <th>Стоимость</th> -->
-                <!-- <th>Тариф</th> -->
-                <!-- <th>Категория</th> -->
-                <!-- <th>Статус</th> -->
-            <!-- </tr> -->
-            <tr v-for="product in products" @click="onClick(product)">
-                <td class="product__td--status">
-                    <span 
-                        class="product__status" 
-                        :class="'product__status--' + product.status"
-                        :title="'Статус: ' + product.status" 
-                    >                            
-                    </span>
-                </td>
-                <td title="ID">{{ product.id_rent }}</td>
-                <td title="Название">{{ product.name }}</td>
-                <!-- <td>{{ product.cost }}</td> -->
-                <!-- <td>{{ product.tariff_ids }}</td> -->
-                <!-- <td>{{ product.categories }}</td> -->
-            </tr>
-        </table>
+        <template v-if="products.length">
+            <table>
+                <tr v-for="product in products" @click="onClick(product)">
+                    <td class="product__td--status">
+                        <span 
+                            class="product__status" 
+                            :class="'product__status--' + product.status"
+                            :title="'Статус: ' + product.status" 
+                        >                            
+                        </span>
+                    </td>
+                    <td title="ID">{{ product.id_rent }}</td>
+                    <td title="Название">{{ product.name }}</td>
+                </tr>
+            </table>            
+        </template>
+        <template v-else>Нет товаров</template>
         
         <button class="products__button products__button--add" @click="newProduct">Добавить</button>
 
