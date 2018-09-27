@@ -11,7 +11,9 @@
                         >                            
                         </span>
                     </td>
-                    <td title="ID">{{ product.id_rent }}</td>
+
+                    <td><Bike :_color="product.color" :_type="+product.type"></Bike></td>
+
                     <td title="Название">{{ product.name }}</td>
                 </tr>
             </table>            
@@ -26,9 +28,11 @@
 
 <script>
     import Details from './Details/Details'
+    import Bike from '../../Bike'
     export default {
         components: {
-            Details
+            Details,
+            Bike
         },
         data() {
             return {
@@ -48,7 +52,17 @@
             },
             newProduct() {
                 this.show = true
-                this.product = {}
+                this.product = {
+                    categories: null,
+                    color:      "#fff",
+                    cost:       0,
+                    name:       '',
+                    note:       null,
+                    status:     'free',
+                    tariff_default: null,
+                    tariff_ids: null,
+                    type: 1
+                }
             }
         },
         computed: {

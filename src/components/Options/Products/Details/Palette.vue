@@ -1,7 +1,9 @@
 <template> 
     <div class="palette">        
         <div @click="open = true">
-            <Bike :color="selectColor"></Bike>
+
+            <!-- <Bike :color="selectColor"></Bike> -->
+
         </div>            
 
         <ul class="colors" v-if="open">
@@ -29,14 +31,14 @@
         data() {
             return {
                 selectColor: this._color,
-                open: false,
-                palette: ['#333', '#fff', '#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#8b00ff']
+                open: true,
+                palette: ['#fff', '#FF7673', '#FFAD40', '#FFE873', '#CCF600', '#66A3D2', '#0B61A4', '#886ED7', '#D25FD2','#333']
             }
         },
         methods: {
             onClick(color) {
                 this.selectColor = color
-                this.open = false
+                // this.open = false
                 this.$emit('setColor', color)
             },
         }
@@ -51,11 +53,10 @@
     }
     .colors {
         display: flex;
-        margin: 2px 0 0 10px;
+        margin: 0;
         padding: 0;
         height: 16px;
-        width: 180px;
-
+        width: 200px;
     }
     .color {
         display: block;
