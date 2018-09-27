@@ -16,6 +16,31 @@
                         <td><input v-model="product.name"></td>
                     </tr>
                     <tr>
+                        <td>Иконка</td>
+                        <td class="bikes">
+                            <div @click="setType(1)">
+                                <Bike
+                                    class="bike"
+                                    :class="{ bike__active: product.type == 1}"
+                                    :style="{borderColor: product.color}"
+                                    :_color="product.color" 
+                                    :_type="1"                                    
+                                > 
+                                </Bike>                                
+                            </div>
+                            <div @click="setType(2)">
+                                <Bike
+                                    class="bike"
+                                    :class="{ bike__active: product.type == 2}"
+                                    :style="{borderColor: product.color}"
+                                    :_color="product.color" 
+                                    :_type="2"                                    
+                                > 
+                                </Bike>                                
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Цвет</td>
                         <td><Palette :_color="data.color" @setColor="setColor($event)"></Palette></td>
                     </tr>
@@ -73,6 +98,7 @@
     import Tariffs    from './prod_tariffs'
     import Categories from './prod_categories'
     import Palette    from './Palette'
+    import Bike       from '../../../Bike'
 
     export default {
         props: {
@@ -81,7 +107,8 @@
         components: {
             Tariffs,
             Categories,
-            Palette
+            Palette,
+            Bike
         },
         data() {
             return {
@@ -91,11 +118,31 @@
         },
         methods: {
             ...copyObject,
+            check() {
+                if (!this.product.name) {
+                    console.log('empty product name')
+                    return false
+                }
+                if (!this.product.tariff_ids) {
+                    console.log('empty tariffs')
+                    return false
+                }
+                if (!this.product.tariff_default) {
+                    console.log('empty tariff default')
+                    return false
+                }
+
+                return true
+            },
 
             save() {
                 this.product.updated = Math.floor(Date.now() / 1000)
 
                 //console.log(this.product)
+
+                if (!this.check()) {
+                    return
+                }
 
                 this.$store.dispatch('send', {
                     cmd: 'setProduct',
@@ -144,6 +191,10 @@
             setColor(color) {
                 this.product.color = color
                 this.change = true
+            },
+            setType(type) {
+                this.product.type = type
+                this.change = true
             }
         },
         computed: {
@@ -176,5 +227,15 @@
         font-size: 12px;
         margin: 20px 0 0 0;
         color: rgba(255, 255, 255, 0.5);
+    }
+    .bikes {
+        display: flex;
+    }
+    .bike {
+        padding: 5px;
+        margin-left: 10px;
+    }
+    .bike__active {
+        border-bottom: 2px solid lightgray;
     }
 </style>

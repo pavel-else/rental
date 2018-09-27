@@ -1,19 +1,31 @@
 <template>
     <div class="product-list">
-        <h3>Свободныe</h3>
+        <h3>Свободныe <span v-if="filterProducts.length">({{ filterProducts.length }})</span></h3>
         <table class="table table-bordered">
             <tr
                 v-for="(item, index) in filterProducts" 
                 @click="onClick(item)" 
                 class="products__product"
             >
-                <td class="products__td products__td--icon">
-                    <Bike :color="item.color"></Bike>
+                <td 
+                    class="products__td products__td--icon" 
+                    @mousemove="openPhoto(item)"
+                    @mouseout="closePhoto()"
+                >
+                    <Bike :_color="item.color" :_type="+item.type"></Bike>
                 </td>
 
                 <td class="products__td">{{ item.name }}</td>
             </tr>
         </table>
+
+        <div
+            class="modal tmp"
+            :class="modalClassStyle"
+            :style="modalInlineStyle"
+        >
+            PHOTO
+        </div>
                     
     </div>
 </template>
@@ -27,9 +39,21 @@
             Bike,
             Resume
         },
+        data() {
+            return {
+                modal: false
+            }
+        },
         methods: {
             onClick(item) {
                 this.$emit('addOrder', item)
+            },
+            openPhoto(product) {
+                this.modal = true
+                console.log('call')
+            },
+            closePhoto(){
+                this.modal = false
             }
         },
         computed: {
@@ -38,43 +62,19 @@
 
                 return list ? list.filter(item => item.status == 'free') : []
             },
-        },
-        directives: {
-            focus: {
-                inserted(el) {
-                    el.focus()
+            modalClassStyle() {
+                return {
+                    modal_active: this.modal, 
+                    modal_deactive: !this.modal
                 }
             },
-            ondelay: {
-                bind(el, options) {
-                    let timer
-                    let timeOut = 0
-
-                    for (let name in options.modifiers) {
-                        if (!isNaN(+name)) {
-                            timeOut = parseInt(name)
-                        } 
-                    }
-
-                    let callback = (e) => {
-                        if (timer !== undefined) {
-                            clearInterval(timer)
-                        }
-
-                        if (options.modifiers.prevent) {
-                            e.preventDefault()
-                        }
-
-                        timer = setTimeout( () => {
-                            options.value.call(this, e)
-                        }, timeOut)
-                    }
-
-                    el.addEventListener(options.arg, callback)                    
+            modalInlineStyle() {
+                return {
+                    backgroundImage: "url('http://overhost.net/rental2/api_v1/images/ava.jpg')",
+                    backgroundSize: 'cover'
                 }
             }
-        }
-
+        },
     }
 </script>
 
@@ -85,5 +85,32 @@
     .products__product:hover {
         cursor: pointer;
         outline: 1px solid #333;
+    }
+    .modal {
+        opacity: 0;
+        visibility: hidden;
+        position: absolute;
+        width: 360px;
+        height: 240px;
+        line-height: 240px;
+        top: 200px;
+        left: 50%;
+        z-index: 50;
+        margin-left: -180px;
+        background-color: #000;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .modal_active {
+        transition-property: visibility, opacity;
+        transition-duration: 0s, 1s;
+        opacity: 1;
+        visibility: visible;
+    }
+    .modal_deactive {
+        opacity: 0;
+        visibility: hidden;
+        transition-property: visibility, opacity;
+        transition-duration: 0.5s, 0.5s;
     }
 </style>

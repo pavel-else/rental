@@ -1,6 +1,6 @@
 <template>
     <div class="order-list">
-        <h3>В прокате</h3>
+        <h3>В прокате <span v-if="countActiveSubOrders">({{ countActiveSubOrders }})</span></h3>
         <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
 
         <table cellspacing="0" class="table">
@@ -283,6 +283,7 @@
                 }, {})
             },
             subOrders() {
+                // Возвращает объект массивов, где ключ - order_id, массив - subOrders
                 const check = item => {
 
                     return this.orders[item.order_id]
@@ -301,6 +302,14 @@
                     acc[item.order_id] ? acc[item.order_id].push(item) : acc[item.order_id] = [item]
                     return acc
                 }, {})
+            },
+
+            countActiveSubOrders() {
+                let length = 0
+                for (let i in this.subOrders) {
+                    length += this.subOrders[i].length
+                }
+                return length
             },
 
             products() {
