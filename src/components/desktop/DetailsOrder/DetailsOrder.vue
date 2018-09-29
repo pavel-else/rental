@@ -33,7 +33,7 @@
                             <SelectCustomer 
                                 id="select_customer"
                                 :customer="order.customer_id"
-                                :focus="true"
+                                :focus="order.customer_id ? false : true"
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
