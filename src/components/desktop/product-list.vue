@@ -51,7 +51,6 @@
             },
             openPhoto(product) {
                 this.modal = true
-                console.log('call')
             },
             closePhoto(){
                 this.modal = false
@@ -71,7 +70,7 @@
             },
             modalInlineStyle() {
                 return {
-                    backgroundImage: "url('http://overhost.net/rental2/api_v1/images/ava.jpg')",
+                    // backgroundImage: "url('http://overhost.net/rental2/api_v1/images/ava.jpg')",
                     backgroundSize: 'cover'
                 }
             }

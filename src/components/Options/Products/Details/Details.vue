@@ -16,6 +16,10 @@
                         <td><input v-model="product.name"></td>
                     </tr>
                     <tr>
+                        <td>Изображение</td>
+                        <td><input type="file"></td>
+                    </tr>
+                    <tr>
                         <td>Иконка</td>
                         <td class="bikes">
                             <div @click="setType(1)">
@@ -213,8 +217,9 @@
 
 <style scoped>
     .details {
-        width: 350px;
-        margin-top: 60px;
+        width: 370px;
+        margin-top: 30px;
+        overflow-y: hidden;
     }
     input {
         width: 100%;
