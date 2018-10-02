@@ -8,16 +8,7 @@
     header('Access-Control-Allow-Headers: Content-Type');
     header('Access-Control-Allow-Credentials: true');
 
-    // var_dump($_POST);
-
-    $uploads_dir = './user_uploads';
-    $destiation_dir = dirname(__FILE__) .'/'.$_FILES['file']['name'];
+    $destiation_dir = 'user_uploads/'. $_FILES['file']['name'];
 
     $tmp_name = $_FILES['file']['tmp_name'];
-
-    $result = move_uploaded_file($tmp_name, $destiation_dir);
-    echo 'tmpname = '.$tmp_name;
-    echo '$destiation_dir = '.$destiation_dir;
-    // print_r($_FILES['file']);
-    // phpinfo();
-
+    move_uploaded_file($tmp_name, $destiation_dir);

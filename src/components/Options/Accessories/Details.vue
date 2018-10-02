@@ -42,7 +42,7 @@
 </template>
 
 <script>
-    import copyObject from '../../../functions/copyObject'
+    import copy from '../../../functions/copy'
 
     export default {
         props: {
@@ -50,12 +50,12 @@
         },
         data() {
             return {
-                accessory: this.copyObject(this.data),
+                accessory: this.copy(this.data),
                 change: false
             }
         },
         methods: {
-            ...copyObject,
+            ...copy,
 
             save() {
                 this.$store.dispatch('send', [
