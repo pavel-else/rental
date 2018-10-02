@@ -16,6 +16,10 @@
                         <td><input v-model="product.name"></td>
                     </tr>
                     <tr>
+                        <td>Фото</td>
+                        <td><input type="file" @change="addImage($event)"></td>
+                    </tr>
+                    <tr>
                         <td>Иконка</td>
                         <td class="bikes">
                             <div @click="setType(1)">
@@ -25,7 +29,7 @@
                                     :style="{borderColor: product.color}"
                                     :_color="product.color" 
                                     :_type="1"                                    
-                                > 
+                                >
                                 </Bike>                                
                             </div>
                             <div @click="setType(2)">
@@ -93,6 +97,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     import copyObject from '../../../../functions/copyObject'
 
     import Tariffs    from './prod_tariffs'
@@ -136,6 +141,26 @@
                 }
 
                 return true
+            },
+
+            addImage(e) {
+                const file = e.target.files[0]
+                const formData = new FormData()
+
+                formData.append('file', file)
+
+                const config = {
+                    header: {
+                        'Content-Type' : 'multipart/form-data'
+                    }
+                }
+                const url = 'http://overhost.net/rental2/api_v1/ajax/Dev/user_uploads.php'
+
+                axios.post(url, formData, config).then(
+                    r => console.log(r)
+                ).catch(
+                    console.log('warn')
+                )
             },
 
             save() {

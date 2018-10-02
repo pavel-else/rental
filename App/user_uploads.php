@@ -8,16 +8,16 @@
     header('Access-Control-Allow-Headers: Content-Type');
     header('Access-Control-Allow-Credentials: true');
 
-    print_r($_FILES);
+    // var_dump($_POST);
 
-    $uploads_dir = './dist';
-        $file = $_FILES[file];
+    $uploads_dir = './user_uploads';
+    $destiation_dir = dirname(__FILE__) .'/'.$_FILES['file']['name'];
 
-        $tmp_name = $file["tmp_name"];
+    $tmp_name = $_FILES['file']['tmp_name'];
 
-        // basename() может предотвратить атаку на файловую систему;
-        // может быть целесообразным дополнительно проверить имя файла
-        $name = basename($_FILES["file"]["name"]);
-        $result = move_uploaded_file($tmp_name, "$uploads_dir");
-        echo 'result ' . $result;
+    $result = move_uploaded_file($tmp_name, $destiation_dir);
+    echo 'tmpname = '.$tmp_name;
+    echo '$destiation_dir = '.$destiation_dir;
+    // print_r($_FILES['file']);
+    // phpinfo();
 
