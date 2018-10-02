@@ -59,12 +59,12 @@
                             </Tariffs>                            
                         </td>
                     </tr>
-                    <tr>
+<!--                     <tr>
                         <td>Категории</td>
                         <td>
                             <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td>Статус</td>
                         <td>
