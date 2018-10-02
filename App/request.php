@@ -191,7 +191,7 @@ class Request
     
     /* Функция подключения БД */
     private function rent_connect_DB(){
-        require_once('../../lib.db.php');
+        require_once('./lib.db.php');
 
         $pDB = new Pdo_Db();
 

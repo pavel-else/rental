@@ -2,9 +2,9 @@
 
 define('_DB_HOST', 'localhost');
 
-define('_DB_NAME', 'rental2');
-define('_DB_USER', 'rental2');
-define('_DB_PASS', 'j0K_f3-kN5mO8p_E3');
+// define('_DB_NAME', 'rental2');
+// define('_DB_USER', 'rental2');
+// define('_DB_PASS', 'j0K_f3-kN5mO8p_E3');
 
 // define('_DB_NAME', 'rental_test');
 // define('_DB_USER', 'rental');

@@ -52,7 +52,8 @@ const store = new Vuex.Store({
             }
 
             const sendToServer = (queue) => {
-                const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
+                //const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
+                const url = 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php'
 
                 console.log('front --> back', queue)
 
