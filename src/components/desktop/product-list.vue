@@ -20,7 +20,7 @@
             </tr>
         </table>
 
-        <Photo :modal="modal" :_product="product"></Photo>
+        <Photo :modal="modal" :_product="product" class="photo"></Photo>
                     
     </div>
 </template>
@@ -72,5 +72,11 @@
     .products__product:hover {
         cursor: pointer;
         outline: 1px solid #333;
+    }
+    .photo {
+        position: absolute;
+        margin-left: -180px;
+        top: 200px;
+        left: 50%;
     }
 </style>

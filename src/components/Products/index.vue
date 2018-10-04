@@ -28,7 +28,7 @@
         <button class="products__button products__button--add" @click="newProduct">Добавить</button>
 
         <Details :data="product" @close="onClose" v-if="show"></Details>
-        <Photo :modal="photo" :_product="product"></Photo>
+        <Photo class="photo" :modal="photo" :_product="product"></Photo>
     </div>
 </template>
 
@@ -137,6 +137,13 @@
     }
     .product__status--fix {
         border: 1px solid red;
+    }
+
+    .photo {
+        position: absolute;
+        margin-left: -180px;
+        top: 200px;
+        left: 50%;
     }
 
 </style>

@@ -17,7 +17,17 @@
                     </tr>
                     <tr>
                         <td>Фото</td>
-                        <td><input type="file" @change="addImage($event)"></td>
+                        <td>
+                            <Photo 
+                                class="photo"
+                                v-if="product.img" 
+                                :modal="true" 
+                                :_product="product"
+                                @click="addImage()"
+                            ></Photo>
+                            <input v-else type="file" @change="addImage($event)" >
+                            
+                        </td>
                     </tr>
                     <tr>
                         <td>Иконка</td>
@@ -103,6 +113,7 @@
     import Categories from './prod_categories'
     import Palette    from './Palette'
     import Bike       from '../Bike'
+    import Photo       from '../Photo'
 
 
     export default {
@@ -114,7 +125,8 @@
             Categories,
 
             Palette,
-            Bike
+            Bike,
+            Photo,
         },
         data() {
             return {
@@ -255,5 +267,12 @@
     }
     .bike__active {
         border-bottom: 2px solid lightgray;
+    }
+
+    .photo {
+        position: relative;
+        display: block;
+        width: 100px;
+        height: 50px;
     }
 </style>

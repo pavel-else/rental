@@ -37,14 +37,14 @@
     .modal {
         opacity: 0;
         visibility: hidden;
-        position: absolute;
+        /*position: absolute;*/
         width: 360px;
         height: 240px;
         line-height: 240px;
-        top: 200px;
-        left: 50%;
+/*        top: 200px;
+        left: 50%;*/
         z-index: 50;
-        margin-left: -180px;
+        /*margin-left: -180px;*/
         background-color: #000;
         text-align: center;
         vertical-align: middle;
