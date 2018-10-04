@@ -12,7 +12,12 @@
                         </span>
                     </td>
 
-                    <td><Bike :_color="product.color" :_type="+product.type"></Bike></td>
+                    <td
+                        @mousemove="openPhoto(product)"
+                        @mouseout="closePhoto()"
+                    >
+                        <Bike :_color="product.color" :_type="+product.type"></Bike>
+                    </td>
 
                     <td title="Название">{{ product.name }}</td>
                 </tr>
@@ -23,20 +28,24 @@
         <button class="products__button products__button--add" @click="newProduct">Добавить</button>
 
         <Details :data="product" @close="onClose" v-if="show"></Details>
+        <Photo :modal="photo" :_product="product"></Photo>
     </div>
 </template>
 
 <script>
     import Details from './Details'
     import Bike    from '../Bike'
+    import Photo   from '../Photo'
     export default {
         components: {
             Details,
-            Bike
+            Bike,
+            Photo
         },
         data() {
             return {
                 show: false,
+                photo: false,
                 product: {}
             }
         },
@@ -49,6 +58,13 @@
                 this.product = product
                 this.show = true
                 //console.log(product)
+            },
+            openPhoto(product) {
+                this.photo = true
+                this.product = product
+            },
+            closePhoto(){
+                this.photo = false
             },
             newProduct() {
                 this.show = true
