@@ -27,8 +27,8 @@
 </template>
 
 <script>
-    import Details from './Details/Details'
-    import Bike from '../../Bike'
+    import Details from './Details'
+    import Bike    from '../Bike'
     export default {
         components: {
             Details,

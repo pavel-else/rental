@@ -42,7 +42,7 @@
 </template>
 
 <script>
-    import copy from '../../../functions/copy'
+    import copy from '../../functions/copy'
 
     export default {
         props: {

@@ -97,14 +97,12 @@
 </template>
 
 <script>
-    import axios from 'axios'
-    import copy  from '../../../../functions/copy'
+    import copy  from '../../functions/copy'
 
     import Tariffs    from './prod_tariffs'
     import Categories from './prod_categories'
     import Palette    from './Palette'
-
-    import Bike       from '../../../Bike'
+    import Bike       from '../Bike'
 
 
     export default {

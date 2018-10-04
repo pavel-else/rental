@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import Bike from '../../../Bike'
+    import Bike from '../Bike'
 
     export default {
         props: {
