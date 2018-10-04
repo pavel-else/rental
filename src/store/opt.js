@@ -1,6 +1,6 @@
 export default {
     state: {
-        url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
+        // url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
         cmds: [
             'getProducts',
             'getOrders', 
@@ -23,6 +23,17 @@ export default {
             registration_time: 0,      
 
             now: Date.now(),
+
+            activeBranch: 'dev',
+
+            branch: {
+                dev: {
+                    url: 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php'
+                },
+                master: {
+                    url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
+                }
+            }
         },
     
         depositList: [
@@ -126,5 +137,13 @@ export default {
         promotions(state) {
             return state.promotions
         },
+
+        activeBranch(state) {
+            return state.options.activeBranch
+        },
+
+        url(state) {
+            return state.options.branch[state.options.activeBranch].url
+        }
     }
 }
