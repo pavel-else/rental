@@ -13,6 +13,8 @@ export default {
         ],
 
         options: {
+            app_id: 8800000001,
+
             rent_min_time:     0, //min
             rent_round_bill:   0,
 
@@ -28,10 +30,12 @@ export default {
 
             branch: {
                 dev: {
-                    url: 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php'
+                    url: 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php',
+                    path: 'http://overhost.net/rental2/api_v1/ajax/Dev/'
                 },
                 master: {
-                    url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
+                    url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
+                    path: 'http://overhost.net/rental2/api_v1/ajax/App/'
                 }
             }
         },
@@ -142,8 +146,16 @@ export default {
             return state.options.activeBranch
         },
 
+        activePath(state) {
+            return state.options.branch[state.options.activeBranch].path
+        },
+
         url(state) {
             return state.options.branch[state.options.activeBranch].url
+        },
+
+        appID(state) {
+            return state.options.app_id
         }
     }
 }

@@ -18,6 +18,8 @@ require_once ('./logs.php');
 require_once ('./options.php');
 require_once ('./categories.php');
 
+// echo '$_FILES'.$FILES.'end';
+
 class Request    
 {
     use Orders;    
@@ -117,6 +119,9 @@ class Request
                 case 'deleteProduct':
                     $this->deleteProduct($value);
                 break;
+                case 'changeImage':
+                    $this->changeImage($value);
+                break;
 
                 // Customers
                 case 'getCustomers':
@@ -176,7 +181,6 @@ class Request
             if ($cell[cmd]) {
                 $switch($cell[cmd], $cell[value]);
             }
-
         }
 
         $this->getLogs();

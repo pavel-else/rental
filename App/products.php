@@ -85,6 +85,7 @@ trait Products
                 `tariff_ids`,
                 `tariff_default`,
                 `color`,
+                `img`, 
                 `type`,  
                 `note`, 
                 `updated`
@@ -97,7 +98,8 @@ trait Products
                 :status,
                 :tariff_ids,
                 :tariff_default,
-                :color, 
+                :color,
+                :img,  
                 :type, 
                 :note,
                 :updated
@@ -112,6 +114,7 @@ trait Products
                 'tariff_ids'    => $product[tariff_ids],
                 'tariff_default'=> $product[tariff_default],
                 'color'         => $product[color],
+                'img'           => $product[img],
                 'type'          => $product[type],
                 'note'          => $product[note],
                 'updated'       => date("Y-m-d H:i:s", $product[updated]),
@@ -142,6 +145,7 @@ trait Products
                     `tariff_ids`    = :tariff_ids,
                     `tariff_default`= :tariff_default,
                     `color`         = :color,
+                    `img`           = :img,
                     `type`          = :type, 
                     `categories`    = :categories,
                     `note`          = :note,
@@ -160,6 +164,7 @@ trait Products
                 'tariff_ids'    => $product[tariff_ids],
                 'tariff_default'=> $product[tariff_default],
                 'color'         => $product[color],
+                'img'           => $product[img],
                 'type'          => $product[type],
                 'categories'    => $product[categories],
                 'note'          => $product[note],
@@ -228,6 +233,10 @@ trait Products
         }
 
         return $result;       
+    }
+
+    private function changeImage($value) {
+        $this->writeLog($value);
     }
 }
 

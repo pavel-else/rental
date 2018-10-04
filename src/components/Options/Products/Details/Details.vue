@@ -145,22 +145,16 @@
 
             addImage(e) {
                 const file = e.target.files[0]
+                const name = `${this.$store.getters.appID}_${this.product.id_rent}_${file.name}`
+
                 const formData = new FormData()
 
-                formData.append('file', file)
+                formData.set('file', file, name)
 
-                const config = {
-                    header: {
-                        'Content-Type' : 'multipart/form-data'
-                    }
-                }
-                const url = 'http://overhost.net/rental2/api_v1/ajax/Dev/user_uploads.php'
 
-                axios.post(url, formData, config).then(
-                    r => console.log(r)
-                ).catch(
-                    console.log('warn')
-                )
+                this.$store.dispatch('upload', formData)
+                this.product.img = file.name
+                console.log(this.product)
             },
 
             save() {

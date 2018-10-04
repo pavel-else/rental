@@ -38,8 +38,9 @@ const store = new Vuex.Store({
         * Внимание! Здесь все асинхронно!
         */
         send({commit, dispatch}, cmds /*Array*/) {
+            const config = cmds && cmds.config ? cmds.config : null
 
-            const check = (cmds) => {
+            const prepare = (cmds) => {
                 if (!cmds) {
                     return
                 }
@@ -62,7 +63,9 @@ const store = new Vuex.Store({
                     url,
                     data: {
                         queue
-                    }
+                    },
+                    config
+                    
                 })
                 .catch(e => {
                     console.log(e)
@@ -111,7 +114,23 @@ const store = new Vuex.Store({
                 sendToServer(cmds)
             }
 
-            set(check(cmds))
+            set(prepare(cmds))
+        },
+
+        upload({commit, dispatch}, formData) {
+            const url = 'http://overhost.net/rental2/api_v1/ajax/Dev/user_uploads.php'
+            
+            const config = {
+                header: {
+                    'Content-Type' : 'multipart/form-data'
+                }
+            }
+
+            axios.post(url, formData, config).then(
+                r => console.log(r)
+            ).catch(
+                console.log('warn')
+            )
         },
 
         upd({dispatch}) { 
