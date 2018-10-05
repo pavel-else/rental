@@ -41,7 +41,7 @@
         width: 360px;
         height: 240px;
         line-height: 240px;
-/*        top: 200px;
+  /*        top: 200px;
         left: 50%;*/
         z-index: 50;
         /*margin-left: -180px;*/
@@ -64,5 +64,4 @@
         transition-property: visibility, opacity;
         transition-duration: 0.5s, 0.5s;
     }
-
 </style>

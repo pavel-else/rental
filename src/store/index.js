@@ -126,11 +126,9 @@ const store = new Vuex.Store({
                     'Content-Type' : 'multipart/form-data'
                 }
             }
-
+            
             axios.post(url, formData, config).then(
-                r => console.log(r)
-            ).catch(
-                console.log('warn')
+                r => {console.log(r)}
             )
         },
 

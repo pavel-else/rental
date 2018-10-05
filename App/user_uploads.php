@@ -12,4 +12,6 @@
 
     $tmp_name = $_FILES['file']['tmp_name'];
 
-    echo move_uploaded_file($tmp_name, $destiation_dir) ? 'uploaded compleate' : 'uploaded failed';
+    $result = move_uploaded_file($tmp_name, $destiation_dir) ? 'uploaded compleate' : 'uploaded failed';
+
+    echo $result ? 'OK' : "FAILED";

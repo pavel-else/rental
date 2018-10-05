@@ -26,7 +26,7 @@
                                     :_product="product"
                                     @click="addImage()"
                                 ></Photo>
-                            <input v-show="!product.img" type="file" @change="addImage($event)" >
+                                <input v-show="!product.img" type="file" @change="addImage($event)" >
                             </label>
                             
                         </td>
@@ -75,7 +75,7 @@
                             </Tariffs>                            
                         </td>
                     </tr>
-<!--                     <tr>
+                <!--<tr>
                         <td>Категории</td>
                         <td>
                             <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>
@@ -163,7 +163,7 @@
 
                 formData.set('file', file, name)
 
-                this.$store.dispatch('upload', formData)
+                console.log(this.$store.dispatch('upload', formData))
                 this.product.img = file.name
             },
 
