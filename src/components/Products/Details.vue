@@ -163,7 +163,7 @@
 
                 formData.set('file', file, name)
 
-                console.log(this.$store.dispatch('upload', formData))
+                this.$store.dispatch('upload', formData)
                 this.product.img = file.name
             },
 
