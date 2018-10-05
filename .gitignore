@@ -1,4 +1,5 @@
 
 /vendor/
 node_modules/
-App/dist/
+App/dist
+App/user_uploads

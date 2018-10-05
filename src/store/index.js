@@ -118,7 +118,8 @@ const store = new Vuex.Store({
         },
 
         upload({commit, dispatch}, formData) {
-            const url = 'http://overhost.net/rental2/api_v1/ajax/Dev/user_uploads.php'
+            const url = this.getters.activePath + 'user_uploads.php'
+            console.log(url)
             
             const config = {
                 header: {

@@ -18,14 +18,16 @@
                     <tr>
                         <td>Фото</td>
                         <td>
-                            <Photo 
-                                class="photo"
-                                v-if="product.img" 
-                                :modal="true" 
-                                :_product="product"
-                                @click="addImage()"
-                            ></Photo>
-                            <input v-else type="file" @change="addImage($event)" >
+                            <label>
+                                <Photo 
+                                    class="photo"
+                                    v-if="product.img" 
+                                    :modal="true" 
+                                    :_product="product"
+                                    @click="addImage()"
+                                ></Photo>
+                            <input v-show="!product.img" type="file" @change="addImage($event)" >
+                            </label>
                             
                         </td>
                     </tr>
@@ -244,7 +246,7 @@
         margin-top: 60px;
     }
     input {
-        width: 100%;
+        width: 200px;
     }
     td {
         padding: 5px;
@@ -274,5 +276,10 @@
         display: block;
         width: 100px;
         height: 50px;
+        outline: 1px solid lightgray;
+    }
+    .photo:hover {
+        cursor: pointer;
+        outline: none;
     }
 </style>

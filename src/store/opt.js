@@ -27,6 +27,7 @@ export default {
             now: Date.now(),
 
             activeBranch: 'dev',
+            // activeBranch: 'master',
 
             branch: {
                 dev: {

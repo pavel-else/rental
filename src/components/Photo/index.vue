@@ -4,7 +4,7 @@
             :style="{backgroundImage: 'url(' + url + ')'}"
             :class="modalClassStyle"
         >
-            <span v-if="!url">NO PHOTO</span>
+            <span v-if="!url">NO PHOTO{{url}}</span>
         </div>
 </template>
 <script>
