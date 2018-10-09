@@ -1,6 +1,7 @@
 <template> 
     <div class="app black">
         <div class="app__wrap">
+            <span class="app__branch" v-if="dev">β</span>
             <adm-panel class="adm"></adm-panel>
             <router-view></router-view>        
             <!-- <test></test>  -->
@@ -22,8 +23,6 @@ export default {
         Test
     },
 
-
-
     created() {
         //Запрос данных для инициализации и обновления компонентов приложения
         this.$store.dispatch('upd')
@@ -31,6 +30,12 @@ export default {
         // Обновление таймеров
         this.$store.dispatch('startTimer')
     },
+
+    computed: {
+        dev() {
+            return this.$store.getters.activeBranch === 'dev'
+        }
+    }
 }
 </script>
 

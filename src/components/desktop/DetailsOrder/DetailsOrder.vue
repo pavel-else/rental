@@ -33,7 +33,7 @@
                             <SelectCustomer 
                                 id="select_customer"
                                 :customer="order.customer_id"
-                                :focus="true"
+                                :focus="order.customer_id ? false : true"
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
@@ -105,7 +105,7 @@
 <script>
     import getOrderId        from '../../../functions/getOrderId'
     import getSubOrderId     from '../../../functions/getSubOrderId'
-    import copyObject        from '../../../functions/copyObject'
+    import copy        from '../../../functions/copy'
 
     import initOrder         from '../functions/initOrder'
 
@@ -176,7 +176,7 @@
         methods: {
             ...getOrderId,
             ...getSubOrderId,
-            ...copyObject,
+            ...copy,
 
             close() {
                 this.$emit('close')
@@ -214,7 +214,7 @@
             },
 
             newOrder(order_id_position) {
-                initOrder(this.order)
+                this.order = initOrder()
 
                 this.order.status              = 'ACTIVE'
                 this.order.start_time          = Date.now() + this.registrationTime
@@ -222,7 +222,6 @@
                 this.order.order_id_position   = order_id_position || this.getPosition('new')
 
                 this.$set(this.order, 'customer_id', null)
-
                 
                 this.subOrder.id_rent    = this.getSubOrderId()
                 this.subOrder.product_id = this.product.id_rent
@@ -230,7 +229,7 @@
                 this.subOrder.order_id   = this.order.order_id
                 this.subOrder.status     = 'ACTIVE'
                 this.subOrder.pause_time = 0
-
+                
                 this.status = 'newOrder'
             },
 
@@ -246,7 +245,7 @@
                     console.log('order not found!')
                 }
 
-                this.order = this.copyObject(order)
+                this.order = this.copy(order)
 
                 this.subOrder.id_rent    = this.getSubOrderId()
                 this.subOrder.product_id = this.product.id_rent
@@ -292,7 +291,7 @@
                     }
 
                     const result = iter(count)
-                    this.order.order_id_position = result
+                    // this.order.order_id_position = result
 
                     return +result                    
                 }

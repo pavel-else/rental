@@ -1,4 +1,6 @@
-export default function initOrder(order) {
+export default function initOrder() {
+    const order = {}
+    
     order.status            = null              
     order.start_time        = null         
     order.order_id          = null           

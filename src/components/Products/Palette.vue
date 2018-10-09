@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import Bike from '../../../Bike'
+    import Bike from '../Bike'
 
     export default {
         props: {
@@ -32,7 +32,19 @@
             return {
                 selectColor: this._color,
                 open: true,
-                palette: ['#fff', '#FF7673', '#FFAD40', '#FFE873', '#CCF600', '#66A3D2', '#0B61A4', '#886ED7', '#D25FD2','#333']
+                palette: [
+                    '#ff0000', // красный 
+                    '#0600ff', // синий
+                    '#397a00', // зеленый
+                    '#78ff00', // салатовый
+                    '#ff9c00', // оранжевый
+                    '#b6b6b6', // серый
+                    '#3c3c3b', // черный
+                    '#6f00a2', // фиолетовый
+                    '#ffffff', // белый
+                    '#fcff00', // желтый
+                    '#00deff', // голубой
+                ]
             }
         },
         methods: {
@@ -56,7 +68,7 @@
         margin: 0;
         padding: 0;
         height: 16px;
-        width: 200px;
+        width: 220px;
     }
     .color {
         display: block;

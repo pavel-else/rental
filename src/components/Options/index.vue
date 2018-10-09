@@ -19,11 +19,11 @@
     </div>
 </template>
 <script>
-    import Tariffs from './Tariffs/Tariffs'
-    import General from './General'
-    import Products from './Products/Products'
-    import Categories from './Categories/Categories'
-    import Accessories from './Accessories/Accessories'
+    import General     from './General'
+    import Tariffs     from '../Tariffs'
+    import Products    from '../Products'
+    import Categories  from '../Categories'
+    import Accessories from '../Accessories/'
 
     export default {
         components: {

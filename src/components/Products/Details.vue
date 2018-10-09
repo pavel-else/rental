@@ -16,8 +16,20 @@
                         <td><input v-model="product.name"></td>
                     </tr>
                     <tr>
-                        <td>Изображение</td>
-                        <td><input type="file"></td>
+                        <td>Фото</td>
+                        <td>
+                            <label>
+                                <Photo 
+                                    class="photo"
+                                    v-if="product.img" 
+                                    :modal="true" 
+                                    :_product="product"
+                                    @click="addImage()"
+                                ></Photo>
+                                <input v-show="!product.img" type="file" @change="addImage($event)" >
+                            </label>
+                            
+                        </td>
                     </tr>
                     <tr>
                         <td>Иконка</td>
@@ -29,7 +41,7 @@
                                     :style="{borderColor: product.color}"
                                     :_color="product.color" 
                                     :_type="1"                                    
-                                > 
+                                >
                                 </Bike>                                
                             </div>
                             <div @click="setType(2)">
@@ -63,12 +75,12 @@
                             </Tariffs>                            
                         </td>
                     </tr>
-                    <tr>
+                <!--<tr>
                         <td>Категории</td>
                         <td>
                             <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td>Статус</td>
                         <td>
@@ -97,13 +109,13 @@
 </template>
 
 <script>
-    import copyObject from '../../../../functions/copyObject'
+    import copy  from '../../functions/copy'
 
     import Tariffs    from './prod_tariffs'
     import Categories from './prod_categories'
     import Palette    from './Palette'
-
-    import Bike       from '../../../Bike'
+    import Bike       from '../Bike'
+    import Photo       from '../Photo'
 
 
     export default {
@@ -115,16 +127,17 @@
             Categories,
 
             Palette,
-            Bike
+            Bike,
+            Photo,
         },
         data() {
             return {
-                product: this.copyObject(this.data),
+                product: this.copy(this.data),
                 change: false
             }
         },
         methods: {
-            ...copyObject,
+            ...copy,
             check() {
                 if (!this.product.name) {
                     console.log('empty product name')
@@ -140,6 +153,18 @@
                 }
 
                 return true
+            },
+
+            addImage(e) {
+                const file = e.target.files[0]
+                const name = `${this.$store.getters.appID}_${this.product.id_rent}_${file.name}`
+
+                const formData = new FormData()
+
+                formData.set('file', file, name)
+
+                this.$store.dispatch('upload', formData)
+                this.product.img = file.name
             },
 
             save() {
@@ -222,7 +247,7 @@
         overflow-y: hidden;
     }
     input {
-        width: 100%;
+        width: 200px;
     }
     td {
         padding: 5px;
@@ -245,5 +270,17 @@
     }
     .bike__active {
         border-bottom: 2px solid lightgray;
+    }
+
+    .photo {
+        position: relative;
+        display: block;
+        width: 100px;
+        height: 50px;
+        outline: 1px solid lightgray;
+    }
+    .photo:hover {
+        cursor: pointer;
+        outline: none;
     }
 </style>

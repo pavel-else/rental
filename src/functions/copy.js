@@ -1,5 +1,5 @@
 export default {
-    copyObject(object) {
+    copy(object) {
         return object ? JSON.parse(JSON.stringify(object)) : null
     }
 }
