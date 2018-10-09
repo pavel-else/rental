@@ -79,7 +79,7 @@ export default {
             return i.order_id === subOrder.order_id && (i.status === "ACTIVE" || i.status === "PAUSE")
         })
 
-        if (activeSubOrders.length === 1 && activeSubOrders.find(i => i.id_rent === subOrder.id_rent)) {
+        if (activeSubOrders.length === 0) {
             order.status = "END"
             cmds.push({cmd: 'changeOrder', value: order})
         }
