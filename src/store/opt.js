@@ -12,6 +12,7 @@ export default {
             'getLogs'
         ],
 
+        // options передается на сервер
         options: {
             app_id: 8800000001,
 
@@ -24,20 +25,20 @@ export default {
 
             registration_time: 0,      
 
-            now: Date.now(),
+            //now: Date.now(),
+        },
 
-            activeBranch: 'dev',
-            // activeBranch: 'master',
+        activeBranch: 'dev',
+        // activeBranch: 'master',
 
-            branch: {
-                dev: {
-                    url: 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php',
-                    path: 'http://overhost.net/rental2/api_v1/ajax/Dev/'
-                },
-                master: {
-                    url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
-                    path: 'http://overhost.net/rental2/api_v1/ajax/App/'
-                }
+        branch: {
+            dev: {
+                url: 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php',
+                path: 'http://overhost.net/rental2/api_v1/ajax/Dev/'
+            },
+            master: {
+                url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
+                path: 'http://overhost.net/rental2/api_v1/ajax/App/'
             }
         },
     
@@ -144,15 +145,15 @@ export default {
         },
 
         activeBranch(state) {
-            return state.options.activeBranch
+            return state.activeBranch
         },
 
         activePath(state) {
-            return state.options.branch[state.options.activeBranch].path
+            return state.branch[state.activeBranch].path
         },
 
         url(state) {
-            return state.options.branch[state.options.activeBranch].url
+            return state.branch[state.activeBranch].url
         },
 
         appID(state) {

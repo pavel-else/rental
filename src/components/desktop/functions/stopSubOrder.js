@@ -20,8 +20,8 @@ export default {
 
         let cmds = []
 
-        // 1) Проставить Время остановкиа
-        subOrder.end_time = Date.now()
+        // 1) Проставить Время остановки
+        subOrder.end_time = subOrder.status === "PAUSE" ? subOrder.pause_start : Date.now()
 
         // 2) Проставить Стоимость проката
         const billRent = () => {
@@ -79,7 +79,7 @@ export default {
             return i.order_id === subOrder.order_id && (i.status === "ACTIVE" || i.status === "PAUSE")
         })
 
-        if (activeSubOrders.length === 1 && activeSubOrders.find(i => i.id_rent === subOrder.id_rent)) {
+        if (activeSubOrders.length === 0) {
             order.status = "END"
             cmds.push({cmd: 'changeOrder', value: order})
         }

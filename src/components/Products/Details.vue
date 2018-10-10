@@ -242,8 +242,9 @@
 
 <style scoped>
     .details {
-        width: 350px;
-        margin-top: 60px;
+        width: 370px;
+        margin-top: 30px;
+        overflow-y: hidden;
     }
     input {
         width: 200px;
