@@ -26,7 +26,7 @@
                                     :_product="product"
                                     @click="addImage()"
                                 ></Photo>
-                                <input v-show="!product.img" type="file" @change="addImage($event)" >
+                                <input v-show="!product.img" type="file" @input="addImage($event)" >
                             </label>
                             
                         </td>
@@ -110,12 +110,13 @@
 
 <script>
     import copy  from '../../functions/copy'
+    import uploads from '../func/user_uploads'
 
     import Tariffs    from './prod_tariffs'
     import Categories from './prod_categories'
     import Palette    from './Palette'
     import Bike       from '../Bike'
-    import Photo       from '../Photo'
+    import Photo      from '../Photo'
 
 
     export default {
@@ -157,14 +158,13 @@
 
             addImage(e) {
                 const file = e.target.files[0]
-                const name = `${this.$store.getters.appID}_${this.product.id_rent}_${file.name}`
+                const name = `${this.$store.getters.appID}_${this.product.id_rent}`
 
                 const formData = new FormData()
 
                 formData.set('file', file, name)
-
-                this.$store.dispatch('upload', formData)
-                this.product.img = file.name
+                
+                uploads(formData, this.$store)
             },
 
             save() {
@@ -184,6 +184,7 @@
                 this.$emit('close')
             },
             close() {
+                console.log('close')
                 if (!this.change) {
                     this.$emit('close')
                     return

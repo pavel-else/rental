@@ -4,7 +4,7 @@
             :style="{backgroundImage: 'url(' + url + ')'}"
             :class="modalClassStyle"
         >
-            <span v-if="!url">NO PHOTO{{url}}</span>
+            {{ _product.name }}
         </div>
 </template>
 <script>
@@ -18,8 +18,8 @@
                 const path = this.$store.getters.activePath
                 const appID = this.$store.getters.appID 
 
-                return this._product && this._product.img 
-                    ? `${path}user_uploads/${appID}_${this._product.id_rent}_${this._product.img}` 
+                return this._product
+                    ? `${ path }user_uploads/${ appID }_${ this._product.id_rent }` 
                     : null         
             },
             modalClassStyle() {
@@ -37,18 +37,20 @@
     .modal {
         opacity: 0;
         visibility: hidden;
+
         /*position: absolute;*/
         width: 360px;
         height: 240px;
         line-height: 240px;
+        font-size: 18px;
         z-index: 50;
-        background-color: #fff;
+        background-color: #333;
         text-align: center;
-        vertical-align: middle;
+        vertical-align: text-top;
         background-size: contain;
         background-position: center center;
         background-repeat: no-repeat;
-        color: rgba(0, 0, 0, 0.5);
+        color: rgba(255, 255, 255, 0.5);
         border: 1px solid lightgray;
     }
     .modal_active {

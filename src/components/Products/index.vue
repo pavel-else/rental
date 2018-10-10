@@ -65,6 +65,7 @@
             },
             closePhoto(){
                 this.photo = false
+                this.product = {}
             },
             newProduct() {
                 this.show = true
