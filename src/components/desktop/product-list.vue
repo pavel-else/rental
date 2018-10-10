@@ -53,6 +53,7 @@
             },
             closePhoto(){
                 this.modal = false
+                this.product = {}
             },
         },
         computed: {

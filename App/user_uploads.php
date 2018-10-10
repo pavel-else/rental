@@ -40,10 +40,10 @@
         return;       
     }
 
-    if (!$checkName($file['name'])) {
-        echo $file['name'];
-        return;
-    }
+    // if (!$checkName($file['name'])) {
+    //     echo $file['name'];
+    //     return;
+    // }
 
     $destiation_dir = 'user_uploads/'. $file['name'];
 

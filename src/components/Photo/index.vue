@@ -41,15 +41,14 @@
         width: 360px;
         height: 240px;
         line-height: 240px;
-  /*        top: 200px;
-        left: 50%;*/
         z-index: 50;
-        /*margin-left: -180px;*/
-        background-color: #000;
+        background-color: #fff;
         text-align: center;
         vertical-align: middle;
-        background-size: cover;
-        color: rgba(255, 255, 255, 0.5);
+        background-size: contain;
+        background-position: center center;
+        background-repeat: no-repeat;
+        color: rgba(0, 0, 0, 0.5);
         border: 1px solid lightgray;
     }
     .modal_active {
