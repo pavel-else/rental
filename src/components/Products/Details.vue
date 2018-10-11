@@ -111,6 +111,7 @@
 <script>
     import copy  from '../../functions/copy'
     import uploads from '../func/user_uploads'
+    import dowload from '../func/download'
 
     import Tariffs    from './prod_tariffs'
     import Categories from './prod_categories'

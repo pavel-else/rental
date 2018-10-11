@@ -4,7 +4,7 @@
             :style="{backgroundImage: 'url(' + url + ')'}"
             :class="modalClassStyle"
         >
-            {{ _product.name }}
+            {{ name }}
         </div>
 </template>
 <script>
@@ -28,6 +28,9 @@
                     modal_deactive: !this.modal
                 }
             },
+            name() {
+                return this._product ? this._product.name : 'no photo'
+            }
         },
     }
     
