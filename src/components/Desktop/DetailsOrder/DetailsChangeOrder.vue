@@ -132,7 +132,7 @@
 </template>
 
 <script>
-    import copy              from '../../../functions/copy'
+    import copy              from '@/functions/copy'
     import getOrderId        from '../../../functions/getOrderId'
 
     import Position          from './idPosition/idPosition'
