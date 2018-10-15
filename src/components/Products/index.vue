@@ -27,8 +27,14 @@
         
         <button class="products__button products__button--add" @click="newProduct">Добавить</button>
 
-        <Details :data="product" @close="onClose" v-if="show"></Details>
-        <Photo class="photo" :modal="photo" :_product="product"></Photo>
+        <Details :data="product" @close="onClose" v-if="showDetails"></Details>
+        <Photo 
+            class="photo"
+            v-if="showPhoto"
+            :product="product"
+            :refresh="true"
+        >
+        </Photo>
     </div>
 </template>
 
@@ -44,29 +50,30 @@
         },
         data() {
             return {
-                show: false,
-                photo: false,
+                showDetails: false,
+                showPhoto: false,
                 product: {}
             }
         },
         methods: {
             onClose() {
                 this.product = {}
-                this.show = false
+                this.showDetails = false
             },
             onClick(product) {
                 this.product = product
-                this.show = true
+                this.showDetails = true
                 //console.log(product)
             },
             openPhoto(product) {
-                this.photo = true
                 this.product = product
+                this.showPhoto = true
             },
             closePhoto(){
-                this.photo = false
+                this.showPhoto = false
                 this.product = {}
             },
+
             newProduct() {
                 this.show = true
                 this.product = {
@@ -145,6 +152,8 @@
         margin-left: -180px;
         top: 200px;
         left: 50%;
+        width: 480px;
+        height: 320px;
     }
 
 </style>

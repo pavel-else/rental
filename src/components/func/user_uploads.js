@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export default (data, store) => {
+export default async (data, store) => {
     if (!data || !store || !store.getters.activePath) {
         return false
     }
@@ -11,10 +11,13 @@ export default (data, store) => {
             'Content-Type' : 'multipart/form-data'
         }
     }
-    
-    axios.post(url, data, config).then(
+    let result
+
+    await axios.post(url, data, config).then(
         r => { 
             console.log(r)
+            result = r
         }
     )
+    return result
 }

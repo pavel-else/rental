@@ -146,7 +146,7 @@
 
             getTimePlay(order, subOrder) {
                 const start = Date.parse(order.start_time)
-                const end   = this.$store.getters.options.now
+                const end   = this.$store.getters.now
                 const pause = subOrder.pause_time
 
                 const time = end - start
@@ -374,7 +374,7 @@
         width: 240px;
     }
     .td-4 {
-        width: 80px;
+        width: 90px;
     }
     .td-5 {
         width: 70px;

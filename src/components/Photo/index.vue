@@ -1,71 +1,64 @@
 <template>
-        <div
-            class="photo modal"
-            :style="{backgroundImage: 'url(' + url + ')'}"
-            :class="modalClassStyle"
-        >
-            {{ name }}
+        <div class="photo__wrap">
+            <div class="photo__text">no photo</div>
+            <div class="photo__img" :style="backgroundImage"></div> 
         </div>
 </template>
+
 <script>
+    import loadImage from '../func/download'
     export default {
         props: {
-            _product: Object,
-            modal: Boolean
+            product: Object,
+            refresh: Boolean
         },
         computed: {
             url() {
+                if (!this.product || !this.product.id_rent) {
+                    return false
+                }
+
                 const path = this.$store.getters.activePath
                 const appID = this.$store.getters.appID 
+                const rand = this.refresh ? '?' + Math.floor(Math.random() * 1000000) : ''
+                const url = `${ path }user_uploads/${ appID }_${ this.product.id_rent }${ rand }`
 
-                return this._product
-                    ? `${ path }user_uploads/${ appID }_${ this._product.id_rent }` 
-                    : null         
+                return url 
             },
-            modalClassStyle() {
+            backgroundImage() {
+                console.log(this.url)
                 return {
-                    modal_active: this.modal, 
-                    modal_deactive: !this.modal
+                    backgroundImage: 'url(' + this.url + ')'
                 }
-            },
-            name() {
-                return this._product ? this._product.name : 'no photo'
-            }
-        },
+            }            
+        }
     }
+    
     
 </script>
 
 <style scoped>
-    .modal {
-        opacity: 0;
-        visibility: hidden;
-
-        /*position: absolute;*/
-        width: 360px;
-        height: 240px;
-        line-height: 240px;
-        font-size: 18px;
+    .photo__wrap {
+        outline: 1px solid lightgray;
+        position: absolute;
+    }
+    .photo__text {
+        position: absolute;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.8);
         z-index: 50;
-        background-color: #333;
-        text-align: center;
-        vertical-align: text-top;
-        background-size: contain;
+    }
+    .photo__img {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 50;
+        background-size: cover;
         background-position: center center;
-        background-repeat: no-repeat;
-        color: rgba(255, 255, 255, 0.5);
-        border: 1px solid lightgray;
-    }
-    .modal_active {
-        transition-property: visibility, opacity;
-        transition-duration: 0s, 1s;
-        opacity: 1;
-        visibility: visible;
-    }
-    .modal_deactive {
-        opacity: 0;
-        visibility: hidden;
-        transition-property: visibility, opacity;
-        transition-duration: 0.5s, 0.5s;
     }
 </style>

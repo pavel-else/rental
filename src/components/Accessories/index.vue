@@ -7,7 +7,7 @@
                 <th>Значение</th>
                 <th>Тип</th>
             </tr>
-            <tr v-for="accessory in accessories" @click="onClick(accessory)">
+            <tr v-for="accessory in accessories" :key="accessory.id_rent" @click="onClick(accessory)">
                 <td>{{ accessory.id_rent }}</td>
                 <td>{{ accessory.name }}</td>
                 <td>{{ accessory.value }}</td>

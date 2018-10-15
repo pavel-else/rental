@@ -18,9 +18,15 @@
                     
                 <td class="products__td">{{ item.name }}</td>
             </tr>
+
         </table>
 
-        <Photo :modal="modal" :_product="product" class="photo"></Photo>
+        <Photo 
+            class="products__photo"
+            v-if="product.id_rent" 
+            :product="product"
+            :refresh="true"
+        ></Photo>
                     
     </div>
 </template>
@@ -40,7 +46,7 @@
         data() {
             return {
                 modal: false,
-                product: null,
+                product: {},
             }
         },
         methods: {
@@ -74,10 +80,12 @@
         cursor: pointer;
         outline: 1px solid #333;
     }
-    .photo {
+    .products__photo {
         position: absolute;
         margin-left: -180px;
         top: 200px;
         left: 50%;
+        width: 480px;
+        height: 320px;
     }
 </style>

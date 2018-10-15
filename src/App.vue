@@ -4,39 +4,34 @@
             <span class="app__branch" v-if="dev">β</span>
             <adm-panel class="adm"></adm-panel>
             <router-view></router-view>        
-            <!-- <test></test>  -->
         </div>
     </div>
 </template>
 
-<script>
-    
-import admPanel from './components/adm-panel'
+<script>    
+    import admPanel from './components/AdmPanel'
 
-import Test from './components/Test'
+    export default {
+        name: 'app',
 
-export default {
-    name: 'app',
+        components: {
+            admPanel,
+        },
 
-    components: {
-        admPanel,
-        Test
-    },
+        created() {
+            //Запрос данных для инициализации и обновления компонентов приложения
+            this.$store.dispatch('upd')
 
-    created() {
-        //Запрос данных для инициализации и обновления компонентов приложения
-        this.$store.dispatch('upd')
+            // Обновление таймеров
+            this.$store.dispatch('startTimer')
+        },
 
-        // Обновление таймеров
-        this.$store.dispatch('startTimer')
-    },
-
-    computed: {
-        dev() {
-            return this.$store.getters.activeBranch === 'dev'
+        computed: {
+            dev() {
+                return this.$store.getters.activeBranch === 'dev'
+            }
         }
     }
-}
 </script>
 
 <style>
@@ -279,5 +274,35 @@ export default {
     .adm {
         position: relative;
     }
-
 </style>
+
+<!-- <template>
+  <div id="app">
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </div>
+    <router-view/>
+  </div>
+</template>
+
+<style lang="scss">
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+#nav {
+  padding: 30px;
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
+}
+</style>
+ -->

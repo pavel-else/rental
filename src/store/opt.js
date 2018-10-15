@@ -25,8 +25,8 @@ export default {
 
             registration_time: 0,      
 
-            //now: Date.now(),
         },
+        now: Date.now(),
 
         activeBranch: 'dev',
         // activeBranch: 'master',
@@ -115,7 +115,7 @@ export default {
             console.log('setOption', option, state.options[option])
         },
         now(state, date) {
-            state.options.now = date
+            state.now = date
         }
     },
 
@@ -127,7 +127,7 @@ export default {
 
     getters: {
         now(state) {
-            return state.options.now
+            return state.now
         },
         options(state) {
             return state.options
@@ -158,6 +158,6 @@ export default {
 
         appID(state) {
             return state.options.app_id
-        }
+        },
     }
 }

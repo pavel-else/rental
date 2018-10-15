@@ -19,15 +19,10 @@
                         <td>Фото</td>
                         <td>
                             <label>
-                                <Photo 
-                                    class="photo"
-                                    v-if="product.img" 
-                                    :modal="true" 
-                                    :_product="product"
-                                    @click="addImage()"
-                                ></Photo>
-                                <input v-show="!product.img" type="file" @input="addImage($event)" >
+                                <Photo class="details__photo" v-if="product.id_rent" :product="product" :refresh="refresh"></Photo>
+                                <input class="photo__input" type="file" @input="addImage($event)" >
                             </label>
+                            <span class="details__status">{{ uploadStatus }}</span>
                             
                         </td>
                     </tr>
@@ -38,7 +33,7 @@
                                 <Bike
                                     class="bike"
                                     :class="{ bike__active: product.type == 1}"
-                                    :style="{borderColor: product.color}"
+                                    :style="{ borderColor: product.color }"
                                     :_color="product.color" 
                                     :_type="1"                                    
                                 >
@@ -48,7 +43,7 @@
                                 <Bike
                                     class="bike"
                                     :class="{ bike__active: product.type == 2}"
-                                    :style="{borderColor: product.color}"
+                                    :style="{ borderColor: product.color }"
                                     :_color="product.color" 
                                     :_type="2"                                    
                                 > 
@@ -135,7 +130,9 @@
         data() {
             return {
                 product: this.copy(this.data),
-                change: false
+                change: false,
+                uploadStatus: '',
+                refresh: false
             }
         },
         methods: {
@@ -157,15 +154,22 @@
                 return true
             },
 
-            addImage(e) {
+            async addImage(e) {
                 const file = e.target.files[0]
                 const name = `${this.$store.getters.appID}_${this.product.id_rent}`
 
                 const formData = new FormData()
 
                 formData.set('file', file, name)
+                this.uploadStatus = 'Загрузка ...'
                 
-                uploads(formData, this.$store)
+                const result = await uploads(formData, this.$store)
+
+                if (result) {
+                    this.uploadStatus = 'Загрузка завершена'
+                } 
+
+                this.refresh = true     
             },
 
             save() {
@@ -237,7 +241,7 @@
             },
             categories() {
                 return this.$store.getters.categories
-            }
+            },
         }
     }
 </script>
@@ -274,15 +278,19 @@
         border-bottom: 2px solid lightgray;
     }
 
-    .photo {
+    .details__photo {
         position: relative;
-        display: block;
-        width: 100px;
-        height: 50px;
-        outline: 1px solid lightgray;
+        width: 120px;
+        height: 90px;
     }
-    .photo:hover {
+    .details__photo:hover {
         cursor: pointer;
-        outline: none;
     }
+    .photo__input {
+        display: none;
+    }
+    .details__status {
+        font-size: 10px;
+    }
+
 </style>
