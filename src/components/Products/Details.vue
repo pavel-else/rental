@@ -104,7 +104,7 @@
 </template>
 
 <script>
-    import copy  from '../../functions/copy'
+    import copy    from '@/functions/copy'
     import uploads from '../func/user_uploads'
     import dowload from '../func/download'
 
@@ -129,14 +129,13 @@
         },
         data() {
             return {
-                product: this.copy(this.data),
+                product: copy(this.data),
                 change: false,
                 uploadStatus: '',
                 refresh: false
             }
         },
         methods: {
-            ...copy,
             check() {
                 if (!this.product.name) {
                     console.log('empty product name')

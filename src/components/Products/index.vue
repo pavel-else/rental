@@ -25,7 +25,7 @@
         </template>
         <template v-else>Нет товаров</template>
         
-        <button class="products__button products__button--add" @click="newProduct">Добавить</button>
+        <button class="products__button products__button--add" @click="newProduct()">Добавить</button>
 
         <Details :data="product" @close="onClose" v-if="showDetails"></Details>
         <Photo 
@@ -42,6 +42,7 @@
     import Details from './Details'
     import Bike    from '../Bike'
     import Photo   from '../Photo'
+    import getProductId from '@/functions/getProductId'
     export default {
         components: {
             Details,
@@ -69,14 +70,15 @@
                 this.product = product
                 this.showPhoto = true
             },
-            closePhoto(){
+            closePhoto() {
                 this.showPhoto = false
                 this.product = {}
             },
 
             newProduct() {
-                this.show = true
+                this.showDetails = true
                 this.product = {
+                    id_rent:  getProductId(this.$store.getters.products),  
                     categories: null,
                     color:      "#fff",
                     cost:       0,
@@ -87,6 +89,9 @@
                     tariff_ids: null,
                     type: 1
                 }
+
+                console.log('product', this.product)
+
             }
         },
         computed: {
