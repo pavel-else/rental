@@ -2,7 +2,7 @@
     <div class="canvas">
         <div class="details">
             <h3>
-                <span v-if="product.id_rent">Редактирование товара</span>
+                <span v-if="!product.newProduct">Редактирование товара</span>
                 <span v-else>Новый товар</span>
             </h3>
             <form @input="onChange">
@@ -19,8 +19,16 @@
                         <td>Фото</td>
                         <td>
                             <label>
-                                <Photo class="details__photo" v-if="product.id_rent" :product="product" :refresh="refresh"></Photo>
-                                <input class="photo__input" type="file" @input="addImage($event)" >
+                                <template>
+                                    <Photo 
+                                        class="details__photo" 
+                                        v-if="product.id_rent && !product.newProduct" 
+                                        :product="product" 
+                                        :refresh="refresh"
+                                    ></Photo>
+                                    <div v-else class="button">Добавить фото</div>    
+                                </template>
+                                <input class="photo__input" type="file" @input="addImage($event)">
                             </label>
                             <span class="details__status">{{ uploadStatus }}</span>
                             
@@ -166,6 +174,7 @@
 
                 if (result) {
                     this.uploadStatus = 'Загрузка завершена'
+                    this.product.newProduct = false
                 } 
 
                 this.refresh = true     

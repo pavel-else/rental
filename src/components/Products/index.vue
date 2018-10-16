@@ -28,6 +28,7 @@
         <button class="products__button products__button--add" @click="newProduct()">Добавить</button>
 
         <Details :data="product" @close="onClose" v-if="showDetails"></Details>
+
         <Photo 
             class="photo"
             v-if="showPhoto"
@@ -78,7 +79,8 @@
             newProduct() {
                 this.showDetails = true
                 this.product = {
-                    id_rent:  getProductId(this.$store.getters.products),  
+                    newProduct: true,
+                    id_rent:    getProductId(this.$store.getters.products),  
                     categories: null,
                     color:      "#fff",
                     cost:       0,
@@ -91,7 +93,6 @@
                 }
 
                 console.log('product', this.product)
-
             }
         },
         computed: {

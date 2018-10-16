@@ -77,7 +77,7 @@
         text-decoration: underline;
     }
 
-    button {
+    button, .button {
         border: none;
         border-radius: 5px;
         padding: 5px 15px;
@@ -159,12 +159,13 @@
         border: 3px solid lightgray;
         color: #333;
     }
-    button {
+    button, .button{
         background-color: #000;
         border: 3px solid #333;
         color: rgba(255, 255, 255, 0.8);
     }
-    button:hover {
+    button:hover, .button:hover {
+        cursor: pointer;
         border: 3px solid rgba(255, 255, 255, 0.8);
     }
 
