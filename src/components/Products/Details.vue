@@ -112,8 +112,9 @@
 </template>
 
 <script>
-    import copy    from '@/functions/copy'
-    import uploads from '../func/user_uploads'
+    import copy         from '@/functions/copy'
+    import getExtention from '@/functions/getExtention'
+    import uploads      from '../func/user_uploads'
 
     import Tariffs    from './prod_tariffs'
     import Categories from './prod_categories'
@@ -162,7 +163,11 @@
 
             async addImage(e) {
                 const file = e.target.files[0]
-                const name = `${this.$store.getters.appID}_${this.product.id_rent}`
+                const time = Math.floor(Date.now() / 1000)
+                const ext = getExtention(file.type)
+                const name = `${this.$store.getters.appID}_${this.product.id_rent}_${time}${ext}`
+
+                console.log('name', name)
 
                 const formData = new FormData()
 
@@ -174,6 +179,7 @@
                 if (result) {
                     this.uploadStatus = 'Загрузка завершена'
                     this.product.newProduct = false
+                    this.product.img = `${time}${ext}`
                 } 
 
                 this.refresh = true     

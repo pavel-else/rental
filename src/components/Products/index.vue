@@ -33,7 +33,6 @@
             class="photo"
             v-if="showPhoto"
             :product="product"
-            :refresh="true"
         >
         </Photo>
     </div>

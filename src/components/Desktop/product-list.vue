@@ -25,7 +25,6 @@
             class="products__photo"
             v-if="product.id_rent" 
             :product="product"
-            :refresh="true"
         ></Photo>
                     
     </div>
