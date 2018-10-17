@@ -3,9 +3,10 @@
         <ul>
             <li 
                 class="categories__li" 
-                v-for="(category) in categories"
+                v-for="category in categories"
+                :key="category.name"
             >
-                <input type="checkbox" v-model="category.check" @change="onSet(category)">
+                <input type="checkbox" v-model="category.check" @change="onSet()">
                 {{ category.name }}
             </li>
         </ul>
@@ -33,7 +34,7 @@
         },
 
         methods: {
-            onSet(category) {
+            onSet() {
                 const filter = this.categories.filter(category => category.check == true)
                 const ids = filter.map(category => category.id_rent)
 

@@ -132,12 +132,11 @@
 </template>
 
 <script>
-    import copy              from '@/functions/copy'
+    // import copy              from '@/functions/copy'
     import getOrderId        from '../../../functions/getOrderId'
 
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
-    import SelectCustomer2    from './SelectCustomer2'
     import SelectAccessories from './SelectAccessories'
     import SelectTariff      from './SelectTariff'
     import SelectPromotion   from './SelectPromotion'
@@ -156,7 +155,6 @@
         components: {
             Position,
             SelectCustomer,
-            SelectCustomer2,
             SelectAccessories,
             SelectTariff,
             SelectPromotion,
@@ -304,22 +302,22 @@
                 // Если редактируем конкретный старый ордер, верну его позицию
                 // Если ордер совсем новый, верну свободную позицию
                 
-                const newPosition = () => {
-                    const orders = this.$store.getters.orders
-                    const count = 15
-                    let id = null
+                // const newPosition = () => {
+                //     const orders = this.$store.getters.orders
+                //     const count = 15
+                //     let id = null
 
-                    const iter = (num) => {
-                        id = orders.find(item => item.order_id_position == num) ? id : num
+                //     const iter = (num) => {
+                //         id = orders.find(item => item.order_id_position == num) ? id : num
 
-                        return num < 1 ? id : iter(num - 1)
-                    }
+                //         return num < 1 ? id : iter(num - 1)
+                //     }
 
-                    const result = iter(count)
-                    this.order.order_id_position = result
+                //     const result = iter(count)
+                //     this.order.order_id_position = result
 
-                    return +result                    
-                }
+                //     return +result                    
+                // }
 
                 if (this.order.order_id_position) {
                     return this.order.order_id_position
@@ -407,7 +405,6 @@
                     return
                 }
 
-                const id = this.product.id_rent
                 const ids = this.product.tariff_ids.split(',')
 
                 return ids.map(id => {
@@ -422,10 +419,6 @@
             activeSubOrders() {
                 return this.subOrders.filter(i => i.status === "ACTIVE")
             },
-
-            activeSubOrders() {
-                return this.subOrders.filter(i => i.status === "PAUSE")
-            }
         },
     }
 </script>

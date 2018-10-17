@@ -4,6 +4,7 @@
             <div 
                 class="btn"
                 v-for="(item, index) in btns"
+                :key="index"
                 @click="onClick(item, index)"
             >
                 <Icon 

@@ -6,7 +6,7 @@
                 <th>Название</th>
                 <th>Родительская<br>категория</th>
             </tr>
-            <tr v-for="category in categories" @click="onClick(category)">
+            <tr v-for="category in categories" :key="category.id_rent" @click="onClick(category)">
                 <td>{{ category.id_rent }}</td>
                 <td>{{ category.name }}</td>
                 <td class="category__td category__td--parent">{{ category.parent }}</td>

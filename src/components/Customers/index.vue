@@ -7,7 +7,7 @@
                 <th>Телефон</th>
                 <th>Скидка</th>
             </tr>
-            <tr v-for="customer in customers" @click="onClick(customer)">
+            <tr v-for="customer in customers" :key="customer.id_rent" @click="onClick(customer)">
                 <td>{{ customer.id_rent }}</td>
                 <td>{{ customer.fname }} {{ customer.sname }} {{ customer.tname }}</td>
                 <td>{{ customer.phone }}</td>

@@ -364,7 +364,6 @@
                     return
                 }
 
-                const id = this.product.id_rent
                 const ids = this.product.tariff_ids.split(',')
 
                 return ids.map(id => {

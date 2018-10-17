@@ -3,7 +3,7 @@
         <h3>Свободныe <span v-if="products.length">({{ products.length }})</span></h3>
         <table class="table table-bordered">
             <tr
-                v-for="(item, index) in products" 
+                v-for="item in products" 
                 :key="item.id_rent"
                 @click="onClick(item)" 
                 class="products__product"

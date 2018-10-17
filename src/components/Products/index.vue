@@ -2,7 +2,7 @@
     <div class="option option-products">
         <template v-if="products.length">
             <table>
-                <tr v-for="product in products" @click="onClick(product)">
+                <tr v-for="product in products" :key="product.id_rent" @click="onClick(product)">
                     <td class="product__td--status">
                         <span 
                             class="product__status" 

@@ -6,11 +6,6 @@
 export default {
     getTime(start, end) {
         const start_time = Date.parse(start)
-
-        const end_time = end
-
-        const diff = end - start_time
-
-        return diff
+        return end - start_time
     }
 }

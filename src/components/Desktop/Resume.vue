@@ -37,7 +37,7 @@
                         <td colspan="2">
                             <p>Товары</p>
                             <table class="suborders">
-                                <tr v-for="(item, index) in subOrders">
+                                <tr v-for="item in subOrders" :key="item.id_rent">
                                     <td class="suborders__td--descript">
                                         <span v-if="item.id_rent === _subOrder.id_rent">></span>
                                     </td>
@@ -138,7 +138,7 @@
                 <button class="resume__button" @click="pay('card')">
                     <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
                 </button>
-                <button class="resume__button" v-if="!isLast()"@click="pay('dont pay')">
+                <button class="resume__button" v-if="!isLast()" @click="pay('dont pay')">
                     Без оплаты
                 </button>
             </div>
@@ -151,8 +151,6 @@
     import roundBill     from '../../functions/roundBill'
     import pause         from './functions/pause'
     import stopSubOrder  from './functions/stopSubOrder'
-    import getSale       from './functions/getSale'
-
 
     export default {
         props: {

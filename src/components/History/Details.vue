@@ -14,7 +14,7 @@
                         <td>Товары</td>
                         <td>
                             <ul>
-                                <li v-for="product in order.products">{{ product.name }} - {{ product.bill }} р.</li>
+                                <li v-for="product in order.products" :key="product.id_rent">{{ product.name }} - {{ product.bill }} р.</li>
                             </ul>
                         </td>
                     </tr>

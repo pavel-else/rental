@@ -11,6 +11,7 @@
                 class="color" 
                 :style="{borderColor: color}" 
                 v-for="color in palette"
+                :key="color"
                 @click="onClick(color)"
             >                    
             </li>            

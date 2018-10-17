@@ -1,7 +1,7 @@
 <template> 
     <div class="tariffs">
         <table>
-            <tr v-for="tariff in tariffs">
+            <tr v-for="tariff in tariffs" :key="tariff.id_rent">
                 <td>
                     <input 
                         class="checkbox"

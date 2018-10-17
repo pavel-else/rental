@@ -11,7 +11,7 @@
                 <th>Стоимость</th>
                 <th>Статус</th>
             </tr>
-            <tr v-for="(item, index) in history" @click="onClick(item)">
+            <tr v-for="item in history" :key="item.order_id" @click="onClick(item)">
                 <td class="">{{ item.order_id }}</td>
                 <td class="">{{ item.customer_name }}</td>
                 <td class="">{{ item.start_time }}</td>

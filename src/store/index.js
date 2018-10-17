@@ -37,7 +37,7 @@ const store = new Vuex.Store({
         * Сеттеров может и не быть, тогда отправляются только команды обновления
         * Внимание! Здесь все асинхронно!
         */
-        send({commit, dispatch}, cmds /*Array*/) {
+        send({commit}, cmds /*Array*/) {
             const config = cmds && cmds.config ? cmds.config : null
 
             const prepare = (cmds) => {
@@ -117,7 +117,7 @@ const store = new Vuex.Store({
             set(prepare(cmds))
         },
 
-        upload({commit, dispatch}, formData) {
+        upload(formData) {
             const url = this.getters.activePath + 'user_uploads.php'
             console.log(url)
             

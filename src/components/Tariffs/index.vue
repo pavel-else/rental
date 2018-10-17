@@ -11,7 +11,7 @@
                 <th>Стоим.</th>
                 <th>Примечание</th>
             </tr>
-            <tr v-for="tariff in tariffs" @click="onClick(tariff)">
+            <tr v-for="tariff in tariffs" :key="tariff.id_rent" @click="onClick(tariff)">
                 <td>{{ tariff.id_rent }}</td>
                 <td>{{ tariff.name }}</td>
                 <td>{{ tariff.type }}</td>
@@ -51,8 +51,6 @@
             },
             getHours(h) {
                 if (!h) return null
-
-                const hours = Object.values(h);
 
                 return h.reduce((acc, item) => {
                     return acc = acc + ` ${item}`   

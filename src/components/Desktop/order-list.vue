@@ -6,7 +6,8 @@
         <table cellspacing="0" class="table">
             <tr 
                 class="table-tr" 
-                v-for="(order, index) in orders"
+                v-for="order in orders"
+                :key="order.order_id"
                 v-if="subOrders[order.order_id]"
                 :title="order.title"
             >

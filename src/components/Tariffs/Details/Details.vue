@@ -57,7 +57,7 @@
                         <td>Расчасовка,<br>руб</td>
                         <td>
                             <table>
-                                <tr v-for="(item, index) in newTariff._h_h">
+                                <tr v-for="(item, index) in newTariff._h_h" :key="index">
                                     <td>
                                         {{ index + 1}}<span v-if="newTariff._h_h.length === index + 1">+</span> час
                                     </td>
@@ -80,6 +80,7 @@
                         <td>Стоимость</td>
                         <td><input v-model="newTariff.cost"></td>
                     </tr>
+                    <tr>
                         <td>Примечание</td>
                         <td><input v-model="newTariff.note"></td>
                     </tr>

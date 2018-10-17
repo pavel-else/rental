@@ -114,7 +114,6 @@
 <script>
     import copy    from '@/functions/copy'
     import uploads from '../func/user_uploads'
-    import dowload from '../func/download'
 
     import Tariffs    from './prod_tariffs'
     import Categories from './prod_categories'
@@ -268,7 +267,7 @@
     }
 
     .btn-group {
-    	margin-top: 20px;
+        margin-top: 20px;
     }
     .products__updated {
         font-size: 12px;

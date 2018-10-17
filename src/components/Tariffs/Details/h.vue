@@ -1,7 +1,7 @@
 <template>
     <div class="h tmp">
         <table>
-            <tr class="h__item" v-for="(value, key) in H">
+            <tr class="h__item" v-for="(value, key) in H" :key="key">
 
                 <td class="h__caption">
                     {{ key + 1 }}<span v-if="more(key)">+</span> час
@@ -24,7 +24,7 @@
         },
         data() {
             return {
-                H: h
+                H: this.h
             }
         },
         methods: {

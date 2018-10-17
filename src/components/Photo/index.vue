@@ -6,7 +6,6 @@
 </template>
 
 <script>
-    import loadImage from '../func/download'
     export default {
         props: {
             product: Object,
