@@ -26,15 +26,12 @@
                 return url 
             },
             backgroundImage() {
-                console.log(this.url)
                 return {
                     backgroundImage: this.product.img ? 'url(' + this.url + ')' : 'none'
                 }
             }            
         }
-    }
-    
-    
+    }    
 </script>
 
 <style scoped>

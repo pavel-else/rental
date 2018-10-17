@@ -18,11 +18,11 @@
                     <tr>
                         <td>Фото</td>
                         <td>
-                            <label>
+                            <label class="product__photo--label">
                                 <template>
                                     <Photo 
                                         class="details__photo" 
-                                        v-if="product.id_rent && !product.newProduct" 
+                                        v-if="product.img" 
                                         :product="product" 
                                         :refresh="refresh"
                                     ></Photo>
@@ -167,8 +167,6 @@
                 const ext = getExtention(file.type)
                 const name = `${this.$store.getters.appID}_${this.product.id_rent}_${time}${ext}`
 
-                console.log('name', name)
-
                 const formData = new FormData()
 
                 formData.set('file', file, name)
@@ -178,7 +176,6 @@
 
                 if (result) {
                     this.uploadStatus = 'Загрузка завершена'
-                    this.product.newProduct = false
                     this.product.img = `${time}${ext}`
                 } 
 
@@ -228,7 +225,7 @@
 
                 this.change = true
 
-                console.log(this.product)
+                //console.log(this.product)
             },
             setTariffs(ids) {
                 this.product.tariff_ids = ids
@@ -304,6 +301,11 @@
     }
     .details__status {
         font-size: 10px;
+    }
+    .product__photo--label {
+        display: flex;
+        flex-direction: row;
+
     }
 
 </style>
