@@ -59,8 +59,6 @@
                 const filter = this.tariffs.filter(tariff => tariff.check == true)
                 const ids = filter.map(tariff => tariff.id_rent)
 
-                console.log(this.check)
-
                 this.$emit('setTariffs', ids.join())
             },
             setTariffDefault() {

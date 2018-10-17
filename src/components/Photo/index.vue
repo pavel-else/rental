@@ -1,8 +1,8 @@
 <template>
-        <div class="photo__wrap">
-            <div class="photo__text">no photo</div>
-            <div class="photo__img" :style="backgroundImage"></div> 
-        </div>
+    <div class="photo__wrap">
+        <div class="photo__text">no photo</div>
+        <div class="photo__img" :style="backgroundImage"></div> 
+    </div>
 </template>
 
 <script>
