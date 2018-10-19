@@ -37,9 +37,10 @@ const store = new Vuex.Store({
         * Сеттеров может и не быть, тогда отправляются только команды обновления
         * Внимание! Здесь все асинхронно!
         */
-        send({commit, dispatch}, cmds /*Array*/) {
+        send({commit}, cmds /*Array*/) {
+            const config = cmds && cmds.config ? cmds.config : null
 
-            const check = (cmds) => {
+            const prepare = (cmds) => {
                 if (!cmds) {
                     return
                 }
@@ -52,7 +53,8 @@ const store = new Vuex.Store({
             }
 
             const sendToServer = (queue) => {
-                const url = 'http://overhost.net/rental2/api_v1/ajax/App/request.php'
+                
+                const url = this.getters.url
 
                 console.log('front --> back', queue)
 
@@ -61,7 +63,9 @@ const store = new Vuex.Store({
                     url,
                     data: {
                         queue
-                    }
+                    },
+                    config
+                    
                 })
                 .catch(e => {
                     console.log(e)
@@ -110,7 +114,22 @@ const store = new Vuex.Store({
                 sendToServer(cmds)
             }
 
-            set(check(cmds))
+            set(prepare(cmds))
+        },
+
+        upload(formData) {
+            const url = this.getters.activePath + 'user_uploads.php'
+            console.log(url)
+            
+            const config = {
+                header: {
+                    'Content-Type' : 'multipart/form-data'
+                }
+            }
+            
+            axios.post(url, formData, config).then(
+                r => {console.log(r)}
+            )
         },
 
         upd({dispatch}) { 

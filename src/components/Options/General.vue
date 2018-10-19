@@ -30,7 +30,7 @@
 </template>
 
 <script>
-    import copyObject from '../../functions/copyObject'
+    import copy from '../../functions/copy'
 
     export default {
         data() {
@@ -40,10 +40,11 @@
             }
         },
         methods: {
-            ...copyObject,
+            ...copy,
 
             set(option, value) {
                 this.options[option] = value
+                console.log("setOptions", option)
             },
 
             send() {

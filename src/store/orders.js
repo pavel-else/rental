@@ -1,14 +1,14 @@
 export default {
-	state: {
-		orders: []
-	},
-	mutations: {
+    state: {
+        orders: []
+    },
+    mutations: {
         setOrders(state, orders) {
             state.orders = orders
             
-        	console.log('set Orders')
+            console.log('set Orders')
         },
-	},
+    },
 
     actions: {
         setOrders({commit}, orders) {           
@@ -16,9 +16,9 @@ export default {
         },
     },
 
-	getters: {
+    getters: {
         orders(state) {
             return state.orders
         },
-	}
+    }
 }

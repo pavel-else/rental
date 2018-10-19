@@ -1,17 +1,22 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Router from 'vue-router'
+//import Home from './views/Home.vue'
 
-Vue.use(VueRouter)
+import Home      from './components/Desktop'
+import History   from './components/History'
+import Customers from './components/Customers'
+import Options   from './components/Options'
 
-import Desktop   from './components/desktop/Desktop'
-import History   from './components/History/history'
-import Customers from './components/Customers/Customers'
-import Options   from './components/Options/Options'
+Vue.use(Router)
 
-const routes = [
+export default new Router({
+  // mode: 'history',
+  base: process.env.BASE_URL,
+  routes: [
     {
-        path: '',
-        component: Desktop
+        path: '' || '/' || 'home',
+        name: 'home',
+        component: Home
     },
     {
         path: '/customers',
@@ -25,11 +30,13 @@ const routes = [
         path: '/options',
         component: Options
     },
-]
-
-export const router = new VueRouter({
-    routes,
-    //mode: 'history'
-    // для реализации этой опции для продакшна 
-    // необходима спец.настройка сервера
+    // {
+    //   path: '/about',
+    //   name: 'about',
+    //   // route level code-splitting
+    //   // this generates a separate chunk (about.[hash].js) for this route
+    //   // which is lazy-loaded when the route is visited.
+    //   component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+    // }
+  ]
 })

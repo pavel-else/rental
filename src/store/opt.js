@@ -1,6 +1,6 @@
 export default {
     state: {
-        url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
+        // url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
         cmds: [
             'getProducts',
             'getOrders', 
@@ -12,7 +12,10 @@ export default {
             'getLogs'
         ],
 
+        // options передается на сервер
         options: {
+            app_id: 8800000001,
+
             rent_min_time:     0, //min
             rent_round_bill:   0,
 
@@ -20,9 +23,22 @@ export default {
             lastOrderTime:     null,
             lastOrderInterval: 0, //ms 
 
-            registration_time: 0,      
+            registration_time: 0,
+        },
+        now: Date.now(),
 
-            now: Date.now(),
+        activeBranch: 'dev',
+        // activeBranch: 'master',
+
+        branch: {
+            dev: {
+                url: 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php',
+                path: 'http://overhost.net/rental2/api_v1/ajax/Dev/'
+            },
+            master: {
+                url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
+                path: 'http://overhost.net/rental2/api_v1/ajax/App/'
+            }
         },
     
         depositList: [
@@ -98,7 +114,7 @@ export default {
             console.log('setOption', option, state.options[option])
         },
         now(state, date) {
-            state.options.now = date
+            state.now = date
         }
     },
 
@@ -110,7 +126,7 @@ export default {
 
     getters: {
         now(state) {
-            return state.options.now
+            return state.now
         },
         options(state) {
             return state.options
@@ -125,6 +141,22 @@ export default {
         },
         promotions(state) {
             return state.promotions
+        },
+
+        activeBranch(state) {
+            return state.activeBranch
+        },
+
+        activePath(state) {
+            return state.branch[state.activeBranch].path
+        },
+
+        url(state) {
+            return state.branch[state.activeBranch].url
+        },
+
+        appID(state) {
+            return state.options.app_id
         },
     }
 }
