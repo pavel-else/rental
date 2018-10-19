@@ -72,7 +72,7 @@
     import Icon          from  '../Icon/Icon'
 
     import getBill       from '../../functions/getBill'
-    import timeFormat    from '../../functions/timeFormat'
+    import timeFormat    from '@/functions/timeFormat'
     import roundBill     from '../../functions/roundBill'
     import pause         from './functions/pause'
 
@@ -95,7 +95,6 @@
         },
 
         methods: {
-            ...timeFormat,
             ...stopSubOrder,
 
             toChange(order, subOrder) {
@@ -154,7 +153,7 @@
 
                 if (subOrder.status == "ACTIVE") {
                     if (time && pause) {
-                        return this.timeFormat(time - pause)
+                        return timeFormat(time - pause)
                     }
                 }
 
@@ -167,12 +166,12 @@
                     const pause = +subOrder.pause_time + lastPause
 
                     if (time && pause) {
-                        return this.timeFormat(time - pause)
+                        return timeFormat(time - pause)
                     }
                 }
 
                 if (subOrder.status == "END") {                   
-                    return this.timeFormat(Date.parse(subOrder.end_time) - start - pause)
+                    return timeFormat(Date.parse(subOrder.end_time) - start - pause)
                 }
             },
 

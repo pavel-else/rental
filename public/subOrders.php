@@ -44,8 +44,9 @@ trait SubOrders
             SELECT * 
             FROM `orders` 
             WHERE `id_rental_org` = :id_rental_org
-            ORDER BY `orders`.`order_id` 
-            DESC
+            ORDER BY `orders`.`order_id`
+            DESC 
+            LIMIT 100 
         ';  
 
         $d = array (

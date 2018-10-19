@@ -1,10 +1,14 @@
 <template>
     <div class="canvas">
-        <div class="details">        
+        <div class="details">            
             <table>
                     <tr>
                         <td>Заказ</td>
                         <td>{{order.order_id}}</td>
+                    </tr>
+                    <tr>
+                        <td>Статус</td>
+                        <td>{{order.status}}</td>
                     </tr>
                     <tr>
                         <td>Клиент</td>
@@ -14,7 +18,7 @@
                         <td>Товары</td>
                         <td>
                             <ul>
-                                <li v-for="product in order.products" :key="product.id_rent">{{ product.name }} - {{ product.bill }} р.</li>
+                                <li v-for="product in order.products" :key="product.id_rent">{{ product.name }} - {{ product.bill_rent }} р.</li>
                             </ul>
                         </td>
                     </tr>
@@ -32,13 +36,13 @@
                     </tr>
                     <tr>
                         <td>Аванс</td>
-                        <td>{{ order.advance }}</td>
+                        <td><span v-if="order.advance > 0">{{ order.advance }} р.</span><span v-else>-</span></td>
                     </tr>
                     <tr>
                         <td>Скидка</td>
-                        <td></td>
+                        <td><span v-if="order.sale > 0">{{ order.sale }} р.</span><span v-else>-</span></td>
                     </tr>
-                    <tr class="details__bill">
+                    <tr class="details__bill" v-if="order.status === 'END'">
                         <td>К оплате</td>
                         <td>{{ order.bill }} р.</td>
                     </tr>
@@ -49,29 +53,19 @@
 </template>
 
 <script>
+    import getTime from '@/functions/getTime'
+    import timeFormat from '@/functions/timeFormat'
     export default {
+        name: 'HistoryDetails',
         props: {
-            order: Object
+            // Ордер должен приходить с просчитанными полями name, bill, sale
+            order: {
+                type: Object,
+                default: {}
+            }
         },
         methods: {
             getTimePlay(item) {
-                const timeFormat = function (ms/**number*/) {
-                    if (ms < 0) ms = 0;
-
-                    function num(val){
-                        val = Math.floor(val);
-                        return val < 10 ? '0' + val : val;
-                    }
-                    
-                    var sec = ms / 1000
-                      , hours = sec / 3600  % 24
-                      , minutes = sec / 60 % 60
-                      , seconds = sec % 60
-                    ;
-
-                    return num(hours) + ":" + num(minutes) + ":" + num(seconds);
-                }
-
                 const now = this.$store.getters.now
 
                 const products = item.products
@@ -89,15 +83,6 @@
                 }
 
                 return timeFormat(diff)
-            },
-            getBill(item, subitem) {
-                const obj = {
-                    start: item.start_time,
-                    end: subitem.end_time,
-                    product_id: subitem.product_id
-                }
-
-                return this.$store.state.F.getBill(obj)   
             },
             close() {
                 this.$emit('close')

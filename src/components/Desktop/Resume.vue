@@ -147,8 +147,8 @@
 </template>
 
 <script>
-    import timeFormat    from '../../functions/timeFormat'
-    import roundBill     from '../../functions/roundBill'
+    import timeFormat    from '@/functions/timeFormat'
+    import roundBill     from '@/functions/roundBill'
     import pause         from './functions/pause'
     import stopSubOrder  from './functions/stopSubOrder'
 
@@ -185,7 +185,6 @@
         },
 
         methods: {
-            ...timeFormat,
             ...stopSubOrder,
 
             isLast() {
@@ -299,9 +298,9 @@
                 // console.log(end)
                 // console.log(pause)
                 // console.log(time)
-                // console.log(this.timeFormat(time))
+                // console.log(timeFormat(time))
 
-                return this.timeFormat(time)
+                return timeFormat(time)
             },
             deposit() {
                 return this.$store.getters.deposits.find(i => i.id_rent === +this.order.deposit)

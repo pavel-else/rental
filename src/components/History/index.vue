@@ -34,9 +34,10 @@
 <script>
     import Details    from './Details'
     import getTime    from '../../functions/getTime'
-    import timeFormat from '../../functions/timeFormat'
+    import timeFormat from '@/functions/timeFormat'
 
     export default {
+        name: 'History',
         components: {
             Details
         },
@@ -48,7 +49,6 @@
         },
         methods: {
             ...getTime,
-            ...timeFormat,
 
             getTimePlay(order) {
                 const subOrders = this.$store.getters.subOrders.filter(i => i.order_id == order.order_id)
@@ -58,7 +58,7 @@
 
                 const time = start - Date.parse(end)
 
-                return this.timeFormat(time)
+                return timeFormat(time)
             },
 
             getName(item) {
@@ -74,19 +74,27 @@
             }
         },
         computed: {
+            /**
+            * С точки зрения оптимизации выгоднее единожды при создании компонента просчитывать статистические данные.
+            * Поэтому перебираем все сабордеры и просчитываем данные для каждого 
+            */
             history() {
                 let history = this.$store.getters.history
 
-                history = history.filter(o => o.order_id > 1700)
+                // history = history.filter(o => o.order_id > 1700) // Ограничитель
                 history = history.map(i => {
                     i.subOrders = this.$store.getters.subOrders.filter(j => j.order_id === i.order_id)
                     i.end_time = Math.max(...i.subOrders.map(j => Date.parse(j.end_time) || 0)) || Date.now()
-                    i.play_time = i.end_time > 0 ? this.timeFormat(i.end_time - Date.parse(i.start_time)) : 0
+                    i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time)) : 0
 
-                    i.bill = i.subOrders.reduce((acc, item) => {
-                        acc += +item.bill_rent + +item.bill_access - +item.sale
+                    const reduce = i.subOrders.reduce((acc, item) => {
+                        acc.bill += +item.bill_rent + +item.bill_access - +item.sale
+                        acc.sale += +item.sale
                         return acc
-                    }, 0)
+                    }, {bill: 0, sale: 0})
+
+                    i.bill = reduce.bill
+                    i.sale = reduce.sale
 
                     return i
                 })
@@ -106,7 +114,6 @@
     }
 
     .black .history__table td {
-
         padding: 5px 10px;
     }
     .history__td--time {

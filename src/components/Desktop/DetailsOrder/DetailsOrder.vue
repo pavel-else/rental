@@ -103,9 +103,9 @@
 </template>
 
 <script>
-    import getOrderId        from '../../../functions/getOrderId'
-    import getSubOrderId     from '../../../functions/getSubOrderId'
-    import copy        from '../../../functions/copy'
+    import getOrderId        from '@/functions/getOrderId'
+    import getSubOrderId     from '@/functions/getSubOrderId'
+    import copy              from '@/functions/copy'
 
     import initOrder         from '../functions/initOrder'
 
@@ -176,7 +176,6 @@
         methods: {
             ...getOrderId,
             ...getSubOrderId,
-            ...copy,
 
             close() {
                 this.$emit('close')
@@ -245,7 +244,7 @@
                     console.log('order not found!')
                 }
 
-                this.order = this.copy(order)
+                this.order = copy(order)
 
                 this.subOrder.id_rent    = this.getSubOrderId()
                 this.subOrder.product_id = this.product.id_rent
@@ -255,7 +254,7 @@
                 this.subOrder.pause_time = 0
 
                 this.status = 'addSubOrder'
-                console.log(this.subOrder)
+                // console.log(this.subOrder)
             },
 
             isSerial() {
@@ -366,9 +365,14 @@
 
                 const ids = this.product.tariff_ids.split(',')
 
-                return ids.map(id => {
-                    return this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
-                })
+                const result =  ids.reduce((acc, id) => {
+
+                    const find = this.$store.getters.tariffs.find(tariff => tariff.id_rent === id)
+                    if (find) acc.push(find)
+                    return acc
+                }, [])
+                console.log(result)
+                return result
             },
             registrationTime() {
                 return +this.$store.getters.options.registration_time

@@ -23,8 +23,7 @@ export default {
             lastOrderTime:     null,
             lastOrderInterval: 0, //ms 
 
-            registration_time: 0,      
-
+            registration_time: 0,
         },
         now: Date.now(),
 
