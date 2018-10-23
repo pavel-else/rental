@@ -197,8 +197,10 @@
                     time = Date.parse(subOrder.end_time) - Date.parse(order.start_time)
                 }
 
-                getBillAccessories()
-                return roundBill(getBill(subOrder.tariff_id, time))
+                const billRent = getBill(subOrder.tariff_id, time)
+                const billAccess = getBillAccessories(subOrder.accessories, this.$store.getters.accessories, billRent)
+
+                return roundBill(billRent + billAccess)
             },
 
             pauseOrder(order) {

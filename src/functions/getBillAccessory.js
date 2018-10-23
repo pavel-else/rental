@@ -1,5 +1,3 @@
-import store from '@/store'
-
 export default (type, value, bill) => {
     if (!type) {
         return undefined
@@ -16,7 +14,7 @@ export default (type, value, bill) => {
     }
 
     const fixedType = (value) => {
-        return value
+        return +value
     }
 
     if (type === '%') {

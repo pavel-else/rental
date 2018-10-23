@@ -67,8 +67,8 @@ export default  function getBill(tariff_id, time /*ms*/) {
     }
 
     switch (tariff.type) {
-        case 'd': return d(tariff, time)
-        case 'f': return tariff.cost
-        case 'h': return h(tariff, time)
+        case 'd': return +d(tariff, time)
+        case 'f': return +tariff.cost
+        case 'h': return +h(tariff, time)
     }
 }

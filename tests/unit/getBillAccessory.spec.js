@@ -1,6 +1,6 @@
 import getBillAccessory from '@/functions/getBillAccessory'
 
-describe('getBillAccessories tests', () => {
+describe('getBillAccessory tests', () => {
     it('should return 0 for empty arguments ', () => {
         expect(getBillAccessory()).toBe(undefined);
     });
