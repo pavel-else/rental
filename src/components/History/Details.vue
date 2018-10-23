@@ -53,7 +53,6 @@
 </template>
 
 <script>
-    import getTime from '@/functions/getTime'
     import timeFormat from '@/functions/timeFormat'
     export default {
         name: 'HistoryDetails',
@@ -61,7 +60,9 @@
             // Ордер должен приходить с просчитанными полями name, bill, sale
             order: {
                 type: Object,
-                default: {}
+                default() {
+                    return {}
+                }
             }
         },
         methods: {
