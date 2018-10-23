@@ -61,7 +61,13 @@
         >
         </DetailsOrder>
 
-        <Resume :_order="order" :_subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
+        <Resume 
+            v-if="showResume"
+            :_order="order" 
+            :_subOrder="subOrder"
+            @close="onClose" 
+        >
+        </Resume>
     </div>
 </template>
 
@@ -71,7 +77,8 @@
     import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
     import Icon          from  '../Icon/Icon'
 
-    import getBill       from '../../functions/getBill'
+    import getBill       from '@/functions/getBill'
+    import getBillAccessories from '@/functions/getBillAccessories'
     import timeFormat    from '@/functions/timeFormat'
     import roundBill     from '../../functions/roundBill'
     import pause         from './functions/pause'
@@ -190,7 +197,7 @@
                     time = Date.parse(subOrder.end_time) - Date.parse(order.start_time)
                 }
 
-
+                getBillAccessories()
                 return roundBill(getBill(subOrder.tariff_id, time))
             },
 
