@@ -1,8 +1,8 @@
-import getBill         from '../../../functions/getBill'
+import getBill from '@/functions/getBill'
 import getBillAccessories from '@/functions/getBillAccessories'
-import getSale         from './getSale'
+import getSale from '@/functions/getSale'
 import activateProduct from './activateProduct'
-import roundBill       from '../../../functions/roundBill'
+import roundBill from '@/functions/roundBill'
 
 export default {
     stopSubOrder(order, subOrder, send) {

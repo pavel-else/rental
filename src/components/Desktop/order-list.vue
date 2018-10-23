@@ -75,12 +75,13 @@
     import Resume        from './Resume'
     import stopSubOrder  from './functions/stopSubOrder'
     import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
-    import Icon          from  '../Icon/Icon'
+    import Icon          from  '@/components/Icon/Icon'
 
     import getBill       from '@/functions/getBill'
     import getBillAccessories from '@/functions/getBillAccessories'
+    import getSale from '@/functions/getSale'
     import timeFormat    from '@/functions/timeFormat'
-    import roundBill     from '../../functions/roundBill'
+    import roundBill     from '@/functions/roundBill'
     import pause         from './functions/pause'
 
 
@@ -199,8 +200,10 @@
 
                 const billRent = getBill(subOrder.tariff_id, time)
                 const billAccess = getBillAccessories(subOrder.accessories, this.$store.getters.accessories, billRent)
+                const sale = getSale(billRent + billAccess, order.customer_id)
 
-                return roundBill(billRent + billAccess)
+                // return roundBill(billWithSale)
+                return roundBill(billRent + billAccess - sale)
             },
 
             pauseOrder(order) {
