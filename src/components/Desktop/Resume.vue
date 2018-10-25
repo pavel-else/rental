@@ -273,7 +273,7 @@
             },
 
             customer() {
-                return this.$store.getters.customers.find(i => i.id_rent === this.order.customer_id)
+                return this.$store.getters.customers.find(i => i.id_rent == this.order.customer_id)
             },
 
             accessories() {

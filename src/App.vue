@@ -24,6 +24,7 @@
 
             // Обновление таймеров
             this.$store.dispatch('startTimer')
+            console.log(this.$router.matcher)
         },
 
         computed: {
@@ -32,6 +33,7 @@
             }
         }
     }
+
 </script>
 
 <style>

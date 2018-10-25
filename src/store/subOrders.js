@@ -4,7 +4,11 @@ export default {
     },
     mutations: {
         setSubOrders(state, subOrders) {
-            state.subOrders = subOrders
+            state.subOrders = subOrders ? subOrders.map(i => {
+                i.id = Number(i.id)
+                i.id_rent = Number(i.id_rent)
+                return i
+            }) : []
             console.log('set subOrders')
         }
     },

@@ -6,6 +6,7 @@ import Home      from './components/Desktop'
 import History   from './components/History'
 import Customers from './components/Customers'
 import Options   from './components/Options'
+import AdminPage   from '@/views/AdminPage'
 
 Vue.use(Router)
 
@@ -29,6 +30,10 @@ export default new Router({
     {
         path: '/options',
         component: Options
+    },
+    {
+        path: '/admin',
+        component: AdminPage
     },
     // {
     //   path: '/about',

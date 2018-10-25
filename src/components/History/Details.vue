@@ -53,8 +53,6 @@
 </template>
 
 <script>
-
-    import getTime from '@/functions/getTime'
     import timeFormat from '@/functions/timeFormat'
     export default {
         name: 'HistoryDetails',

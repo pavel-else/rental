@@ -38,7 +38,8 @@ export default {
             : 0
 
         // 4) Просчитать и проставить Скидку
-        subOrder.sale = getSale(+subOrder.bill_rent + +subOrder.bill_access, order)
+        subOrder.sale = getSale(+subOrder.bill_rent + +subOrder.bill_access, +order.customer_id)
+        console.log(subOrder.sale)
 
         // 5) Поставить Статус "Стоп"
         subOrder.status = "END"

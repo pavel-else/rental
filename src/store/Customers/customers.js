@@ -4,7 +4,12 @@ export default {
 	},
 	mutations: {
 		setCustomers(state, customers) {
-			state.customers = customers
+			state.customers = customers ? customers.map(i => {
+				i.id = Number(i.id)
+				i.id_rent = Number(i.id_rent)
+
+				return i
+			}) : []
 			console.log('set customers')
 		}
 	},
