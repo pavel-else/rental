@@ -1,7 +1,8 @@
-import getBill         from '../../../functions/getBill'
-import getSale         from './getSale'
+import getBill from '@/functions/getBill'
+import getBillAccessories from '@/functions/getBillAccessories'
+import getSale from '@/functions/getSale'
 import activateProduct from './activateProduct'
-import roundBill       from '../../../functions/roundBill'
+import roundBill from '@/functions/roundBill'
 
 export default {
     stopSubOrder(order, subOrder, send) {
@@ -13,7 +14,7 @@ export default {
         * 3) Проставить Стоимость аксессуаров
         * 4) Просчитать и проставить Скидку
         * 5) Поставить Статус "Стоп"
-        * 6) Менять статус товара на "Астивный"
+        * 6) Менять статус товара на "Активный"
         * 7) Если закрывается последний саб - закрывать ордер
         * 8) Передавать данные на отправку
         */
@@ -32,32 +33,9 @@ export default {
         subOrder.bill_rent = billRent()
 
         // 3) Проставить Стоимость аксессуаров
-        const billAccess = () => {
-
-            const getAccess = () => {
-                if (!subOrder.accessories) {
-                    return null
-                }
-
-                const split = subOrder.accessories.split(',') // [1, 2]
-
-                return split.map(i => {
-                    return this.$store.getters.accessories.find(j => j.id_rent == i)
-                })
-            }
-
-            const accessories = getAccess()
-
-            return accessories ? accessories.reduce((acc, item) => {
-                acc += item.type == "%" 
-                    ? subOrder.bill_rent * (item.value / 100)
-                    : +item.value
-
-                return acc
-            }, 0) : 0
-        }
-
-        subOrder.bill_access = billAccess()
+        subOrder.bill_access = subOrder.accessories 
+            ? getBillAccessories(subOrder.accessories, this.$store.getters.accessories, subOrder.bill_rent) 
+            : 0
 
         // 4) Просчитать и проставить Скидку
         subOrder.sale = getSale(+subOrder.bill_rent + +subOrder.bill_access, order)

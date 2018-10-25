@@ -61,7 +61,13 @@
         >
         </DetailsOrder>
 
-        <Resume :_order="order" :_subOrder="subOrder" @close="onClose" v-if="showResume"></Resume>
+        <Resume 
+            v-if="showResume"
+            :_order="order" 
+            :_subOrder="subOrder"
+            @close="onClose" 
+        >
+        </Resume>
     </div>
 </template>
 
@@ -69,11 +75,13 @@
     import Resume        from './Resume'
     import stopSubOrder  from './functions/stopSubOrder'
     import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
-    import Icon          from  '../Icon/Icon'
+    import Icon          from  '@/components/Icon/Icon'
 
-    import getBill       from '../../functions/getBill'
+    import getBill       from '@/functions/getBill'
+    import getBillAccessories from '@/functions/getBillAccessories'
+    import getSale from '@/functions/getSale'
     import timeFormat    from '@/functions/timeFormat'
-    import roundBill     from '../../functions/roundBill'
+    import roundBill     from '@/functions/roundBill'
     import pause         from './functions/pause'
 
 
@@ -190,8 +198,12 @@
                     time = Date.parse(subOrder.end_time) - Date.parse(order.start_time)
                 }
 
+                const billRent = getBill(subOrder.tariff_id, time)
+                const billAccess = getBillAccessories(subOrder.accessories, this.$store.getters.accessories, billRent)
+                const sale = getSale(billRent + billAccess, order.customer_id)
 
-                return roundBill(getBill(subOrder.tariff_id, time))
+                // return roundBill(billWithSale)
+                return roundBill(billRent + billAccess - sale)
             },
 
             pauseOrder(order) {
