@@ -24,9 +24,8 @@
 
             // Обновление таймеров
             this.$store.dispatch('startTimer')
-            console.log(this.$router.matcher)
-        },
 
+        },
         computed: {
             dev() {
                 return this.$store.getters.activeBranch === 'dev'

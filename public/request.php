@@ -17,6 +17,7 @@ require_once ('./accessories.php');
 require_once ('./logs.php');
 require_once ('./options.php');
 require_once ('./categories.php');
+require_once ('./rentalLocations.php');
 
 class Request    
 {
@@ -28,16 +29,19 @@ class Request
     use Accessoriess;    
     use Logs;    
     use Options;    
-    use Categories;    
+    use Categories;
+    use rentalLocations;    
 
     public $logs = [];
     private $response;
     private $dataJSON;
     private $app_id;
+    private $id_main_org;
     private $pDB;
 
     public function __construct($app_id) {
         $this->app_id = $app_id; //'8800000001';
+        $this->id_main_org = 123456789;
         $postDataJSON = file_get_contents('php://input');
         $this->dataJSON = json_decode($postDataJSON, true);
     }
@@ -164,6 +168,11 @@ class Request
                 // Logs
                 case 'getLogs':
                     $this->response['logs'] = $this->logs;
+                break;
+
+                // RebtalLocations
+                case 'getRentalLocations':
+                    $this->response['rental_locations'] = $this->getRentalLoations();
                 break;
 
                 default:
