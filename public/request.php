@@ -8,6 +8,7 @@ header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Credentials: true');
 
+require_once ('./auth.php');
 require_once ('./orders.php');
 require_once ('./subOrders.php');
 require_once ('./products.php');
@@ -21,6 +22,7 @@ require_once ('./rentalLocations.php');
 
 class Request    
 {
+    use Auth;    
     use Orders;    
     use SubOrders;    
     use Products;    
@@ -30,23 +32,24 @@ class Request
     use Logs;    
     use Options;    
     use Categories;
-    use rentalLocations;    
+    use RentalLocations;    
 
     public $logs = [];
     private $response;
     private $dataJSON;
     private $app_id;
-    private $id_main_org;
+    //private $id_main_org;
     private $pDB;
 
     public function __construct($app_id) {
         $this->app_id = $app_id; //'8800000001';
-        $this->id_main_org = 123456789;
+        //$this->id_main_org = 123456789;
         $postDataJSON = file_get_contents('php://input');
         $this->dataJSON = json_decode($postDataJSON, true);
     }
     
-    public function response()  {
+    public function response()
+    {
         /*
         *   1. Подключаемся к БД
         *   2. Парсим входящий запрос по отдельным командам
@@ -58,14 +61,17 @@ class Request
         $this->response  = [];
         $this->pDB = $this->rent_connect_DB();
         
-        $cmds = $this->dataJSON['cmds'];
-        $value = $this->dataJSON['value'];
         $queue = $this->dataJSON['queue'];
 
         $switch = function ($cmd, $value) {
             switch ($cmd) {
                 case 'importCustomers':
                     $this->importCustomers();
+                break;
+
+                // Auth
+                case 'login':
+                    $this->response['success'] = $this->login($value);
                 break;
 
                 // Orders
@@ -176,7 +182,7 @@ class Request
                 break;
 
                 default:
-                    $this->writeLog('undefined methods: ' . $cmd .': ' . $value);
+                    $this->writeLog('undefined methods: ' . $cmd . ': ' . $value);
             } 
         };
 
@@ -193,13 +199,14 @@ class Request
     }
 
     // Отправка данных клиенту
-    private function send($data) {
-
+    private function send($data)
+    {
         echo json_encode($data);
     }
     
     /* Функция подключения БД */
-    private function rent_connect_DB(){
+    private function rent_connect_DB()
+    {
         require_once('./lib.db.php');
 
         $pDB = new Pdo_Db();
@@ -214,7 +221,8 @@ class Request
     }
 
     /* Общая функция поиска id_rent в указанной таблице*/
-    private function find($tableName, $id_rent) {
+    private function find($tableName, $id_rent)
+    {
         $sql = "
             SELECT `id` 
             FROM $tableName 
@@ -232,7 +240,8 @@ class Request
         return $result[0][id];   
     }
 
-    private function importCustomers() {
+    private function importCustomers()
+    {
         // 1. Выбрать склиентов
         // 2. Перебор клиентов
         // 3. Поиск по фамилии в Customers
@@ -313,7 +322,6 @@ class Request
 $request = new Request(8800000001);
 $request->response();
 
-// Hy9nD4_12
-// http://overhost.net/rental2/api_v1/ajax/App/#/
+// Если пришла команда логина - пытаемся логинить, если да - отправляем токен
+// Если приша КРУД команда - смотрим токен. Если совпадает - выполняем, если нет, то нет
 
-?>

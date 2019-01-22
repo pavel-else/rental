@@ -19,11 +19,13 @@
         },
 
         beforeCreate() {
-            if (!localStorage.getItem('user-token')) {
-               this.$router.push('/Login');
-            } else {
-               this.$store.dispatch('USER_REQUEST');
-            }
+            this.$router.push('/Login');
+            // if (!localStorage.getItem('user-token')) {
+            //    this.$router.push('/Login');
+            // } else {
+            //    //this.$store.dispatch('USER_REQUEST');
+            //    console.log('user-token is set on localStorage');
+            // }
         },
 
         created() {

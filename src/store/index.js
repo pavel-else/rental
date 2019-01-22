@@ -11,6 +11,8 @@ import tariffs         from './tariffs'
 import categories      from './categories'
 import history         from './History/history'
 import accessories     from './accessories'
+import auth            from './auth-module'
+
 
 
 Vue.use(Vuex)
@@ -26,6 +28,7 @@ const store = new Vuex.Store({
         categories,
         history,
         accessories,
+        auth
     },
 
     actions: {
@@ -46,7 +49,7 @@ const store = new Vuex.Store({
                 }
 
                 if (cmds.cmd) {
-                    return [{cmd: cmds.cmd, value: cmds.value}]
+                    return [{ cmd: cmds.cmd, value: cmds.value }]
                 }
 
                 return cmds

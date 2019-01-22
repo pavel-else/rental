@@ -2,8 +2,8 @@
   <div>
     <form class="login login-form" @submit.prevent="login">
       <h1>Sign in</h1>
-      <label  class="login-form__label">Email
-        <input required v-model="email" type="text"/>
+      <label  class="login-form__label">ID
+        <input required v-model="id" type="text"/>
       </label>
       <label class="login-form__label">Password
         <input required v-model="password" type="password"/>
@@ -20,15 +20,15 @@ export default {
   data() {
     return {
       password: null,
-      email: null,
+      id: null,
       message: ''
     }
   },
   methods: {
     login() {
-      const { email, password } = this;
+      const { id, password } = this;
 
-      this.$store.dispatch('AUTH_REQUEST', { email, password })
+      this.$store.dispatch('AUTH_REQUEST', { id, password })
       .then(() => {
         this.$router.push('/');
       })

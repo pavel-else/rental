@@ -20,17 +20,31 @@ export default {
 
                 axios({ 
                     // url: getters.url + '/api/test', 
-                    url: getters.url + '/api/login', 
-                    data: user, 
-                    method: 'POST', 
+                    url: getters.url, 
+                    data: {
+                        queue: [{
+                            cmd: 'login',
+                            value: user,
+                        }]
+                    },
+                    method: 'POST',
+                    config: null
                 })
                 .then(resp => {
+                    console.log(resp)
                     const token = resp.data.success.token;
-                    axios.defaults.headers.common['Authorization'] = token;
-                    commit('AUTH_SUCCESS', token);
-                    localStorage.setItem('user-token', token);
-                    // dispatch('USER_REQUEST');
-                    resolve(resp);
+
+                    if (!token) {
+                        commit('AUTH_ERROR', err);                  
+                        localStorage.removeItem('user-token');
+                    } else {
+                        axios.defaults.headers.common['Authorization'] = token;
+                        commit('AUTH_SUCCESS', token);
+                        localStorage.setItem('user-token', token);
+                        dispatch('USER_REQUEST');
+                    }
+
+                    resolve(resp);                        
                 })
                 .catch(err => {
                     commit('AUTH_ERROR', err);                  
