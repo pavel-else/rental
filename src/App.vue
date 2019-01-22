@@ -18,12 +18,22 @@
             admPanel,
         },
 
+        beforeCreate() {
+            if (!localStorage.getItem('user-token')) {
+               this.$router.push('/Login');
+            } else {
+               this.$store.dispatch('USER_REQUEST');
+            }
+        },
+
         created() {
             //Запрос данных для инициализации и обновления компонентов приложения
-            this.$store.dispatch('upd')
+            //this.$store.dispatch('upd')
 
             // Обновление таймеров
             this.$store.dispatch('startTimer')
+
+            // console.log(this.$router.matcher)
 
         },
         computed: {
