@@ -12,6 +12,7 @@ import categories      from './categories'
 import history         from './History/history'
 import accessories     from './accessories'
 import auth            from './auth-module'
+import initApp           from './init-app-module'
 
 
 
@@ -28,7 +29,8 @@ const store = new Vuex.Store({
         categories,
         history,
         accessories,
-        auth
+        auth,
+        initApp
     },
 
     actions: {
@@ -65,10 +67,10 @@ const store = new Vuex.Store({
                     method: 'post',
                     url,
                     data: {
-                        queue
+                        queue,
+                        token: localStorage.getItem('user-token')
                     },
-                    config
-                    
+                    config,                    
                 })
                 .catch(e => {
                     console.log(e)
@@ -99,7 +101,8 @@ const store = new Vuex.Store({
                     'getCategories', 
                     'getOptions', 
                     'getLogs',
-                    'getAccessories'
+                    'getAccessories',
+                    'getHeaders'
                 ]
 
                 const queue = cmds.map(i => {

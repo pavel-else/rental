@@ -2,8 +2,10 @@
 
 trait Auth
 {
-    private function login($user)
-    {
+    public function login($user)
+    {   
+        $pDB = $this->rent_connect_DB();
+
         $id = ($user['id']);
         $password = htmlspecialchars($user['password'], ENT_QUOTES);
 
@@ -22,12 +24,12 @@ trait Auth
             'password' => $password
         );
 
-        $result = $this->pDB->get($sql, false, $d);
+        $result = $pDB->get($sql, false, $d);
 
         $log = $result ? "login success" : "failed to login $id : $password";
 
         $this->writeLog($log);
 
-        return $result[0];
+        return $result[0][token];
     }
 }

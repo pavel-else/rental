@@ -9,7 +9,8 @@ export default {
             'getTariffs', 
             'getCategories', 
             'getOptions', 
-            'getLogs'
+            'getLogs',
+            'getHeaders'
         ],
 
         // options передается на сервер

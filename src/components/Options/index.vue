@@ -16,6 +16,8 @@
         <Categories v-if="show.categories"></Categories>
         <Accessories v-if="show.accessories"></Accessories>
 
+        <button @click="logout">Log out</button>
+
     </div>
 </template>
 <script>
@@ -49,6 +51,10 @@
             select(option) {
                 this.show = {}
                 this.show[option] = true
+            },
+            logout() {
+                this.$store.dispatch('AUTH_LOGOUT');
+                this.$router.push('/Login');
             }
         }
 

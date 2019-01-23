@@ -40,12 +40,32 @@ class Request
     private $app_id;
     //private $id_main_org;
     private $pDB;
+    private $token;
 
-    public function __construct($app_id) {
-        $this->app_id = $app_id; //'8800000001';
-        //$this->id_main_org = 123456789;
-        $postDataJSON = file_get_contents('php://input');
-        $this->dataJSON = json_decode($postDataJSON, true);
+    public function __construct($token = null, $queue = null) {
+        $this->token = $token;
+        $this->app_id = $this->verifyToken($token);
+        $this->queue = $queue;
+    }
+
+    private function verifyToken($token)
+    {
+        $pDB = $this->rent_connect_DB();
+        $sql = '
+            SELECT * 
+            FROM `rental_points` 
+            WHERE `token` = :token
+        ';
+        $d = array(
+            'token' => $token
+        );
+
+        $result = $pDB->get($sql, 0, $d);
+        $log = $result ? 'token is verify' : 'token is not verify';
+        $this->writeLog($log);
+
+        return $result[0]['id_rent'];
+
     }
     
     public function response()
@@ -60,8 +80,6 @@ class Request
 
         $this->response  = [];
         $this->pDB = $this->rent_connect_DB();
-        
-        $queue = $this->dataJSON['queue'];
 
         $switch = function ($cmd, $value) {
             switch ($cmd) {
@@ -71,8 +89,9 @@ class Request
 
                 // Auth
                 case 'login':
-                    $this->response['success'] = $this->login($value);
+                    $this->response['success']['token'] = $this->login($value);
                 break;
+
 
                 // Orders
                 case 'getOrders':
@@ -175,6 +194,9 @@ class Request
                 case 'getLogs':
                     $this->response['logs'] = $this->logs;
                 break;
+                case 'getHeaders':
+                    $this->response['headers'] = $this->emu_getallheaders();
+                break;
 
                 // RebtalLocations
                 case 'getRentalLocations':
@@ -186,7 +208,7 @@ class Request
             } 
         };
 
-        foreach ($queue as $key => $cell) {
+        foreach ($this->queue as $key => $cell) {
 
             if ($cell[cmd]) {
                 $switch($cell[cmd], $cell[value]);
@@ -199,7 +221,7 @@ class Request
     }
 
     // Отправка данных клиенту
-    private function send($data)
+    public function send($data)
     {
         echo json_encode($data);
     }
@@ -319,8 +341,21 @@ class Request
     }
 }
 
-$request = new Request(8800000001);
-$request->response();
+// $request = new Request(8800000001);
+// $request->response();
+
+$postDataJSON = file_get_contents('php://input');
+$dataJSON = json_decode($postDataJSON, true);
+
+if ($dataJSON['cmd'] === 'login') {
+    $request = new Request();
+    $token = $request->login($dataJSON['value']);
+    $request->send(['token' => $token]);
+
+} else if ($dataJSON['token']) {
+    $request = new Request($dataJSON['token'], $dataJSON['queue']);
+    $request->response();
+}
 
 // Если пришла команда логина - пытаемся логинить, если да - отправляем токен
 // Если приша КРУД команда - смотрим токен. Если совпадает - выполняем, если нет, то нет

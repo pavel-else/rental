@@ -19,8 +19,8 @@ export default {
   name: 'Login',
   data() {
     return {
-      password: null,
-      id: null,
+      password: 123123,
+      id: 8800000001,
       message: ''
     }
   },

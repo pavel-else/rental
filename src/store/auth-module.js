@@ -14,7 +14,8 @@ export default {
         }
     },
     actions: {
-        AUTH_REQUEST({ getters, commit, dispath }, user) {
+        AUTH_REQUEST({ getters, commit, dispatch }, user) {
+            console.log('AUTH_REQUEST');
             return new Promise((resolve, reject) => {
                 commit('AUTH_REQUEST');
 
@@ -22,31 +23,26 @@ export default {
                     // url: getters.url + '/api/test', 
                     url: getters.url, 
                     data: {
-                        queue: [{
-                            cmd: 'login',
-                            value: user,
-                        }]
+                        cmd: 'login',
+                        value: user,
                     },
                     method: 'POST',
-                    config: null
                 })
                 .then(resp => {
                     console.log(resp)
-                    const token = resp.data.success.token;
+                    const token = resp.data.token;
 
-                    if (!token) {
-                        commit('AUTH_ERROR', err);                  
-                        localStorage.removeItem('user-token');
-                    } else {
-                        axios.defaults.headers.common['Authorization'] = token;
+                    if (token) {
+                        //axios.defaults.headers.common['Authorization'] = token;
                         commit('AUTH_SUCCESS', token);
                         localStorage.setItem('user-token', token);
-                        dispatch('USER_REQUEST');
+                        //dispatch('USER_REQUEST');
+                        dispatch('INIT_APP');
                     }
-
                     resolve(resp);                        
                 })
                 .catch(err => {
+                    console.log(err)
                     commit('AUTH_ERROR', err);                  
                     localStorage.removeItem('user-token');
                     reject(err);
