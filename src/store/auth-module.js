@@ -36,7 +36,6 @@ export default {
                         //axios.defaults.headers.common['Authorization'] = token;
                         commit('AUTH_SUCCESS', token);
                         localStorage.setItem('user-token', token);
-                        //dispatch('USER_REQUEST');
                         dispatch('INIT_APP');
                     }
                     resolve(resp);                        
@@ -49,6 +48,33 @@ export default {
                 });
             });
         },
+
+        AUTH_TOKEN({ getters, dispatch, commit }, token) {
+            console.log('AUTH_TOKEN', token);
+
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: getters.url,
+                    method: 'POST',
+                    data: {
+                        // queue: [{ cmd: 'testToken', value: '' }],
+                        token
+                    }
+                })
+                .then(resp => {
+                    console.log('its ok', resp);
+                    commit('AUTH_SUCCESS', token);
+                    localStorage.setItem('user-token', token);
+                    resolve(resp);
+                })
+                .catch(err => {
+                    commit('AUTH_ERROR', err);                  
+                    localStorage.removeItem('user-token');
+                    reject(err);
+                });
+            });
+        },
+
         AUTH_REGISTER({ getters, commit, dispatch}, user) {
             return new Promise((resolve, reject) => {
                 axios({

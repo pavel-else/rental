@@ -9,9 +9,11 @@ import Customers from './components/Customers'
 import Options   from './components/Options'
 import AdminPage   from '@/views/AdminPage'
 
-const Login = () => import('@/views/Login')
+const Login = () => import('@/views/Login');
+const LoginByToken = () => import('@/components/LoginByToken');
+const NotFound = { template: '<h2>Page Not Found</h2>' };
 
-Vue.use(Router)
+Vue.use(Router);
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.getters.isAuthenticated) {
@@ -30,7 +32,7 @@ const ifAuthenticated = (to, from, next) => {
 };
 
 export default new Router({
-  // mode: 'history',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
@@ -58,6 +60,14 @@ export default new Router({
       path: '/login',
       component: Login,
       beforeEnter: ifNotAuthenticated,
-    },  
+    },
+    {
+      path: '/token/:token',
+      component: LoginByToken
+    },
+    {
+      path: '*',
+      component: NotFound,
+    },
   ]
 })
