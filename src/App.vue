@@ -18,15 +18,16 @@
             admPanel,
         },
 
+        beforeCreate () {
+            if (this.$store.getters.isAuthenticated) {
+                this.$store.dispatch('INIT_APP');
+            }
+        },
         created() {
-            //Запрос данных для инициализации и обновления компонентов приложения
-            //this.$store.dispatch('upd')
-
             // Обновление таймеров
-            this.$store.dispatch('startTimer')
+            this.$store.dispatch('startTimer');
 
             // console.log(this.$router.matcher)
-
         },
         computed: {
             dev() {

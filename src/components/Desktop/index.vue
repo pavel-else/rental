@@ -38,10 +38,6 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
                 this.show = false
             }
         },
-        beforeCreate() {
-            this.$store.dispatch('INIT_APP');
-        },
-
     }
 </script>
 

@@ -15,6 +15,7 @@
 
             this.$store.dispatch('AUTH_TOKEN', token)
             .then(() => {
+                this.$store.dispatch('INIT_APP');
                 this.$router.push('/');
             })
             .catch((err) => {
