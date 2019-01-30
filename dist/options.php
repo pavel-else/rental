@@ -32,11 +32,13 @@ trait Options
             $sql = '
                 SELECT `id` 
                 FROM `options` 
-                WHERE `name` = :name
+                WHERE `name` = :name 
+                AND `id_rental_org` = :id_rental_org
             ';
 
             $d = array(
-                'name' => $name
+                'name' => $name,
+                'id_rental_org' => $this->app_id
             );
             
             $result = $this->pDB->get($sql, false, $d);
@@ -62,9 +64,9 @@ trait Options
             $result = $this->pDB->set($sql, $d);
 
             if ($result) {
-                $this->writeLog("function SetCustomer successfully completed. Client id($id) was updated");
+                $this->writeLog("function SetOption id: $id  successfully completed.");
             } else {
-                $this->writeLog("function SetCustomer failed. Client id($id) was not updated");
+                $this->writeLog("function SetOption id: $id failed.");
             }
 
             return $result;
@@ -111,23 +113,21 @@ trait Options
                 'value'         => $value
             );
 
-            $this->writeLog($getIncMaxID());
-
             $result = $this->pDB->set($sql, $d);
 
-            // if ($result) {
-            //     $this->writeLog("SetOption completed.");
-            // } else {
-            //     $this->writeLog("SetOption failed.");
-            // }
+            $log = $result ? 'set option $key : $value completed' : 'set option $key : $value failed';
+
+            $this->writeLog($log);
 
             return $result;
         };
 
-
+        // Пребор всех опций
+        // Если опция уже есть - обновляем
+        // если нет - пишем в базу новую опцию
         foreach ($options as $key => $value) {            
             $id = $checkID($key);
-
+            
             if ($id) {
                 $update($id, $value);
             } else {

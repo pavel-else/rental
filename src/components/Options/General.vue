@@ -42,7 +42,6 @@
 
             set(option, value) {
                 this.options[option] = value
-                console.log("setOptions", option)
             },
 
             send() {

@@ -12,10 +12,11 @@ export default {
             'getLogs',
             'getHeaders'
         ],
+        
+        app_id: null,
 
         // options передается на сервер
         options: {
-            app_id: 8800000001,
 
             rent_min_time:     0, //min
             rent_round_bill:   0,
@@ -26,6 +27,7 @@ export default {
 
             registration_time: 0,
         },
+        
         now: Date.now(),
 
         activeBranch: 'dev',
