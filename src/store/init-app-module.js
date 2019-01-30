@@ -17,25 +17,27 @@ export default {
         INIT_APP({ getters, commit, dispatch }, user) {
             console.log('INIT_APP');
             return new Promise((resolve, reject) => {
-
+                const queue = [
+                    { cmd: 'getProducts', value: '' },
+                    { cmd: 'getSubOrders', value: '' },
+                    { cmd: 'getOrders', value: '' },
+                    { cmd: 'getCustomers', value: '' },
+                    { cmd: 'getHistory', value: '' },
+                    { cmd: 'getTariffs', value: '' },
+                    { cmd: 'getCategories', value: '' },
+                    { cmd: 'getOptions', value: '' },
+                    { cmd: 'getLogs', value: '' },
+                    { cmd: 'getAccessories', value: '' },
+                    { cmd: 'getHeaders', value: '' },
+                ];
+                console.log('front --> back', queue);
+                
                 axios({ 
                     url: getters.url, 
                     method: 'POST',
                     data: {
                         token: localStorage.getItem('user-token'),
-                        queue: [
-                            { cmd: 'getProducts', value: '' },
-                            { cmd: 'getSubOrders', value: '' },
-                            { cmd: 'getOrders', value: '' },
-                            { cmd: 'getCustomers', value: '' },
-                            { cmd: 'getHistory', value: '' },
-                            { cmd: 'getTariffs', value: '' },
-                            { cmd: 'getCategories', value: '' },
-                            { cmd: 'getOptions', value: '' },
-                            { cmd: 'getLogs', value: '' },
-                            { cmd: 'getAccessories', value: '' },
-                            { cmd: 'getHeaders', value: '' },
-                        ]
+                        queue
                     }
                 })
                 .then(r => {

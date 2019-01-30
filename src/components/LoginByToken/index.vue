@@ -13,13 +13,13 @@
         beforeCreate() {
             const token = this.$route.params.token;
 
-            // this.$store.dispatch('AUTH_TOKEN', token)
-            // .then(() => {
-            //     this.$router.push('/');
-            // })
-            // .catch((err) => {
-            //     this.message = 'Не верный токен. '  + err;
-            // });
+            this.$store.dispatch('AUTH_TOKEN', token)
+            .then(() => {
+                this.$router.push('/');
+            })
+            .catch((err) => {
+                this.message = 'Не верный токен. '  + err;
+            });
         }
     }
 </script>

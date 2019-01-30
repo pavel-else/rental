@@ -18,17 +18,6 @@
             admPanel,
         },
 
-        beforeCreate() {
-            // this.$router.push('/Login');
-            if (!localStorage.getItem('user-token')) {
-               this.$router.push('/Login');
-            } else {
-               //this.$store.dispatch('USER_REQUEST');
-               this.$store.dispatch('INIT_APP');
-
-            }
-        },
-
         created() {
             //Запрос данных для инициализации и обновления компонентов приложения
             //this.$store.dispatch('upd')
