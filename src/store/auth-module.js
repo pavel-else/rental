@@ -101,6 +101,7 @@ export default {
                 commit('AUTH_LOGOUT');
                 localStorage.removeItem('user-token');
                 delete axios.defaults.headers.common['Authorization'];
+
                 resolve();
             });
         }
@@ -117,8 +118,22 @@ export default {
             state.status = 'error';
         },
         AUTH_LOGOUT(state) {
+            console.log(state)
             state.token = '';
             state.status = '';
+
+            // state.orders = [];
+            // state.products = [];
+            // state.subOrders = [];
+            // state.history = [];
+            // state.orders = []; 
+            // state.customers = [];
+            // state.tariffs = [];
+            // state.categories = [];
+            // state.Options = []; 
+            // state.logs = [];
+            // state.accessories = [];
+
         }
     }
 };
