@@ -15,9 +15,6 @@
         <Products v-if="show.products"></Products>
         <Categories v-if="show.categories"></Categories>
         <Accessories v-if="show.accessories"></Accessories>
-
-        <button @click="logout">Log out</button>
-
     </div>
 </template>
 <script>
@@ -57,7 +54,6 @@
                 this.$router.push('/Login');
             }
         }
-
     }
 </script>
 <style>

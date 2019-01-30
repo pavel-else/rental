@@ -16,12 +16,10 @@
                 <td><input :value="registrationTime" @input="set('registration_time', $event.target.value * 60 * 1000)"></td>
             </tr>
             <tr>
-                <td>ID приложения</td>
-                <td><input value="8800000001"></td>
-            </tr>
-            <tr>
-                <td>Пароль</td>
-                <td><input type="password" value="123123"></td>
+                <td>Выход из приложения</td>
+                <td>
+                    <button @click="logout">logout</button>
+                </td>
             </tr>
         </table>
 
@@ -54,6 +52,10 @@
                     cmd: 'setOptions',
                     value: this.options
                 })
+            },
+            logout() {
+                this.$store.dispatch('AUTH_LOGOUT');
+                this.$router.push('/Login');
             }
         },
         computed: {
