@@ -1,6 +1,5 @@
 export default {
     state: {
-        // url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
         cmds: [
             'getProducts',
             'getOrders', 
@@ -35,14 +34,24 @@ export default {
 
         branch: {
             dev: {
-                url: 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php',
-                path: 'http://overhost.net/rental2/api_v1/ajax/Dev/'
+                url: 'http://rentix.biz/api/dev/request.php',
+                path: 'http://app.rentix.biz/'
             },
             master: {
                 url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
                 path: 'http://overhost.net/rental2/api_v1/ajax/App/'
             }
         },
+        // branch: {
+        //     dev: {
+        //         url: 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php',
+        //         path: 'http://overhost.net/rental2/api_v1/ajax/Dev/'
+        //     },
+        //     master: {
+        //         url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
+        //         path: 'http://overhost.net/rental2/api_v1/ajax/App/'
+        //     }
+        // },
     
         depositList: [
             {
