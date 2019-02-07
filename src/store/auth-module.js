@@ -16,11 +16,11 @@ export default {
     actions: {
         AUTH_REQUEST({ getters, commit, dispatch }, user) {
             console.log('AUTH_REQUEST');
+
             return new Promise((resolve, reject) => {
                 commit('AUTH_REQUEST');
 
                 axios({ 
-                    // url: getters.url + '/api/test', 
                     url: getters.url, 
                     data: {
                         cmd: 'login',
@@ -36,7 +36,8 @@ export default {
                         //axios.defaults.headers.common['Authorization'] = token;
                         commit('AUTH_SUCCESS', token);
                         localStorage.setItem('user-token', token);
-                        dispatch('INIT_APP');
+
+                        // инициализация пойдет из `/`
                     }
                     resolve(resp);                        
                 })
@@ -96,11 +97,12 @@ export default {
                 });
             });
         },
-        AUTH_LOGOUT({ commit, dispatch }) {
+        AUTH_LOGOUT({ commit, dispatch, state }) {
             return new Promise((resolve, reject) => {
                 commit('AUTH_LOGOUT');
                 localStorage.removeItem('user-token');
                 delete axios.defaults.headers.common['Authorization'];
+                
 
                 resolve();
             });

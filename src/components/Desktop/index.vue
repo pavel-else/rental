@@ -31,6 +31,7 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
         beforeCreate() {
             // Если приложение еще не было инициализированно (например в модуле LoginByToken)
             if (!this.$store.getters.isAppInited) {
+                console.log('asdfasdf')
                 this.$store.dispatch('INIT_APP');
             }
         },

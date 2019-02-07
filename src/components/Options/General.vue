@@ -54,6 +54,7 @@
             },
             logout() {
                 this.$store.dispatch('AUTH_LOGOUT');
+                this.$store.dispatch('REBOOT_APP_INIT_STATUS');
                 this.$router.push('/Login');
             }
         },

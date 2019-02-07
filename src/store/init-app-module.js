@@ -30,13 +30,15 @@ export default {
                         { cmd: 'getAccessories', value: '' },
                         { cmd: 'getHeaders', value: '' },
                     ];
-                    console.log('front --> back', queue);
+                    const token = localStorage.getItem('user-token');
+
+                    console.log('front --> back', queue, token);
                     
                     axios({ 
                         url: getters.url, 
                         method: 'POST',
                         data: {
-                            token: localStorage.getItem('user-token'),
+                            token,
                             queue
                         }
                     })
@@ -65,9 +67,16 @@ export default {
                 });
             }
         },
+        REBOOT_APP_INIT_STATUS({ commit }) {
+            commit('SET_APP_INIT_STATUS', 'not init');
+        }
     },
+
     mutations: {
         INIT_APP_STATUS(state, status) {
+            state.initAppStatus = status;
+        },
+        SET_APP_INIT_STATUS(state, status) {
             state.initAppStatus = status;
         },
     }
