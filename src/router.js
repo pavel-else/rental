@@ -43,19 +43,23 @@ export default new Router({
     },
     {
         path: '/customers',
-        component: Customers
+        component: Customers,
+        beforeEnter: ifAuthenticated,
     },
     {
         path: '/history',
-        component: History
+        component: History,
+        beforeEnter: ifAuthenticated,
     },
     {
         path: '/options',
-        component: Options
+        component: Options,
+        beforeEnter: ifAuthenticated,
     },
     {
         path: '/admin',
-        component: AdminPage
+        component: AdminPage,
+        beforeEnter: ifAuthenticated,
     },
     {
       path: '/login',

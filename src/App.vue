@@ -17,17 +17,9 @@
         components: {
             admPanel,
         },
-
-        beforeCreate () {
-            if (this.$store.getters.isAuthenticated) {
-                this.$store.dispatch('INIT_APP');
-            }
-        },
-        created() {
+        created() {        
             // Обновление таймеров
             this.$store.dispatch('startTimer');
-
-            // console.log(this.$router.matcher)
         },
         computed: {
             dev() {

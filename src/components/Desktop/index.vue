@@ -28,6 +28,12 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
                 show: false,
             }
         },
+        beforeCreate() {
+            // Если приложение еще не было инициализированно (например в модуле LoginByToken)
+            if (!this.$store.getters.isAppInited) {
+                this.$store.dispatch('INIT_APP');
+            }
+        },
         methods: {
             addOrder(product) {
                 this.product = product
