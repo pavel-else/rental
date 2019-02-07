@@ -21,7 +21,7 @@
         },
         computed: {
             iconClass() {
-                return 'd' + this.id
+                return 'd' + this.id;
             }
         }
     }
@@ -58,54 +58,54 @@
     }
 
     .d0 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/star-green.svg');
+        background-image: url('https://app.rentix.biz/images/star-green.svg');
     }
     .d1 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/star-yellow.svg');
+        background-image: url('https://app.rentix.biz/images/star-yellow.svg');
     }
     .d2 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/star-purpur.svg');
+        background-image: url('https://app.rentix.biz/images/star-purpur.svg');
     }
     .d3 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/star-red.svg');
+        background-image: url('https://app.rentix.biz/images/star-red.svg');
     }
 
     .d4 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/circle-green.svg');
+        background-image: url('https://app.rentix.biz/images/circle-green.svg');
     }
     .d5 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/circle-yellow.svg');
+        background-image: url('https://app.rentix.biz/images/circle-yellow.svg');
     }
     .d6 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/circle-purpur.svg');
+        background-image: url('https://app.rentix.biz/images/circle-purpur.svg');
     }
     .d7 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/circle-red.svg');
+        background-image: url('https://app.rentix.biz/images/circle-red.svg');
     }
 
     .d8 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/triangle-green.svg');
+        background-image: url('https://app.rentix.biz/images/triangle-green.svg');
     }
     .d9 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/triangle-yellow.svg');
+        background-image: url('https://app.rentix.biz/images/triangle-yellow.svg');
     }
     .d10 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/triangle-purpur.svg');
+        background-image: url('https://app.rentix.biz/images/triangle-purpur.svg');
     }
     .d11 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/triangle-red.svg');
+        background-image: url('https://app.rentix.biz/images/triangle-red.svg');
     }
 
     .d12 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/rect-green.svg');
+        background-image: url('https://app.rentix.biz/images/rect-green.svg');
     }
     .d13 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/rect-yellow.svg');
+        background-image: url('https://app.rentix.biz/images/rect-yellow.svg');
     }
     .d14 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/rect-purpur.svg');
+        background-image: url('https://app.rentix.biz/images/rect-purpur.svg');
     }
     .d15 {
-        background-image: url('http://overhost.net/rental2/api_v1/ajax/App/images/rect-red.svg');
+        background-image: url('https://app.rentix.biz/images/rect-red.svg');
     }
 </style>

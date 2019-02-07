@@ -22,7 +22,7 @@ export default {
 
             lastOrderID:       null,
             lastOrderTime:     null,
-            lastOrderInterval: 0, //ms 
+            lastOrderInterval: 180000, //ms 
 
             registration_time: 0,
         },
@@ -34,8 +34,8 @@ export default {
 
         branch: {
             dev: {
-                url: 'http://rentix.biz/api/dev/request.php',
-                path: 'http://app.rentix.biz/'
+                url: 'https://rentix.biz/api/request.php',
+                path: 'https://app.rentix.biz/'
             },
             master: {
                 url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',

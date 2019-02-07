@@ -258,18 +258,23 @@
             },
 
             isSerial() {
+                /*
+                * Функция определяет, является ли новый сабордер новым заказом или же это часть предыдущего ордера
+                */
                 const lastTime = this.$store.getters.options.lastOrderTime || false
                 const interval = this.$store.getters.options.lastOrderInterval
                 const now      = this.$store.getters.now
                 const lastID   = this.getLastId()
                 const order    = this.orders.find(i => i.order_id == lastID)
 
+                console.log('lastTime', interval);
+
                 // Если последний ордер уже закрыт
                 if (!order || order.status === 'END' || order.status === 'DEL') {
-                    return false
+                    return false;
                 }
 
-                return lastTime && now - lastTime < interval
+                return lastTime && now - lastTime < interval;
             },
 
             getLastId() {
