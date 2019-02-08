@@ -1,7 +1,7 @@
 <template>
     <div class="option option-rental-point">
         <h3>{{ message }}</h3>
-        <table>
+        <table class="table">
             <tr>
                 <td>Логотип</td>
                 <td><input @input="set('logo', $event.target.value)"></td>
