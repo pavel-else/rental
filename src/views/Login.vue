@@ -31,6 +31,7 @@ export default {
 
       this.$store.dispatch('AUTH_REQUEST', { id, password })
       .then(() => {
+        
         this.$router.push('/');
       })
       .catch((err) => {

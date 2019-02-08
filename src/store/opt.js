@@ -12,6 +12,7 @@ export default {
             'getHeaders'
         ],
         
+        // Необходимо для работы некоторых компонентов, например Картинок товара
         app_id: null,
 
         // options передается на сервер
@@ -127,13 +128,19 @@ export default {
         },
         now(state, date) {
             state.now = date
+        },
+        setAppId(state, appId) {
+            state.app_id = appId;
         }
     },
 
     actions: {
         startTimer({commit}) {
-            setInterval(() => {commit('now', Date.now())}, 1000)
+            setInterval(() => {commit('now', Date.now())}, 1000);
         },
+        setAppId(commit, appId) {
+            commit('setAppId', appId);
+        }
     },
 
     getters: {
@@ -168,7 +175,7 @@ export default {
         },
 
         appID(state) {
-            return state.options.app_id
+            return state.app_id;
         },
     }
 }

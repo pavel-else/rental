@@ -1,6 +1,7 @@
 <template>
     <div class="options">
         <ul class="options__list">
+            <li class="options__link" @click="select('rentalPointInfo')" :class="{options__link_act: show.rentalPointInfo}">Точка проката</li>
             <li class="options__link" @click="select('general')" :class="{options__link_act: show.general}">Общие</li>
             <li class="options__link" @click="select('tariffs')" :class="{options__link_act: show.tariffs}">Тарифы</li>
             <li class="options__link" @click="select('products')" :class="{options__link_act: show.products}">Товары</li>
@@ -10,6 +11,7 @@
             <li class="options__link" @click="select('sale')" :class="{options__link_act: show.sale}">Скидки</li>
         </ul>
 
+        <RentalPointInfo v-if="show.rentalPointInfo"></RentalPointInfo>
         <General v-if="show.general"></General>
         <Tariffs v-if="show.tariffs"></Tariffs>
         <Products v-if="show.products"></Products>
@@ -18,6 +20,7 @@
     </div>
 </template>
 <script>
+    import RentalPointInfo     from './RentalPointInfo'
     import General     from './General'
     import Tariffs     from '../Tariffs'
     import Products    from '../Products'
@@ -26,6 +29,7 @@
 
     export default {
         components: {
+            RentalPointInfo,
             Tariffs,
             General,
             Products,
@@ -35,7 +39,8 @@
         data() {
             return {
                 show: {
-                    general: true,
+                    rentalPointInfo: true,
+                    general: false,
                     tariffs: false,
                     products: false,
                     accessories: false,

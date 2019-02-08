@@ -29,6 +29,7 @@ export default {
                         { cmd: 'getLogs', value: '' },
                         { cmd: 'getAccessories', value: '' },
                         { cmd: 'getHeaders', value: '' },
+                        { cmd: 'getRentalPointInfo', value: '' },
                     ];
                     const token = localStorage.getItem('user-token');
 
@@ -54,6 +55,7 @@ export default {
                         commit('setSubOrders',     r.data.sub_orders);
                         commit('setOrders',        r.data.orders);
                         commit('setAccessories',   r.data.accessories);
+                        commit('setRentalPointInfo', r.data.rental_point_info[0]);
 
                         commit('INIT_APP_STATUS', 'inited');
                         console.log('INIT_APP');

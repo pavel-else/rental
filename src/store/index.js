@@ -13,6 +13,7 @@ import history         from './History/history'
 import accessories     from './accessories'
 import auth            from './auth-module'
 import initApp           from './init-app-module'
+import RentalPointOptions from './Options/RentalPoint'
 
 
 
@@ -30,7 +31,8 @@ const store = new Vuex.Store({
         history,
         accessories,
         auth,
-        initApp
+        initApp,
+        RentalPointOptions
     },
 
     actions: {
@@ -102,7 +104,8 @@ const store = new Vuex.Store({
                     'getOptions', 
                     'getLogs',
                     'getAccessories',
-                    'getHeaders'
+                    'getHeaders',
+                    'getRentalPointInfo'
                 ]
 
                 const queue = cmds.map(i => {
