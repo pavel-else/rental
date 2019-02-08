@@ -30,29 +30,20 @@ export default {
         
         now: Date.now(),
 
-        activeBranch: 'dev',
-        // activeBranch: 'master',
 
+
+        //activeBranch: 'dev',
+        activeBranch: 'master',
         branch: {
-            dev: {
+            master: {
                 url: 'https://rentix.biz/api/request.php',
                 path: 'https://app.rentix.biz/'
             },
-            master: {
-                url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
-                path: 'http://overhost.net/rental2/api_v1/ajax/App/'
+            dev: {
+                url: 'https://test.rentix.biz/api/request.php',
+                path: 'localhost:8080/'
             }
         },
-        // branch: {
-        //     dev: {
-        //         url: 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php',
-        //         path: 'http://overhost.net/rental2/api_v1/ajax/Dev/'
-        //     },
-        //     master: {
-        //         url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
-        //         path: 'http://overhost.net/rental2/api_v1/ajax/App/'
-        //     }
-        // },
     
         depositList: [
             {
