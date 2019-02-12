@@ -143,7 +143,7 @@
     }
     .product__status--free {
     }
-    .product__status--busy {
+    .product__status--off {
         background-color: #333;
         border: 1px solid lightgray;
 

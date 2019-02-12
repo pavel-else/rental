@@ -62,10 +62,14 @@
             },
         },
         computed: {
+            // Возвращает список всех активных велосипедов, не находящихся в прокате
             products() {
-                const list = this.$store.getters.products
-
-                return list ? list.filter(item => item.status == 'free') : []
+                const isRent = (productId) => {
+                    const activeSubOrders = this.$store.getters.activeSubOrders;
+                    return activeSubOrders.find(item => item.product_id == productId);
+                };
+                const list = this.$store.getters.products;
+                return list ? list.filter(item => !isRent(item.id_rent) && item.status == 'active') : [];
             },
         },
     }

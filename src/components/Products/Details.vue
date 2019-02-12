@@ -9,11 +9,11 @@
                 <table>
                     <tr>
                         <td>id</td>
-                        <td><input :value="product.id_rent" disabled></td>
+                        <td><input class="input" :value="product.id_rent" disabled></td>
                     </tr>
                     <tr>
                         <td>Название</td>
-                        <td><input v-model="product.name"></td>
+                        <td><input class="input" v-model="product.name"></td>
                     </tr>
                     <tr>
                         <td>Фото</td>
@@ -65,7 +65,7 @@
                     </tr>
                     <tr>
                         <td>Стоимость</td>
-                        <td><input v-model="product.cost"></td>
+                        <td><input class="input" v-model="product.cost"></td>
                     </tr>
                     <tr class="products_tr--tariffs">
                         <td>Тарифы,<br>по умолчанию</td>
@@ -86,13 +86,26 @@
                     </tr> -->
                     <tr>
                         <td>Статус</td>
-                        <td>
-                            <select v-model="product.status">
-                                <option disabled value=""></option>
-                                <option value="free">free</option>
-                                <option value="fix">fix</option>
-                                <option value="busy">busy</option>
-                            </select>
+                        <td class="details__td details__td--status">
+                            <input 
+                                type="radio" 
+                                name="status" 
+                                value="active" 
+                                id="status_active"
+                                @click="checkStatus($event)" 
+                                :checked="product.status == 'active'"
+                            >
+                            <label for="status_active">Active</label>
+
+                            <input 
+                                type="radio" 
+                                name="status" 
+                                value="off" 
+                                id="status_off"
+                                @click="checkStatus($event)"
+                                :checked="product.status == 'off' || !product.status"
+                                >
+                            <label for="status_off">Off</label>
                         </td>
                     </tr>
                 </table>
@@ -144,6 +157,9 @@
             }
         },
         methods: {
+            checkStatus(status) {
+                this.product.status = status.target.value;
+            },
             check() {
                 if (!this.product.name) {
                     console.log('empty product name')
@@ -262,7 +278,7 @@
         margin-top: 30px;
         overflow-y: hidden;
     }
-    input {
+    .input {
         width: 200px;
     }
     td {
@@ -305,7 +321,15 @@
     .product__photo--label {
         display: flex;
         flex-direction: row;
+    }
 
+    .details__td--status {
+        /*box-sizing: border-box;*/
+        display: flex;
+
+    }
+    .details__td--status label {
+        margin-right: 10px;
     }
 
 </style>

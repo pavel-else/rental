@@ -19,6 +19,7 @@ export default {
     },
     getters: {
         orderProducts: state => state.subOrders,
-        subOrders: state => state.subOrders
+        subOrders: state => state.subOrders,
+        activeSubOrders: state => state.subOrders.filter(item => item.status === 'ACTIVE')
     }
 }
