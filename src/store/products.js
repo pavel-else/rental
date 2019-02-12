@@ -4,13 +4,13 @@ export default {
     },
     mutations: {
         setProducts(state, products) {
-            state.products = products
-            console.log('set products')
+            state.products = products;
+            console.log('set products');
         }
     },
     actions: {
         setProducts({commit}, products) {
-            commit('setProducts', products)
+            commit('setProducts', products);
         }
     },
     getters: {

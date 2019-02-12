@@ -85,6 +85,14 @@
                         </td>
                     </tr> -->
                     <tr>
+                        <td>Описание</td>
+                        <td><textarea class="textarea" v-model="product.note"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Размер рамы</td>
+                        <td><input class="input" v-model="product.size"></td>
+                    </tr>
+                    <tr>
                         <td>Статус</td>
                         <td class="details__td details__td--status">
                             <input 
@@ -278,8 +286,10 @@
         margin-top: 30px;
         overflow-y: hidden;
     }
-    .input {
-        width: 200px;
+    .input, 
+    textarea {
+        box-sizing: border-box;
+        width: 220px;
     }
     td {
         padding: 5px;
@@ -330,6 +340,11 @@
     }
     .details__td--status label {
         margin-right: 10px;
+    }
+
+    .textarea {
+        resize: vertical;
+        min-height: 50px;
     }
 
 </style>

@@ -86,12 +86,12 @@
         cursor: pointer;
     }
 
-    input {
+    input,
+    textarea {
         background-color: #000;
         border: 1px solid #333;
         color: rgba(255, 255, 255, 0.8);
         padding: 5px;
-        font-family: 
     }
 
     .checkbox {
