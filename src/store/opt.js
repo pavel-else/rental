@@ -32,8 +32,8 @@ export default {
 
 
 
-        activeBranch: 'dev',
-        // activeBranch: 'master',
+        // activeBranch: 'dev',
+        activeBranch: 'master',
         branch: {
             master: {
                 url: 'https://rentix.biz/api/request.php',

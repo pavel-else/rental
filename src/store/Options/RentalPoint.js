@@ -15,12 +15,14 @@ export default {
         rentalPointInfo(state) {
             return {
                 name: state.name,
+                id_rent: state.id_rent,
                 city: state.city,
                 address: state.address,
                 time_open: state.time_open,
                 time_close: state.time_close,
                 phone: state.phone,
                 description: state.description,
+                description_short: state.description_short,
                 coordinates: state.coordinates
             }
         }

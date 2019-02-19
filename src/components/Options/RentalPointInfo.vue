@@ -3,6 +3,10 @@
         <h3>{{ message }}</h3>
         <table class="table">
             <tr>
+                <td>ID</td>
+                <td><input :value="point.id_rent" disabled></td>
+            </tr>
+            <tr>
                 <td>Логотип</td>
                 <td><input @input="set('logo', $event.target.value)"></td>
             </tr>
@@ -30,8 +34,12 @@
                 <td><input v-model="point.phone" @input="set('phone', $event.target.value)"></td>
             </tr>
             <tr>
+                <td>Краткое описание</td>
+                <td><input v-model="point.description_short" @input="set('description_short', $event.target.value)"></td>
+            </tr>
+            <tr>
                 <td>Описание</td>
-                <td><input v-model="point.description" @input="set('discriptions', $event.target.value)"></td>
+                <td><textarea v-model="point.description" @input="set('discriptions', $event.target.value)"></textarea></td>
             </tr>
             <tr>
                 <td>Точка на карте</td>
