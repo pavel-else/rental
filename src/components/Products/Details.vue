@@ -189,7 +189,7 @@
                 const file = e.target.files[0]
                 const time = Math.floor(Date.now() / 1000)
                 const ext = getExtention(file.type)
-                const name = `${this.$store.getters.appID}_${this.product.id_rent}_${time}${ext}`
+                const name = `${ this.$store.getters.rentalPointInfo.id_rent }_${ this.product.id_rent }_${ time }${ ext }`
 
                 const formData = new FormData()
 
@@ -200,7 +200,7 @@
 
                 if (result) {
                     this.uploadStatus = 'Загрузка завершена'
-                    this.product.img = `${time}${ext}`
+                    this.product.img = `${ time }${ ext }`
                 } 
 
                 this.refresh = true     

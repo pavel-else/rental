@@ -14,6 +14,7 @@ export default {
         * Проставить Стоимость аксессуаров
         * Просчитать и проставить Скидку
         * Поставить Статус "Стоп"
+        * Увеличить пробег велосипеда
         * Если закрывается последний саб - закрывать ордер
         * Передавать данные на отправку
         */
@@ -24,12 +25,12 @@ export default {
         subOrder.end_time = subOrder.status === "PAUSE" ? subOrder.pause_start : Date.now()
 
         // Проставить Стоимость проката
-        const billRent = () => {
-            const time = subOrder.end_time - Date.parse(order.start_time) - subOrder.pause_time
-            return roundBill(getBill(subOrder.tariff_id, time))            
-        }
-
-        subOrder.bill_rent = billRent()
+        // const billRent = () => {
+        //     const time = subOrder.end_time - Date.parse(order.start_time) - subOrder.pause_time
+        //     return roundBill(getBill(subOrder.tariff_id, time))            
+        // }
+        const time = subOrder.end_time - Date.parse(order.start_time) - subOrder.pause_time
+        subOrder.bill_rent = getBill(subOrder.tariff_id, time)
 
         // Проставить Стоимость аксессуаров
         subOrder.bill_access = subOrder.accessories 
@@ -44,6 +45,12 @@ export default {
         subOrder.status = "END"
 
         cmds.push({cmd: 'changeSubOrder', value: subOrder})
+
+        // Увеличить пробег велосипеда
+        const h = time / 1000 / 60 / 60
+        cmds.push({ cmd: 'incMileage', value: { product_id: subOrder.product_id, mileage: h }})
+        console.log('time', h)
+
 
 
         // Если закрывается последний саб - закрывать ордер

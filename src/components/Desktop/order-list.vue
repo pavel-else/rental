@@ -242,7 +242,6 @@
             stopOrder(order) {
                 const subOrders = this.getSubOrders(order.order_id)
 
-
                 for (let i = subOrders.length - 1; i >= 0; i--) {
                     this.stopSubOrder(order, subOrders[i], /*send=*/true)
                 }

@@ -37,7 +37,7 @@ export default {
         branch: {
             master: {
                 url: 'https://rentix.biz/api/request.php',
-                path: 'https://app.rentix.biz/'
+                path: 'https://rentix.biz/' // Параметр нужен для запросов user_uploads
             },
             dev: {
                 url: 'https://test.rentix.biz/api/request.php',

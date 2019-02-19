@@ -5,7 +5,7 @@ export default async (data, store) => {
         return false
     }
 
-    const url = String(store.getters.activePath) + 'user_uploads.php'
+    const url = String(store.getters.activePath) + 'libs/user_uploads.php'
     const config = {
         header: {
             'Content-Type' : 'multipart/form-data'
