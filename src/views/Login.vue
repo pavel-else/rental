@@ -11,7 +11,6 @@
         <hr/>
         <button type="submit">Login</button>
     </form>
-        <button @click='test'>Test</button>
   </div>
 </template>
 
@@ -41,9 +40,6 @@ export default {
     register() {
       this.$router.push('/Pages/Register');
     },
-    test() {
-      console.log(this.$store.getters.history);
-    }
   }
 }
 </script>

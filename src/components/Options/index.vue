@@ -5,10 +5,10 @@
             <li class="options__link" @click="select('general')" :class="{options__link_act: show.general}">Общие</li>
             <li class="options__link" @click="select('tariffs')" :class="{options__link_act: show.tariffs}">Тарифы</li>
             <li class="options__link" @click="select('products')" :class="{options__link_act: show.products}">Товары</li>
-            <li class="options__link" @click="select('categories')" :class="{options__link_act: show.categories}">Категории</li>
+            <!-- <li class="options__link" @click="select('categories')" :class="{options__link_act: show.categories}">Категории</li> -->
             <li class="options__link" @click="select('accessories')" :class="{options__link_act: show.accessories}">Аксессуары</li>
-            <li class="options__link" @click="select('deposit')" :class="{options__link_act: show.deposit}">Залог</li>
-            <li class="options__link" @click="select('sale')" :class="{options__link_act: show.sale}">Скидки</li>
+            <!-- <li class="options__link" @click="select('deposit')" :class="{options__link_act: show.deposit}">Залог</li>
+            <li class="options__link" @click="select('sale')" :class="{options__link_act: show.sale}">Скидки</li> -->
         </ul>
 
         <RentalPointInfo v-if="show.rentalPointInfo"></RentalPointInfo>

@@ -15,12 +15,6 @@
                 <td>Время на оформление (мин)</td>
                 <td><input :value="registrationTime" @input="set('registration_time', $event.target.value * 60 * 1000)"></td>
             </tr>
-            <tr>
-                <td>Выход из приложения</td>
-                <td>
-                    <button @click="logout">logout</button>
-                </td>
-            </tr>
         </table>
 
         <button class="option-general__button" @click="send">Применить</button>
@@ -52,11 +46,7 @@
                     value: this.options
                 })
             },
-            logout() {
-                this.$store.dispatch('AUTH_LOGOUT');
-                this.$store.dispatch('REBOOT_APP_INIT_STATUS');
-                this.$router.push('/Login');
-            }
+
         },
         computed: {
             rentMinTime() {
