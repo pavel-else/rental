@@ -5,6 +5,7 @@
       <li><router-link class="router-link" to="/customers">Клиенты</router-link></li>
       <li><router-link class="router-link" to="/history">История</router-link></li>
       <li><router-link class="router-link" to="/options">Настройки</router-link></li>
+      <li><router-link class="router-link" to="/repairs">Ремонт</router-link></li>
     </ul>
   </div>
 </template>

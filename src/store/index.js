@@ -14,12 +14,14 @@ import accessories     from './accessories'
 import auth            from './auth-module'
 import initApp           from './init-app-module'
 import RentalPointOptions from './Options/RentalPoint'
+import Repairs          from './Repairs'
 
 
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
+    // strict: true,
     modules: {
         products,
         subOrders,
@@ -32,7 +34,8 @@ const store = new Vuex.Store({
         accessories,
         auth,
         initApp,
-        RentalPointOptions
+        RentalPointOptions,
+        Repairs
     },
 
     actions: {
