@@ -85,13 +85,13 @@
                     cost:       0,
                     name:       '',
                     note:       null,
-                    status:     'free',
+                    status:     'active',
                     tariff_default: null,
                     tariff_ids: null,
                     type: 1
                 }
 
-                console.log('product', this.product)
+                // console.log('product', this.product)
             }
         },
         computed: {

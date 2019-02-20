@@ -120,9 +120,9 @@
             </form>
             
             <div class="btn-group">
-                <button @click="save" :disabled="!change">Сохранить</button>
+                <button @click="save">Сохранить</button>
                 <button @click="close">Отмена</button>
-                <button @click="remove" v-if="product.id_rent">Удалить</button>      
+                <button @click="remove" v-if="!product.newProduct">Удалить</button>      
             </div>
 
             <p class="products__updated" v-if="product.id_rent">Дата последнего изменения: {{ product.updated }}</p> 
@@ -171,14 +171,17 @@
             check() {
                 if (!this.product.name) {
                     console.log('empty product name')
+                    alert('Укажите название товара')
                     return false
                 }
                 if (!this.product.tariff_ids) {
                     console.log('empty tariffs')
+                    alert('Укажите доступные тарифы')
                     return false
                 }
                 if (!this.product.tariff_default) {
                     console.log('empty tariff default')
+                    alert('Укажите тариф по умолчанию')
                     return false
                 }
 
@@ -209,7 +212,7 @@
             save() {
                 this.product.updated = Math.floor(Date.now() / 1000)
 
-                //console.log(this.product)
+                console.log(this.product)
 
                 if (!this.check()) {
                     return
@@ -248,8 +251,6 @@
                 e.preventDefault()
 
                 this.change = true
-
-                //console.log(this.product)
             },
             setTariffs(ids) {
                 this.product.tariff_ids = ids

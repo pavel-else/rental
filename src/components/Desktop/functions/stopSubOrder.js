@@ -39,7 +39,6 @@ export default {
 
         // Просчитать и проставить Скидку
         subOrder.sale = getSale(+subOrder.bill_rent + +subOrder.bill_access, +order.customer_id)
-        console.log(subOrder.sale)
 
         // Поставить Статус "Стоп"
         subOrder.status = "END"
@@ -49,8 +48,6 @@ export default {
         // Увеличить пробег велосипеда
         const h = time / 1000 / 60 / 60
         cmds.push({ cmd: 'incMileage', value: { product_id: subOrder.product_id, mileage: h }})
-        console.log('time', h)
-
 
 
         // Если закрывается последний саб - закрывать ордер
