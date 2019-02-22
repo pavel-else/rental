@@ -226,7 +226,6 @@
                 this.$emit('close')
             },
             close() {
-                console.log('close')
                 if (!this.change) {
                     this.$emit('close')
                     return
