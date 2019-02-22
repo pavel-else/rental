@@ -35,7 +35,7 @@
             <div class="btn-group">
                 <button @click="save">Сохранить</button>
                 <button @click="close">Отмена</button>
-                <button v-if="!repair.isNew" @click="remove">Удалить</button>      
+                <button v-if="!repair.isNew" @click="stop">Завершить</button>      
             </div>
             <div class="details__close" @click="close"></div>
         </div>
@@ -62,7 +62,11 @@
                 this.$emit('save', this.repair);
                 this.$emit('close');
             },
-            remove() {},
+            stop() {
+                this.repair.end_time_timestamp = Date.now();
+                this.$emit('stop', this.repair);
+                this.$emit('close');
+            },
         }
     }
 </script>

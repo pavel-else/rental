@@ -10,8 +10,8 @@
                 <th class="repairs__th">Примечание</th>
             </tr>
             <tr v-if="repairs && repairs.length < 1"><td colspan="6">В ремонте нет ни одного велосипеда</td></tr>
-            <tr class="repairs__tr" v-for="item in repairs" :key="item.id_rent" @click="onClick(item)">
-                <td class="repairs__td">{{ name(item) }}</td>
+            <tr class="repairs__tr" v-for="item in repairs" :key="item.id_rent" @click="changeRepair(item)">
+                <td class="repairs__td">{{ getName(item) }}</td>
                 <td class="repairs__td">{{ item.start_time }}</td>
                 <td class="repairs__td">{{ item.types_fix }}</td>
                 <td class="repairs__td repairs__td--cost">{{ item.cost_comp }}</td>
@@ -22,7 +22,7 @@
         </table>
 
         <BikeList v-if="showBikeList" @close="closeBikeList()"@select="openRepair($event)"></BikeList>
-        <Repair v-if="showRepair" :payload="repair" @save="saveRepair($event)" @close="closeRepair()"></Repair>
+        <Repair v-if="showRepair" :payload="repair" @save="saveRepair($event)" @stop="stopRepair($event)" @close="closeRepair()"></Repair>
 
         <div class="repairs__buttons">
             <button @click="openBikeList()">Добавить в ремонт</button>
@@ -80,29 +80,36 @@
             saveRepair(repair) {
                 this.$store.dispatch('SET_REPAIR', repair);
             },
+            stopRepair(repair) {
+                this.$store.dispatch('STOP_REPAIR', repair);
+            },
             closeRepair() {
                 this.showRepair = false;
             },
 
-            onClick(item) {
-                console.log(item)
+            changeRepair(item) {
+                this.repair = item;
+                this.repair.product_name = this.getName(item);
+                this.showRepair = true;
             },
-            //getNameOnId
-            name(item) {
+            //getName
+            getName(item) {
                 const product = this.$store.getters.products.find(i => i.id_rent === item.product_id);
                 return product ? product.name : '';
             }
         },
         computed: {
             repairs() {
-                return this.$store.getters.repairs;
+                return this.$store.getters.repairs.filter(i => !i.end_time);
             }
         }
     }
 </script>
 <style scoped>
-    .repairs__first-line {
-
+    .repairs tr:not(:first-child):hover {
+        cursor: pointer;
+        outline: 1px solid #333;
+        padding: 5px 0;
     }
     .repairs__th {
         padding: 0 5px;

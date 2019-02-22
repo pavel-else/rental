@@ -35,7 +35,7 @@
         },
         computed: {
             products() {
-                return this.$store.getters.products.filter(i => i.status === 'active');
+                return this.$store.getters.products.filter(i => i.status === 'active' && !i.end_time);
             }
         }
     }

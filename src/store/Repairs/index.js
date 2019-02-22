@@ -48,12 +48,12 @@ export default {
             });
         },
         SET_REPAIR({ commit, getters }, repair) {
-            console.log('SET_REPAIRS');
+            console.log('SET_REPAIR');
 
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'setRepair', value: repair },
-                    { cmd: 'getRepairs'},
+                    { cmd: 'getRepairs' },
                     { cmd: 'getProducts' },
                 ];
                 const url = getters.url;
@@ -78,6 +78,38 @@ export default {
                     reject(err);
                 });
             });
-        }
+        },
+        STOP_REPAIR({ commit, getters }, repair) {
+            console.log('STOP_REPAIR');
+
+            return new Promise((resolve, reject) => {
+                const queue = [
+                    { cmd: 'stopRepair', value: repair },
+                    { cmd: 'getRepairs' },
+                    { cmd: 'getProducts' },
+                ];
+                const url = getters.url;
+                const token = localStorage.getItem('user-token');
+
+                axios({ 
+                    url,
+                    data: {
+                        queue,
+                        token
+                    },
+                    method: 'POST',
+                })
+                .then(resp => {
+                    console.log(resp);
+                    commit('SET_REPAIRS', resp.data.repairs);
+                    commit('setProducts', resp.data.products);
+                    resolve(resp);                        
+                }).
+                catch(err => {
+                    console.log(err)
+                    reject(err);
+                });
+            });
+        },
     }
 }
