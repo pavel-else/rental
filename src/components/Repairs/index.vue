@@ -1,130 +1,37 @@
 <template>
     <div class="repairs">
-        <table>
-            <tr class="repairs__first-line">
-                <th class="repairs__th">Название</th>
-                <th class="repairs__th">Начало</th>
-                <th class="repairs__th">Тип</th>
-                <th class="repairs__th repairs__th--cost">Стоимость комплектующих</th>
-                <th class="repairs__th repairs__th--cost">Стоимость всего ремонта</th>
-                <th class="repairs__th">Примечание</th>
-            </tr>
-            <tr v-if="repairs && repairs.length < 1"><td colspan="6">В ремонте нет ни одного велосипеда</td></tr>
-            <tr class="repairs__tr" v-for="item in repairs" :key="item.id_rent" @click="changeRepair(item)">
-                <td class="repairs__td">{{ getName(item) }}</td>
-                <td class="repairs__td">{{ item.start_time }}</td>
-                <td class="repairs__td">{{ item.types_fix }}</td>
-                <td class="repairs__td repairs__td--cost">{{ item.cost_comp }}</td>
-                <td class="repairs__td repairs__td--cost">{{ item.cost_repair }}</td>
-                <td class="repairs__td">{{ item.note }}</td>
-                <td class="repairs__td">{{ item.end_time }}</td>
-            </tr>
-        </table>
-
-        <BikeList v-if="showBikeList" @close="closeBikeList()"@select="openRepair($event)"></BikeList>
-        <Repair v-if="showRepair" :payload="repair" @save="saveRepair($event)" @stop="stopRepair($event)" @close="closeRepair()"></Repair>
-
-        <div class="repairs__buttons">
-            <button @click="openBikeList()">Добавить в ремонт</button>
-        </div>
-            
+        <Menu :selectedItem="type" style="margin-right: 20px" @selectItem="selectType($event)"></Menu>
+        <TableData :type="type"></TableData>
     </div>
 </template>
 <script>
-    import copy from '@/functions/copy';
-    import BikeList from './BikeList';
-    import Repair from './Repair';
+    import Menu from './Menu';
+    import TableData from './TableData';
 
     export default {
         components: {
-            BikeList,
-            Repair
+            Menu,
+            TableData
         },
         beforeCreate() {
             this.$store.dispatch('GET_REPAIRS');
         },
         data() {
             return {
-                showBikeList: false,
-                showRepair: false,
-                repair: {}
+                type: 'fact', // fact || plan || hist
             }
         },
         methods: {
-            openBikeList() {
-                this.showBikeList = true;
-            },
-            closeBikeList() {
-                this.showBikeList = false;
-            },
-
-            openRepair(product) {
-                this.repair = {
-                    id: null,
-                    id_rent: null,
-                    id_rental_org: null,
-                    product_id: product.id_rent,
-                    is_plan: false,
-                    start_time: new Date(),
-                    mileage: product.mileage,
-                    types_fix: null,
-                    cost_comp: 0,
-                    cost_repair: 0,
-                    note: '',
-                    end_time: null,
-                    product_name: product.name,
-                    isNew: true
-                };
-                this.showRepair = true;               
-            },
-            saveRepair(repair) {
-                this.$store.dispatch('SET_REPAIR', repair);
-            },
-            stopRepair(repair) {
-                this.$store.dispatch('STOP_REPAIR', repair);
-            },
-            closeRepair() {
-                this.showRepair = false;
-            },
-
-            changeRepair(item) {
-                this.repair = item;
-                this.repair.product_name = this.getName(item);
-                this.showRepair = true;
-            },
-            //getName
-            getName(item) {
-                const product = this.$store.getters.products.find(i => i.id_rent === item.product_id);
-                return product ? product.name : '';
-            }
-        },
-        computed: {
-            repairs() {
-                return this.$store.getters.repairs.filter(i => !i.end_time);
+            selectType(item) {
+                this.type = item;
             }
         }
     }
 </script>
 <style scoped>
-    .repairs tr:not(:first-child):hover {
-        cursor: pointer;
-        outline: 1px solid #333;
-        padding: 5px 0;
-    }
-    .repairs__th {
-        padding: 0 5px;
-        max-width: 150px;
-    }
-
-    .repairs__td {
-        padding-top: 10px;
-    }
-    .repairs__th--cost,
-    .repairs__td--cost {
-        text-align: center;
-    }
-
-    .repairs__buttons {
-        margin-top: 200px;
+    .repairs {
+        width: 900px;
+        display: flex;
+        flex-direction: row;
     }
 </style>

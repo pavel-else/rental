@@ -1,12 +1,12 @@
 <template>
     <div class="options">
         <ul class="options__list">
-            <li class="options__link" @click="select('rentalPointInfo')" :class="{options__link_act: show.rentalPointInfo}">Точка проката</li>
-            <li class="options__link" @click="select('general')" :class="{options__link_act: show.general}">Общие</li>
-            <li class="options__link" @click="select('tariffs')" :class="{options__link_act: show.tariffs}">Тарифы</li>
-            <li class="options__link" @click="select('products')" :class="{options__link_act: show.products}">Товары</li>
+            <li class="options__link" @click="select('rentalPointInfo')" :class="{ options__link_act: show.rentalPointInfo }">Точка проката</li>
+            <li class="options__link" @click="select('general')" :class="{ options__link_act: show.general }">Общие</li>
+            <li class="options__link" @click="select('tariffs')" :class="{ options__link_act: show.tariffs }">Тарифы</li>
+            <li class="options__link" @click="select('products')" :class="{ options__link_act: show.products }">Товары</li>
             <!-- <li class="options__link" @click="select('categories')" :class="{options__link_act: show.categories}">Категории</li> -->
-            <li class="options__link" @click="select('accessories')" :class="{options__link_act: show.accessories}">Аксессуары</li>
+            <li class="options__link" @click="select('accessories')" :class="{ options__link_act: show.accessories }">Аксессуары</li>
             <!-- <li class="options__link" @click="select('deposit')" :class="{options__link_act: show.deposit}">Залог</li>
             <li class="options__link" @click="select('sale')" :class="{options__link_act: show.sale}">Скидки</li> -->
         </ul>
@@ -62,7 +62,7 @@
     }
 </script>
 <style>
-    .options__list{
+    .options__list {
         display: flex;
         align-items: center;
         justify-content: center;
