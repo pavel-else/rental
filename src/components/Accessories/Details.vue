@@ -8,9 +8,9 @@
 
             <form @input="onChange">
                 <table>
-                    <tr>
+                    <tr v-if="accessory.is_new">
                         <td>id</td>
-                        <td><input :value="accessory.id_rent" disabled></td>
+                        <td><span>{{ accessory.id_rent }}</span></td>
                     </tr>
 
                     <tr>
@@ -25,7 +25,16 @@
 
                     <tr>
                         <td>Тип</td>
-                        <td><input v-model="accessory.type"></td>
+                        <!-- <td><input v-model="accessory.type"></td> -->
+                        <td>
+                            <div class="wrap">
+                                <input id="access__type_rub" type="radio" value="rub" name="type" v-model="accessory.type"> 
+                                <label for="access__type_rub">руб</label>
+
+                                <input id="access__type_per" type="radio" value="%" name="type" v-model="accessory.type">
+                                <label for="access__type_per">%</label>
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </form>     
@@ -42,69 +51,50 @@
 </template>
 
 <script>
-    import copy from '../../functions/copy'
+    import copy from '@/functions/copy';
 
     export default {
         props: {
-            data: Object
+            payload: Object
         },
         data() {
             return {
-                accessory: this.copy(this.data),
+                accessory: copy(this.payload),
                 change: false
             }
         },
         methods: {
-            ...copy,
-
             save() {
                 this.$store.dispatch('send', [
-                    {cmd: 'setAccessory', value: this.accessory},
-                ])
+                    { cmd: 'setAccessory', value: this.accessory },
+                ]);
 
-                this.$emit('close')
+                this.$emit('close');
             },
             close() {                
                 if (!this.change) {
-                    this.$emit('close')
-                    return
+                    this.$emit('close');
+                    return;
                 }
 
                 if (confirm('Изменения не сохранены. Вы уверены, что хотите выйти?')) {
-                    this.$emit('close')
+                    this.$emit('close');
                 }
             },
             remove() {
-                if (confirm(`Вы действительно хотите удалить тариф '${this.product.name}'?`)) {
+                if (confirm(`Вы действительно хотите удалить тариф '${ this.accessory.name }'?`)) {
                     this.$store.dispatch('send', {
-                        cmd: 'deleteProduct',
-                        value: this.product.id_rent
-                    })
-                    this.$emit('close')
+                        cmd: 'deleteAccessory',
+                        value: this.accessory.id_rent
+                    });
+                    this.$emit('close');
                 }
             },
 
             onChange(e) {
-                e.preventDefault()
+                e.preventDefault();
 
-                this.change = true
-            },
-            setTariffs(ids) {
-                this.product.tariff_ids = ids
-            },
-            setTariffDefault(id) {
-                this.product.tariff_default = id
-            },
-            setCategories(ids) {
-                this.product.categories = ids
-            }
-        },
-        computed: {
-            tariffs() {
-                return this.$store.getters.tariffs
-            },
-            categories() {
-                return this.$store.getters.categories
+                this.change = true;
             }
         }
     }
@@ -120,6 +110,15 @@
     }
     td {
         padding: 5px;
+    }
+
+    .wrap {
+        display: inline-flex;
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .wrap label {
+        margin-right: 20px;
     }
 
     .btn-group {
