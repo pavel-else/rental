@@ -6,9 +6,11 @@ import store from '@/store'
 import Home      from './components/Desktop'
 import History   from './components/History'
 import Customers from './components/Customers'
-import Options   from './components/Options'
 import Repairs   from './components/Repairs'
 import AdminPage   from '@/views/AdminPage'
+
+import Options   from './components/Options'
+import OptionsMain   from '@/components/HelloWorld'
 
 const Login = () => import('@/views/Login');
 const LoginByToken = () => import('@/components/LoginByToken');
@@ -53,9 +55,16 @@ export default new Router({
             beforeEnter: ifAuthenticated,
         },
         {
-            path: '/options',
+            path: '/options/',
             component: Options,
             beforeEnter: ifAuthenticated,
+            children: [
+                {
+                  path: '/main/',
+                  // name: 'Main',
+                  component: OptionsMain
+                }
+            ]
         },
         {
             path: '/repairs',

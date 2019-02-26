@@ -20,7 +20,7 @@
     </div>
 </template>
 <script>
-    import RentalPointInfo     from './RentalPointInfo'
+    import RentalPointInfo     from './OptionsMain'
     import General     from './General'
     import Tariffs     from '../Tariffs'
     import Products    from '../Products'
