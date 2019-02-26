@@ -4,15 +4,15 @@
             <table>
                     <tr>
                         <td>Заказ</td>
-                        <td>{{order.order_id}}</td>
+                        <td>{{ order.order_id }}</td>
                     </tr>
                     <tr>
                         <td>Статус</td>
-                        <td>{{order.status}}</td>
+                        <td>{{ status(order.status) }}</td>
                     </tr>
                     <tr>
                         <td>Клиент</td>
-                        <td>{{order.customer_name}}</td>
+                        <td>{{ order.customer_name }}</td>
                     </tr>
                     <tr>
                         <td>Товары</td>
@@ -27,12 +27,16 @@
                         <td><span v-if="order.deposit">{{ order.deposit }}</span><span v-else>-</span></td>
                     </tr>
                     <tr>
+                        <td>Стоимость аксессуаров</td>
+                        <td>{{ order.access || 0 }} р.</td>
+                    </tr>
+                    <tr>
                         <td>Начало</td>
                         <td>{{ order.start_time }}</td>
                     </tr>
                     <tr>
-                        <td>Чистое время</td>
-                        <td>{{ getTimePlay(order) }}</td>
+                        <td>Завершение</td>
+                        <td>{{ endTime() }}</td>
                     </tr>
                     <tr>
                         <td>Аванс</td>
@@ -66,29 +70,28 @@
             }
         },
         methods: {
-            getTimePlay(item) {
-                const now = this.$store.getters.now
-
-                const products = item.products
-                
-                let max = null
-                let end_time = null
-                let diff = null 
-                const start_time = Date.parse(item.start_time)
-
-                for (let i = 0; i < products.length; i++) {
-                    end_time = products[i].end_time ? Date.parse(products[i].end_time) : null
-                    diff = end_time ? end_time - start_time : now - start_time
-
-                    if (diff > max) max = diff                  
-                }
-
-                return timeFormat(diff)
+            endTime() {
+                return this.subOrders.reduce((acc, item) => {
+                    acc = item.end_time > acc ? item.end_time : acc;
+                    return acc;
+                }, this.subOrders[0].end_time);  
             },
             close() {
                 this.$emit('close')
+            },
+            status(status) {
+                switch(status) {
+                    case 'END': return 'Завершен';
+                    case 'ACTIVE': return 'В прокате';
+                    default: '';
+                }
             }
         },
+        computed: {
+            subOrders() {
+                return this.$store.getters.subOrders.filter(i => i.order_id === this.order.order_id);
+            },
+        }
     }
 </script>
 

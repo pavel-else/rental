@@ -33,7 +33,6 @@
 
 <script>
     import Details    from './Details'
-    import getTime    from '../../functions/getTime'
     import timeFormat from '@/functions/timeFormat'
 
     export default {
@@ -48,8 +47,6 @@
             }
         },
         methods: {
-            ...getTime,
-
             getTimePlay(order) {
                 const subOrders = this.$store.getters.subOrders.filter(i => i.order_id == order.order_id)
                 const start = Date.parse(order.start_time)
@@ -88,13 +85,15 @@
                     i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time)) : 0
 
                     const reduce = i.subOrders.reduce((acc, item) => {
+                        acc.access += +item.bill_access
                         acc.bill += +item.bill_rent + +item.bill_access - +item.sale
                         acc.sale += +item.sale
                         return acc
-                    }, {bill: 0, sale: 0})
+                    }, {access: 0, bill: 0, sale: 0})
 
                     i.bill = reduce.bill
                     i.sale = reduce.sale
+                    i.access = reduce.access
 
                     return i
                 })
