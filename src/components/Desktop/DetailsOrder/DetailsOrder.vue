@@ -12,7 +12,7 @@
                         <td>{{ product.name }}</td>
                     </tr>
                     <tr>
-                        <td>ID заказа</td>
+                        <td>Группа</td>
                         <td>
                             <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
                         </td>

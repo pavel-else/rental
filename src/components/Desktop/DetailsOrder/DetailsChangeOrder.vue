@@ -1,6 +1,6 @@
 <template>
     <div class="canvas">
-        <div class="add-order details">
+        <div class="details change-order__datails">
             <h3>Детали заказа<span> - #{{ order.order_id }} / {{ subOrder.id_rent }}</span></h3>
             <form @submit.prevent="">
                 <table>
@@ -9,7 +9,7 @@
                         <td>{{ product.name }}</td>
                     </tr>
                     <tr>
-                        <td>ID заказа</td>
+                        <td>Группа</td>
                         <td>
                             <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
                         </td>
@@ -110,7 +110,7 @@
                     </button>
 
                     <button class="change-order__button" @click.prevent="abortSubOrder">
-                        Удалить товар
+                        Удалить
                     </button>
 
                     <button class="change-order__button" @click.prevent="stop()">
@@ -430,14 +430,14 @@
     }
 </script>
 
-<style>
-    .add-order {
-        width: 400px;
+<style scoped>
+    .change-order__datails {
+        width: 420px;
         margin-top: 50px;
         padding: 10px 20px;
     }
 
-    .add-order td {
+    .change-order__datails td {
         padding: 5px 0;
     }
     .btn-group {
