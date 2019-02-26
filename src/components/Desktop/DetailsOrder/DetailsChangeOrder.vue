@@ -17,7 +17,7 @@
                     <tr>
                         <td>Статус</td>
                         <td>
-                            {{ subOrder.status }}
+                            {{ getStatus(subOrder.status) }}
                         </td>
                     </tr>
                     <tr>
@@ -385,6 +385,13 @@
 
                 this.status.changeSubOrder = true
             },
+            getStatus(status) {
+                switch(status) {
+                    case 'END': return 'Завершен';
+                    case 'ACTIVE': return 'В прокате';
+                    default: '';
+                }
+            }
         },
 
         computed: {

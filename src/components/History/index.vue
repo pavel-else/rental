@@ -22,7 +22,7 @@
                     <span v-if="item.products.length > 1"> и еще {{ item.products.length - 1 }} шт</span>
                 </td>
                 <td>{{ item.bill }} р.</td>
-                <td>{{ item.status }}</td>
+                <td>{{ getStatus(item.status) }}</td>
             </tr>
         </table>
 
@@ -60,6 +60,13 @@
 
             getName(item) {
                 return item.products[0] ? item.products[0].name : ''
+            },
+            getStatus(status) {
+                switch(status) {
+                    case 'END': return 'Завершен';
+                    case 'ACTIVE': return 'В прокате';
+                    default: '';
+                }
             },
 
             onClick(order) {
