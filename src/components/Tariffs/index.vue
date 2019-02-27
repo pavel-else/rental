@@ -34,6 +34,9 @@
         components: {
             Details
         },
+        beforeCreate() {
+            this.$store.dispatch('getTariffs');
+        },
         data() {
             return {
                 tariff: {},

@@ -7,7 +7,6 @@ import subOrders       from './subOrders'
 import customers       from './Customers/customers'
 import orders          from './orders'
 import options         from './opt'
-import tariffs         from './tariffs'
 import categories      from './categories'
 import history         from './History/history'
 import auth            from './auth-module'
@@ -17,6 +16,7 @@ import RentalPointInfo from './modules/rentalPointInfo';
 import Repairs          from './modules/repairs';
 import GeneralSettings from './modules/generalSettings';
 import Accessories     from './modules/accessories';
+import Tariffs         from './modules/tariffs';
 
 
 
@@ -30,7 +30,6 @@ const store = new Vuex.Store({
         customers,
         orders,
         options,
-        tariffs,
         categories,
         history,
         auth,
@@ -39,6 +38,7 @@ const store = new Vuex.Store({
         Repairs,
         GeneralSettings,
         Accessories,
+        Tariffs,
     },
 
     actions: {
