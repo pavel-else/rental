@@ -49,12 +49,12 @@ export default {
                         commit('setProducts',      r.data.products);
                         commit('setHistory',       r.data.history);
                         commit('setOptions',       r.data.options);
-                        commit('setTariffs',       r.data.tariffs);
+                        commit('tariffs',       r.data.tariffs);
                         commit('setCategories',    r.data.categories);
                         commit('setCustomers',     r.data.customers);
                         commit('setSubOrders',     r.data.sub_orders);
                         commit('setOrders',        r.data.orders);
-                        commit('setAccessories',   r.data.accessories);
+                        commit('accessories',   r.data.accessories);
                         commit('rentalPointInfo', r.data.rental_point_info[0]);
 
                         commit('INIT_APP_STATUS', 'inited');
