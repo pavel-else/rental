@@ -127,12 +127,8 @@
                 this.newTariff._d_min = this.newTariff.type !== 'h' ? null : this.newTariff._d_min
                 this.newTariff._d_max = this.newTariff.type !== 'h' ? null : this.newTariff._d_max
 
-                console.log(this.newTariff)
 
-                this.$store.dispatch('send', {
-                    cmd: 'setTariff',
-                    value: this.newTariff
-                })
+                this.$store.dispatch('setTariff', this.newTariff);
 
                 this.$emit('close')
             },
@@ -148,11 +144,8 @@
             },
             remove() {
                 if (confirm(`Вы действительно хотите удалить тариф '${this.newTariff.name}'?`)) {
-                    this.$store.dispatch('send', {
-                        cmd: 'deleteTariff',
-                        value: this.newTariff.id_rent
-                    })
-                    this.$emit('close')
+                    this.$store.dispatch('deleteTariff', this.newTariff.id_rent);
+                    this.$emit('close');
                 }
 
             },
@@ -178,11 +171,8 @@
                 this.change = true
             },
             onChange(e) {
-                e.preventDefault()
-
-                this.change = true
-
-                console.log(this.newTariff)
+                e.preventDefault();
+                this.change = true;
             },
         },
     }

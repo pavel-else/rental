@@ -44,8 +44,8 @@ export default {
                 })
             });            
         },
-        setGeneralSettings({ commit, getters }, settings) {
-            console.log('dispatch: setGeneralSettings', settings);
+        setTariff({ commit, getters }, tariff) {
+            console.log('dispatch: setTariff', tariff);
 
             return new Promise((resolve, reject) => {
                 axios({
@@ -53,17 +53,38 @@ export default {
                     url: this.getters.url,
                     data: {
                         queue: [
-                            { cmd: 'setGeneralSettings', value: settings },
-                            { cmd: 'getGeneralSettings'}
+                            { cmd: 'setTariff', value: tariff },
+                            { cmd: 'getTariffs'}
                         ],
                         token: localStorage.getItem('user-token')
                     },                 
                 })
                 .then(r => {
                     console.log(r);
-                    commit('generalSettings', r.data.general_settings);
+                    commit('tariffs', r.data.tariffs);
                 })
-            })            
+            });
+        },
+        deleteTariff({ commit, getters }, id_rent) {
+            console.log('dispatch: deleteTariff', id_rent);
+
+            return new Promise((resolve, reject) => {
+                axios({
+                    method: 'post',
+                    url: this.getters.url,
+                    data: {
+                        queue: [
+                            { cmd: 'deleteTariff', value: id_rent },
+                            { cmd: 'getTariffs'}
+                        ],
+                        token: localStorage.getItem('user-token')
+                    },                 
+                })
+                .then(r => {
+                    console.log(r);
+                    commit('tariffs', r.data.tariffs);
+                })
+            });
         }
     }
 }
