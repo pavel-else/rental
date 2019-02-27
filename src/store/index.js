@@ -10,13 +10,13 @@ import options         from './opt'
 import tariffs         from './tariffs'
 import categories      from './categories'
 import history         from './History/history'
-import accessories     from './accessories'
 import auth            from './auth-module'
 import initApp           from './init-app-module'
 
-import RentalPointInfo from './modules/rentalPointInfo'
-import Repairs          from './modules/repairs'
-import GeneralSettings from './modules/generalSettings'
+import RentalPointInfo from './modules/rentalPointInfo';
+import Repairs          from './modules/repairs';
+import GeneralSettings from './modules/generalSettings';
+import Accessories     from './modules/accessories';
 
 
 
@@ -33,12 +33,12 @@ const store = new Vuex.Store({
         tariffs,
         categories,
         history,
-        accessories,
         auth,
         initApp,
         RentalPointInfo,
         Repairs,
-        GeneralSettings
+        GeneralSettings,
+        Accessories,
     },
 
     actions: {

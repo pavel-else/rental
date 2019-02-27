@@ -9,9 +9,10 @@ import Customers from './components/Customers'
 import Repairs   from './components/Repairs'
 import AdminPage   from '@/views/AdminPage'
 
-import RentalPointInfo   from '@/components/Options/RentalPointInfo'
-import GeneralSettings   from '@/components/Options/GeneralSettings'
-import Tariffs   from '@/components/Tariffs'
+import RentalPointInfo from '@/components/Options/RentalPointInfo'
+import GeneralSettings from '@/components/Options/GeneralSettings'
+import Tariffs from '@/components/Tariffs'
+import Accessories from '@/components/Accessories'
 
 const Login = () => import('@/views/Login');
 const LoginByToken = () => import('@/components/LoginByToken');
@@ -81,7 +82,7 @@ export default new Router({
                 },
                 {
                     path: 'accessories',
-                    component: GeneralSettings
+                    component: Accessories
                 },
             ]
         },

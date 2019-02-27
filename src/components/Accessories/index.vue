@@ -27,6 +27,9 @@
         components: {
             Details
         },
+        beforeCreate() {
+            this.$store.dispatch('getAccessories');
+        },
         data() {
             return {
                 show: false,
