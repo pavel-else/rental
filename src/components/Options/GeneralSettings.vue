@@ -3,7 +3,7 @@
         <table>
             <tr>
                 <td>Округление (руб)</td>
-                <td><input v-model="options.rent_round_bill"></td>
+                <td><input v-model="settings.rent_round_bill"></td>
             </tr>
             <tr>
                 <td title="Минимальная стоимость тарифа устанавливается от начала проката до указанного времени">
@@ -23,33 +23,34 @@
 
 <script>
     export default {
+        beforeCreate() {
+            this.$store.dispatch('getGeneralSettings')
+            .then(() => {
+                this.settings = this.$store.getters.generalSettings;
+            });
+        },
         data() {
             return {
-                options: this.$store.getters.options,
+                settings: this.$store.getters.generalSettings,
                 change: false
             }
         },
         methods: {
-            set(option, value) {
-                this.options[option] = value
+            set(name, value) {
+                this.settings[name] = value;
             },
 
-            send() {
-                console.log(this.options)
-                
-                this.$store.dispatch('send', {
-                    cmd: 'setOptions',
-                    value: this.options
-                })
+            send() {                
+                this.$store.dispatch('setGeneralSettings', this.settings);
             },
 
         },
         computed: {
             rentMinTime() {
-                return this.options.rent_min_time / 60 / 1000
+                return this.$store.getters.generalSettings.rent_min_time / 60 / 1000;
             },
             registrationTime() {
-                return this.options.registration_time / 60 / 1000
+                return this.$store.getters.generalSettings.registration_time / 60 / 1000
             },
         }
     }

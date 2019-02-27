@@ -13,6 +13,23 @@ export default {
             return state.status;
         }
     },
+
+    mutations: {
+        AUTH_REQUEST(state) {
+            state.status = 'loading';
+        },
+        AUTH_SUCCESS(state, token) {
+            state.status = 'success';
+            state.token = token;
+        },
+        AUTH_ERROR(state) {
+            state.status = 'error';
+        },
+        AUTH_LOGOUT(state) {
+            state.token = '';
+            state.status = '';
+        }
+    },
     actions: {
         AUTH_REQUEST({ getters, commit, dispatch }, user) {
             console.log('AUTH_REQUEST');
@@ -106,22 +123,6 @@ export default {
 
                 resolve();
             });
-        }
-    },
-    mutations: {
-        AUTH_REQUEST(state) {
-            state.status = 'loading';
-        },
-        AUTH_SUCCESS(state, token) {
-            state.status = 'success';
-            state.token = token;
-        },
-        AUTH_ERROR(state) {
-            state.status = 'error';
-        },
-        AUTH_LOGOUT(state) {
-            state.token = '';
-            state.status = '';
         }
     }
 };

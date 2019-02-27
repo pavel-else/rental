@@ -11,6 +11,7 @@ import AdminPage   from '@/views/AdminPage'
 
 import RentalPointInfo   from '@/components/Options/RentalPointInfo'
 import GeneralSettings   from '@/components/Options/GeneralSettings'
+import Tariffs   from '@/components/Tariffs'
 
 const Login = () => import('@/views/Login');
 const LoginByToken = () => import('@/components/LoginByToken');
@@ -60,7 +61,7 @@ export default new Router({
         // },
         {
             path: '/settings',
-            redirect: '/settings/rental-point-info',
+            redirect: '/settings/main',
             beforeEnter: ifAuthenticated,
             component: {
                 render(c) { return c('router-view') }
@@ -72,6 +73,14 @@ export default new Router({
                 },
                 {
                     path: 'general',
+                    component: GeneralSettings
+                },
+                {
+                    path: 'tariffs',
+                    component: Tariffs
+                },
+                {
+                    path: 'accessories',
                     component: GeneralSettings
                 },
             ]

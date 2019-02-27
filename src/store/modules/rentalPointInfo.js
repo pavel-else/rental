@@ -36,7 +36,7 @@ export default {
         }
     },
     actions: {
-        getRentalPointInfo({ dispatch, commit, getters }) {
+        getRentalPointInfo({ commit, getters }) {
             console.log('getRentalPointInfo');
 
             return new Promise((resolve, reject) => {
@@ -65,8 +65,8 @@ export default {
                 })
             });
         },
-        setRentalPointInfo({ commit, dispatch, getters }, rentalPointInfo) {
-            console.log('setRentalPointInfo');
+        setRentalPointInfo({ commit, getters }, rentalPointInfo) {
+            console.log('daspatch: setRentalPointInfo', rentalPointInfo);
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
@@ -80,7 +80,7 @@ export default {
                     console.log(r);
                     commit('rentalPointInfo', rentalPointInfo);
                 })
-            })
+            });
         },
     }
 }

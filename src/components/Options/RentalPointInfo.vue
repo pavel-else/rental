@@ -59,14 +59,14 @@
     import copy from '../../functions/copy'
 
     export default {
+        beforeCreate() {
+            this.$store.dispatch('getRentalPointInfo');
+        },
         data() {
             return {
                 change: false,
                 message: ''
             }
-        },
-        beforeCreate() {
-            this.$store.dispatch('getRentalPointInfo');
         },
         methods: {
             set(optionName, value) {
