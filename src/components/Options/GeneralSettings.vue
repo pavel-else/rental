@@ -22,8 +22,6 @@
 </template>
 
 <script>
-    import copy from '../../functions/copy'
-
     export default {
         data() {
             return {
@@ -32,8 +30,6 @@
             }
         },
         methods: {
-            ...copy,
-
             set(option, value) {
                 this.options[option] = value
             },

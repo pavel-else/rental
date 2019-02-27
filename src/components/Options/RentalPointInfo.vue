@@ -49,7 +49,7 @@
             </tr>
         </table>
         <div class="options__buttons-wrap">
-            <button class="option-general__button" @click="send">Применить</button>
+            <button class="option-general__button" @click="save">Применить</button>
             <button @click="logout">Выйти из приложения</button>
         </div>
     </div>
@@ -61,17 +61,19 @@
     export default {
         data() {
             return {
-                point: copy(this.$store.getters.rentalPointInfo),
                 change: false,
                 message: ''
             }
+        },
+        beforeCreate() {
+            this.$store.dispatch('getRentalPointInfo');
         },
         methods: {
             set(optionName, value) {
                 this.point[optionName] = value;
             },
-            send() {
-                this.$store.dispatch('sendRentalPointOptions', this.point)
+            save() {
+                this.$store.dispatch('setRentalPointInfo', this.point)
                 .then(this.showMessage('Данные обновлены'));
             },
             logout() {
@@ -89,7 +91,7 @@
             }
         },
         computed: {
-            rentalPointInfo() {
+            point() {
                 return copy(this.$store.getters.rentalPointInfo);
             }
         }

@@ -9,12 +9,12 @@ import Customers from './components/Customers'
 import Repairs   from './components/Repairs'
 import AdminPage   from '@/views/AdminPage'
 
-import Options   from './components/Options'
-import OptionsMain   from '@/components/HelloWorld'
+import RentalPointInfo   from '@/components/Options/RentalPointInfo'
+import GeneralSettings   from '@/components/Options/GeneralSettings'
 
 const Login = () => import('@/views/Login');
 const LoginByToken = () => import('@/components/LoginByToken');
-const NotFound = { template: '<h2>Page Not Found</h2>' };
+const NotFound = { "template": '<h2>Page Not Found</h2>' };
 
 Vue.use(Router);
 
@@ -54,16 +54,26 @@ export default new Router({
             component: History,
             beforeEnter: ifAuthenticated,
         },
+        // {
+        //     path: '/options/main',
+        //     component: OptionsMain
+        // },
         {
-            path: '/options/',
-            component: Options,
+            path: '/settings',
+            redirect: '/settings/rental-point-info',
             beforeEnter: ifAuthenticated,
+            component: {
+                render(c) { return c('router-view') }
+            },
             children: [
                 {
-                  path: '/main/',
-                  // name: 'Main',
-                  component: OptionsMain
-                }
+                    path: 'main',
+                    component: RentalPointInfo
+                },
+                {
+                    path: 'general',
+                    component: GeneralSettings
+                },
             ]
         },
         {

@@ -7,7 +7,7 @@ export default {
         address: null,
         open: null,
         close: null,
-        telephone: null,
+        phone: null,
         description: null,
         coordinates: null
     },
@@ -28,14 +28,45 @@ export default {
         }
     },
     mutations: {
-        setRentalPointInfo(state, rentalPointInfo) {
+        rentalPointInfo(state, rentalPointInfo) {
+            console.log('set to state rentalPointInfo', rentalPointInfo);
             for (let i in rentalPointInfo) {
                 state[i] = rentalPointInfo[i];
             }
         }
     },
     actions: {
-        sendRentalPointOptions({ commit, dispatch, getters }, rentalPointInfo) {
+        getRentalPointInfo({ dispatch, commit, getters }) {
+            console.log('getRentalPointInfo');
+
+            return new Promise((resolve, reject) => {
+                const queue = [
+                    { cmd: 'getRentalPointInfo' },
+                ];
+                const url = getters.url;
+                const token = localStorage.getItem('user-token');
+
+                axios({ 
+                    url,
+                    data: {
+                        queue,
+                        token
+                    },
+                    method: 'POST',
+                })
+                .then(resp => {
+                    console.log(resp)
+                    commit('rentalPointInfo', resp.data.rental_point_info[0]);
+                    resolve(true);                        
+                }).
+                catch(err => {
+                    console.log(err)
+                    reject(err);
+                })
+            });
+        },
+        setRentalPointInfo({ commit, dispatch, getters }, rentalPointInfo) {
+            console.log('setRentalPointInfo');
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
@@ -47,12 +78,9 @@ export default {
                 })
                 .then(r => {
                     console.log(r);
-                    dispatch('setRentalPointInfo', rentalPointInfo);
+                    commit('rentalPointInfo', rentalPointInfo);
                 })
             })
         },
-        setRentalPointInfo({ commit }, rentalPointInfo) {
-            commit('setRentalPointInfo', rentalPointInfo);
-        }
     }
 }

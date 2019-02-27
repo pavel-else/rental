@@ -13,8 +13,8 @@ import history         from './History/history'
 import accessories     from './accessories'
 import auth            from './auth-module'
 import initApp           from './init-app-module'
-import RentalPointOptions from './Options/RentalPoint'
-import Repairs          from './Repairs'
+import RentalPointInfo from './modules/rentalPointInfo'
+import Repairs          from './modules/repairs'
 
 
 
@@ -34,7 +34,7 @@ const store = new Vuex.Store({
         accessories,
         auth,
         initApp,
-        RentalPointOptions,
+        RentalPointInfo,
         Repairs
     },
 

@@ -1,4 +1,4 @@
-# rental2
+# Rentix
 
 ## Project setup
 ```

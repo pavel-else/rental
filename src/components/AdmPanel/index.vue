@@ -5,12 +5,12 @@
             <li><router-link class="router-link" to="/customers">Клиенты</router-link></li>
             <li><router-link class="router-link" to="/history">История</router-link></li>
             <li class="list__item">
-                <router-link class="router-link" to="/options/">Настройки</router-link>
+                <router-link class="router-link" to="/settings/">Настройки</router-link>
                 <ul class="sublist">
-                    <li><router-link class="sub-item" to="/options/main/">Точка проката</router-link></li>
-                    <li><router-link class="sub-item" to="/options/second/">Общие</router-link></li>
-                    <li><router-link class="sub-item" to="/options/tariffs/">Тарифы</router-link></li>
-                    <li><router-link class="sub-item" to="/options/accessories/">Аксессуары</router-link></li>
+                    <li><router-link class="sub-item" to="/settings/main/">Точка проката</router-link></li>
+                    <li><router-link class="sub-item" to="/settings/general/">Общие</router-link></li>
+                    <li><router-link class="sub-item" to="/settings/tariffs/">Тарифы</router-link></li>
+                    <li><router-link class="sub-item" to="/settings/accessories/">Аксессуары</router-link></li>
                 </ul>
             </li>
             <li><router-link class="router-link" to="/repairs">Ремонт</router-link></li>
