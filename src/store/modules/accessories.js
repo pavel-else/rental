@@ -46,8 +46,8 @@ export default {
                 })
             });            
         },
-        setGeneralSettings({ commit, getters }, settings) {
-            console.log('dispatch: setGeneralSettings', settings);
+        setAccessory({ commit, getters }, accessory) {
+            console.log('dispatch: setAccessory', accessory);
 
             return new Promise((resolve, reject) => {
                 axios({
@@ -55,17 +55,38 @@ export default {
                     url: this.getters.url,
                     data: {
                         queue: [
-                            { cmd: 'setGeneralSettings', value: settings },
-                            { cmd: 'getGeneralSettings'}
+                            { cmd: 'setAccessory', value: accessory },
+                            { cmd: 'getAccessories'}
                         ],
                         token: localStorage.getItem('user-token')
                     },                 
                 })
                 .then(r => {
                     console.log(r);
-                    commit('generalSettings', r.data.general_settings);
+                    commit('accessories', r.data.accessories);
+                });
+            });
+        },
+        deleteAccessory({ commit, getters }, id_rent) {
+            console.log('dispatch: deleteAccessory', id_rent);
+
+            return new Promise((resolve, reject) => {
+                axios({
+                    method: 'post',
+                    url: this.getters.url,
+                    data: {
+                        queue: [
+                            { cmd: 'deleteAccessory', value: id_rent },
+                            { cmd: 'getAccessories'}
+                        ],
+                        token: localStorage.getItem('user-token')
+                    },                 
                 })
-            })            
+                .then(r => {
+                    console.log(r);
+                    commit('accessories', r.data.accessories);
+                })
+            });
         }
     }
 }

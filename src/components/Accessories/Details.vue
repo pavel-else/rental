@@ -65,10 +65,7 @@
         },
         methods: {
             save() {
-                this.$store.dispatch('send', [
-                    { cmd: 'setAccessory', value: this.accessory },
-                ]);
-
+                this.$store.dispatch('setAccessory', this.accessory);
                 this.$emit('close');
             },
             close() {                
@@ -83,17 +80,13 @@
             },
             remove() {
                 if (confirm(`Вы действительно хотите удалить тариф '${ this.accessory.name }'?`)) {
-                    this.$store.dispatch('send', {
-                        cmd: 'deleteAccessory',
-                        value: this.accessory.id_rent
-                    });
+                    this.$store.dispatch('deleteAccessory', this.accessory.id_rent);
                     this.$emit('close');
                 }
             },
 
             onChange(e) {
                 e.preventDefault();
-
                 this.change = true;
             }
         }
