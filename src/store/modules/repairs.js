@@ -2,26 +2,35 @@ import axios from 'axios';
 
 export default {
     state: {
-        repairs: []
+        repairs: [],
+        repairTypes: []
     },
     getters: {
         repairs(state) {
             return state.repairs;
+        },
+        repairTypes(state) {
+            return state.repairTypes;
         }
     },
     mutations: {
-        SET_REPAIRS(state, repairs) {
+        repairs(state, repairs) {
+            console.log('commit: repairs', repairs);
             state.repairs = repairs;
-            console.log('set repairs');
+        },
+        repairTypes(state, repairTypes) {
+            console.log('commit: repairTypes', repairTypes);
+            state.repairTypes = repairTypes;
         }
     },
     actions: {
-        GET_REPAIRS({ dispatch, commit, getters }) {
-            console.log('GET_REPAIRS');
+        getRepairs({ dispatch, commit, getters }) {
+            console.log('dispatch: getRepairs');
 
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getRepairs' },
+                    { cmd: 'getRepairTypes' },
                     { cmd: 'getProducts' },
                 ];
                 const url = getters.url;
@@ -37,8 +46,9 @@ export default {
                 })
                 .then(resp => {
                     console.log(resp)
-                    commit('SET_REPAIRS', resp.data.repairs);
-                    commit('setProducts', resp.data.products);
+                    commit('repairs', resp.data.repairs);
+                    commit('repairTypes', resp.data.repair_types);
+                    commit('products', resp.data.products);
                     resolve(true);                        
                 }).
                 catch(err => {

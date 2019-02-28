@@ -1,5 +1,5 @@
 <template>
-    <div class="option option-products">
+    <div class="products">
         <template v-if="products && products.length">
             <table>
                 <tr v-for="product in products" :key="product.id_rent" @click="onClick(product)">
@@ -91,15 +91,13 @@
                     status:     'active',
                     tariff_default: null,
                     tariff_ids: null,
-                    type: 1
+                    type: 1,
                 }
-
-                // console.log('product', this.product)
             }
         },
         computed: {
             products() {
-                return this.$store.getters.products
+                return this.$store.getters.products;
             }
         }
         
@@ -124,8 +122,9 @@
         text-align: center;
     }
 
-    .option-products {
+    .products {
         display: flex;
+        width: 700px;
     }
 
     .products__button--add {
