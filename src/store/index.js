@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-import products        from './products'
 import subOrders       from './subOrders'
 import customers       from './Customers/customers'
 import orders          from './orders'
@@ -17,6 +16,7 @@ import Repairs          from './modules/repairs';
 import GeneralSettings from './modules/generalSettings';
 import Accessories     from './modules/accessories';
 import Tariffs         from './modules/tariffs';
+import Products        from './modules/products';
 
 
 
@@ -25,7 +25,6 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     // strict: true,
     modules: {
-        products,
         subOrders,
         customers,
         orders,
@@ -39,6 +38,7 @@ const store = new Vuex.Store({
         GeneralSettings,
         Accessories,
         Tariffs,
+        Products,
     },
 
     actions: {

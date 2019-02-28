@@ -1,26 +1,28 @@
 import axios from 'axios';
-export default {
+export default {  
     state: {
-        tariffs: []    
+        products: []
     },
     getters: {
-        tariffs(state) {
-            return state.tariffs;
+        products(state) {
+            return state.products;
         }
     },
     mutations: {
-        tariffs(state, tariffs) {
-            console.log('commit: set tariffs', tariffs);
-            state.tariffs = tariffs;
+        products(state, products) {
+            console.log('commit: set products', products);
+            state.products = products;
         }
     },
     actions: {
-        getTariffs({ commit, getters }) {
-            console.log('dispatch: getTariffs');
+        getProducts({ commit, getters }) {
+            console.log('dispatch: getProducts');
 
             return new Promise((resolve, reject) => {
                 const queue = [
-                    { cmd: 'getTariffs' }
+                        { cmd: 'getProducts'},
+                        { cmd: 'getTariffs'},
+                        { cmd: 'getRentalPointInfo'}
                 ];
                 const url = getters.url;
                 const token = localStorage.getItem('user-token');
@@ -33,9 +35,11 @@ export default {
                     },
                     method: 'POST',
                 })
-                .then(resp => {
-                    console.log(resp);
-                    commit('tariffs', resp.data.tariffs);
+                .then(r => {
+                    console.log(r);
+                    commit('rentalPointInfo', r.data.rental_point_info);
+                    commit('tariffs', r.data.tariffs);
+                    commit('products', r.data.products);
                     resolve(true);                        
                 }).
                 catch(err => {
@@ -44,8 +48,8 @@ export default {
                 })
             });            
         },
-        setTariff({ commit, getters }, tariff) {
-            console.log('dispatch: setTariff', tariff);
+        setProduct({ commit, getters }, product) {
+            console.log('dispatch: setProduct', product);
 
             return new Promise((resolve, reject) => {
                 axios({
@@ -53,20 +57,24 @@ export default {
                     url: this.getters.url,
                     data: {
                         queue: [
-                            { cmd: 'setTariff', value: tariff },
-                            { cmd: 'getTariffs'}
+                            { cmd: 'setProduct', value: product },
+                            { cmd: 'getProducts'},
+                            { cmd: 'getTariffs'},
+                            { cmd: 'getRentalPointInfo'}
                         ],
                         token: localStorage.getItem('user-token')
                     },                 
                 })
                 .then(r => {
                     console.log(r);
+                    commit('rentalPointInfo', r.data.rental_point_info);
                     commit('tariffs', r.data.tariffs);
-                })
+                    commit('products', r.data.products);
+                });
             });
         },
-        deleteTariff({ commit, getters }, id_rent) {
-            console.log('dispatch: deleteTariff', id_rent);
+        deleteProduct({ commit, getters }, id_rent) {
+            console.log('dispatch: deleteProduct', id_rent);
 
             return new Promise((resolve, reject) => {
                 axios({
@@ -74,15 +82,19 @@ export default {
                     url: this.getters.url,
                     data: {
                         queue: [
-                            { cmd: 'deleteTariff', value: id_rent },
-                            { cmd: 'getTariffs'}
+                            { cmd: 'deleteProduct', value: id_rent },
+                            { cmd: 'getProducts'},
+                            { cmd: 'getTariffs'},
+                            { cmd: 'getRentalPointInfo'},
                         ],
                         token: localStorage.getItem('user-token')
                     },                 
                 })
                 .then(r => {
                     console.log(r);
+                    commit('rentalPointInfo', r.data.rental_point_info);
                     commit('tariffs', r.data.tariffs);
+                    commit('products', r.data.products);
                 })
             });
         }

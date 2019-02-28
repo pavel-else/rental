@@ -10,6 +10,7 @@
                     <li><router-link class="sub-item" to="/settings/main/">Точка проката</router-link></li>
                     <li><router-link class="sub-item" to="/settings/general/">Общие</router-link></li>
                     <li><router-link class="sub-item" to="/settings/tariffs/">Тарифы</router-link></li>
+                    <li><router-link class="sub-item" to="/settings/products/">Товары</router-link></li>
                     <li><router-link class="sub-item" to="/settings/accessories/">Аксессуары</router-link></li>
                 </ul>
             </li>

@@ -1,6 +1,6 @@
 <template>
     <div class="option option-products">
-        <template v-if="products.length">
+        <template v-if="products && products.length">
             <table>
                 <tr v-for="product in products" :key="product.id_rent" @click="onClick(product)">
                     <td class="product__td--status">
@@ -48,6 +48,9 @@
             Details,
             Bike,
             Photo
+        },
+        beforeCreate() {
+            this.$store.dispatch('getProducts');
         },
         data() {
             return {

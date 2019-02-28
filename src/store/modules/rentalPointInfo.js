@@ -29,7 +29,7 @@ export default {
     },
     mutations: {
         rentalPointInfo(state, rentalPointInfo) {
-            console.log('set to state rentalPointInfo', rentalPointInfo);
+            console.log('commit: rentalPointInfo', rentalPointInfo);
             for (let i in rentalPointInfo) {
                 state[i] = rentalPointInfo[i];
             }
@@ -56,7 +56,7 @@ export default {
                 })
                 .then(resp => {
                     console.log(resp)
-                    commit('rentalPointInfo', resp.data.rental_point_info[0]);
+                    commit('rentalPointInfo', resp.data.rental_point_info);
                     resolve(true);                        
                 }).
                 catch(err => {

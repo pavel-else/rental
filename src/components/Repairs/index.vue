@@ -1,6 +1,6 @@
 <template>
     <div class="repairs">
-        <Menu :selectedItem="type" style="margin-right: 20px" @selectItem="selectType($event)"></Menu>
+        <!-- <Menu :selectedItem="type" style="margin-right: 20px" @selectItem="selectType($event)"></Menu> -->
         <TableData :type="type"></TableData>
     </div>
 </template>

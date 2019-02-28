@@ -46,7 +46,7 @@ export default {
                     .then(r => {
                         console.log('front <-- back', r)  
 
-                        commit('setProducts',      r.data.products);
+                        commit('products',      r.data.products);
                         commit('setHistory',       r.data.history);
                         commit('setOptions',       r.data.options);
                         commit('tariffs',       r.data.tariffs);
@@ -55,7 +55,7 @@ export default {
                         commit('setSubOrders',     r.data.sub_orders);
                         commit('setOrders',        r.data.orders);
                         commit('accessories',   r.data.accessories);
-                        commit('rentalPointInfo', r.data.rental_point_info[0]);
+                        commit('rentalPointInfo', r.data.rental_point_info);
 
                         commit('INIT_APP_STATUS', 'inited');
                         console.log('INIT_APP');

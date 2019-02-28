@@ -210,39 +210,29 @@
             },
 
             save() {
-                this.product.updated = Math.floor(Date.now() / 1000)
-
-                console.log(this.product)
+                this.product.updated = Math.floor(Date.now() / 1000);
 
                 if (!this.check()) {
-                    return
+                    return;
                 }
 
-                this.$store.dispatch('send', {
-                    cmd: 'setProduct',
-                    value: this.product
-                })
-
-                this.$emit('close')
+                this.$store.dispatch('setProduct', this.product);
+                this.$emit('close');
             },
             close() {
                 if (!this.change) {
-                    this.$emit('close')
-                    return
+                    this.$emit('close');
+                    return;
                 }
 
                 if (confirm('Изменения не сохранены. Вы уверены, что хотите выйти?')) {
-                    this.$emit('close')
+                    this.$emit('close');
                 }
             },
             remove() {
                 if (confirm('Вы уверены, что хотите безвозвратно удалить товар?')) {
-                    this.$store.dispatch('send', {
-                        cmd: 'deleteProduct',
-                        value: this.product.id_rent
-                    })
-
-                    this.$emit('close')
+                    this.$store.dispatch('deleteProduct', this.product.id_rent);
+                    this.$emit('close');
                 }
             },
 
