@@ -13,16 +13,16 @@
                 <th class="repairs__th">Завершение</th>
             </tr>
             
-            <tr class="repairs__tr" v-for="item in getRepairs()" :key="item.id_rent" @click="changeRepair(item)">
-                <td class="repairs__td col--sign"><span class="sign sign--warn">{{ is_plan(item) }}</span></td>
-                <td class="repairs__td col--name">{{ getName(item) }}</td>
-                <td class="repairs__td">{{ getType(item) }} Замена колеса</td>
+            <tr class="repairs__tr" v-for="item in planRepairs" :key="item.id_rent" @click="changeRepair(item)">
+                <!-- <td class="repairs__td col--sign"><span class="sign" :class="getSignClass(item)"></span></td> -->
+                <td class="repairs__td col--name">{{ item.product_name }}</td>
+<!--                 <td class="repairs__td">{{ getType(item) }}</td>
                 <td class="repairs__td repairs__td--cost">{{ getCost(item.cost_comp) }}</td>
                 <td class="repairs__td repairs__td--cost">{{ getCost(item.cost_repair) }}</td>
                 <td class="repairs__td col--note" >{{ formNote(item.note) }}</td>
                 <td class="repairs__td col--start">{{ (item.start_time) }}</td>
-                <td class="repairs__td"><span v-if="item.end_time">{{ item.end_time }}</span></td>
-            </tr>
+                <td class="repairs__td"><span v-if="item.end_time">{{ item.end_time }}</span></td> -->
+            </tr> 
         </table>
     </div>
 </template>
@@ -32,17 +32,93 @@
         beforeCreate() {
             this.$store.dispatch('getRepairs')
             .then(() => {
-                this.repairs = this.sortByStart(copy(this.$store.getters.repairs));
+                this.compleateRepairs = copy(this.$store.getters.repairs).filter(this.filter);
+                this.planRepairs = this.makePlanRepairs().filter(this.filter);
             });
         },
         data() {
             return {
-                repairs: [],
+                compleateRepairs: [],
+                planRepairs: [],
                 filter: i => i,
             }
         },
         methods: {
+            makePlanRepairs() {
+                const products = copy(this.$store.getters.products);
+                const repairs = copy(this.$store.getters.repairs);
+                const repairTypes = copy(this.$store.getters.repairTypes);
+
+                // Функция возвращает последний ремонт
+                const getLastRepair = (product_id, repairType) => {
+                    const filter = repairs.filter(i => i.product_id == product_id && i.repair_type == repairType && i.end_time);
+
+                    const lastRepair = filter.reduce((acc, repair) => {
+                        if (acc === null) {
+                            acc = repair;
+                        }
+
+                        // Выбираем ремонт с наибольшим эндтайиом
+                        if (Date.parse(repair.end_time) > Date.parse(acc.end_time)) {
+                            acc = repair;
+                        }
+
+                        return acc;
+                    }, null);
+
+                    return lastRepair;
+                };
+
+
+                // Перебор всех возможных типов
+                // Нахожу последний ремонт по этому типу
+                // Проверяю пробег - не пора ли делать плановый ремонт?
+                // если да, добавляю в список
+                const getPlanRepairs = (product) => {
+                    const list = repairTypes.reduce((acc, repairType) => {
+
+                        // Находим последний ремонт по заданному типу
+                        const lastRepair = getLastRepair(product.id_rent, repairType.id_rent);
+
+                        const diff = product.mileage - (lastRepair ? lastRepair.mileage : 0);
+
+                        if (diff >= repairType.period) {
+                            acc.push(repairType, product);
+                        }
+
+                        return acc;
+                    }, []);
+
+                    return list.map(i => remakeToRepair(i));
+                };
+
+                const remakeToRepair = (type, product) => {
+                    return {
+                        product_name: product.name,
+                        repair_type: type.id_rent,
+                        cost_comp: 0,
+                        cost_comp: 0,
+                        note: '',
+                        start_time: null,
+                        end_time: null
+                    };
+                };
+
+                // Перебираю все товары, клею списки плановых ремонтов в один большой список
+                const planRepairs = products.reduce((acc, product) => {
+                    const item = getPlanRepairs(product);
+
+                    if (item && item.length > 0) {
+                        acc = [...acc, ...item];
+                    }
+
+                    return acc;
+                }, []);                
+
+                return planRepairs;
+            },
             changeRepair() {},
+
             getRepairs() {
                 return this.repairs.filter(this.filter);
             },
@@ -58,7 +134,7 @@
             },
             getType(item) {
                 const type = this.$store.getters.repairTypes.find(i => i.id_rent === item.repair_type);
-                return type.name;
+                return type ? type.name : '';
             },
             search() {
                 const text = event.target.value;
@@ -75,11 +151,16 @@
                     return Date.parse(b.start_time) - Date.parse(a.start_time);
                 }) : [];
             },
-            is_plan(repair) {
-                const product = this.$store.getters.products.find(i => i.id_rent === repair.product_id);
-                console.log(product)
+            getSignClass(item) {
+                const className = item && item.sign ? 'sign--' + item.sign : false;
+                return {className: true}
             }
         },
+        computed: {
+            repairs() {
+                return [...this.planRepairs, ...this.compleateRepairs];
+            }
+        }
     }
 </script>
 <style scoped>
@@ -109,5 +190,8 @@
     }
     .sign--warn {
         border-color: orange;
+    }
+    .sign--act {
+        border-color: green;
     }
 </style>
