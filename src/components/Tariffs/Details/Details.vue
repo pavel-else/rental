@@ -215,7 +215,7 @@
 
     .tariff__type-label {
         padding: 5px;
-        opacity: 0.2;
+        opacity: 0.5;
         font-size: 12px;
         font-weight: bold;
     }
