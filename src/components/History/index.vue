@@ -14,7 +14,7 @@
             <tr v-for="item in history" :key="item.order_id" @click="onClick(item)">
                 <td class="">{{ item.order_id }}</td>
                 <td class="">{{ item.customer_name }}</td>
-                <td class="">{{ item.start_time }}</td>
+                <td class="history__td--start">{{ item.short_start_time }}</td>
 
                 <td class="history__td history__td--time">{{ item.play_time }}</td>
                 <td>
@@ -75,6 +75,53 @@
             },
             onClose() {
                 this.show = false
+            },
+            shortDate(date) {
+                if (!date || isNaN(Date.parse(date) || Date.parse(date) < 0)) {
+                    console.log('Date.parse error!');
+                    return false;
+                }
+
+                const getMonth = (date) => {
+                    const position = date.getMonth();
+                    const months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+                    const months2 = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+
+                    return months2[position];
+                };
+
+                const getYear = (date) => {
+                    const fullYear = String(date.getFullYear());
+                    return fullYear.substr(2, 2);
+                };
+
+                const getHours = (date) => {
+                    const hours = date.getHours();
+                    return 0 < hours && hours < 10 ? `0${ hours }` : `${ hours }`;
+                };
+                const getMinutes = (date) => {
+                    const minutes = date.getMinutes();
+                    return 0 < minutes && minutes < 10 ? `0${ minutes }` : `${ minutes }`;
+                };
+
+                const dateObject = new Date(date);
+
+                const y = getYear(dateObject);
+                const m = getMonth(dateObject);
+                const d = dateObject.getDate();
+                const h = getHours(dateObject);
+                const min = getMinutes(dateObject);
+
+                const today = new Date();
+
+                if (today.getDate() === d) {
+                    return `${ h }:${ min }`;
+                }
+                if (today.getDate() === d - 1) {
+                    return `вчера ${ h }:${ min }`;
+                }
+
+                return `${ d }.${ m }.${ y }  ${ h }:${ min }`;
             }
         },
         computed: {
@@ -89,7 +136,9 @@
                 history = history.map(i => {
                     i.subOrders = this.$store.getters.subOrders.filter(j => j.order_id === i.order_id)
                     i.end_time = Math.max(...i.subOrders.map(j => Date.parse(j.end_time) || 0)) || Date.now()
-                    i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time)) : 0
+                    i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time), { sec: false }) : 0
+
+                    i.short_start_time = this.shortDate(i.start_time);
 
                     const reduce = i.subOrders.reduce((acc, item) => {
                         acc.access += +item.bill_access
@@ -123,6 +172,9 @@
         padding: 5px 10px;
     }
     .history__td--time {
+        text-align: right;
+    }
+    .history__td--start {
         text-align: right;
     }
 </style>

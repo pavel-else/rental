@@ -86,7 +86,7 @@ const store = new Vuex.Store({
                 .then(r => {
                     console.log('front <-- back', r)  
 
-                    commit('setProducts',      r.data.products)
+                    commit('products',      r.data.products)
                     commit('setHistory',       r.data.history)
                     commit('setOptions',       r.data.options)
                     commit('tariffs',       r.data.tariffs)
