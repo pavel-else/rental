@@ -14,21 +14,19 @@
                 <tr>
                     <td>Начало ремонта</td>
                     <td>
-                        <span v-if="repair.end_time">{{ short(repair.start_time) }}</span>
-                        <input v-else type="date" :min="startMin" :value="startMin">
+                        <span>{{ repair.start_time }}</span>
                     </td>
                 </tr>
                 <tr v-if="repair.end_time">
                     <td>Конец ремонта</td>
                     <td>
-                        <span v-if="repair.end_time">{{ short(repair.end_time, true) }}</span>
+                        <span v-if="repair.end_time">{{ repair.end_time }}</span>
                     </td>
                 </tr>
                 <tr>
                     <td>Тип ремонта</td>
                     <td>
-                        <span v-if="repair.end_time">{{ repair.crash_list }}</span>
-                        <input v-else>
+                        <span>{{ repair.repair_type }}</span>
                     </td>
                 </tr>
                 <tr>
@@ -81,12 +79,12 @@
                 this.$emit('close');
             },
             save() {
-                this.$emit('save', this.repair);
+                this.$store.dispatch('setRepair', this.repair);
                 this.$emit('close');
             },
             stop() {
                 this.repair.end_time_timestamp = Date.now();
-                this.$emit('stop', this.repair);
+                this.$store.dispatch('stopRepair', this.repair);;
                 this.$emit('close');
             },
             short(date) {

@@ -57,13 +57,14 @@ export default {
                 })
             });
         },
-        SET_REPAIR({ commit, getters }, repair) {
-            console.log('SET_REPAIR');
+        setRepair({ commit, getters }, repair) {
+            console.log('dispatch: setRepair');
 
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'setRepair', value: repair },
                     { cmd: 'getRepairs' },
+                    { cmd: 'getRepairTypes' },
                     { cmd: 'getProducts' },
                 ];
                 const url = getters.url;
@@ -79,8 +80,9 @@ export default {
                 })
                 .then(resp => {
                     console.log(resp);
-                    commit('SET_REPAIRS', resp.data.repairs);
-                    commit('setProducts', resp.data.products);
+                    commit('repairs', resp.data.repairs);
+                    commit('repairTypes', resp.data.repair_types);
+                    commit('products', resp.data.products);
                     resolve(resp);                        
                 }).
                 catch(err => {
@@ -89,13 +91,14 @@ export default {
                 });
             });
         },
-        STOP_REPAIR({ commit, getters }, repair) {
-            console.log('STOP_REPAIR');
+        stopRepair({ commit, getters }, repair) {
+            console.log('dispatch: stopRepair');
 
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'stopRepair', value: repair },
                     { cmd: 'getRepairs' },
+                    { cmd: 'getRepairTypes' },
                     { cmd: 'getProducts' },
                 ];
                 const url = getters.url;
@@ -111,8 +114,9 @@ export default {
                 })
                 .then(resp => {
                     console.log(resp);
-                    commit('SET_REPAIRS', resp.data.repairs);
-                    commit('setProducts', resp.data.products);
+                    commit('repairs', resp.data.repairs);
+                    commit('repairTypes', resp.data.repair_types);
+                    commit('products', resp.data.products);
                     resolve(resp);                        
                 }).
                 catch(err => {
