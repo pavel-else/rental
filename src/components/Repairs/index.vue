@@ -2,54 +2,127 @@
     <div class="repairs">
         <input type="" name="" placeholder="Начните вводить название" @input="search()">
 
-        <table class="repairs__table" v-if="repairs && repairs.length > 0">
+        <table class="repairs__table">
             <tr class="repairs__first-line">
-                <th class="repairs__th col--sign"></th>
-                <th class="repairs__th col--name">Название</th>
-                <th class="repairs__th">Тип</th>
-                <th class="repairs__th repairs__th--cost" colspan="2">Стоимость<br>ремонта</th>
-                <th class="repairs__th">Примечание</th>
-                <th class="repairs__th col--start">Начало</th>
-                <th class="repairs__th">Завершение</th>
+                <th></th>
+                <th>Название</th>
+                <th>Тип</th>
+                <th title="Текущий / Последнего ремонта">Пробег</th>
+                <th>Стоимость<br>ремонта</th>
+                <th>Примечание</th>
+                <th>Начало</th>
+                <th>Конец</th>
             </tr>
             
-            <tr class="repairs__tr" v-for="item in planRepairs" :key="item.id_rent" @click="changeRepair(item)">
-                <!-- <td class="repairs__td col--sign"><span class="sign" :class="getSignClass(item)"></span></td> -->
+            <tr class="repairs__tr" v-for="item in repairs.plan.filter(filt)" @click="changeRepair(item)">
+                <td class="repairs__td col--sign"><span class="sign sign--warn"></span></td>
                 <td class="repairs__td col--name">{{ item.product_name }}</td>
-<!--                 <td class="repairs__td">{{ getType(item) }}</td>
-                <td class="repairs__td repairs__td--cost">{{ getCost(item.cost_comp) }}</td>
-                <td class="repairs__td repairs__td--cost">{{ getCost(item.cost_repair) }}</td>
-                <td class="repairs__td col--note" >{{ formNote(item.note) }}</td>
-                <td class="repairs__td col--start">{{ (item.start_time) }}</td>
-                <td class="repairs__td"><span v-if="item.end_time">{{ item.end_time }}</span></td> -->
-            </tr> 
+                <td class="repairs__td">{{ item.repair_type_name }}</td>
+                <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"> / {{ item.last_repair_mileage }}</span></td>
+                <td class="repairs__td"></td>
+                <td class="repairs__td col--note"></td>
+                <td class="repairs__td col--start"></td> 
+            </tr>
+
+            <tr>
+                <td><br></td>
+            </tr>
+            <tr v-for="item in currentRepairs.filter(filt)">
+                <td class="repairs__td col--sign"><span class="sign sign--act"></span></td>
+                <td class="repairs__td col--name">{{ item.product_name }}</td>
+                <td class="repairs__td">{{ item.repair_type_name }}</td>
+                <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"> / {{ item.last_repair_mileage }}</span></td>
+                <td class="repairs__td">{{ item.cost_comp }} / {{ item.cost_repair }}</td>
+                <td class="repairs__td col--note">{{ item.note }}</td>
+                <td class="repairs__td col--start">{{item.start_time }}</td>                
+            </tr>
+
+            <tr>
+                <td><br></td>
+            </tr>
+            <tr v-for="item in compleatedRepairs.filter(filt)">
+                <td class="repairs__td col--sign"><span class="sign sign--end"></span></td>
+                <td class="repairs__td col--name">{{ item.product_name }}</td>
+                <td class="repairs__td">{{ item.repair_type_name }}</td>
+                <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"> / {{ item.last_repair_mileage }}</span></td>
+                <td class="repairs__td">{{ item.cost_comp }} / {{ item.cost_repair }}</td>
+                <td class="repairs__td col--note">{{ item.note }}</td>
+                <td class="repairs__td col--start">{{item.start_time }}</td>                
+                <td class="repairs__td col--start">{{item.end_time }}</td>                
+            </tr>
         </table>
     </div>
 </template>
 <script>
     import copy from '@/functions/copy';
+    import time from '@/functions/time';
     export default {
         beforeCreate() {
             this.$store.dispatch('getRepairs')
             .then(() => {
-                this.compleateRepairs = copy(this.$store.getters.repairs).filter(this.filter);
-                this.planRepairs = this.makePlanRepairs().filter(this.filter);
+                this.repairs.plan = this.planRepairs;
+                this.repairs.current = this.currentRepairs;
+                this.repairs.compleate = this.compleatedRepairs;
             });
         },
         data() {
             return {
-                compleateRepairs: [],
-                planRepairs: [],
-                filter: i => i,
+                repairs: {
+                    compleate: [],
+                    current: [],
+                    plan: []
+                },
+                filt: i => i,
             }
         },
         methods: {
-            makePlanRepairs() {
+            filter(repairs) {
+                return repairs.filter(this.filt);
+            },
+            changeRepair() {},
+            getProductName(product_id) {
+                const product = this.$store.getters.products.find(i => i.id_rent === product_id);
+                return product ? product.name : '';
+            },
+            getRepairTypeName(id_rent) {
+                const repairType = this.$store.getters.repairTypes.find(i => i.id_rent === id_rent);
+                return repairType ? repairType.name : '';
+            },
+            getCost(cost) {
+                return cost && cost > 0 ? cost : ''; 
+            },
+            formNote(note) {
+                return note.length > 20 ? note.substr(0, 19) + '...' : note;
+            },
+
+
+            search() {
+                const text = event.target.value;
+
+                this.filt = repair => {
+                    const product = this.$store.getters.products.find(i => i.id_rent === repair.product_id);
+                    const name = product ? product.name : '';
+
+                    return name.toUpperCase().indexOf(text.toUpperCase()) >= 0;
+                };
+            },
+            sortByStart(repairs) {
+                return repairs ? repairs.sort((a, b) => {
+                    return Date.parse(b.start_time) - Date.parse(a.start_time);
+                }) : [];
+            },
+        },
+        filters: {
+            
+        },
+        computed: {
+            planRepairs() {
                 const products = copy(this.$store.getters.products);
                 const repairs = copy(this.$store.getters.repairs);
                 const repairTypes = copy(this.$store.getters.repairTypes);
 
-                // Функция возвращает последний ремонт
+                // Функция возвращает последний ремонт для определенного товара по определенному типу поломки
+                // 
                 const getLastRepair = (product_id, repairType) => {
                     const filter = repairs.filter(i => i.product_id == product_id && i.repair_type == repairType && i.end_time);
 
@@ -69,42 +142,36 @@
                     return lastRepair;
                 };
 
-
                 // Перебор всех возможных типов
                 // Нахожу последний ремонт по этому типу
                 // Проверяю пробег - не пора ли делать плановый ремонт?
                 // если да, добавляю в список
                 const getPlanRepairs = (product) => {
                     const list = repairTypes.reduce((acc, repairType) => {
-
                         // Находим последний ремонт по заданному типу
                         const lastRepair = getLastRepair(product.id_rent, repairType.id_rent);
 
                         const diff = product.mileage - (lastRepair ? lastRepair.mileage : 0);
 
                         if (diff >= repairType.period) {
-                            acc.push(repairType, product);
+                            acc.push({
+                                product_id: product.id_rent,
+                                product_name: product.name,
+                                repair_type: repairType.id_rent,
+                                repair_type_name: repairType.name,
+                                mileage: product.mileage,
+                                last_repair: lastRepair ? lastRepair.end_time : '',
+                                last_repair_mileage: lastRepair ? lastRepair.mileage : ''
+                            });
                         }
 
                         return acc;
                     }, []);
 
-                    return list.map(i => remakeToRepair(i));
+                    return list;
                 };
 
-                const remakeToRepair = (type, product) => {
-                    return {
-                        product_name: product.name,
-                        repair_type: type.id_rent,
-                        cost_comp: 0,
-                        cost_comp: 0,
-                        note: '',
-                        start_time: null,
-                        end_time: null
-                    };
-                };
-
-                // Перебираю все товары, клею списки плановых ремонтов в один большой список
+                // Перебираю все товары, для каждого генерирую список плановых ремонтов
                 const planRepairs = products.reduce((acc, product) => {
                     const item = getPlanRepairs(product);
 
@@ -113,52 +180,42 @@
                     }
 
                     return acc;
-                }, []);                
+                }, []);
 
-                return planRepairs;
-            },
-            changeRepair() {},
+                const formatToRepairs = (repairTypes) => {
+                    return repairTypes ? repairTypes.map(i => {
+                        return i;
+                    }) : [];
+                };
 
-            getRepairs() {
-                return this.repairs.filter(this.filter);
+                return formatToRepairs(planRepairs);                
             },
-            getName(item) {
-                const product = this.$store.getters.products.find(i => i.id_rent === item.product_id);
-                return product ? product.name : '';
+            currentRepairs() {
+                const repairs = this.$store.getters.repairs;
+                const filter = copy(repairs.filter(i => !i.end_time));
+                return filter.map(i => {
+                    i.product_name = this.getProductName(i.product_id);
+                    i.repair_type_name = this.getRepairTypeName(i.repair_type);
+                    i.note = this.formNote(i.note);
+                    i.start_time = time('d.m.y', i.start_time);
+                    i.end_time = i.end_time ? time('d.m.y', i.end_time) : '';
+                    return i;
+                });
             },
-            getCost(cost) {
-                return cost && cost > 0 ? cost : ''; 
-            },
-            formNote(note) {
-                return note.length > 20 ? note.substr(0, 19) + '...' : note;
-            },
-            getType(item) {
-                const type = this.$store.getters.repairTypes.find(i => i.id_rent === item.repair_type);
-                return type ? type.name : '';
-            },
-            search() {
-                const text = event.target.value;
+            compleatedRepairs() {
+                const repairs = this.$store.getters.repairs;
+                const filter = copy(repairs.filter(i => i.end_time));
+                const sort = this.sortByStart(filter);
+                const map = sort.map(i => {
+                    i.product_name = this.getProductName(i.product_id);
+                    i.repair_type_name = this.getRepairTypeName(i.repair_type);
+                    i.note = this.formNote(i.note);
+                    i.start_time = time('d.m.y', i.start_time);
+                    i.end_time = i.end_time ? time('d.m.y', i.end_time) : '';
+                    return i;
+                });
 
-                this.filter = repair => {
-                    const product = this.$store.getters.products.find(i => i.id_rent === repair.product_id);
-                    const name = product ? product.name : '';
-
-                    return name.toUpperCase().indexOf(text.toUpperCase()) >= 0 || repair.cost_comp.toUpperCase().indexOf(text.toUpperCase()) >= 0 || repair.cost_repair.toUpperCase().indexOf(text.toUpperCase()) >= 0;
-                }
-            },
-            sortByStart(repairs) {
-                return repairs ? repairs.sort((a, b) => {
-                    return Date.parse(b.start_time) - Date.parse(a.start_time);
-                }) : [];
-            },
-            getSignClass(item) {
-                const className = item && item.sign ? 'sign--' + item.sign : false;
-                return {className: true}
-            }
-        },
-        computed: {
-            repairs() {
-                return [...this.planRepairs, ...this.compleateRepairs];
+                return map;  
             }
         }
     }
@@ -185,7 +242,7 @@
         border: 1px solid;
         border-radius: 50%;
     }
-    .sign--fix {
+    .sign--end {
         border-color: red;
     }
     .sign--warn {
