@@ -8,7 +8,7 @@
                 <th></th>
                 <th>Название</th>
                 <th>Тип</th>
-                <th title="Текущий / Последнего ремонта">Пробег</th>
+                <th title="Текущий пробег в часах">Текущий пробег</th>
             </tr>
             
             <tr class="repairs__tr" v-for="item in repairs.plan.filter(filt)" @click="planToRepair(item)" :key="item.product_id + '_' + item.repair_type">
@@ -30,8 +30,7 @@
                 <th></th>
                 <th>Название</th>
                 <th>Тип</th>
-                <th>Пробег</th>
-                <th>Стоимость</th>
+                <th colspan="2">Стоимость комплектующих <br>и всего ремонта</th>
                 <th>Примечание</th>
                 <th>Начало</th>
             </tr>
@@ -39,8 +38,8 @@
                 <td class="repairs__td col--sign"><span class="sign sign--act"></span></td>
                 <td class="repairs__td col--name">{{ item.product_name }}</td>
                 <td class="repairs__td">{{ item.repair_type_name }}</td>
-                <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"> / {{ item.last_repair_mileage }}</span></td>
-                <td class="repairs__td">{{ item.cost_comp }} / {{ item.cost_repair }}</td>
+                <td class="repairs__td">{{ item.cost_comp }}</td>
+                <td class="repairs__td">{{ item.cost_repair }}</td>
                 <td class="repairs__td col--note">{{ item.note }}</td>
                 <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
             </tr>
@@ -52,8 +51,7 @@
                 <th></th>
                 <th>Название</th>
                 <th>Тип</th>
-                <th>Пробег</th>
-                <th>Стоимость</th>
+                <th colspan="2">Стоимость комплектующих <br>и всего ремонта</th>
                 <th>Примечание</th>
                 <th>Начало</th>
                 <th>Конец</th>
@@ -62,8 +60,8 @@
                 <td class="repairs__td col--sign"><span class="sign sign--end"></span></td>
                 <td class="repairs__td col--name">{{ item.product_name }}</td>
                 <td class="repairs__td">{{ item.repair_type_name }}</td>
-                <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"> / {{ item.last_repair_mileage }}</span></td>
-                <td class="repairs__td">{{ item.cost_comp }} / {{ item.cost_repair }}</td>
+                <td class="repairs__td">{{ item.cost_comp }}</td>
+                <td class="repairs__td">{{ item.cost_repair }}</td>
                 <td class="repairs__td col--note">{{ item.note }}</td>
                 <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
                 <td class="repairs__td col--start">{{ shortDate(item.end_time) }}</td>                
@@ -75,7 +73,6 @@
     </div>
 </template>
 <script>
-
     import copy from '@/functions/copy';
     import * as Time from '@/functions/Time';
     import Details from './Details';
@@ -303,16 +300,22 @@
 
     }
     .repairs__table {
-        outline: 1px solid #333;
+        /*outline: 1px solid #333;*/
+        border-collapse: collapse;
+        border: none;
         padding: 10px;
+    }
+    .repairs__td {
+        border: 1px solid #333;
+        padding: 5px;
     }
     .repairs tr:not(:first-child):hover {
         cursor: pointer;
-        outline: 1px solid #333;
-        padding: 5px 0;
+        background-color: #333;
     }
     .col--sign {
         width: 15px;
+        border: none;
     }
     .col--name {
         width: 150px;
