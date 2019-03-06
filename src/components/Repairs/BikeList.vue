@@ -53,7 +53,7 @@
             },
             shortDate(date) {
                 // return date;
-                return Time.format('DD.MM.YY', date);
+                return Time.format('DD MMMM YYYY', date);
             }
         },
         computed: {

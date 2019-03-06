@@ -109,6 +109,9 @@
 </script>
 <style scoped>
     .details {
+/*        display: flex;
+        flex-direction: column;
+        align-items: stretch;*/
         width: 400px;
         margin-top: 30px;
         margin-bottom: 100px;
@@ -116,5 +119,11 @@
     }
     .details td {
         padding: 5px;
+    }
+    .details input,
+    .details textarea,
+    .details select {
+        width: 100%;
+        box-sizing: border-box;
     }
 </style>

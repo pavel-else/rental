@@ -45,7 +45,7 @@
         color: rgba(255, 255, 255, 0.8);
     }
 
-    button, i, input, ul, li {
+    button, i, input, ul, li, textarea {
         font-family: Roboto Condensed;
         font-size: 14px;
     }
@@ -92,6 +92,10 @@
         border: 1px solid #333;
         color: rgba(255, 255, 255, 0.8);
         padding: 5px;
+    }
+
+    textarea {
+        resize: vertical;
     }
 
     .checkbox {
