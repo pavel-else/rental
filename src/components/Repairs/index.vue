@@ -11,7 +11,7 @@
                 <th title="Текущий / Последнего ремонта">Пробег</th>
             </tr>
             
-            <tr class="repairs__tr" v-for="item in repairs.plan.filter(filt)" @click="newRepair(item)">
+            <tr class="repairs__tr" v-for="item in repairs.plan.filter(filt)" @click="newRepair(item)" :key="item.product_id + '_' + item.repair_type">
                 <td class="repairs__td col--sign"><span class="sign sign--warn"></span></td>
                 <td class="repairs__td col--name">{{ item.product_name }}</td>
                 <td class="repairs__td">{{ item.repair_type_name }}</td>
@@ -36,7 +36,7 @@
                 <th>Начало</th>
                 <th>Конец</th>
             </tr>
-            <tr v-for="item in currentRepairs.filter(filt)" @click="changeRepair(item)">
+            <tr v-for="item in currentRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
                 <td class="repairs__td col--sign"><span class="sign sign--act"></span></td>
                 <td class="repairs__td col--name">{{ item.product_name }}</td>
                 <td class="repairs__td">{{ item.repair_type_name }}</td>
@@ -59,7 +59,7 @@
                 <th>Начало</th>
                 <th>Конец</th>
             </tr>
-            <tr v-for="item in compleatedRepairs.filter(filt)" @click="changeRepair(item)">
+            <tr v-for="item in compleatedRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
                 <td class="repairs__td col--sign"><span class="sign sign--end"></span></td>
                 <td class="repairs__td col--name">{{ item.product_name }}</td>
                 <td class="repairs__td">{{ item.repair_type_name }}</td>

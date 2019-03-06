@@ -7,7 +7,7 @@ export default (fullDate /*str*/, mod) => {
     const objectDate = new Date(fullDate)
 
     if (isNaN(objectDate)) {
-        writeLog('date.js, makeDate', 'error to parse date', {fullDate})
+        console.log('date.js, makeDate', 'error to parse date', { fullDate })
         return undefined
     }
 
@@ -18,12 +18,12 @@ export default (fullDate /*str*/, mod) => {
     const minutes = +objectDate.getMinutes() <= 9 ? `0${+objectDate.getMinutes()}` : objectDate.getMinutes();
 
     if (!year || !month || !day) {
-        writeLog('date.js, makeDate', 'error to parse date', { year, month, day });
+        console.log('date.js, makeDate', 'error to parse date', { year, month, day });
         return undefined;
     }
 
     if (mod && (!hours || !minutes)) {
-        writeLog('date.js, makeDate', 'error to parse hourse', { mod, hours });
+        console.log('date.js, makeDate', 'error to parse hourse', { mod, hours });
         return undefined;
     }
 

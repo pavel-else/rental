@@ -37,11 +37,11 @@ export default {
                     console.log(resp);
                     commit('tariffs', resp.data.tariffs);
                     resolve(true);                        
-                }).
-                catch(err => {
+                })
+                .catch(err => {
                     console.log(err)
                     reject(err);
-                })
+                });
             });            
         },
         setTariff({ commit, getters }, tariff) {
@@ -50,7 +50,7 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
-                    url: this.getters.url,
+                    url: getters.url,
                     data: {
                         queue: [
                             { cmd: 'setTariff', value: tariff },
@@ -63,6 +63,10 @@ export default {
                     console.log(r);
                     commit('tariffs', r.data.tariffs);
                 })
+                .catch(err => {
+                    console.log(err)
+                    reject(err);
+                });
             });
         },
         deleteTariff({ commit, getters }, id_rent) {
@@ -71,7 +75,7 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
-                    url: this.getters.url,
+                    url: getters.url,
                     data: {
                         queue: [
                             { cmd: 'deleteTariff', value: id_rent },
@@ -84,6 +88,10 @@ export default {
                     console.log(r);
                     commit('tariffs', r.data.tariffs);
                 })
+                .catch(err => {
+                    console.log(err)
+                    reject(err);
+                });
             });
         }
     }

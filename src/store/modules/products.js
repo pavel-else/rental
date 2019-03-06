@@ -54,7 +54,7 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
-                    url: this.getters.url,
+                    url: getters.url,
                     data: {
                         queue: [
                             { cmd: 'setProduct', value: product },
@@ -70,6 +70,10 @@ export default {
                     commit('rentalPointInfo', r.data.rental_point_info);
                     commit('tariffs', r.data.tariffs);
                     commit('products', r.data.products);
+                })
+                .catch(err => {
+                    console.log(err);
+                    reject(err);
                 });
             });
         },
@@ -79,7 +83,7 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
-                    url: this.getters.url,
+                    url: getters.url,
                     data: {
                         queue: [
                             { cmd: 'deleteProduct', value: id_rent },
@@ -96,6 +100,10 @@ export default {
                     commit('tariffs', r.data.tariffs);
                     commit('products', r.data.products);
                 })
+                .catch(err => {
+                    console.log(err);
+                    reject(err);
+                });
             });
         }
     }

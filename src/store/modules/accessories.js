@@ -52,7 +52,7 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
-                    url: this.getters.url,
+                    url: getters.url,
                     data: {
                         queue: [
                             { cmd: 'setAccessory', value: accessory },
@@ -64,6 +64,10 @@ export default {
                 .then(r => {
                     console.log(r);
                     commit('accessories', r.data.accessories);
+                })
+                .catch(err => {
+                    console.log(err);
+                    reject(err);
                 });
             });
         },
@@ -73,7 +77,7 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
-                    url: this.getters.url,
+                    url: getters.url,
                     data: {
                         queue: [
                             { cmd: 'deleteAccessory', value: id_rent },
@@ -86,6 +90,10 @@ export default {
                     console.log(r);
                     commit('accessories', r.data.accessories);
                 })
+                .catch(err => {
+                    console.log(err);
+                    reject(err);
+                });
             });
         }
     }

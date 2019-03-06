@@ -62,7 +62,7 @@ export default {
                 catch(err => {
                     console.log(err)
                     reject(err);
-                })
+                });
             });            
         },
         setGeneralSettings({ commit, getters }, settings) {
@@ -71,7 +71,7 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
-                    url: this.getters.url,
+                    url: getters.url,
                     data: {
                         queue: [
                             { cmd: 'setGeneralSettings', value: settings },
@@ -84,7 +84,11 @@ export default {
                     console.log(r);
                     commit('generalSettings', r.data.general_settings);
                 })
-            })            
+                .catch(err => {
+                    console.log(err);
+                    reject(err);
+                });
+            });
         }
     }
 }

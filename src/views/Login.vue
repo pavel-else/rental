@@ -34,6 +34,7 @@ export default {
         this.$router.push('/');
       })
       .catch((err) => {
+        console.log(err);
         this.message = 'Не верный логин или пароль!'
       });
     },

@@ -57,12 +57,12 @@ export default {
                 .then(resp => {
                     console.log(resp)
                     commit('rentalPointInfo', resp.data.rental_point_info);
-                    resolve(true);                        
-                }).
-                catch(err => {
+                    resolve(resp);                        
+                })
+                .catch(err => {
                     console.log(err)
                     reject(err);
-                })
+                });
             });
         },
         setRentalPointInfo({ commit, getters }, rentalPointInfo) {
@@ -70,7 +70,7 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
-                    url: this.getters.url,
+                    url: getters.url,
                     data: {
                         queue: [{ cmd: 'setRentalPointInfo', value: rentalPointInfo }],
                         token: localStorage.getItem('user-token')
@@ -80,6 +80,10 @@ export default {
                     console.log(r);
                     commit('rentalPointInfo', rentalPointInfo);
                 })
+                .catch(err => {
+                    console.log(err);
+                    reject(err);
+                });
             });
         },
     }

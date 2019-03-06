@@ -24,7 +24,7 @@ export default {
         }
     },
     actions: {
-        getRepairs({ dispatch, commit, getters }) {
+        getRepairs({ commit, getters }) {
             console.log('dispatch: getRepairs');
 
             return new Promise((resolve, reject) => {
