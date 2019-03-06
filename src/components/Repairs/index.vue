@@ -22,7 +22,7 @@
         <div class="caption-wrap">
             <h2 class="repairs__caption" @click="showCurrent = !showCurrent">В ремонте</h2>
             <small v-if="repairs.plan"> {{ repairs.current.length }} шт</small>
-            <button>+</button>            
+            <button @click="newRepair()">+</button>            
         </div>
 
         <table class="repairs__table" v-if="showCurrent">
@@ -71,8 +71,8 @@
             </tr>
         </table>
 
-        <Details v-if="showDetails" :payload="repair" @close="closeDetails()"></Details>
-        <BikeList v-if="showBikeList"></BikeList>
+        <Details v-if="showDetails" :payload="repair" @close="showDetails = false"></Details>
+        <BikeList v-if="showBikeList" @close="showBikeList = false" @select="addBikeToNewRepair($event)"></BikeList>
     </div>
 </template>
 <script>
@@ -90,9 +90,9 @@
             });
         },
         updated() {
-                this.repairs.plan = this.planRepairs;
-                this.repairs.current = this.currentRepairs;
-                this.repairs.compleate = this.compleatedRepairs;            
+            this.repairs.plan = this.planRepairs;
+            this.repairs.current = this.currentRepairs;
+            this.repairs.compleate = this.compleatedRepairs;            
         },
         components: {
             Details,
@@ -146,9 +146,6 @@
                 }) : [];
             },
 
-            closeDetails() {
-                this.showDetails = false;
-            },
             changeRepair(repair) {
                 this.repair = repair;
                 this.showDetails = true;
@@ -164,7 +161,20 @@
                 this.showDetails = true;
             },
             newRepair() {
-
+                this.repair = {
+                    cost_repair: 0,
+                    cost_comp: 0,
+                    start_time: new Date(),
+                };
+                this.repair.isNew = true;
+                this.repair.isPlan = false;
+                this.showBikeList = true;
+            },
+            addBikeToNewRepair(item) {
+                this.repair.product_id = item.id_rent;
+                this.repair.product_name = item.name;
+                this.showDetails = true;
+                console.log(item)
             }
         },
         computed: {
