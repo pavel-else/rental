@@ -19,7 +19,7 @@
                     <td class="repairs__td col--sign"><span class="sign sign--warn"></span></td>
                     <td class="repairs__td col--name">{{ item.product_name }}</td>
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
-                    <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"> / {{ item.last_repair_mileage }}</span></td>
+                    <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"></span></td>
                 </tr>
             </table>            
         </div>
@@ -44,7 +44,7 @@
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
                     <td class="repairs__td">{{ item.cost_comp }}</td>
                     <td class="repairs__td">{{ item.cost_repair }}</td>
-                    <td class="repairs__td col--note">{{ item.note }}</td>
+                    <td class="repairs__td col--note">{{ formNote(item.note) }}</td>
                     <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
                 </tr>
             </table>
@@ -70,7 +70,7 @@
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
                     <td class="repairs__td">{{ item.cost_comp }}</td>
                     <td class="repairs__td">{{ item.cost_repair }}</td>
-                    <td class="repairs__td col--note">{{ item.note }}</td>
+                    <td class="repairs__td col--note">{{ formNote(item.note) }}</td>
                     <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
                     <td class="repairs__td col--start">{{ shortDate(item.end_time) }}</td>                
                 </tr>
@@ -192,7 +192,7 @@
                 const repairTypes = copy(this.$store.getters.repairTypes);
 
                 // Функция возвращает последний ремонт для определенного товара по определенному типу поломки
-                // 
+                // Может вернуть не закрытый ремонт 
                 const getLastRepair = (product_id, repairType) => {
                     const filter = repairs.filter(i => i.product_id == product_id && i.repair_type == repairType);
 
@@ -202,7 +202,8 @@
                         }
 
                         // Выбираем ремонт с наибольшим эндтайиом
-                        if (Date.parse(repair.end_time) > Date.parse(acc.end_time)) {
+                        // Для незакрытых ендтайм равен текущему времени
+                        if ((Date.parse(repair.end_time) || Date.now()) > Date.parse(acc.end_time)) {
                             acc = repair;
                         }
 
@@ -222,13 +223,14 @@
                         const lastRepair = getLastRepair(product.id_rent, repairType.id_rent);
 
                         // Если товар по этому типу на данный момент уже в ремонте, не выводим его в список запланированных
-                        if (lastRepair && lastRepair.end_time) {
+                        if (lastRepair && !lastRepair.end_time) {
                             return acc;
                         }
 
                         const diff = product.mileage - (lastRepair ? lastRepair.mileage : 0);
 
                         if (diff >= repairType.period) {
+                            // console.log(product.id_rent, lastRepair.mileage, diff, repairType.period)
                             acc.push({
                                 product_id: product.id_rent,
                                 product_name: product.name,
@@ -265,9 +267,7 @@
                 return filter.map(i => {
                     i.product_name = this.getProductName(i.product_id);
                     i.repair_type_name = this.getRepairTypeName(i.repair_type);
-                    i.note = this.formNote(i.note);
-                    //i.start_time = time('d.m.y', i.start_time);
-                    //i.end_time = i.end_time ? time('d.m.y', i.end_time) : '';
+                    i.mileage = this.$store.getters.products.find(product => product.id_rent === i.product_id).mileage;
                     return i;
                 });
             },
@@ -278,7 +278,7 @@
                 const map = sort.map(i => {
                     i.product_name = this.getProductName(i.product_id);
                     i.repair_type_name = this.getRepairTypeName(i.repair_type);
-                    i.note = this.formNote(i.note);
+                    //i.note = this.formNote(i.note);
                     // i.start_time = time('d.m.y', i.start_time);
                     // i.end_time = i.end_time ? time('d.m.y', i.end_time) : '';
                     return i;

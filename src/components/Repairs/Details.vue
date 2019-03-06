@@ -89,7 +89,7 @@
                 this.$emit('close');
             },
             stop() {
-                this.repair.end_time_timestamp = Date.now();
+                this.repair.end_time = new Date();
                 this.$store.dispatch('stopRepair', this.repair);
                 this.$emit('close');
             },
