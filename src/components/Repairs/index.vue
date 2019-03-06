@@ -2,71 +2,80 @@
     <div class="repairs">
         <input type="" name="" placeholder="Начните вводить название" @input="search()">
 
-        <h2 class="repairs__caption" @click="showPlan = !showPlan">Плановое ТО <small v-if="repairs.plan"> {{ repairs.plan.length }} шт</small></h2>
-        <table class="repairs__table" v-if="showPlan">
-            <tr class="repairs__first-line">
-                <th></th>
-                <th>Название</th>
-                <th>Тип</th>
-                <th title="Текущий пробег в часах">Текущий пробег</th>
-            </tr>
-            
-            <tr class="repairs__tr" v-for="item in repairs.plan.filter(filt)" @click="planToRepair(item)" :key="item.product_id + '_' + item.repair_type">
-                <td class="repairs__td col--sign"><span class="sign sign--warn"></span></td>
-                <td class="repairs__td col--name">{{ item.product_name }}</td>
-                <td class="repairs__td">{{ item.repair_type_name }}</td>
-                <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"> / {{ item.last_repair_mileage }}</span></td>
-            </tr>
-        </table>
-
-        <div class="caption-wrap">
-            <h2 class="repairs__caption" @click="showCurrent = !showCurrent">В ремонте</h2>
-            <small v-if="repairs.plan"> {{ repairs.current.length }} шт</small>
-            <button @click="newRepair()">+</button>            
+        <div class="table__wrap">
+            <div class="caption-wrap">
+                <h2 class="repairs__caption" @click="showPlan = !showPlan">Плановое ТО</h2>
+                <small v-if="repairs.plan"> {{ repairs.plan.length }} шт</small>
+            </div>
+            <table class="repairs__table" v-if="showPlan">
+                <tr class="repairs__first-line">
+                    <th></th>
+                    <th>Название</th>
+                    <th>Тип</th>
+                    <th title="Текущий пробег в часах">Текущий пробег</th>
+                </tr>
+                
+                <tr class="repairs__tr" v-for="item in repairs.plan.filter(filt)" @click="planToRepair(item)" :key="item.product_id + '_' + item.repair_type">
+                    <td class="repairs__td col--sign"><span class="sign sign--warn"></span></td>
+                    <td class="repairs__td col--name">{{ item.product_name }}</td>
+                    <td class="repairs__td">{{ item.repair_type_name }}</td>
+                    <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"> / {{ item.last_repair_mileage }}</span></td>
+                </tr>
+            </table>            
         </div>
-
-        <table class="repairs__table" v-if="showCurrent">
-            <tr>
-                <th></th>
-                <th>Название</th>
-                <th>Тип</th>
-                <th colspan="2">Стоимость комплектующих <br>и всего ремонта</th>
-                <th>Примечание</th>
-                <th>Начало</th>
-            </tr>
-            <tr v-for="item in currentRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
-                <td class="repairs__td col--sign"><span class="sign sign--act"></span></td>
-                <td class="repairs__td col--name">{{ item.product_name }}</td>
-                <td class="repairs__td">{{ item.repair_type_name }}</td>
-                <td class="repairs__td">{{ item.cost_comp }}</td>
-                <td class="repairs__td">{{ item.cost_repair }}</td>
-                <td class="repairs__td col--note">{{ item.note }}</td>
-                <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
-            </tr>
-        </table>
-
-        <h2 class="repairs__caption" @click="showCompleate = !showCompleate">Завершено  <small v-if="repairs.compleate"> {{ repairs.compleate.length }} шт</small></h2>
-        <table class="repairs__table" v-if="showCompleate">
-            <tr>
-                <th></th>
-                <th>Название</th>
-                <th>Тип</th>
-                <th colspan="2">Стоимость комплектующих <br>и всего ремонта</th>
-                <th>Примечание</th>
-                <th>Начало</th>
-                <th>Конец</th>
-            </tr>
-            <tr v-for="item in compleatedRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
-                <td class="repairs__td col--sign"><span class="sign sign--end"></span></td>
-                <td class="repairs__td col--name">{{ item.product_name }}</td>
-                <td class="repairs__td">{{ item.repair_type_name }}</td>
-                <td class="repairs__td">{{ item.cost_comp }}</td>
-                <td class="repairs__td">{{ item.cost_repair }}</td>
-                <td class="repairs__td col--note">{{ item.note }}</td>
-                <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
-                <td class="repairs__td col--start">{{ shortDate(item.end_time) }}</td>                
-            </tr>
-        </table>
+        <div class="table__wrap">
+            <div class="caption-wrap">
+                <h2 class="repairs__caption" @click="showCurrent = !showCurrent">В ремонте</h2>
+                <small v-if="repairs.plan"> {{ repairs.current.length }} шт</small>
+                <button @click="newRepair()">Добавить в ремонт</button>            
+            </div>
+            <table class="repairs__table" v-if="showCurrent">
+                <tr>
+                    <th></th>
+                    <th>Название</th>
+                    <th>Тип</th>
+                    <th colspan="2">Стоимость комплектующих <br>и всего ремонта</th>
+                    <th>Примечание</th>
+                    <th>Начало</th>
+                </tr>
+                <tr v-for="item in currentRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
+                    <td class="repairs__td col--sign"><span class="sign sign--act"></span></td>
+                    <td class="repairs__td col--name">{{ item.product_name }}</td>
+                    <td class="repairs__td">{{ item.repair_type_name }}</td>
+                    <td class="repairs__td">{{ item.cost_comp }}</td>
+                    <td class="repairs__td">{{ item.cost_repair }}</td>
+                    <td class="repairs__td col--note">{{ item.note }}</td>
+                    <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
+                </tr>
+            </table>
+        </div>
+        <div class="table__wrap">
+            <div class="caption-wrap">
+                <h2 class="repairs__caption" @click="showCompleate = !showCompleate">Завершено </h2>
+                <small v-if="repairs.compleate"> {{ repairs.compleate.length }} шт</small>
+            </div>
+            <table class="repairs__table" v-if="showCompleate">
+                <tr>
+                    <th></th>
+                    <th>Название</th>
+                    <th>Тип</th>
+                    <th colspan="2">Стоимость комплектующих <br>и всего ремонта</th>
+                    <th>Примечание</th>
+                    <th>Начало</th>
+                    <th>Конец</th>
+                </tr>
+                <tr v-for="item in compleatedRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
+                    <td class="repairs__td col--sign"><span class="sign sign--end"></span></td>
+                    <td class="repairs__td col--name">{{ item.product_name }}</td>
+                    <td class="repairs__td">{{ item.repair_type_name }}</td>
+                    <td class="repairs__td">{{ item.cost_comp }}</td>
+                    <td class="repairs__td">{{ item.cost_repair }}</td>
+                    <td class="repairs__td col--note">{{ item.note }}</td>
+                    <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
+                    <td class="repairs__td col--start">{{ shortDate(item.end_time) }}</td>                
+                </tr>
+            </table>
+        </div>
 
         <Details v-if="showDetails" :payload="repair" @close="showDetails = false"></Details>
         <BikeList v-if="showBikeList" @close="showBikeList = false" @select="addBikeToNewRepair($event)"></BikeList>
@@ -288,9 +297,22 @@
         margin-bottom: 100px;
     }
 
+    .table__wrap {
+        display: flex;
+        flex-direction: column;
+        padding-top: 50px;
+    }
+
     .caption-wrap {
         display: flex;
+        justify-content: flex-start;
         align-items: center;
+    }
+    .caption-wrap small {
+        margin-left: 10px;
+    }
+    .caption-wrap button {
+        margin-left: 50px;
     }
     .repairs__caption {
         font-size: 20px;

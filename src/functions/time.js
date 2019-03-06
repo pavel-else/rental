@@ -10,7 +10,9 @@ import moment from 'moment';
 moment.lang('ru');
 
 const format = (format, date) => {
-    return moment().format(format, date);
+    const dateObj = moment(date);
+
+    return dateObj.isValid() ? dateObj.format(format) : '';
 };
 
 export { format };
