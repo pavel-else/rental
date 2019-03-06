@@ -34,7 +34,6 @@
                 <th>Стоимость</th>
                 <th>Примечание</th>
                 <th>Начало</th>
-                <th>Конец</th>
             </tr>
             <tr v-for="item in currentRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
                 <td class="repairs__td col--sign"><span class="sign sign--act"></span></td>
@@ -43,7 +42,7 @@
                 <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"> / {{ item.last_repair_mileage }}</span></td>
                 <td class="repairs__td">{{ item.cost_comp }} / {{ item.cost_repair }}</td>
                 <td class="repairs__td col--note">{{ item.note }}</td>
-                <td class="repairs__td col--start">{{item.start_time }}</td>                
+                <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
             </tr>
         </table>
 
@@ -66,8 +65,8 @@
                 <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"> / {{ item.last_repair_mileage }}</span></td>
                 <td class="repairs__td">{{ item.cost_comp }} / {{ item.cost_repair }}</td>
                 <td class="repairs__td col--note">{{ item.note }}</td>
-                <td class="repairs__td col--start">{{item.start_time }}</td>                
-                <td class="repairs__td col--start">{{item.end_time }}</td>                
+                <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
+                <td class="repairs__td col--start">{{ shortDate(item.end_time) }}</td>                
             </tr>
         </table>
 
@@ -76,8 +75,9 @@
     </div>
 </template>
 <script>
+
     import copy from '@/functions/copy';
-    import time from '@/functions/time';
+    import * as Time from '@/functions/Time';
     import Details from './Details';
     import BikeList from './BikeList';
     export default {
@@ -174,7 +174,9 @@
                 this.repair.product_id = item.id_rent;
                 this.repair.product_name = item.name;
                 this.showDetails = true;
-                console.log(item)
+            },
+            shortDate(date) {
+                return Time.format('DD.MM.YY', date);
             }
         },
         computed: {
@@ -258,8 +260,8 @@
                     i.product_name = this.getProductName(i.product_id);
                     i.repair_type_name = this.getRepairTypeName(i.repair_type);
                     i.note = this.formNote(i.note);
-                    i.start_time = time('d.m.y', i.start_time);
-                    i.end_time = i.end_time ? time('d.m.y', i.end_time) : '';
+                    //i.start_time = time('d.m.y', i.start_time);
+                    //i.end_time = i.end_time ? time('d.m.y', i.end_time) : '';
                     return i;
                 });
             },
@@ -271,8 +273,8 @@
                     i.product_name = this.getProductName(i.product_id);
                     i.repair_type_name = this.getRepairTypeName(i.repair_type);
                     i.note = this.formNote(i.note);
-                    i.start_time = time('d.m.y', i.start_time);
-                    i.end_time = i.end_time ? time('d.m.y', i.end_time) : '';
+                    // i.start_time = time('d.m.y', i.start_time);
+                    // i.end_time = i.end_time ? time('d.m.y', i.end_time) : '';
                     return i;
                 });
 

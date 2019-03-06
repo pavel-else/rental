@@ -14,13 +14,13 @@
                 <tr>
                     <td>Начало ремонта</td>
                     <td>
-                        <span>{{ repair.start_time }}</span>
+                        <span>{{ short(repair.start_time) }}</span>
                     </td>
                 </tr>
                 <tr v-if="repair.end_time">
                     <td>Конец ремонта</td>
                     <td>
-                        <span v-if="repair.end_time">{{ repair.end_time }}</span>
+                        <span v-if="repair.end_time">{{ short(repair.end_time) }}</span>
                     </td>
                 </tr>
                 <tr>
@@ -69,14 +69,15 @@
 <script>
     import copy from '@/functions/copy';
     import shortDate from '@/functions/shortDate';
+    import * as Time from '@/functions/Time';
 
     export default {
         props: {
-            payload: Object // Repair
+            payload: Object, // Repair
         },
         data() {
             return {
-                repair: copy(this.payload)
+                repair: copy(this.payload),
             }
         },
         methods: {
@@ -93,7 +94,7 @@
                 this.$emit('close');
             },
             short(date) {
-                return shortDate(date, 1);
+                return Time.format('DD MMMM YYYY', date);
             }
         },
         computed: {
