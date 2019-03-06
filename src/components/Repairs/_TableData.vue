@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="repairs__data">
         <table class="repairs__table" v-if="repairs && repairs.length > 0">
             <tr class="repairs__first-line">
@@ -187,4 +187,4 @@
         width: 70px;
         padding-right: 10px;
     }
-</style>
+</style> -->

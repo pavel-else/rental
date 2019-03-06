@@ -11,7 +11,7 @@
                 <th title="Текущий / Последнего ремонта">Пробег</th>
             </tr>
             
-            <tr class="repairs__tr" v-for="item in repairs.plan.filter(filt)" @click="newRepair(item)" :key="item.product_id + '_' + item.repair_type">
+            <tr class="repairs__tr" v-for="item in repairs.plan.filter(filt)" @click="planToRepair(item)" :key="item.product_id + '_' + item.repair_type">
                 <td class="repairs__td col--sign"><span class="sign sign--warn"></span></td>
                 <td class="repairs__td col--name">{{ item.product_name }}</td>
                 <td class="repairs__td">{{ item.repair_type_name }}</td>
@@ -72,12 +72,14 @@
         </table>
 
         <Details v-if="showDetails" :payload="repair" @close="closeDetails()"></Details>
+        <BikeList v-if="showBikeList"></BikeList>
     </div>
 </template>
 <script>
     import copy from '@/functions/copy';
     import time from '@/functions/time';
     import Details from './Details';
+    import BikeList from './BikeList';
     export default {
         beforeCreate() {
             this.$store.dispatch('getRepairs')
@@ -93,7 +95,8 @@
                 this.repairs.compleate = this.compleatedRepairs;            
         },
         components: {
-            Details
+            Details,
+            BikeList
         },
         data() {
             return {
@@ -107,7 +110,8 @@
                 showDetails: false,
                 showPlan: true,
                 showCurrent: true,
-                showCompleate: true
+                showCompleate: true,
+                showBikeList: false
             }
         },
         methods: {
@@ -149,14 +153,18 @@
                 this.repair = repair;
                 this.showDetails = true;
             },
-            newRepair(repair) {
+            planToRepair(repair) {
                 this.repair = repair;
                 this.repair.cost_repair = 0;
                 this.repair.cost_comp = 0;
                 this.repair.start_time = new Date();
 
                 this.repair.isNew = true;
+                this.repair.isPlan = true;
                 this.showDetails = true;
+            },
+            newRepair() {
+
             }
         },
         computed: {

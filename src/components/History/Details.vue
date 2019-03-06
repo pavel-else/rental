@@ -57,7 +57,6 @@
 </template>
 
 <script>
-    import timeFormat from '@/functions/timeFormat'
     export default {
         name: 'HistoryDetails',
         props: {

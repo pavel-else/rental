@@ -25,8 +25,13 @@
                 </tr>
                 <tr>
                     <td>Тип ремонта</td>
-                    <td>
-                        <span>{{ repair.repair_type }}</span>
+                    <td v-if="repair.isNew && !repair.isPlan">
+                        <select v-model="repair.repair_type">
+                            <option v-for="item in repairTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
+                        </select>
+                    </td>
+                    <td v-else>
+                        <span>{{ repair.repair_type_name }}</span>
                     </td>
                 </tr>
                 <tr>
@@ -94,6 +99,9 @@
         computed: {
             startMin() {
                 return shortDate();
+            },
+            repairTypes() {
+                return this.$store.getters.repairTypes;
             }
         }
     }
