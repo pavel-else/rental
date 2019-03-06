@@ -19,7 +19,12 @@
             </tr>
         </table>
 
-        <h2 class="repairs__caption" @click="showCurrent = !showCurrent">В ремонте <small v-if="repairs.plan"> {{ repairs.current.length }} шт</small></h2>
+        <div class="caption-wrap">
+            <h2 class="repairs__caption" @click="showCurrent = !showCurrent">В ремонте</h2>
+            <small v-if="repairs.plan"> {{ repairs.current.length }} шт</small>
+            <button>+</button>            
+        </div>
+
         <table class="repairs__table" v-if="showCurrent">
             <tr>
                 <th></th>
@@ -264,6 +269,11 @@
         display: flex;
         flex-direction: column;
         margin-bottom: 100px;
+    }
+
+    .caption-wrap {
+        display: flex;
+        align-items: center;
     }
     .repairs__caption {
         font-size: 20px;

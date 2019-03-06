@@ -56,20 +56,28 @@
                 this.modal = true
                 this.product = product
             },
-            closePhoto(){
+            closePhoto() {
                 this.modal = false
                 this.product = {}
             },
         },
         computed: {
             // Возвращает список всех активных велосипедов, не находящихся в прокате
+            // не выключенных из списка в настройках товара
+            // и не находщихся в ремонте
             products() {
                 const isRent = (productId) => {
                     const activeSubOrders = this.$store.getters.activeSubOrders;
                     return activeSubOrders.find(item => item.product_id == productId);
                 };
+                const isBroken = (productId) => {
+                    const repairs = this.$store.getters.repairs;
+                    const filter = repairs ? repairs.filter(i => i.product_id === productId) : [];
+                    const result = filter.find(i => !i.end_time);
+                    return !!result;
+                };
                 const list = this.$store.getters.products;
-                return list ? list.filter(item => !isRent(item.id_rent) && item.status == 'active') : [];
+                return list ? list.filter(item => !isRent(item.id_rent) && item.status == 'active' && !isBroken(item.id_rent)) : [];
             },
         },
     }
