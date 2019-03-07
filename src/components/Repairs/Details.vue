@@ -42,10 +42,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Стоимость всего ремонта</td>
+                    <td>Стоимость работы</td>
                     <td>
-                        <span v-if="repair.end_time">{{ repair.cost_repair }}р</span>
-                        <input v-else v-model="repair.cost_repair">
+                        <span v-if="repair.end_time">{{ repair.cost_work }}р</span>
+                        <input v-else v-model="repair.cost_work">
                     </td>
                 </tr>
                 <tr>

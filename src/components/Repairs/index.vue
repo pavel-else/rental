@@ -34,7 +34,7 @@
                     <th></th>
                     <th>Название</th>
                     <th>Тип</th>
-                    <th colspan="2">Стоимость комплектующих <br>и всего ремонта</th>
+                    <th colspan="2">Стоимость комплектующих <br>и работы</th>
                     <th>Примечание</th>
                     <th>Начало</th>
                 </tr>
@@ -43,7 +43,7 @@
                     <td class="repairs__td col--name">{{ item.product_name }}</td>
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
                     <td class="repairs__td">{{ item.cost_comp }}</td>
-                    <td class="repairs__td">{{ item.cost_repair }}</td>
+                    <td class="repairs__td">{{ item.cost_work }}</td>
                     <td class="repairs__td col--note">{{ formNote(item.note) }}</td>
                     <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
                 </tr>
@@ -59,7 +59,7 @@
                     <th></th>
                     <th>Название</th>
                     <th>Тип</th>
-                    <th colspan="2">Стоимость комплектующих <br>и всего ремонта</th>
+                    <th colspan="2">Стоимость комплектующих <br>и работы</th>
                     <th>Примечание</th>
                     <th>Начало</th>
                     <th>Конец</th>
@@ -69,7 +69,7 @@
                     <td class="repairs__td col--name">{{ item.product_name }}</td>
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
                     <td class="repairs__td">{{ item.cost_comp }}</td>
-                    <td class="repairs__td">{{ item.cost_repair }}</td>
+                    <td class="repairs__td">{{ item.cost_work }}</td>
                     <td class="repairs__td col--note">{{ formNote(item.note) }}</td>
                     <td class="repairs__td col--start">{{ shortDate(item.start_time) }}</td>                
                     <td class="repairs__td col--start">{{ shortDate(item.end_time) }}</td>                
@@ -158,7 +158,7 @@
             },
             planToRepair(repair) {
                 this.repair = repair;
-                this.repair.cost_repair = 0;
+                this.repair.cost_work = 0;
                 this.repair.cost_comp = 0;
                 this.repair.start_time = new Date();
 
@@ -168,7 +168,7 @@
             },
             newRepair() {
                 this.repair = {
-                    cost_repair: 0,
+                    cost_work: 0,
                     cost_comp: 0,
                     start_time: new Date(),
                 };
