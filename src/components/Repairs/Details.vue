@@ -24,10 +24,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Тип ремонта</td>
+                    <td>Тип ремонта <span title="Обязательно к заполнению">*</span></td>
                     <td v-if="repair.isNew && !repair.isPlan">
                         <select v-model="repair.repair_type">
+                            <option value="null">Выбрать</option>
                             <option v-for="item in repairTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
+                            <option value="0">Другое</option>
                         </select>
                     </td>
                     <td v-else>
@@ -49,7 +51,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Примечание</td>
+                    <td>Примечание <span v-if="repair.repair_type === '0'" title="Обязательно к заполнению">*</span></td>
                     <td>
                         <span v-if="repair.end_time">{{ repair.note }}</span>
                         <textarea v-else v-model="repair.note"></textarea>
@@ -85,8 +87,12 @@
                 this.$emit('close');
             },
             save() {
-                this.$store.dispatch('setRepair', this.repair);
-                this.$emit('close');
+                if (this.isReady()) {
+                    this.$store.dispatch('setRepair', this.repair);
+                    this.$emit('close');
+                } else {
+                    alert('Укажите необходимые данные!');
+                }
             },
             stop() {
                 this.repair.end_time = new Date();
@@ -95,6 +101,15 @@
             },
             short(date) {
                 return Time.format('DD MMMM YYYY', date);
+            },
+            isReady() {
+                if (!this.repair.repair_type) {
+                    return false;
+                }
+                if (this.repair.repair_type === 'other' && !this.repair.note) {
+                    return false;
+                }
+                return true;
             }
         },
         computed: {

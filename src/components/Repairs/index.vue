@@ -171,6 +171,7 @@
                     cost_work: 0,
                     cost_comp: 0,
                     start_time: new Date(),
+                    repair_type: null
                 };
                 this.repair.isNew = true;
                 this.repair.isPlan = false;
@@ -186,14 +187,11 @@
             }
         },
         computed: {
-            planRepairs() {               
-                const products = copy(this.$store.getters.products);
-                const repairs = copy(this.$store.getters.repairs);
-                const repairTypes = copy(this.$store.getters.repairTypes);
-
+            planRepairs() {
                 // Функция возвращает последний ремонт для определенного товара по определенному типу поломки
                 // Может вернуть не закрытый ремонт 
                 const getLastRepair = (product_id, repairType) => {
+                    const repairs = copy(this.$store.getters.repairs);
                     const filter = repairs.filter(i => i.product_id == product_id && i.repair_type == repairType);
 
                     const lastRepair = filter.reduce((acc, repair) => {
@@ -218,7 +216,13 @@
                 // Проверяю пробег - не пора ли делать плановый ремонт?
                 // если да, добавляю в список
                 const getPlanRepairs = (product) => {
-                    const list = repairTypes.reduce((acc, repairType) => {
+                    const repairTypes = copy(this.$store.getters.repairTypes);
+
+                    // Исключаем нулевой тип ремонта, т.к. он не подходит для плановых ремонтов
+                    const filter = repairTypes.filter(i => i.id_rent > 0);
+
+                    // Формируем список ТО
+                    const list = filter.reduce((acc, repairType) => {
                         // Находим последний ремонт по заданному типу
                         const lastRepair = getLastRepair(product.id_rent, repairType.id_rent);
 
@@ -249,6 +253,7 @@
                 };
 
                 // Перебираю все товары, для каждого генерирую список плановых ремонтов
+                const products = copy(this.$store.getters.products);
                 const planRepairs = products.reduce((acc, product) => {
                     const item = getPlanRepairs(product);
 
