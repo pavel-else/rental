@@ -26,11 +26,7 @@
                 <tr>
                     <td>Тип ремонта <span title="Обязательно к заполнению">*</span></td>
                     <td v-if="repair.isNew && !repair.isPlan">
-                        <select v-model="repair.repair_type">
-                            <option value="null">Выбрать</option>
-                            <option v-for="item in repairTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
-                            <option value="0">Другое</option>
-                        </select>
+                        <SelectRepairType></SelectRepairType>
                     </td>
                     <td v-else>
                         <span>{{ repair.repair_type_name }}</span>
@@ -72,8 +68,12 @@
     import copy from '@/functions/copy';
     import shortDate from '@/functions/shortDate';
     import * as Time from '@/functions/Time';
+    import SelectRepairType from './SelectRepairType';
 
     export default {
+        components: {
+            SelectRepairType
+        },
         props: {
             payload: Object, // Repair
         },
@@ -117,7 +117,8 @@
                 return shortDate();
             },
             repairTypes() {
-                return this.$store.getters.repairTypes;
+                const types = copy(this.$store.getters.repairTypes);
+                return types ? types.filter(i => i.id_rent > 0) : [];
             }
         }
     }
