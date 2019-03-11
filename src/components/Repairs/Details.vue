@@ -27,9 +27,10 @@
                     <td>Тип ремонта <span title="Обязательно к заполнению">*</span></td>
                     <td v-if="repair.isNew && !repair.isPlan">
                         <select v-model="repair.repair_type">
-                            <option value="null">Выбрать</option>
-                            <option v-for="item in repairTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
-                            <option value="0">Другое</option>
+                            <option value="null" disabled>Выбрать</option>
+                            <option v-for="item in planTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
+                            <option value="null" disabled>__________________________</option>
+                            <option v-for="item in simpleTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
                         </select>
                     </td>
                     <td v-else>
@@ -117,8 +118,15 @@
                 return shortDate();
             },
             repairTypes() {
-                return this.$store.getters.repairTypes;
-            }
+                const types = this.$store.getters.repairTypes;
+                return types;
+            },
+            planTypes() {
+                return this.repairTypes ? this.repairTypes.filter(i => i.is_plan === '1') : [];
+            },
+            simpleTypes() {
+                return this.repairTypes ? this.repairTypes.filter(i => i.is_plan === '0') : [];
+            },
         }
     }
 </script>

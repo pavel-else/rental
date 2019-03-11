@@ -7,7 +7,7 @@
 
 import moment from 'moment';
 
-// moment.locale('ru');
+moment.locale('ru');
 
 const format = (format, date) => {
     const dateObj = moment(date);
