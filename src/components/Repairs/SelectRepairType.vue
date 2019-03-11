@@ -3,7 +3,6 @@
         <select v-if="mod === 'select'" :type="type" @change="setType()">
             <option disabled value="null">Выбрать</option>
             <option v-for="item in repairTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
-            <option value="new">Добавить новый</option>
         </select>
         <div v-else class="">
             <input type="text" ref="input">
@@ -43,7 +42,9 @@
         computed: {
             repairTypes() {
                 const types = copy(this.$store.getters.repairTypes);
-                return types ? types.filter(i => i.id_rent > 0) : [];
+                const planTypes = types ? types.filter(i => i.is_plan === '1') : [];
+                const simpleTypes = types ? types.filter(i => i.is_plan === '0') : [];
+                return [...planTypes, ...simpleTypes];
             }
         }
     }

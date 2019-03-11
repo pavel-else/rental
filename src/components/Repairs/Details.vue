@@ -116,9 +116,9 @@
             startMin() {
                 return shortDate();
             },
-            repairTypes() {
+            repairTypesPlan() {
                 const types = copy(this.$store.getters.repairTypes);
-                return types ? types.filter(i => i.id_rent > 0) : [];
+                return types ? types.filter(i => i.is_paln === '1') : [];
             }
         }
     }
