@@ -218,7 +218,8 @@
                 const getPlanRepairs = (product) => {
                     const repairTypes = copy(this.$store.getters.repairTypes);
 
-                    // Исключаем нулевой тип ремонта, т.к. он не подходит для плановых ремонтов
+
+                    // Отбираем только плановые
                     const filter = repairTypes.filter(i => i.is_plan === '1');
 
                     // Формируем список ТО
