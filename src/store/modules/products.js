@@ -10,7 +10,7 @@ export default {
     },
     mutations: {
         products(state, products) {
-            console.log('commit: set products', products);
+            console.log('commit: products', products);
             state.products = products;
         }
     },

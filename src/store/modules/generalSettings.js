@@ -27,7 +27,6 @@ export default {
             console.log('commit: generalSettings', settings);
             for (let i in settings) {
                 state[i] = settings[i];
-                console.log(i, state[i])
             }
         }
     },

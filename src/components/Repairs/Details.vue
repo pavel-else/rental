@@ -63,7 +63,7 @@
             <div class="btn-group" v-if="!repair.end_time">
                 <button @click="save">Сохранить</button>
                 <button @click="close">Отмена</button>
-                <button v-if="!repair.isNew" @click="stop">Завершить</button>      
+                <button v-if="!repair.isNew" @click="stop">Завершить ремонт</button>      
             </div>
             <div class="details__close" @click="close"></div>
         </div>
