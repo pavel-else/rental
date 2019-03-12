@@ -20,7 +20,7 @@ export default (type, value, bill) => {
     if (type === '%') {
         return percentType(value, bill)
     }
-    if (type === 'р') {
+    if (type === 'rub') {
         return fixedType(value)
     }
 }
