@@ -13,18 +13,7 @@ export default {
     },
     getters: {
         rentalPointInfo(state) {
-            return {
-                name: state.name,
-                id_rent: state.id_rent,
-                city: state.city,
-                address: state.address,
-                time_open: state.time_open,
-                time_close: state.time_close,
-                phone: state.phone,
-                description: state.description,
-                description_short: state.description_short,
-                coordinates: state.coordinates
-            }
+            return state;
         }
     },
     mutations: {
@@ -37,7 +26,7 @@ export default {
     },
     actions: {
         getRentalPointInfo({ commit, getters }) {
-            console.log('getRentalPointInfo');
+            console.log('dispatch: getRentalPointInfo');
 
             return new Promise((resolve, reject) => {
                 const queue = [
@@ -66,7 +55,7 @@ export default {
             });
         },
         setRentalPointInfo({ commit, getters }, rentalPointInfo) {
-            console.log('daspatch: setRentalPointInfo', rentalPointInfo);
+            console.log('dispatch: setRentalPointInfo', rentalPointInfo);
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
