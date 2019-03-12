@@ -1,7 +1,7 @@
 <template>
     <div class="history">
         <h2>История заказов</h2>
-        <table cellspacing="0" class="history__table">
+        <table v-if="history && history.length > 0" cellspacing="0" class="history__table">
             <tr>
                 <th>id</th>
                 <th>ФИО</th>
@@ -25,6 +25,7 @@
                 <td>{{ getStatus(item.status) }}</td>
             </tr>
         </table>
+        <div v-else>Здесь пока пусто..</div>
 
         <Details :order="order" @close="onClose" v-if="show"></Details>
     </div>

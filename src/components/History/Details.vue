@@ -4,7 +4,7 @@
             <table>
                     <tr>
                         <td>Заказ</td>
-                        <td>{{ order.order_id }}</td>
+                        <td>#{{ order.order_id }}</td>
                     </tr>
                     <tr>
                         <td>Статус</td>
@@ -32,11 +32,11 @@
                     </tr>
                     <tr>
                         <td>Начало</td>
-                        <td>{{ order.start_time }}</td>
+                        <td>{{ shortDate(order.start_time) }}</td>
                     </tr>
                     <tr>
                         <td>Завершение</td>
-                        <td>{{ endTime() }}</td>
+                        <td>{{ shortDate(endTime()) }}</td>
                     </tr>
                     <tr>
                         <td>Аванс</td>
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+    import * as Time from '@/functions/Time';
     export default {
         name: 'HistoryDetails',
         props: {
@@ -70,10 +71,21 @@
         },
         methods: {
             endTime() {
-                return this.subOrders.reduce((acc, item) => {
-                    acc = item.end_time > acc ? item.end_time : acc;
+                const lastRepair = this.subOrders.reduce((acc, repair) => {
+                    if (acc === null) {
+                        acc = repair;
+                    }
+
+                    // Выбираем ремонт с наибольшим эндтайиом
+                    // Для незакрытых ендтайм равен текущему времени
+                    if ((Date.parse(repair.end_time) || Date.now()) > Date.parse(acc.end_time)) {
+                        acc = repair;
+                    }
+
                     return acc;
-                }, this.subOrders[0].end_time);  
+                }, null);
+
+                return lastRepair.end_time;  
             },
             close() {
                 this.$emit('close')
@@ -84,6 +96,9 @@
                     case 'ACTIVE': return 'В прокате';
                     default: '';
                 }
+            },
+            shortDate(date) {
+                return Time.format('DD MMMM YYYY hh:mm', date);
             }
         },
         computed: {
