@@ -22,7 +22,7 @@ export default {
         let cmds = []
 
         // Проставить Время остановки
-        subOrder.end_time = subOrder.status === "PAUSE" ? subOrder.pause_start : Date.now()
+        subOrder.end_time = new Date();
 
         // Проставить Стоимость проката
         // const billRent = () => {
