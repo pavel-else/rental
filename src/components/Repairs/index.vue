@@ -148,7 +148,7 @@
             },
             sortByStart(repairs) {
                 return repairs ? repairs.sort((a, b) => {
-                    return Date.parse(b.start_time) - Date.parse(a.start_time);
+                    return Date.parse(b.end_time) - Date.parse(a.end_time);
                 }) : [];
             },
 
@@ -284,9 +284,6 @@
                 const map = sort.map(i => {
                     i.product_name = this.getProductName(i.product_id);
                     i.repair_type_name = this.getRepairTypeName(i.repair_type);
-                    //i.note = this.formNote(i.note);
-                    // i.start_time = time('d.m.y', i.start_time);
-                    // i.end_time = i.end_time ? time('d.m.y', i.end_time) : '';
                     return i;
                 });
 
