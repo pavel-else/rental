@@ -193,9 +193,10 @@
                     }
 
                     this.$store.dispatch('send', [
-                        {cmd: 'newOrder',        value: this.order},
-                        {cmd: 'addOrderProduct', value: this.subOrder},
-                        {cmd: 'setOptions',      value: options},
+                        {cmd: 'newOrder',           value: this.order},
+                        {cmd: 'addOrderProduct',    value: this.subOrder},
+                        {cmd: 'setOptions',         value: options},
+                        {cmd: 'setGeneralSettings', value: options},
                     ])
                 }
 

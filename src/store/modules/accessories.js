@@ -12,7 +12,7 @@ export default {
     },
     mutations: {
         accessories(state, accessories) {
-            console.log('commit: accessories');
+            console.log('commit: accessories', accessories);
             state.accessories = accessories;
         }
     },

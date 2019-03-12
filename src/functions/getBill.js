@@ -25,7 +25,8 @@ export default  function getBill(tariff_id, time /*ms*/) {
         // АЛИАСЫ
 
         // Порог минималки, (30 min)
-        const minTime = store.getters.options.rent_min_time 
+        // const minTime = store.getters.options.rent_min_time 
+        const minTime = store.getters.generalSettings.rent_min_time 
         // расчасовка
         const hh = tariff._h_h
         // Последний час проката расчасовки

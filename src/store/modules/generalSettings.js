@@ -25,7 +25,7 @@ export default {
     },
     mutations: {
         generalSettings(state, settings) {
-            console.log('set to state generalSettings', settings);
+            console.log('commit: generalSettings', settings);
             for (let i in settings) {
                 state[i] = settings[i];
             }

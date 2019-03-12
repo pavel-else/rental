@@ -10,7 +10,7 @@ export default {
     },
     mutations: {
         tariffs(state, tariffs) {
-            console.log('commit: set tariffs', tariffs);
+            console.log('commit: tariffs', tariffs);
             state.tariffs = tariffs;
         }
     },
