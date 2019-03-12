@@ -8,7 +8,7 @@
             </h3>            
             <table>
                 <tr>
-                    <td>Велосипед</td>
+                    <td>Товар</td>
                     <td>{{ repair.product_name }}</td>
                 </tr>
                 <tr>
