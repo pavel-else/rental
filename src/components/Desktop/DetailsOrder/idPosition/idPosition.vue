@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import getOrderId from '../../../../functions/getOrderId'
+    import getOrderId from '@/functions/getOrderId'
     import Icon from '../../../Icon/Icon'
 
     export default {

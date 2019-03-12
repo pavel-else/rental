@@ -13,27 +13,27 @@ export default {
     },
     getters: {
         generalSettings(state) {
-            return {
-                rent_min_time: state.rent_min_time,
-                rent_round_bill: state.rent_round_bill,
-                lastOrderID: state.lastOrderID,
-                lastOrderTime: state.lastOrderTime,
-                lastOrderInterval: state.lastOrderInterval,
-                registration_time: state.registration_time
-            }
+            return state;
         }
     },
     mutations: {
-        generalSettings(state, settings) {
+        generalSettings(state, _settings) {
+            // По идее эта обработка должна быть в экшине, но т.к. эта мутация вызывается еще при обновлении при новом ордере (нарушая конвенцию), то она вынесена временно сюда
+            const settings = _settings.reduce((acc, item) => {
+                acc[item.name] = item.value;
+                return acc;
+            }, []);
+
             console.log('commit: generalSettings', settings);
             for (let i in settings) {
                 state[i] = settings[i];
+                console.log(i, state[i])
             }
         }
     },
     actions: {
         getGeneralSettings({ commit, getters }) {
-            console.log('getGeneralSettings');
+            console.log('dispatch: getGeneralSettings');
 
             return new Promise((resolve, reject) => {
                 const queue = [
@@ -52,11 +52,8 @@ export default {
                 })
                 .then(resp => {
                     console.log(resp)
-                    const settings = resp.data.general_settings.reduce((acc, item) => {
-                        acc[item.name] = item.value;
-                        return acc;
-                    }, []);
-                    commit('generalSettings', settings);
+
+                    commit('generalSettings', resp.data.general_settings);
                     resolve(true);                        
                 }).
                 catch(err => {

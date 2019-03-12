@@ -95,6 +95,7 @@ const store = new Vuex.Store({
                     commit('setSubOrders',     r.data.sub_orders)
                     commit('setOrders',        r.data.orders)
                     commit('accessories',   r.data.accessories)
+                    commit('generalSettings',   r.data.general_settings)
                 })
             }
 
@@ -111,7 +112,8 @@ const store = new Vuex.Store({
                     'getLogs',
                     'getAccessories',
                     'getHeaders',
-                    'getRentalPointInfo'
+                    'getRentalPointInfo',
+                    'getGeneralSettings',
                 ]
 
                 const queue = cmds.map(i => {

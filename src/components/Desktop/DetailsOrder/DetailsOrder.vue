@@ -262,13 +262,15 @@
                 /*
                 * Функция определяет, является ли новый сабордер новым заказом или же это часть предыдущего ордера
                 */
-                const lastTime = this.$store.getters.options.lastOrderTime || false
-                const interval = this.$store.getters.options.lastOrderInterval
+                // const lastTime = this.$store.getters.options.lastOrderTime || false
+                // const interval = this.$store.getters.opt
+                const lastTime = this.$store.getters.generalSettings.lastOrderTime || false
+                const interval = this.$store.getters.generalSettings.lastOrderInterval
                 const now      = this.$store.getters.now
                 const lastID   = this.getLastId()
                 const order    = this.orders.find(i => i.order_id == lastID)
 
-                console.log('lastTime', interval);
+                console.log('isSerial', this.$store.getters.generalSettings);
 
                 // Если последний ордер уже закрыт
                 if (!order || order.status === 'END' || order.status === 'DEL') {
@@ -279,7 +281,8 @@
             },
 
             getLastId() {
-                return this.$store.getters.options.lastOrderID
+                // return this.$store.getters.options.lastOrderID
+                return this.$store.getters.generalSettings.lastOrderID
             },
 
             getPosition(cmd) {
@@ -305,6 +308,7 @@
                     return newPosition()
                 }
 
+                console.log('status', this.status)
                 if (this.status == 'newOrder') {
                     return newPosition()
                 }
@@ -381,7 +385,8 @@
                 return result
             },
             registrationTime() {
-                return +this.$store.getters.options.registration_time
+                return +this.$store.getters.generalSettings.registration_time
+                // return +this.$store.getters.options.registration_time
             }
         },
     }
