@@ -25,7 +25,7 @@
 
                     <tr>
                         <td>Начало</td>
-                        <td>{{ order.start_time }}</td>
+                        <td>{{ shortDate(order.start_time) }}</td>
                     </tr>
 
                     <tr>
@@ -151,6 +151,7 @@
     import roundBill     from '@/functions/roundBill'
     import pause         from './functions/pause'
     import stopSubOrder  from './functions/stopSubOrder'
+    import * as Time from '@/functions/Time';
 
     export default {
         props: {
@@ -218,6 +219,9 @@
                 this.$store.dispatch('send', this.cmds)
 
                 this.close()
+            },
+            shortDate(date) {
+                return Time.format('DD MMMM YYYY hh:mm', date);
             }
         },
 
@@ -290,15 +294,15 @@
 
             activeTime() {
                 const start = Date.parse(this.order.start_time)
-                const end   = this.subOrder.end_time
+                const end   = Date.parse(this.subOrder.end_time)
                 const pause = this.subOrder.pause_time ? this.subOrder.pause_time : 0
                 const time = end - start - pause
 
-                // console.log(start)
-                // console.log(end)
-                // console.log(pause)
-                // console.log(time)
-                // console.log(timeFormat(time))
+                console.log('start', start)
+                console.log('end', end)
+                console.log('pause', pause)
+                console.log('time', time)
+                console.log(timeFormat(time))
 
                 return timeFormat(time)
             },

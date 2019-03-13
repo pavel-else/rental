@@ -137,7 +137,8 @@
                 history = history.map(i => {
                     i.subOrders = this.$store.getters.subOrders.filter(j => j.order_id === i.order_id)
                     i.end_time = Math.max(...i.subOrders.map(j => Date.parse(j.end_time) || 0)) || Date.now()
-                    i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time), { sec: false }) : 0
+                     i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time), { sec: false }) : 0
+                    // i.play_time = i.end_time - Date.parse(i.start_time);
 
                     i.short_start_time = this.shortDate(i.start_time);
 

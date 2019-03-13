@@ -4,6 +4,8 @@ import getSale from '@/functions/getSale'
 //import activateProduct from './activateProduct'
 import roundBill from '@/functions/roundBill'
 
+import * as Time from '@/functions/Time';
+
 export default {
     stopSubOrder(order, subOrder, send) {
         
@@ -22,14 +24,14 @@ export default {
         let cmds = []
 
         // Проставить Время остановки
-        subOrder.end_time = new Date();
+        subOrder.end_time = Time.format('YYYY-MM-DD hh:mm:ss');
 
         // Проставить Стоимость проката
         // const billRent = () => {
         //     const time = subOrder.end_time - Date.parse(order.start_time) - subOrder.pause_time
         //     return roundBill(getBill(subOrder.tariff_id, time))            
         // }
-        const time = subOrder.end_time - Date.parse(order.start_time) - subOrder.pause_time
+        const time = Date.parse(subOrder.end_time) - Date.parse(order.start_time) - subOrder.pause_time
         subOrder.bill_rent = getBill(subOrder.tariff_id, time)
 
         // Проставить Стоимость аксессуаров
