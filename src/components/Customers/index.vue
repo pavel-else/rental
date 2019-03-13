@@ -6,12 +6,14 @@
                 <th>ФИО</th>
                 <th>Телефон</th>
                 <th>Скидка</th>
+                <th>Баланс</th>
             </tr>
             <tr v-for="customer in customers" :key="customer.id_rent" @click="onClick(customer)">
                 <td>{{ customer.id_rent }}</td>
                 <td>{{ customer.fname }} {{ customer.sname }} {{ customer.tname }}</td>
                 <td>{{ customer.phone }}</td>
-                <td>{{ customer.sale }}</td>
+                <td><span v-if="customer && customer.sale > 0">{{ customer.sale }} %</span></td>
+                <td><span v-if="customer && customer.balance > 0 || customers.balance < 0">{{ customer.balance }} р</span></td>
             </tr>
         </table>
         <div class="customer_buttons">
