@@ -277,7 +277,7 @@
                 }
 
                 // PRODUCT
-                this.product.status = 'free'                      
+                this.product.status = 'active'                      
                 this.product.updated = Date.parse(this.product.updated) / 1000                      
                 cmd.push({cmd: 'setProduct', value: this.product})
                 
