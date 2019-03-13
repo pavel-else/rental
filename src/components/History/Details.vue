@@ -24,9 +24,9 @@
                     </tr>
                     <tr>
                         <td>Залог</td>
-                        <td><span v-if="order.deposit">{{ order.deposit }}</span><span v-else>-</span></td>
+                        <td><span v-if="order.deposit">{{ getDepositName(order.deposit) }}</span><span v-else>-</span></td>
                     </tr>
-                    <tr>
+                    <tr v-if="order.access > 0">
                         <td>Стоимость аксессуаров</td>
                         <td>{{ order.access || 0 }} р.</td>
                     </tr>
@@ -38,9 +38,9 @@
                         <td>Завершение</td>
                         <td>{{ shortDate(endTime()) }}</td>
                     </tr>
-                    <tr>
+                    <tr v-if="order.advance > 0">
                         <td>Аванс</td>
-                        <td><span v-if="order.advance > 0">{{ order.advance }} р.</span><span v-else>-</span></td>
+                        <td><span>{{ order.advance }} р.</span></td>
                     </tr>
                     <tr>
                         <td>Скидка</td>
@@ -99,6 +99,10 @@
             },
             shortDate(date) {
                 return Time.format('DD MMMM YYYY hh:mm', date);
+            },
+            getDepositName(depositId) {
+                const deposit = this.$store.getters.deposits.find(i => i.id_rent == depositId);
+                return deposit ? deposit.name : depositId;
             }
         },
         computed: {
