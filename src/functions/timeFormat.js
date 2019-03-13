@@ -21,7 +21,12 @@ const timeFormat = (ms /**number*/) => {
 
     const str = Math.floor(day) ? `${Math.floor(day)} дн. ` : ''
 
-    return `${sign} ${ str }${ num(hours) }ч ${ num(minutes) }м`.trim()
+    // При небольшом времени выводить с секундами
+    if (minutes < 3) {
+        return `${sign} ${ num(minutes) }м ${ num(seconds) }с`.trim();
+    }
+
+    return `${sign} ${ str }${ num(hours) }ч ${ num(minutes) }м`.trim();
 }
 
 export default timeFormat
