@@ -91,20 +91,36 @@
                                     </td>
                                 </tr>
                             </table> -->
-                            <ul class="product-list">
-                                <li class="product-list__item" v-for="item in subOrders" :key="item.id_rent">
-                                    <span>{{ productNames[item.product_id] }}</span>
-                                    <span class="product-list__fill"></span>
-                                    <span>{{ getBill(item) }} руб.</span>
+                            <ul class="products__list">
+                                <li class="products__item" v-for="subOrder in subOrders" :key="subOrder.id_rent">
+                                    <div class="product-line">
+                                        <span>{{ productNames[subOrder.product_id] }}</span>
+                                        <span class="product-line__fill"></span>
+                                        <span>{{ subOrder.bill_rent }} руб.</span>                                        
+                                    </div>
+
+                                    <div class="product-line" v-if="subOrder.bill_access > 0">
+                                        <span>Аксессуары</span>
+                                        <span class="product-line__fill"></span>
+                                        <span>{{ subOrder.bill_access }} руб.</span>                                        
+                                    </div>
+
                                 </li>
                             </ul>
+
+
+                            <div class="product-line">
+                                <span>Итого</span>
+                                <span class="product-line__fill"></span>
+                                <span>{{ total }} руб.</span>                                        
+                            </div>
                         </td>
                     </tr>
 
                     <tr v-if="sale > 0">
-                        <td>Учтена общая скидка ({{ customer.sale }}%)</td>
+                        <td>С учетом скидки клиента ({{ customer.sale }}%)</td>
                         <td>
-                            <span>{{ sale }} р.</span>
+                            <span>{{ total - sale }} р.</span>
                         </td>
                     </tr>
 
@@ -127,13 +143,13 @@
 
                     <tr class="details__bill">
                         <td>
-                            <span v-if="total >= 0">
+                            <span v-if="toPay >= 0">
                                 К оплате
                             </span>
                             <span v-else>Сдача</span>
                         </td>
                         <td>
-                            {{ total }} р.
+                            {{ toPay }} р.
                         </td>
                     </tr>
             </table>
@@ -228,6 +244,9 @@
             },
             getBill(item) {
                 return +item.bill_rent + +item.bill_access - +item.sale;
+            },
+            getAccessories(subOrder) {
+                console.log(subOrder)
             }
         },
 
@@ -277,6 +296,11 @@
             },
 
             total() {
+                return roundBill(this.billRent - this.paidBefore);
+
+            },
+
+            toPay() {
                 return this.isLast 
                     ? roundBill((this.billRent - this.paidBefore) - (this.sale - this.saledBefore)) - +this.advance
                     : this.billRent - this.sale
@@ -448,12 +472,17 @@
         margin-right: 10px;
     }
 
-    .product-list__item {
+    .products__item {
+        display: flex;
+        flex-direction: column;
+    }
+    .product-line {
+        width: 100%;
         display: flex;
         justify-content: space-between;
         padding: 5px;
     }
-    .product-list__fill {
+    .product-line__fill {
         border-bottom: 2px dotted lightgray;
         flex-grow: 1;
         margin: 0 5px;

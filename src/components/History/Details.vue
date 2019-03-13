@@ -17,8 +17,12 @@
                     <tr>
                         <td>Товары</td>
                         <td>
-                            <ul>
-                                <li v-for="product in order.products" :key="product.id_rent">{{ product.name }} - {{ product.bill_rent }} р.</li>
+                            <ul class="product-list">
+                                <li class="product-list__item" v-for="product in order.products" :key="product.id_rent">
+                                    <span>{{ product }}</span>
+                                    <span class="product-list__fill"></span>
+                                    <span>{{ getBill(product) }} руб.</span>
+                                </li>
                             </ul>
                         </td>
                     </tr>
@@ -103,6 +107,9 @@
             getDepositName(depositId) {
                 const deposit = this.$store.getters.deposits.find(i => i.id_rent == depositId);
                 return deposit ? deposit.name : depositId;
+            },
+            getBill(item) {
+                return +item.bill_rent + +item.bill_access - +item.sale;
             }
         },
         computed: {
@@ -124,9 +131,15 @@
     td:first-child {
         padding-right: 10px;
     }
-    .details li {
-        display: block;
-        margin: 0;
+    .product-list__item {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px;
+    }
+    .product-list__fill {
+        border-bottom: 2px dotted lightgray;
+        flex-grow: 1;
+        margin: 0 5px;
     }
     .details__bill td {
         padding-top:  20px;
