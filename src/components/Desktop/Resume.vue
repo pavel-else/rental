@@ -36,7 +36,7 @@
                     <tr>
                         <td colspan="2">
                             <p>Товары</p>
-                            <table class="suborders">
+<!--                             <table class="suborders">
                                 <tr v-for="item in subOrders" :key="item.id_rent">
                                     <td class="suborders__td--descript">
                                         <span v-if="item.id_rent === _subOrder.id_rent">></span>
@@ -90,12 +90,19 @@
                                         <b>{{ billRent }} р.</b>
                                     </td>
                                 </tr>
-                            </table>
+                            </table> -->
+                            <ul class="product-list">
+                                <li class="product-list__item" v-for="item in subOrders" :key="item.id_rent">
+                                    <span>{{ productNames[item.product_id] }}</span>
+                                    <span class="product-list__fill"></span>
+                                    <span>{{ getBill(item) }} руб.</span>
+                                </li>
+                            </ul>
                         </td>
                     </tr>
 
                     <tr v-if="sale > 0">
-                        <td>Общая скидка ({{ customer.sale }}%)</td>
+                        <td>Учтена общая скидка ({{ customer.sale }}%)</td>
                         <td>
                             <span>{{ sale }} р.</span>
                         </td>
@@ -145,13 +152,15 @@
         </div>
     </div> 
 </template>
-
 <script>
-    import timeFormat    from '@/functions/timeFormat'
-    import roundBill     from '@/functions/roundBill'
-    import pause         from './functions/pause'
-    import stopSubOrder  from './functions/stopSubOrder'
-    import * as Time from '@/functions/Time';
+    /*
+    * Компонент работает с уже закрытым ордером. Отправляет на сервер информацию о способе оплаты
+    */
+    import timeFormat from '@/functions/timeFormat';
+    import roundBill  from '@/functions/roundBill';
+    import * as Time  from '@/functions/Time';
+    import copy       from '@/functions/copy';
+
 
     export default {
         props: {
@@ -170,8 +179,8 @@
         },
 
         created() {                
-            this.order = this._order
-            this.subOrder = this._subOrder
+            this.order = copy(this._order);
+            this.subOrder = copy(this._subOrder);
 
             this.productNames = this.subOrders.reduce((acc, item) => {
                 const product = this.$store.getters.products.find(i => i.id_rent === item.product_id)
@@ -179,15 +188,9 @@
 
                 return acc
             }, {})
-
-            if (this.subOrder.status == "PAUSE") {
-                pause(this.subOrder)
-            }
         },
 
         methods: {
-            ...stopSubOrder,
-
             isLast() {
                 /*
                 * Функция проверки ордера - закрывается последний сабордер?
@@ -222,6 +225,9 @@
             },
             shortDate(date) {
                 return Time.format('DD MMMM YYYY hh:mm', date);
+            },
+            getBill(item) {
+                return +item.bill_rent + +item.bill_access - +item.sale;
             }
         },
 
@@ -298,11 +304,11 @@
                 const pause = this.subOrder.pause_time ? this.subOrder.pause_time : 0
                 const time = end - start - pause
 
-                console.log('start', start)
-                console.log('end', end)
-                console.log('pause', pause)
-                console.log('time', time)
-                console.log(timeFormat(time))
+                // console.log('start', start)
+                // console.log('end', end)
+                // console.log('pause', pause)
+                // console.log('time', time)
+                // console.log(timeFormat(time))
 
                 return timeFormat(time)
             },
@@ -335,10 +341,7 @@
     td:first-child {
         padding-right: 10px;
     }
-    .details li {
-        display: block;
-        margin: 0;
-    }
+
     .details__bill td {
         padding-top:  20px;
         font-weight: bold;
@@ -443,5 +446,16 @@
     .icon {
         display: block;
         margin-right: 10px;
+    }
+
+    .product-list__item {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px;
+    }
+    .product-list__fill {
+        border-bottom: 2px dotted lightgray;
+        flex-grow: 1;
+        margin: 0 5px;
     }
 </style>
