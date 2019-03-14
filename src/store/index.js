@@ -2,9 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-import subOrders       from './subOrders'
 import customers       from './Customers/customers'
-import orders          from './orders'
 import options         from './opt'
 import categories      from './categories'
 import history         from './History/history'
@@ -17,6 +15,8 @@ import GeneralSettings from './modules/generalSettings';
 import Accessories     from './modules/accessories';
 import Tariffs         from './modules/tariffs';
 import Products        from './modules/products';
+import subOrders       from './modules/subOrders';
+import orders          from './modules/orders';
 
 
 
@@ -92,8 +92,8 @@ const store = new Vuex.Store({
                     commit('tariffs',       r.data.tariffs)
                     commit('setCategories',    r.data.categories)
                     commit('setCustomers',     r.data.customers)
-                    commit('setSubOrders',     r.data.sub_orders)
-                    commit('setOrders',        r.data.orders)
+                    commit('subOrders',     r.data.sub_orders)
+                    commit('orders',        r.data.orders)
                     commit('accessories',   r.data.accessories)
                     commit('generalSettings',   r.data.general_settings)
                 })

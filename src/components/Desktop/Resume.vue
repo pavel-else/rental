@@ -57,7 +57,7 @@
                                         <span><b>{{ total }} руб.</b></span>                                        
                                     </div>
                                 </li>
-                                <li class="products__item">
+                                <li class="products__item" v-if="total !== totalWithSale">
                                     <div class="product-line">
                                         <span><b>С учетом скидки</b></span>
                                         <span class="product-line__fill"></span>
@@ -114,6 +114,12 @@
                     item.time = this.getTime(item);
                     item.bill_rent = this.getBillRent(item);
                     item.extended_accessories = this.makeAccessories(item);
+
+                    item.bill_access = item.extended_accessories.reduce((acc, accessory) => {
+                        acc += accessory.bill_access;
+                        return acc;
+                    }, 0);
+
                     item.sale = this.makeSale(item);
 
 
@@ -171,24 +177,31 @@
                 this.$emit('close');
             },
 
-            pay(type) {
-                if (type === 'coin') {
-                    this.subOrder.paid = 'coin';
-                }
+            pay(paidType) {
 
-                if (type === 'card') {
-                    this.subOrder.paid = 'card';
-                }
+                const stopedSubOrders = this.activeSubOrders.map(i => {
+                    const stopedSubOrder = this.stopSubOrder(i);
+                    stopedSubOrder.paid = paidType;
+                    return stopedSubOrder;
+                });
+                this.$store.dispatch('changeSubOrders', stopedSubOrders);
 
-                // if (type === 'dont pay') {
-                //     this.subOrder.paid = false
-                // }
+                const stopedOrder = this.stopOrder(this.order);
+                this.$store.dispatch('changeOrder', stopedOrder);
 
-                this.cmds.push({cmd: 'stopOrder', value: this.subOrder})
+                this.close();
+            },
+            stopSubOrder(_subOrder) {
+                const subOrder = copy(_subOrder);
 
-                this.$store.dispatch('send', this.cmds)
-
-                this.close()
+                subOrder.end_time = Time.format('YYYY-MM-DD hh:mm:ss');
+                subOrder.status = "END";
+                return subOrder;
+            },
+            stopOrder(_order) {
+                const order = copy(_order);
+                order.status = 'END';
+                return order;
             },
             shortDate(date) {
                 return Time.format('DD MMMM YYYY hh:mm', date);
@@ -198,12 +211,7 @@
         computed: {
             total() {
                 return this.activeSubOrders.reduce((acc, item) => {
-                    const summBillAccess = item.extended_accessories.reduce((acc, accessory) => {
-                        acc += accessory.bill_access;
-                        return acc;
-                    }, 0);
-
-                    acc += +item.bill_rent + summBillAccess;
+                    acc += +item.bill_rent + item.bill_access;
                     return acc;
                 }, 0);
             },

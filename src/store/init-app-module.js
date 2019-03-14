@@ -53,8 +53,8 @@ export default {
                         commit('tariffs',       r.data.tariffs);
                         commit('setCategories',    r.data.categories);
                         commit('setCustomers',     r.data.customers);
-                        commit('setSubOrders',     r.data.sub_orders);
-                        commit('setOrders',        r.data.orders);
+                        commit('subOrders',     r.data.sub_orders);
+                        commit('orders',        r.data.orders);
                         commit('accessories',   r.data.accessories);
                         commit('rentalPointInfo', r.data.rental_point_info);
                         commit('generalSettings', r.data.general_settings);
