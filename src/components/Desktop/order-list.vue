@@ -7,8 +7,8 @@
             <tr 
                 class="table-tr" 
                 v-for="order in orders"
-                :key="order.order_id"
-                v-if="subOrders[order.order_id]"
+                :key="order.id_rent"
+                v-if="subOrders[order.id_rent]"
                 :title="order.title"
             >
                 <td class="td-1">
@@ -20,7 +20,7 @@
                 <td>
                     <tr 
                         class="product-tr"
-                        v-for="subOrder in subOrders[order.order_id]" 
+                        v-for="subOrder in subOrders[order.id_rent]" 
                         :key="subOrder.id_rent" 
                         :class="subOrder.status === 'PAUSE' ? 'suborder--pause' : 'suborder--active'"
                     >
@@ -63,9 +63,8 @@
 
         <Resume 
             v-if="showResume"
-            :_order="order" 
-            :_subOrder="subOrder"
-            @close="onClose" 
+            :order="order" 
+            @close="showResume = false" 
         >
         </Resume>
     </div>
@@ -211,7 +210,7 @@
                 // Если нету, снимаем все с паузы
 
                 const subOrders = this.$store.getters.subOrders.filter(i => {
-                    return i.order_id === order.order_id
+                    return i.order_id === order.id_rent
                 })
 
                 if (subOrders.length === 0) {
@@ -240,20 +239,14 @@
             },
 
             stopOrder(order) {
-                const subOrders = this.getSubOrders(order.order_id)
+                const subOrders = this.getSubOrders(order.id_rent)
 
                 for (let i = subOrders.length - 1; i >= 0; i--) {
                     this.stopSubOrder(order, subOrders[i], /*send=*/true)
                 }
 
                 this.order = order
-                this.subOrder = subOrders[0]
                 this.showResume = true           
-            },
-
-            onClose() {
-                this.order = null
-                this.showResume = false
             },
 
             getSubOrders(order_id) {
@@ -289,7 +282,7 @@
                     i.format_start_time = this.getStartTime(i.start_time)
                     i.title = this.getTitle(i)
 
-                    acc[i.order_id] = i
+                    acc[i.id_rent] = i
                     return acc
                 }, {})
             },

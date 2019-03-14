@@ -49,7 +49,7 @@
         },
         methods: {
             getTimePlay(order) {
-                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id == order.order_id)
+                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id == order.id_rent)
                 const start = Date.parse(order.start_time)
 
                 const end = Math.max(subOrders.map(i => Date.parse(i.end_time)))
@@ -133,11 +133,11 @@
             history() {
                 let history = this.$store.getters.history
 
-                // history = history.filter(o => o.order_id > 1700) // Ограничитель
+                // history = history.filter(o => o.id_rent > 1700) // Ограничитель
                 history = history.map(i => {
-                    i.subOrders = this.$store.getters.subOrders.filter(j => j.order_id === i.order_id)
+                    i.subOrders = this.$store.getters.subOrders.filter(j => j.order_id === i.id_rent)
                     i.end_time = Math.max(...i.subOrders.map(j => Date.parse(j.end_time) || 0)) || Date.now()
-                     i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time), { sec: false }) : 0
+                    i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time), { sec: false }) : 0
                     // i.play_time = i.end_time - Date.parse(i.start_time);
 
                     i.short_start_time = this.shortDate(i.start_time);

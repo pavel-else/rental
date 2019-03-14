@@ -13,7 +13,6 @@
                     :select="select == index"
                 >
                 </Icon>
-<!--                 {{item.order_id}} -->
             </div>
         </div>
         <div class="btn" v-else @click="open = true">
@@ -44,12 +43,12 @@
             ...getOrderId,
 
             onClick(item, order_id_position) {
-                const order_id = item.order_id
+                const id_rent = item.id_rent
 
                 this.select = order_id_position
                 this.selectIcon = item.class
                 
-                this.$emit('setPosition', {order_id, order_id_position})
+                this.$emit('setPosition', {id_rent, order_id_position})
 
                 this.open = false
             }
@@ -60,7 +59,7 @@
                 /*
                 *   Функция подготавливает массив (матрица 4х4) объектов.
                 *   Массив необходим для визуализации существующих ордеров.
-                *   Если ордер существует, то в ячейке содержится его индекс и order_id.
+                *   Если ордер существует, то в ячейке содержится его индекс и id_rent.
                 *   Если ордера не существует, то в ячейке индекс, и id нового ордера
                 */
 
@@ -73,7 +72,7 @@
 
                     result[num] = {
                         position: order ? num : null,
-                        order_id: order ? order.order_id : newId,
+                        id_rent: order ? order.id_rent : newId,
                         class: 'd' + num                          
                     }
 

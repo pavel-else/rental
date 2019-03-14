@@ -29,68 +29,13 @@
                     </tr>
 
                     <tr>
-                        <td>Чистое время</td>
-                        <td>{{ activeTime }}</td>
+<!--                         <td>Чистое время</td>
+                        <td>{{ activeTime }}</td> -->
                     </tr>
 
                     <tr>
-                        <td colspan="2">
+<!--                         <td colspan="2">
                             <p>Товары</p>
-<!--                             <table class="suborders">
-                                <tr v-for="item in subOrders" :key="item.id_rent">
-                                    <td class="suborders__td--descript">
-                                        <span v-if="item.id_rent === _subOrder.id_rent">></span>
-                                    </td>
-                                    <td class="suborders__td suborders__td--name">
-                                        {{ productNames[item.product_id] }}
-                                    </td>
-
-                                    <td 
-                                        class="suborders__td suborders__td--number" 
-                                        title="Прокат" 
-                                        v-if="item.bill_access > 0"
-                                    >
-                                        {{ item.bill_rent }}
-                                    </td>
-                                    <td 
-                                        class="suborders__td suborders__td--sign" 
-                                        v-if="item.bill_access > 0"
-                                    >
-                                        +
-                                    </td>
-                                    <td 
-                                        class="suborders__td suborders__td--number" 
-                                        title="Аксессуары" 
-                                        v-if="item.bill_access > 0"
-                                    >
-                                        {{ item.bill_access }}
-                                    </td>
-                                    <td 
-                                        class="suborders__td suborders__td--sign" 
-                                        v-if="item.bill_access > 0"
-                                    >
-                                        =
-                                    </td>
-                                    <td class="suborders__td suborders__td--number">
-                                        {{ +item.bill_rent + +item.bill_access }}
-                                    </td>
-                                    <td 
-                                        class="suborders__td suborders__td--paid" 
-                                        v-if="item.paid === '1'" 
-                                        title="Оплачено"
-                                    >
-                                        ✓
-                                    </td>
-
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td colspan="3"><b>Итого</b></td>
-                                    <td class="suborders__td suborders__td--rentbill" colspan="3">
-                                        <b>{{ billRent }} р.</b>
-                                    </td>
-                                </tr>
-                            </table> -->
                             <ul class="products__list">
                                 <li class="products__item" v-for="subOrder in subOrders" :key="subOrder.id_rent">
                                     <div class="product-line">
@@ -114,34 +59,34 @@
                                 <span class="product-line__fill"></span>
                                 <span>{{ total }} руб.</span>                                        
                             </div>
-                        </td>
+                        </td> -->
                     </tr>
 
-                    <tr v-if="sale > 0">
+<!--                     <tr v-if="sale > 0">
                         <td>С учетом скидки клиента ({{ customer.sale }}%)</td>
                         <td>
                             <span>{{ total - sale }} р.</span>
                         </td>
-                    </tr>
+                    </tr> -->
 
-                    <tr v-if="paidBefore > 0">
+                    <!-- <tr v-if="paidBefore > 0">
                         <td>Оплачено ранее</td>
                         <td>
                             <span>{{ paidBefore }}</span>
                             <span v-if="saledBefore" :title="'С учетом скидки ' + saledBefore + ' р.'">({{ paidBefore - saledBefore }})</span>
                              р.
                         </td>
-                    </tr>
+                    </tr> -->
 
-                    <tr v-if="isLast() && order.advance > 0">
+                    <!-- <tr v-if="isLast() && order.advance > 0">
                         <td>Аванс</td>
                         <td>
                             <span>{{ order.advance }} р.</span>
                         </td>
-                    </tr>
+                    </tr> -->
                     
 
-                    <tr class="details__bill">
+                    <!-- <tr class="details__bill">
                         <td>
                             <span v-if="toPay >= 0">
                                 К оплате
@@ -151,7 +96,7 @@
                         <td>
                             {{ toPay }} р.
                         </td>
-                    </tr>
+                    </tr> -->
             </table>
 
             <div class="btn-group">
@@ -161,16 +106,17 @@
                 <button class="resume__button" @click="pay('card')">
                     <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
                 </button>
-                <button class="resume__button" v-if="!isLast()" @click="pay('dont pay')">
+                <!-- <button class="resume__button" v-if="!isLast()" @click="pay('dont pay')">
                     Без оплаты
-                </button>
+                </button> -->
             </div>
         </div>
     </div> 
 </template>
 <script>
     /*
-    * Компонент работает с уже закрытым ордером. Отправляет на сервер информацию о способе оплаты
+    * Компонент работает с уже закрытым ордером. 
+    * Отправляет на сервер информацию о способе оплаты и списание с баланса
     */
     import timeFormat from '@/functions/timeFormat';
     import roundBill  from '@/functions/roundBill';
@@ -180,42 +126,16 @@
 
     export default {
         props: {
-            _order:    Object,
-            _subOrder: Object
+            order: Object, 
         },
 
         data() {
             return {
-                order: {},
-                subOrder: {},
+                subOrders: this.$store.getters.subOrders.filter(i = i.order_id === this.order.id_rent)
 
-                cmds: [],
-                productNames: []
             }
         },
-
-        created() {                
-            this.order = copy(this._order);
-            this.subOrder = copy(this._subOrder);
-
-            this.productNames = this.subOrders.reduce((acc, item) => {
-                const product = this.$store.getters.products.find(i => i.id_rent === item.product_id)
-                acc[product.id_rent] = product.name
-
-                return acc
-            }, {})
-        },
-
         methods: {
-            isLast() {
-                /*
-                * Функция проверки ордера - закрывается последний сабордер?
-                */
-                return this.subOrders.find(i => i.status === "ACTIVE" || i.status === "PAUSE")
-                    ? false
-                    : true
-            },
-
             close() {
                 this.$emit('close')
             },
@@ -229,9 +149,9 @@
                     this.subOrder.paid = true
                 }
 
-                if (type === 'dont pay') {
-                    this.subOrder.paid = false
-                }
+                // if (type === 'dont pay') {
+                //     this.subOrder.paid = false
+                // }
 
                 this.cmds.push({cmd: 'stopOrder', value: this.subOrder})
 
@@ -242,100 +162,94 @@
             shortDate(date) {
                 return Time.format('DD MMMM YYYY hh:mm', date);
             },
-            getBill(item) {
-                return +item.bill_rent + +item.bill_access - +item.sale;
-            },
-            getAccessories(subOrder) {
-                console.log(subOrder)
-            }
         },
 
         computed: {
-            billRent() {
-                return this.isLast() 
-                    ? this.subOrders.reduce((acc, item) => {
-                        acc += +item.bill_rent + +item.bill_access
-                        return acc
-                    }, 0)
-                    : +this.subOrder.bill_rent + this.subOrder.bill_access
-            },
+            // billRent() {
+            //     return this.isLast() 
+            //         ? this.subOrders.reduce((acc, item) => {
+            //             acc += +item.bill_rent + +item.bill_access
+            //             return acc
+            //         }, 0)
+            //         : +this.subOrder.bill_rent + this.subOrder.bill_access
+            // },
 
-            paidBefore() {
-                // Перебираю все оплаченые
-                return this.subOrders ? this.subOrders.reduce((acc, item) => {
-                    if (item.paid == 1) {
-                        acc += +item.bill_access + +item.bill_rent
-                    }
+            // paidBefore() {
+            //     // Перебираю все оплаченые
+            //     return this.subOrders ? this.subOrders.reduce((acc, item) => {
+            //         if (item.paid == 1) {
+            //             acc += +item.bill_access + +item.bill_rent
+            //         }
 
-                    //console.log(item)
-                    return acc                            
-                }, 0) : 0
-            },
-            saledBefore() {
-                // Перебираю все оплаченые
-                return this.subOrders ? this.subOrders.reduce((acc, item) => {
-                    if (item.paid == 1) {
-                        acc += +item.sale
-                    }
+            //         //console.log(item)
+            //         return acc                            
+            //     }, 0) : 0
+            // },
+            // saledBefore() {
+            //     // Перебираю все оплаченые
+            //     return this.subOrders ? this.subOrders.reduce((acc, item) => {
+            //         if (item.paid == 1) {
+            //             acc += +item.sale
+            //         }
 
-                    return acc                            
-                }, 0) : 0
-            },
+            //         return acc                            
+            //     }, 0) : 0
+            // },
 
-            sale() {
-                return this.isLast() 
-                    ? this.subOrders.reduce((acc, item) => {
-                        acc += +item.sale
-                        return acc
-                    }, 0)
-                    : +this.subOrder.sale
-            },
+            // sale() {
+            //     return this.isLast() 
+            //         ? this.subOrders.reduce((acc, item) => {
+            //             acc += +item.sale
+            //             return acc
+            //         }, 0)
+            //         : +this.subOrder.sale
+            // },
 
-            advance() {
-                return this.isLast() ? this.order.advance : 0
-            },
+            // advance() {
+            //     return this.isLast() ? this.order.advance : 0
+            // },
 
-            total() {
-                return roundBill(this.billRent - this.paidBefore);
+            // total() {
+            //     return roundBill(this.billRent - this.paidBefore);
 
-            },
+            // },
 
-            toPay() {
-                return this.isLast 
-                    ? roundBill((this.billRent - this.paidBefore) - (this.sale - this.saledBefore)) - +this.advance
-                    : this.billRent - this.sale
-            },
+            // toPay() {
+            //     return this.isLast 
+            //         ? roundBill((this.billRent - this.paidBefore) - (this.sale - this.saledBefore)) - +this.advance
+            //         : this.billRent - this.sale
+            // },
 
-            customer() {
-                return this.$store.getters.customers.find(i => i.id_rent == this.order.customer_id)
-            },
+            // customer() {
+            //     return this.$store.getters.customers.find(i => i.id_rent == this.order.customer_id)
+            // },
 
-            accessories() {
-                if (!this.subOrder.accessories) {
-                    return null
-                }
+            // accessories() {
+            //     if (!this.subOrder.accessories) {
+            //         return null
+            //     }
 
-                const split = this.subOrder.accessories.split(',') // [1, 2]
+            //     const split = this.subOrder.accessories.split(',') // [1, 2]
 
-                return split.map(i => {
-                    return this.$store.getters.accessories.find(j => j.id_rent == i)
-                })
-            },
+            //     return split.map(i => {
+            //         return this.$store.getters.accessories.find(j => j.id_rent == i)
+            //     })
+            // },
 
-            activeTime() {
-                const start = Date.parse(this.order.start_time)
-                const end   = Date.parse(this.subOrder.end_time)
-                const pause = this.subOrder.pause_time ? this.subOrder.pause_time : 0
-                const time = end - start - pause
+            // activeTime() {
+            //     const start = Date.parse(this.order.start_time)
+            //     const end   = Date.parse(this.subOrder.end_time)
+            //     const pause = this.subOrder.pause_time ? this.subOrder.pause_time : 0
+            //     const time = end - start - pause
 
-                // console.log('start', start)
-                // console.log('end', end)
-                // console.log('pause', pause)
-                // console.log('time', time)
-                // console.log(timeFormat(time))
+            //     // console.log('start', start)
+            //     // console.log('end', end)
+            //     // console.log('pause', pause)
+            //     // console.log('time', time)
+            //     // console.log(timeFormat(time))
 
-                return timeFormat(time)
-            },
+            //     return timeFormat(time)
+            // },
             deposit() {
                 return this.$store.getters.deposits.find(i => i.id_rent === +this.order.deposit)
             },
@@ -343,8 +257,11 @@
             subOrders() {
                 return this.$store.getters.subOrders.filter(i => {
                     return i.order_id == this.order.order_id && i.status !== "DEL"
-                })
-            }                
+                });
+            },
+            unpaidSubOrders() {
+
+            }
         }
     }
 </script>

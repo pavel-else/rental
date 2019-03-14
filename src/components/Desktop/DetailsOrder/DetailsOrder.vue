@@ -2,8 +2,8 @@
     <div class="canvas">
         <div class="add-order details">
             <h3>
-                <span v-if="status === 'newOrder'">Новый заказ #{{ order.order_id }}</span>
-                <span v-else>Добавить товар к заказу #{{ order.order_id }}</span>
+                <span v-if="status === 'newOrder'">Новый заказ #{{ order.id_rent }}</span>
+                <span v-else>Добавить товар к заказу #{{ order.id_rent }}</span>
             </h3>
             <form @submit.prevent="">
                 <table>
@@ -135,7 +135,7 @@
                 order:    {
                     status:             null,              
                     start_time:         null,         
-                    order_id:           null,           
+                    id_rent:           null,           
                     order_id_position:  null,  
                     advance:            null,            
                     note:               null,               
@@ -177,19 +177,39 @@
             ...getOrderId,
             ...getSubOrderId,
 
+            isSerial() {
+                /*
+                * Функция определяет, является ли новый сабордер новым заказом или же это часть предыдущего ордера
+                */
+                const lastTime = this.$store.getters.generalSettings.lastOrderTime || false
+                const interval = this.$store.getters.generalSettings.lastOrderInterval
+                const now      = this.$store.getters.now
+                const lastID   = this.getLastId()
+                const order    = this.orders.find(i => i.id_rent == lastID)
+
+                //console.log('isSerial', this.$store.getters.generalSettings);
+
+                // Если последний ордер уже закрыт
+                if (!order || order.status === 'END' || order.status === 'DEL') {
+                    return false;
+                }
+
+                return lastTime && now - lastTime < interval;
+            },
+            getLastId() {
+                return this.$store.getters.generalSettings.lastOrderID;
+            },
             close() {
                 this.$emit('close')
             },
 
             save() {
-                console.log('order: ',this.order, 'subOrder: ', this.subOrder)
-
                 // newOrder
                 if (this.status == 'newOrder') {
 
                     const options = {
                         lastOrderTime: Date.now(),
-                        lastOrderID: this.order.order_id
+                        lastOrderID: this.order.id_rent
                     }
 
                     this.$store.dispatch('send', [
@@ -218,7 +238,7 @@
 
                 this.order.status              = 'ACTIVE'
                 this.order.start_time          = Date.now() + this.registrationTime
-                this.order.order_id            = this.getOrderId()
+                this.order.id_rent            = this.getOrderId()
                 this.order.order_id_position   = order_id_position || this.getPosition('new')
 
                 this.$set(this.order, 'customer_id', null)
@@ -226,7 +246,7 @@
                 this.subOrder.id_rent    = this.getSubOrderId()
                 this.subOrder.product_id = this.product.id_rent
                 this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.order_id
+                this.subOrder.order_id   = this.order.id_rent
                 this.subOrder.status     = 'ACTIVE'
                 this.subOrder.pause_time = 0
                 
@@ -239,7 +259,7 @@
                     return
                 }
 
-                const order = this.orders.find(i => i.order_id == order_id)
+                const order = this.orders.find(i => i.id_rent == order_id)
 
                 if (!order) {
                     console.log('order not found!')
@@ -250,7 +270,7 @@
                 this.subOrder.id_rent    = this.getSubOrderId()
                 this.subOrder.product_id = this.product.id_rent
                 this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.order_id
+                this.subOrder.order_id   = this.order.id_rent
                 this.subOrder.status     = 'ACTIVE'
                 this.subOrder.pause_time = 0
 
@@ -258,35 +278,7 @@
                 // console.log(this.subOrder)
             },
 
-            isSerial() {
-                /*
-                * Функция определяет, является ли новый сабордер новым заказом или же это часть предыдущего ордера
-                */
-                // const lastTime = this.$store.getters.options.lastOrderTime || false
-                // const interval = this.$store.getters.opt
-                const lastTime = this.$store.getters.generalSettings.lastOrderTime || false
-                const interval = this.$store.getters.generalSettings.lastOrderInterval
-                const now      = this.$store.getters.now
-                const lastID   = this.getLastId()
-                const order    = this.orders.find(i => i.order_id == lastID)
-
-                console.log('isSerial', this.$store.getters.generalSettings);
-
-                // Если последний ордер уже закрыт
-                if (!order || order.status === 'END' || order.status === 'DEL') {
-                    return false;
-                }
-
-                return lastTime && now - lastTime < interval;
-            },
-
-            getLastId() {
-                // return this.$store.getters.options.lastOrderID
-                return this.$store.getters.generalSettings.lastOrderID
-            },
-
             getPosition(cmd) {
-
                 const newPosition = () => {
                     const orders = this.$store.getters.orders
                     const count = 15
@@ -319,7 +311,7 @@
             },
 
             setPosition({order_id, order_id_position}) {
-                this.orders.find(i => i.order_id == order_id)
+                this.orders.find(i => i.id_rent == order_id)
                     ? this.addSubOrder(order_id)                    
                     : this.newOrder(order_id_position)
             },
