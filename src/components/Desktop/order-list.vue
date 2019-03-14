@@ -239,11 +239,11 @@
             },
 
             stopOrder(order) {
-                const subOrders = this.getSubOrders(order.id_rent)
+                // const subOrders = this.getSubOrders(order.id_rent)
 
-                for (let i = subOrders.length - 1; i >= 0; i--) {
-                    this.stopSubOrder(order, subOrders[i], /*send=*/true)
-                }
+                // for (let i = subOrders.length - 1; i >= 0; i--) {
+                //     this.stopSubOrder(order, subOrders[i], /*send=*/true)
+                // }
 
                 this.order = order
                 this.showResume = true           

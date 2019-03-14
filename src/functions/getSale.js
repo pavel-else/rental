@@ -13,7 +13,7 @@ export default (bill, customerId) => {
         return 0
     }
 
-    const customer = store.getters.customers.find(i => i.id_rent === customerId)
+    const customer = store.getters.customers.find(i => i.id_rent === +customerId)
     
     return customer ? Math.round(customer.sale / 100 * bill) : 0
 }

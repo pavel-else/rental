@@ -4,7 +4,7 @@
             <table>
                     <tr>
                         <td>Заказ</td>
-                        <td> # {{ order.order_id }}</td>
+                        <td> # {{ order.id_rent }}</td>
                     </tr>
 
                     <tr>
@@ -29,78 +29,48 @@
                     </tr>
 
                     <tr>
-<!--                         <td>Чистое время</td>
-                        <td>{{ activeTime }}</td> -->
+                        <td>Продолжительность</td>
+                        <td>{{ activeTime }}</td>
                     </tr>
 
                     <tr>
-<!--                         <td colspan="2">
-                            <p>Товары</p>
+                        <td colspan="2">
                             <ul class="products__list">
-                                <li class="products__item" v-for="subOrder in subOrders" :key="subOrder.id_rent">
+                                <li class="products__item" v-for="item in activeSubOrders" :key="item.id_rent">
                                     <div class="product-line">
-                                        <span>{{ productNames[subOrder.product_id] }}</span>
+                                        <span>{{ item.product_name }}</span>
                                         <span class="product-line__fill"></span>
-                                        <span>{{ subOrder.bill_rent }} руб.</span>                                        
+                                        <span>{{ item.bill_rent }} руб.</span>                                      
                                     </div>
 
-                                    <div class="product-line" v-if="subOrder.bill_access > 0">
-                                        <span>Аксессуары</span>
+                                    <div class="product-line" v-for="accessory in item.extended_accessories">
+                                        <span>{{ accessory.name }}</span>
                                         <span class="product-line__fill"></span>
-                                        <span>{{ subOrder.bill_access }} руб.</span>                                        
+                                        <span>{{ accessory.bill_access }} руб.</span>                                        
                                     </div>
-
+                                    <br>
+                                </li>
+                                <li class="products__item">
+                                    <div class="product-line">
+                                        <span><b>Итого</b></span>
+                                        <span class="product-line__fill"></span>
+                                        <span><b>{{ total }} руб.</b></span>                                        
+                                    </div>
+                                </li>
+                                <li class="products__item">
+                                    <div class="product-line">
+                                        <span><b>С учетом скидки</b></span>
+                                        <span class="product-line__fill"></span>
+                                        <span><b>{{ totalWithSale }} руб.</b></span>                                        
+                                    </div>
                                 </li>
                             </ul>
-
-
-                            <div class="product-line">
-                                <span>Итого</span>
-                                <span class="product-line__fill"></span>
-                                <span>{{ total }} руб.</span>                                        
-                            </div>
-                        </td> -->
+                        </td>
                     </tr>
-
-<!--                     <tr v-if="sale > 0">
-                        <td>С учетом скидки клиента ({{ customer.sale }}%)</td>
-                        <td>
-                            <span>{{ total - sale }} р.</span>
-                        </td>
-                    </tr> -->
-
-                    <!-- <tr v-if="paidBefore > 0">
-                        <td>Оплачено ранее</td>
-                        <td>
-                            <span>{{ paidBefore }}</span>
-                            <span v-if="saledBefore" :title="'С учетом скидки ' + saledBefore + ' р.'">({{ paidBefore - saledBefore }})</span>
-                             р.
-                        </td>
-                    </tr> -->
-
-                    <!-- <tr v-if="isLast() && order.advance > 0">
-                        <td>Аванс</td>
-                        <td>
-                            <span>{{ order.advance }} р.</span>
-                        </td>
-                    </tr> -->
-                    
-
-                    <!-- <tr class="details__bill">
-                        <td>
-                            <span v-if="toPay >= 0">
-                                К оплате
-                            </span>
-                            <span v-else>Сдача</span>
-                        </td>
-                        <td>
-                            {{ toPay }} р.
-                        </td>
-                    </tr> -->
             </table>
 
             <div class="btn-group">
-                <button class="resume__button" @click="pay('money')">
+                <button class="resume__button" @click="pay('coin')">
                     <i class="fa fa-eur" aria-hidden="true"></i>Наличными
                 </button>
                 <button class="resume__button" @click="pay('card')">
@@ -115,14 +85,15 @@
 </template>
 <script>
     /*
-    * Компонент работает с уже закрытым ордером. 
     * Отправляет на сервер информацию о способе оплаты и списание с баланса
     */
-    import timeFormat from '@/functions/timeFormat';
-    import roundBill  from '@/functions/roundBill';
-    import * as Time  from '@/functions/Time';
-    import copy       from '@/functions/copy';
-
+    import timeFormat       from '@/functions/timeFormat';
+    import roundBill        from '@/functions/roundBill';
+    import getBill          from '@/functions/getBill';
+    import getBillAccessory from '@/functions/getBillAccessory';
+    import getSale          from '@/functions/getSale';
+    import * as Time        from '@/functions/Time';
+    import copy             from '@/functions/copy';
 
     export default {
         props: {
@@ -131,22 +102,82 @@
 
         data() {
             return {
-                subOrders: this.$store.getters.subOrders.filter(i = i.order_id === this.order.id_rent)
-
+                activeSubOrders: this.makeActiveSubOrders(),
             }
         },
         methods: {
+            makeActiveSubOrders() {
+                const subOrders = copy(this.$store.getters.subOrders.filter(i => i.order_id === this.order.id_rent && !i.paid));
+                return subOrders.reduce((acc, item) => {
+                    item.product_name = this.$store.getters.productNameById(item.product_id);
+
+                    item.time = this.getTime(item);
+                    item.bill_rent = this.getBillRent(item);
+                    item.extended_accessories = this.makeAccessories(item);
+                    item.sale = this.makeSale(item);
+
+
+                    acc.push(item);
+                    return acc;
+                }, []);
+            },
+            getTime(subOrder) {
+                const start = Date.parse(this.order.start_time);
+                const pause = subOrder.pause_time; // Проверить, не надо ли добавлять. если сабордер на паузе
+                const end = subOrder.end_time ? Date.parse(subOrder.end_time) : Date.now();
+                return end - start - pause; 
+            },
+            getBillRent(subOrder) {
+                const bill = getBill(subOrder.tariff_id, subOrder.time);
+                return roundBill(bill);
+            },
+            makeAccessories(subOrder) {
+                if (!subOrder.accessories) {
+                    return [];
+                }
+
+                const split = subOrder.accessories.split(',') // [1, 2]
+                const trim = split ? split.map(i => i.trim()) : [];
+
+                const extendedAccessories = trim.reduce((acc, id) => {
+                    const accessory = copy(this.$store.getters.accessories.find(i => i.id_rent === id));
+
+                    if (!accessory) {
+                        return acc;
+                    }
+
+                    const bill_access = getBillAccessory(accessory.type, accessory.value, subOrder.bill_rent);
+                    accessory.bill_access = roundBill(bill_access);
+
+                    acc.push(accessory);
+
+                    return acc;
+                }, []);
+
+                return extendedAccessories;
+            },
+            makeSale(subOrder) {
+                const billAllAccess = subOrder.extended_accessories.reduce((acc, accessory) => {
+                    acc += accessory.bill_access;
+                    return acc;
+                }, 0);
+
+                const sale = getSale((billAllAccess + subOrder.bill_rent), this.order.customer_id);
+
+                return roundBill(sale);
+            },
+
             close() {
-                this.$emit('close')
+                this.$emit('close');
             },
 
             pay(type) {
-                if (type === 'money') {
-                    this.subOrder.paid = true
+                if (type === 'coin') {
+                    this.subOrder.paid = 'coin';
                 }
 
                 if (type === 'card') {
-                    this.subOrder.paid = true
+                    this.subOrder.paid = 'card';
                 }
 
                 // if (type === 'dont pay') {
@@ -165,117 +196,58 @@
         },
 
         computed: {
-            // billRent() {
-            //     return this.isLast() 
-            //         ? this.subOrders.reduce((acc, item) => {
-            //             acc += +item.bill_rent + +item.bill_access
-            //             return acc
-            //         }, 0)
-            //         : +this.subOrder.bill_rent + this.subOrder.bill_access
-            // },
+            total() {
+                return this.activeSubOrders.reduce((acc, item) => {
+                    const summBillAccess = item.extended_accessories.reduce((acc, accessory) => {
+                        acc += accessory.bill_access;
+                        return acc;
+                    }, 0);
 
-            // paidBefore() {
-            //     // Перебираю все оплаченые
-            //     return this.subOrders ? this.subOrders.reduce((acc, item) => {
-            //         if (item.paid == 1) {
-            //             acc += +item.bill_access + +item.bill_rent
-            //         }
+                    acc += +item.bill_rent + summBillAccess;
+                    return acc;
+                }, 0);
+            },
+            totalWithSale() {
+                const summSale = this.activeSubOrders.reduce((acc, item) => {
+                    acc += item.sale;
+                    return acc;
+                }, 0);
 
-            //         //console.log(item)
-            //         return acc                            
-            //     }, 0) : 0
-            // },
-            // saledBefore() {
-            //     // Перебираю все оплаченые
-            //     return this.subOrders ? this.subOrders.reduce((acc, item) => {
-            //         if (item.paid == 1) {
-            //             acc += +item.sale
-            //         }
+                return this.total - summSale;
+            },
+            activeTime() {
+                const start = Date.parse(this.order.start_time);
+                const end   = Date.now();
+                const time = end - start;
 
-            //         return acc                            
-            //     }, 0) : 0
-            // },
+                // console.log('start', start)
+                // console.log('end', end)
+                // console.log('pause', pause)
+                // console.log('time', time)
+                // console.log(timeFormat(time))
 
-            // sale() {
-            //     return this.isLast() 
-            //         ? this.subOrders.reduce((acc, item) => {
-            //             acc += +item.sale
-            //             return acc
-            //         }, 0)
-            //         : +this.subOrder.sale
-            // },
-
-            // advance() {
-            //     return this.isLast() ? this.order.advance : 0
-            // },
-
-            // total() {
-            //     return roundBill(this.billRent - this.paidBefore);
-
-            // },
-
-            // toPay() {
-            //     return this.isLast 
-            //         ? roundBill((this.billRent - this.paidBefore) - (this.sale - this.saledBefore)) - +this.advance
-            //         : this.billRent - this.sale
-            // },
-
-            // customer() {
-            //     return this.$store.getters.customers.find(i => i.id_rent == this.order.customer_id)
-            // },
-
-            // accessories() {
-            //     if (!this.subOrder.accessories) {
-            //         return null
-            //     }
-
-            //     const split = this.subOrder.accessories.split(',') // [1, 2]
-
-            //     return split.map(i => {
-            //         return this.$store.getters.accessories.find(j => j.id_rent == i)
-            //     })
-            // },
-
-            // activeTime() {
-            //     const start = Date.parse(this.order.start_time)
-            //     const end   = Date.parse(this.subOrder.end_time)
-            //     const pause = this.subOrder.pause_time ? this.subOrder.pause_time : 0
-            //     const time = end - start - pause
-
-            //     // console.log('start', start)
-            //     // console.log('end', end)
-            //     // console.log('pause', pause)
-            //     // console.log('time', time)
-            //     // console.log(timeFormat(time))
-
-            //     return timeFormat(time)
-            // },
+                return timeFormat(time);
+            },
             deposit() {
                 return this.$store.getters.deposits.find(i => i.id_rent === +this.order.deposit)
             },
 
-            subOrders() {
-                return this.$store.getters.subOrders.filter(i => {
-                    return i.order_id == this.order.order_id && i.status !== "DEL"
-                });
-            },
-            unpaidSubOrders() {
 
-            }
         }
     }
 </script>
 
 <style scoped>
     .details {
-        position: absolute;
+        /*position: absolute;*/
         top: 100px;
-        left: calc(50% - 150px);
+        /*left: calc(50% - 150px);*/
+        width: 400px;
         min-width: 300px;
         padding: 5px 10px;
     }
 
-    td {
+/*    td {
         padding: 5px 5px 10px;
     }
 
@@ -286,7 +258,7 @@
     .details__bill td {
         padding-top:  20px;
         font-weight: bold;
-    }
+    }*/
 
     .details__close {
         width: 20px;
@@ -320,29 +292,11 @@
         transform: rotate(-45deg);
     }
 
-    .table-suborders {
-        padding: 0;
-        margin: 0;
-    }
-    .table-suborders td {
-        padding: 2px 5px;
-    }
-    .select {
-        outline: 1px solid #333;
-    }
 
-    .accessories {
-        font-size: 14px;
-    }
 
-    .suborders {
-        /*border: 1px solid #333;*/
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
 
-    .suborders__td {
+
+/*    .suborders__td {
         padding: 2px 4px;
     }
     .suborders__td--name {
@@ -365,11 +319,11 @@
     }
     .suborders__td--paid {
         vertical-align: top;
-    }
+    }*/
 
-    .accessories__tr td {
+/*    .accessories__tr td {
         padding: 1px 5px;
-    }
+    }*/
 
     .accessories__td--result {
         padding-top: 10px;

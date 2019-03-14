@@ -6,7 +6,7 @@ export default (idUsedAccessories, allAccessories, bill) => {
     }
 
     const split = idUsedAccessories.split(',') // [1, 2]
-    const usedAccessories = split ? split.map(i => i.trim()): []
+    const usedAccessories = split ? split.map(i => i.trim()) : []
 
     const billAccessories = usedAccessories.reduce( (acc, id) => {
         const accessory = allAccessories.find(i => i.id_rent === id)
