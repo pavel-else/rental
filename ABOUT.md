@@ -2,6 +2,30 @@
 
 ## Общая информация
 
+## Компонент
+### Общая структура
+<template></template>
+<script>
+    import ...
+    export default {
+        // Входящие параметры
+        // Если компонент меняет входящие параметры, то их принимать общем объекте нагрузки и в дальнейщем работать с их копией.
+        props: {
+            payload: Object // Product - в коментах указание, что именно приходит,
+            productName: String
+        },
+        data() {
+            return {}
+        },
+        // Хуки
+        created() {},
+        methods() {},
+        computed() {},
+        watch() {}
+    }
+</script>
+<style scoped></style>
+
 ## Стор
 структура стора:
 

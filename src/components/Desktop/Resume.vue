@@ -64,16 +64,14 @@
                                         <span><b>{{ totalWithSale }} руб.</b></span>                                        
                                     </div>
                                 </li>
-
                                 <li class="products__item">
                                     <div class="product-line">
-                                        <span>Списать с баланса ({{ balance }} руб.)</span>
-
-                                        <span>input</span>                                        
+                                        <button class="resume__button" v-if="balance > 0" @click="recalculateBill()">
+                                            <i class="fa fa-eur" aria-hidden="true"></i>Пересчитать учитывая баланс: {{ balance }} руб.
+                                        </button>                                       
                                     </div>
                                 </li>
-                            </ul>
-                            
+                            </ul>                            
                         </td>
                     </tr>
             </table>
@@ -120,6 +118,7 @@
         methods: {
             makeActiveSubOrders() {
                 const subOrders = copy(this.$store.getters.subOrders.filter(i => i.order_id === this.order.id_rent && !i.paid));
+
                 return subOrders.reduce((acc, item) => {
                     item.product_name = this.$store.getters.productNameById(item.product_id);
 
@@ -137,6 +136,12 @@
 
                     acc.push(item);
                     return acc;
+                }, []);
+            },
+            recalculateBill() {
+                const balance = this.balance;
+                return this.activeSubOrders.reduce((acc, item) => {
+
                 }, []);
             },
             getTime(subOrder) {
