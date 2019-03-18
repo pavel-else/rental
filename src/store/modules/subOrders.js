@@ -77,6 +77,37 @@ export default {
                     reject(err);
                 })
             }); 
+        },
+        changeSubOrder({ commit, getters }, subOrder) {
+            console.log('dispatch: changeSubOrder', subOrder);
+
+            return new Promise((resolve, reject) => {
+                const queue = [
+                    { cmd: 'changeSubOrder', value: subOrder },
+                    { cmd: 'getSubOrders'}
+                ];
+
+                const url = getters.url;
+                const token = localStorage.getItem('user-token');
+
+                axios({ 
+                    url,
+                    data: {
+                        queue,
+                        token
+                    },
+                    method: 'POST',
+                })
+                .then(resp => {
+                    console.log(resp)
+                    commit('subOrders', resp.data.sub_orders);
+                    resolve(true);                        
+                }).
+                catch(err => {
+                    console.log(err)
+                    reject(err);
+                })
+            }); 
         }
     },
 }

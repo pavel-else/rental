@@ -45,7 +45,7 @@ export default {
             });
         },
         changeOrder({ commit, getters }, order) {
-            console.log('dispatch: changeOrder');
+            console.log('dispatch: changeOrder', order);
 
             return new Promise((resolve, reject) => {
                 const queue = [

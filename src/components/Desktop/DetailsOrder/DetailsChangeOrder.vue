@@ -25,8 +25,9 @@
                         <td>
                             <input 
                                 class="add-order__input add-order__input--advance" 
-                                v-model="order.advance" 
+                                :value="order.advance" 
                                 placeholder="0 руб"
+                                @change="setAdvance($event)"
                             >
 
                         </td>
@@ -39,11 +40,6 @@
                                 @setCustomer="setCustomer($event)" 
                             >
                             </SelectCustomer>
-                            <!-- <SelectCustomer2
-                                :default="order.customer_id"
-                                @setCustomer="setCustomer($event)"
-                            >
-                            </SelectCustomer2> -->
                         </td>
                     </tr>
                     <tr>
@@ -198,23 +194,15 @@
             },
 
             save() {
-
+                console.log('changeOrder', this.status)
                 // changeOrder
-                if (this.status.changeOrder) {
-                    console.log('changeOrder')
-                    
-                    this.$store.dispatch('send', [
-                        {cmd: 'changeOrder', value: this.order},
-                    ])
+                if (this.status.changeOrder) {                    
+                    this.$store.dispatch('changeOrder', this.order);
                 }
 
                 // changeProduct
-                if (this.status.changeSubOrder && !this.status.splitOrder) {
-                    console.log('ChangeSubOrder')
-                    
-                    this.$store.dispatch('send', [
-                        {cmd: 'changeOrderProduct', value: this.subOrder},
-                    ])
+                if (this.status.changeSubOrder && !this.status.splitOrder) {                    
+                    this.$store.dispatch('changeSubOrder', this.subOrder);
                 }
 
                 // splitOrder
@@ -230,9 +218,7 @@
                             }
                         }
                     ])
-
                 }
-
               
                 this.close()
             },
@@ -299,26 +285,6 @@
             },
 
             getPosition() {
-                // Если редактируем конкретный старый ордер, верну его позицию
-                // Если ордер совсем новый, верну свободную позицию
-                
-                // const newPosition = () => {
-                //     const orders = this.$store.getters.orders
-                //     const count = 15
-                //     let id = null
-
-                //     const iter = (num) => {
-                //         id = orders.find(item => item.order_id_position == num) ? id : num
-
-                //         return num < 1 ? id : iter(num - 1)
-                //     }
-
-                //     const result = iter(count)
-                //     this.order.order_id_position = result
-
-                //     return +result                    
-                // }
-
                 if (this.order.order_id_position) {
                     return this.order.order_id_position
                 }
@@ -330,9 +296,9 @@
 
                 this.status.splitOrder = true
 
-                order.old_id = this.order.order_id
+                order.old_id = this.order.id_rent
 
-                order.order_id = order_id
+                order.id_rent = order_id
                 order.start_time = Date.parse(this.order.start_time)
                 order.order_id_position = position
 
@@ -343,7 +309,7 @@
                 this.subOrder = subOrder
             },
 
-            setPosition({order_id, order_id_position}) {
+            setPosition({ order_id, order_id_position }) {
                 if (!this.orders.find(i => i.order_id == order_id)) {
                     this.status.splitOrder = true
                     this.splitOrder(order_id, order_id_position)
@@ -355,6 +321,11 @@
                 this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
 
                 this.status.changeOrder = true
+            },
+
+            setAdvance(event) {
+                this.order.advance = event.target.value;
+                this.status.changeOrder = true;
             },
 
             setDeposit(deposit) {
