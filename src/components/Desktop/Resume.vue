@@ -1,6 +1,7 @@
 <template>
     <div class="canvas">
-        <div class="details"> 
+        <div class="details">
+            <h2>Оплата заказа</h2>
             <table>
                     <tr>
                         <td>Заказ</td>
@@ -54,19 +55,24 @@
                                     <div class="product-line">
                                         <span><b>Итого</b></span>
                                         <span class="product-line__fill"></span>
-                                        <span><b>{{ total }} руб.</b></span>                                        
+                                        <span><b>{{ billRentAccess }} руб.</b></span>                                        
                                     </div>
                                 </li>
-                                <li class="products__item">
+                                <li class="products__item" v-if="billRentAccess !== billRentAccessSale">
                                     <div class="product-line">
                                         <span><b>С учетом скидки</b></span>
                                         <span class="product-line__fill"></span>
-                                        <span><b>{{ totalWithSale }} руб.</b></span>                                        
+                                        <span><b>{{ billRentAccessSale }} руб.</b></span>                                        
                                     </div>
                                 </li>
                                 <li class="products__item">
-                                    <div class="product-line">
-                                        <button class="resume__button" v-if="balance > 0" @click="recalculateBill()">
+                                    <div class="product-line" v-if="balanceAmound > 0">
+                                        <span><b>С учетом суммы, списанной с баланса</b></span>
+                                        <span class="product-line__fill"></span>
+                                        <span><b>{{ billRentAccessSaleBalance }} руб.</b></span>                                        
+                                    </div>
+                                    <div class="product-line"v-else>
+                                        <button class="resume__button" v-if="balance > 0" @click="useBalance()">
                                             <i class="fa fa-eur" aria-hidden="true"></i>Пересчитать учитывая баланс: {{ balance }} руб.
                                         </button>                                       
                                     </div>
@@ -104,12 +110,14 @@
 
     export default {
         props: {
-            order: Object, 
+            _order: Object,
         },
 
         data() {
             return {
-                activeSubOrders: []
+                activeSubOrders: [],
+                order: copy(this._order),
+                balanceAmound: 0, // сумма, списываемая с баланса
             }
         },
         created() {
@@ -136,12 +144,6 @@
 
                     acc.push(item);
                     return acc;
-                }, []);
-            },
-            recalculateBill() {
-                const balance = this.balance;
-                return this.activeSubOrders.reduce((acc, item) => {
-
                 }, []);
             },
             getTime(subOrder) {
@@ -189,6 +191,10 @@
 
                 return roundBill(sale);
             },
+            useBalance() {
+                // Просчет суммы, списываемой с баланса.
+                this.balanceAmound = this.balance > this.billRentAccessSale ? this.billRentAccessSale : this.balance;
+            },
 
             close() {
                 this.$emit('close');
@@ -230,19 +236,22 @@
                 return this.$store.getters.customerById(this.order.customer_id);
             },
 
-            total() {
+            billRentAccess() {
                 return this.activeSubOrders.reduce((acc, item) => {
                     acc += +item.bill_rent + item.bill_access;
                     return acc;
                 }, 0);
             },
-            totalWithSale() {
+            billRentAccessSale() {
                 const summSale = this.activeSubOrders.reduce((acc, item) => {
                     acc += item.sale;
                     return acc;
                 }, 0);
 
-                return this.total - summSale;
+                return this.billRentAccess - summSale;
+            },
+            billRentAccessSaleBalance() {
+                return this.billRentAccessSale - this.balanceAmound;
             },
             activeTime() {
                 const start = Date.parse(this.order.start_time);

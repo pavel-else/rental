@@ -63,7 +63,7 @@
 
         <Resume 
             v-if="showResume"
-            :order="order" 
+            :_order="order" 
             @close="showResume = false" 
         >
         </Resume>
