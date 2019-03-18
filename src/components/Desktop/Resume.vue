@@ -64,8 +64,16 @@
                                         <span><b>{{ totalWithSale }} руб.</b></span>                                        
                                     </div>
                                 </li>
+
+                                <li class="products__item">
+                                    <div class="product-line">
+                                        <span>Списать с баланса ({{ balance }} руб.)</span>
+
+                                        <span>input</span>                                        
+                                    </div>
+                                </li>
                             </ul>
-                            {{ balance }}
+                            
                         </td>
                     </tr>
             </table>
@@ -103,8 +111,11 @@
 
         data() {
             return {
-                activeSubOrders: this.makeActiveSubOrders(),
+                activeSubOrders: []
             }
+        },
+        created() {
+            this.activeSubOrders = this.makeActiveSubOrders();
         },
         methods: {
             makeActiveSubOrders() {
@@ -170,7 +181,6 @@
                 }, 0);
 
                 const sale = getSale((billAllAccess + subOrder.bill_rent), this.customer);
-                console.log(this.order.customer_id)
 
                 return roundBill(sale);
             },
@@ -212,8 +222,9 @@
 
         computed: {
             customer() {
-                return this.$store.getters.customers.find(i => i.id_rent == this.order.customer_id);
+                return this.$store.getters.customerById(this.order.customer_id);
             },
+
             total() {
                 return this.activeSubOrders.reduce((acc, item) => {
                     acc += +item.bill_rent + item.bill_access;

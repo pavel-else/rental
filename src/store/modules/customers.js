@@ -4,11 +4,12 @@ export default {
     },
     getters: {
         customers(state) {
-            return state.customers
+            return state.customers;
         },
         customerById(state) {
             return customer_id => {
-                return state.customers.find(i => i.id_rent === customer_id);
+                const customer = state.customers.find(i => i.id_rent === customer_id);
+                return customer;
             };
         },
     },
