@@ -52,7 +52,7 @@ export default {
                         commit('setOptions',       r.data.options);
                         commit('tariffs',       r.data.tariffs);
                         commit('setCategories',    r.data.categories);
-                        commit('setCustomers',     r.data.customers);
+                        commit('customers',     r.data.customers);
                         commit('subOrders',     r.data.sub_orders);
                         commit('orders',        r.data.orders);
                         commit('accessories',   r.data.accessories);

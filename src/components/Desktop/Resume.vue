@@ -43,7 +43,7 @@
                                         <span>{{ item.bill_rent }} руб.</span>                                      
                                     </div>
 
-                                    <div class="product-line" v-for="accessory in item.extended_accessories">
+                                    <div class="product-line" v-for="accessory in item.extended_accessories" :key="item.id_rent + '_' + accessory.id_rent">
                                         <span>{{ accessory.name }}</span>
                                         <span class="product-line__fill"></span>
                                         <span>{{ accessory.bill_access }} руб.</span>                                        
@@ -122,6 +122,8 @@
 
                     item.sale = this.makeSale(item);
 
+                    item.balance = this.getBalance(item);
+
 
                     acc.push(item);
                     return acc;
@@ -171,6 +173,9 @@
                 const sale = getSale((billAllAccess + subOrder.bill_rent), this.order.customer_id);
 
                 return roundBill(sale);
+            },
+            getBalance(subOrder) {
+                // const customer = this.$store.getters.customers
             },
 
             close() {
