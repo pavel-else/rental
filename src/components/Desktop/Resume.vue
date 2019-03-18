@@ -57,7 +57,7 @@
                                         <span><b>{{ total }} руб.</b></span>                                        
                                     </div>
                                 </li>
-                                <li class="products__item" v-if="total !== totalWithSale">
+                                <li class="products__item">
                                     <div class="product-line">
                                         <span><b>С учетом скидки</b></span>
                                         <span class="product-line__fill"></span>
@@ -65,6 +65,7 @@
                                     </div>
                                 </li>
                             </ul>
+                            {{ balance }}
                         </td>
                     </tr>
             </table>
@@ -122,8 +123,6 @@
 
                     item.sale = this.makeSale(item);
 
-                    item.balance = this.getBalance(item);
-
 
                     acc.push(item);
                     return acc;
@@ -170,12 +169,10 @@
                     return acc;
                 }, 0);
 
-                const sale = getSale((billAllAccess + subOrder.bill_rent), this.order.customer_id);
+                const sale = getSale((billAllAccess + subOrder.bill_rent), this.customer);
+                console.log(this.order.customer_id)
 
                 return roundBill(sale);
-            },
-            getBalance(subOrder) {
-                // const customer = this.$store.getters.customers
             },
 
             close() {
@@ -214,6 +211,9 @@
         },
 
         computed: {
+            customer() {
+                return this.$store.getters.customers.find(i => i.id_rent == this.order.customer_id);
+            },
             total() {
                 return this.activeSubOrders.reduce((acc, item) => {
                     acc += +item.bill_rent + item.bill_access;
@@ -244,6 +244,9 @@
             deposit() {
                 return this.$store.getters.deposits.find(i => i.id_rent === +this.order.deposit)
             },
+            balance() {
+                return this.customer ? this.customer.balance : 0; 
+            }
 
 
         }

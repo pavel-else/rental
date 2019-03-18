@@ -78,7 +78,7 @@
 
     import getBill       from '@/functions/getBill'
     import getBillAccessories from '@/functions/getBillAccessories'
-    import getSale from '@/functions/getSale'
+    import getSale       from '@/functions/getSale'
     import timeFormat    from '@/functions/timeFormat'
     import roundBill     from '@/functions/roundBill'
     import pause         from './functions/pause'
@@ -196,10 +196,11 @@
                 if (subOrder.status == "END") {
                     time = Date.parse(subOrder.end_time) - Date.parse(order.start_time)
                 }
-
                 const billRent = getBill(subOrder.tariff_id, time);
                 const billAccess = getBillAccessories(subOrder.accessories, this.$store.getters.accessories, billRent);
-                const sale = getSale(billRent + billAccess, +order.customer_id);
+
+                const customer = this.$store.getters.customers.find(i => i.id_rent == order.customer_id);
+                const sale = getSale(billRent + billAccess, customer);
 
                 // return roundBill(billWithSale)
                 return roundBill(billRent) + roundBill(billAccess) - roundBill(sale);

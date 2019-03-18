@@ -6,12 +6,11 @@ export default {
         customers(state) {
             return state.customers
         },
-        customerNameById(state) {
+        customerById(state) {
             return customer_id => {
-                const customer = state.customers.find(i => i.id_rent === customer_id);
-                return customer ? customer.name : '';
+                return state.customers.find(i => i.id_rent === customer_id);
             };
-        }
+        },
     },
     mutations: {
         customers(state, customers) {
