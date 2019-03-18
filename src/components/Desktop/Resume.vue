@@ -128,7 +128,7 @@
                 activeSubOrders: [],
                 order: copy(this._order),
                 balanceAmound: 0, // сумма, списываемая с баланса
-                clickedBalance: false
+                clickedBalance: false // используется для кнопки оплаты с баланса
             }
         },
         created() {
@@ -204,6 +204,7 @@
             },
             useBalance() {
                 // Просчет суммы, списываемой с баланса.
+                // Если сумма проката больше баланса, списывается весь баланс. Если меньше, то только сумма проката
                 this.balanceAmound = this.balance > this.billRentAccessSale ? this.billRentAccessSale : this.balance;
                 this.clickedBalance = true;
             },
@@ -213,7 +214,6 @@
             },
 
             pay(paidType) {
-
                 const stopedSubOrders = this.activeSubOrders.map(i => {
                     const stopedSubOrder = this.stopSubOrder(i);
                     stopedSubOrder.paid = paidType;
@@ -224,8 +224,18 @@
                 const stopedOrder = this.stopOrder(this.order);
                 this.$store.dispatch('changeOrder', stopedOrder);
 
-                // dec product.mileage
+                // inc product.mileage
+                const products = stopedSubOrders.map(i => {
+                    const product = copy(this.$store.getters.products.find(i => i.id_rent == i.product_id));
+                    console.log(product);
+                });
+
+
                 // dec customer.balance
+                const customer = this.customer;
+                customer.balance -= this.balanceAmound;
+                this.$store.dispatch('setCustomer', customer);
+
 
                 this.close();
             },
@@ -248,7 +258,7 @@
 
         computed: {
             customer() {
-                return this.$store.getters.customerById(this.order.customer_id);
+                return copy(this.$store.getters.customerById(this.order.customer_id));
             },
 
             billRentAccess() {
