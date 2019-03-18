@@ -71,13 +71,20 @@
                                         <span class="product-line__fill"></span>
                                         <span><b>{{ billRentAccessSaleBalance }} руб.</b></span>                                        
                                     </div>
-                                    <div class="product-line"v-else>
-                                        <button class="resume__button" v-if="balance > 0" @click="useBalance()">
-                                            <i class="fa fa-eur" aria-hidden="true"></i>Пересчитать учитывая баланс: {{ balance }} руб.
-                                        </button>                                       
+                                </li>
+                                <li class="products__item" v-if="advance > 0">
+                                    <div class="product-line">
+                                        <span><b>Внесен аванс</b></span>
+                                        <span class="product-line__fill"></span>
+                                        <span><b>{{ advance }} руб.</b></span>                                        
                                     </div>
                                 </li>
-                            </ul>                            
+                            </ul>
+
+                            <h3 class="resume__caption--total">
+                                <span v-if="total >= 0">К оплате: {{ total }} руб.</span>
+                                <span v-else>К сдаче: {{ Math.abs(total) }} руб.</span>
+                            </h3>
                         </td>
                     </tr>
             </table>
@@ -89,9 +96,9 @@
                 <button class="resume__button" @click="pay('card')">
                     <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
                 </button>
-                <!-- <button class="resume__button" v-if="!isLast()" @click="pay('dont pay')">
-                    Без оплаты
-                </button> -->
+                <button class="resume__button" v-if="balance > 0 && !clickedBalance" @click="useBalance()">
+                    <i class="fa fa-eur" aria-hidden="true"></i>С баланса: {{ balance }} руб.
+                </button> 
             </div>
         </div>
     </div> 
@@ -118,6 +125,7 @@
                 activeSubOrders: [],
                 order: copy(this._order),
                 balanceAmound: 0, // сумма, списываемая с баланса
+                clickedBalance: false
             }
         },
         created() {
@@ -194,6 +202,7 @@
             useBalance() {
                 // Просчет суммы, списываемой с баланса.
                 this.balanceAmound = this.balance > this.billRentAccessSale ? this.billRentAccessSale : this.balance;
+                this.clickedBalance = true;
             },
 
             close() {
@@ -211,6 +220,9 @@
 
                 const stopedOrder = this.stopOrder(this.order);
                 this.$store.dispatch('changeOrder', stopedOrder);
+
+                // dec product.mileage
+                // dec customer.balance
 
                 this.close();
             },
@@ -253,6 +265,11 @@
             billRentAccessSaleBalance() {
                 return this.billRentAccessSale - this.balanceAmound;
             },
+            total() {
+                return this.billRentAccessSaleBalance - this.advance;
+            },
+
+
             activeTime() {
                 const start = Date.parse(this.order.start_time);
                 const end   = Date.now();
@@ -271,9 +288,10 @@
             },
             balance() {
                 return this.customer ? this.customer.balance : 0; 
+            },
+            advance() {
+                return this.order.advance;
             }
-
-
         }
     }
 </script>
@@ -288,18 +306,6 @@
         padding: 5px 10px;
     }
 
-/*    td {
-        padding: 5px 5px 10px;
-    }
-
-    td:first-child {
-        padding-right: 10px;
-    }
-
-    .details__bill td {
-        padding-top:  20px;
-        font-weight: bold;
-    }*/
 
     .details__close {
         width: 20px;
@@ -336,36 +342,6 @@
 
 
 
-
-/*    .suborders__td {
-        padding: 2px 4px;
-    }
-    .suborders__td--name {
-        padding-right: 20px;
-    }
-    .suborders__td--descript {
-        padding: 0;
-        vertical-align: middle;
-    }
-    .suborders__td--number {
-        padding: 2px 4px;
-        text-align: center;
-    }
-    .suborders__td--sign {
-        font-size: 12px;
-        padding: 0;
-    }
-    .suborders__td--rentbill {
-        text-align: right;
-    }
-    .suborders__td--paid {
-        vertical-align: top;
-    }*/
-
-/*    .accessories__tr td {
-        padding: 1px 5px;
-    }*/
-
     .accessories__td--result {
         padding-top: 10px;
         text-align: right;
@@ -398,5 +374,9 @@
         border-bottom: 2px dotted lightgray;
         flex-grow: 1;
         margin: 0 5px;
+    }
+    .resume__caption--total {
+        text-align: center;
+        margin-top: 50px;
     }
 </style>
