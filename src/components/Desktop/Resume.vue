@@ -2,7 +2,7 @@
     <div class="canvas">
         <div class="details">
             <h2>Оплата заказа</h2>
-            <table>
+            <table class="resume__table">
                     <tr>
                         <td>Заказ</td>
                         <td> # {{ order.id_rent }}</td>
@@ -72,7 +72,8 @@
                                         <span><b>{{ billRentAccessSaleBalance }} руб.</b></span>                                        
                                     </div>
                                 </li>
-                                <li class="products__item" v-if="advance > 0">
+
+                                <li class="products__item" v-if="advance > 0" style="margin-top: 30px;">
                                     <div class="product-line">
                                         <span><b>Внесен аванс</b></span>
                                         <span class="product-line__fill"></span>
@@ -100,6 +101,8 @@
                     <i class="fa fa-eur" aria-hidden="true"></i>С баланса: {{ balance }} руб.
                 </button> 
             </div>
+
+            <button class="details__close" @click.prevent="close"></button>
         </div>
     </div> 
 </template>
@@ -298,14 +301,11 @@
 
 <style scoped>
     .details {
-        /*position: absolute;*/
         top: 100px;
-        /*left: calc(50% - 150px);*/
-        width: 400px;
+        width: 500px;
         min-width: 300px;
         padding: 5px 10px;
     }
-
 
     .details__close {
         width: 20px;
@@ -339,20 +339,15 @@
         transform: rotate(-45deg);
     }
 
-
-
-
-    .accessories__td--result {
-        padding-top: 10px;
-        text-align: right;
-    }
-
     .btn-group {
         display: flex;
     }
 
     .resume__button {
         display: flex;
+    }
+    .resume__table {
+        width: 100%;
     }
 
     .icon {
