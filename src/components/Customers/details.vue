@@ -5,7 +5,7 @@
                 <span v-if="customer.id">Сведения о клиенте</span>
                 <span v-else>Добавить нового клиента</span>
             </h3>
-            <form @click="onChange">
+            <form @input="onChange">
                 <table>
                     <tr v-if="customer.id">
                         <td>id</td>
@@ -46,11 +46,11 @@
                         <td><input type="date" v-model="C.birth_date" placeholder="Дата рождения"></td>
                     </tr>
                     <tr>
-                        <td>Скидка, %</td>                
+                        <td class="customer_td--sale">Скидка, %</td>                
                         <td><input type="text" v-model="C.sale" placeholder="Скидка, %"></td>
                     </tr>
                     <tr>
-                        <td>Баланс, р.</td>                
+                        <td class="customer_td--balance">Баланс, р.</td>                
                         <td><input type="text" v-model="C.balance" placeholder="Текущий баланс, руб"></td>
                     </tr>
                     <tr>

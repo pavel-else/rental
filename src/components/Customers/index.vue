@@ -12,8 +12,8 @@
                 <td>{{ customer.id_rent }}</td>
                 <td>{{ customer.fname }} {{ customer.sname }} {{ customer.tname }}</td>
                 <td>{{ customer.phone }}</td>
-                <td><span v-if="customer && customer.sale > 0">{{ customer.sale }} %</span></td>
-                <td><span v-if="customer && customer.balance > 0 || customers.balance < 0">{{ customer.balance }} р</span></td>
+                <td class="col--sale"><span v-if="customer && customer.sale > 0">{{ customer.sale }} %</span></td>
+                <td class="col--balance"><span v-if="customer && customer.balance > 0 || customers.balance < 0">{{ customer.balance }} р</span></td>
             </tr>
         </table>
         <div class="customer_buttons">
@@ -36,6 +36,9 @@
                 customer: {},
                 show: false
             }
+        },
+        beforeCreate() {
+            this.$store.dispatch('getCustomers');
         },
         methods: {
             onClick(customer) {
@@ -71,5 +74,10 @@
     .customer__table tr:not(:first-child):hover {
         cursor: pointer;
         box-shadow: 0px 0px 1px 0px;
+    }
+    .col--sale,
+    .col--balance {
+        width: 50px;
+        text-align: right;
     }
 </style>

@@ -22,6 +22,36 @@ export default {
         }
     },
     actions: {
+        getCustomers({ commit, getters }) {
+            console.log('dispatch: getCustomers');
+
+            return new Promise((resolve, reject) => {
+                const queue = [
+                    { cmd: 'getCustomers' }
+                ];
+                const url = getters.url;
+                const token = localStorage.getItem('user-token');
+
+                axios({ 
+                    url,
+                    data: {
+                        queue,
+                        token
+                    },
+                    method: 'POST',
+                })
+                .then(resp => {
+                    console.log(resp)
+
+                    commit('customers', resp.data.customers);
+                    resolve(true);                        
+                }).
+                catch(err => {
+                    console.log(err)
+                    reject(err);
+                });
+            });            
+        },
         setCustomer({ commit, getters }, customer) {
             console.log('dispatch: setCustomer', customer);
 
