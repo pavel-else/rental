@@ -246,7 +246,7 @@
                 this.subOrder.id_rent    = this.getSubOrderId()
                 this.subOrder.product_id = this.product.id_rent
                 this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.order_id   = this.order.id_rent
+                this.subOrder.id_rent   = this.order.id_rent
                 this.subOrder.status     = 'ACTIVE'
                 this.subOrder.pause_time = 0
                 

@@ -48,15 +48,29 @@
                             </li>
                         </ul>
                     </li>
-                </ul>
-            </div>
-                    <!--<li class="products__item">
-                        <div class="product-line">
+                    <li class="products__item">
+                        <div class="products__line">
                             <span><b>Итого</b></span>
-                            <span class="product-line__fill"></span>
-                            <span><b>{{ billRentAccess }} руб.</b></span>                                        
+                            <span>
+                                <s v-if="billRentAccess > billRentAccessSale">{{ billRentAccess }}</s>
+                                <b> {{ billRentAccessSale }} руб.</b>
+                            </span>
                         </div>
                     </li>
+
+                </ul>
+            </div>
+
+            <div>
+                Баланс клиента {{ balance }} руб, скидка {{ saleInPercent }} %
+            </div>
+
+<!--             <div class="product-line">
+                <span><b>Итого</b></span>
+                <span class="product-line__fill"></span>
+                <span><b>{{ billRentAccess }} руб.</b></span>                                        
+            </div>
+
                     <li class="products__item" v-if="billRentAccess !== billRentAccessSale">
                         <div class="product-line">
                             <span><b>С учетом скидки</b></span>
@@ -301,6 +315,9 @@
             },
             advance() {
                 return this.order.advance;
+            },
+            saleInPercent() {
+                return this.customer ? this.customer.sale : 0;
             }
         }
     }
@@ -373,7 +390,7 @@
 
     .products {
         &__list {
-            margin: 20px 30px;
+            margin: 20px 50px 50px 30px;
         }
         &__item {            
             display: block;
