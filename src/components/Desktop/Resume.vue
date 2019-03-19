@@ -1,13 +1,9 @@
 <template>
     <div class="canvas">
-        <div class="details">
-            <h2>Оплата заказа</h2>
-            <table class="resume__table">
-                    <tr>
-                        <td>Заказ</td>
-                        <td> # {{ order.id_rent }}</td>
-                    </tr>
+        <div class="details resume">
+            <h2 class="resume__caption">Оплата заказа # {{ order.id_rent }}</h2>
 
+            <table class="resume__main-table">
                     <tr>
                         <td>Клиент</td>
                         <td>
@@ -33,62 +29,62 @@
                         <td>Продолжительность</td>
                         <td>{{ activeTime }}</td>
                     </tr>
-
-                    <tr>
-                        <td colspan="2">
-                            <ul class="products__list">
-                                <li class="products__item" v-for="item in activeSubOrders" :key="item.id_rent">
-                                    <div class="product-line">
-                                        <span>{{ item.product_name }}</span>
-                                        <span class="product-line__fill"></span>
-                                        <span>{{ item.bill_rent }} руб.</span>                                      
-                                    </div>
-
-                                    <div class="product-line" v-for="accessory in item.extended_accessories" :key="item.id_rent + '_' + accessory.id_rent">
-                                        <span>{{ accessory.name }}</span>
-                                        <span class="product-line__fill"></span>
-                                        <span>{{ accessory.bill_access }} руб.</span>                                        
-                                    </div>
-                                    <br>
-                                </li>
-                                <li class="products__item">
-                                    <div class="product-line">
-                                        <span><b>Итого</b></span>
-                                        <span class="product-line__fill"></span>
-                                        <span><b>{{ billRentAccess }} руб.</b></span>                                        
-                                    </div>
-                                </li>
-                                <li class="products__item" v-if="billRentAccess !== billRentAccessSale">
-                                    <div class="product-line">
-                                        <span><b>С учетом скидки</b></span>
-                                        <span class="product-line__fill"></span>
-                                        <span><b>{{ billRentAccessSale }} руб.</b></span>                                        
-                                    </div>
-                                </li>
-                                <li class="products__item">
-                                    <div class="product-line" v-if="balanceAmound > 0">
-                                        <span><b>С учетом суммы, списанной с баланса</b></span>
-                                        <span class="product-line__fill"></span>
-                                        <span><b>{{ billRentAccessSaleBalance }} руб.</b></span>                                        
-                                    </div>
-                                </li>
-
-                                <li class="products__item" v-if="advance > 0" style="margin-top: 30px;">
-                                    <div class="product-line">
-                                        <span><b>Внесен аванс</b></span>
-                                        <span class="product-line__fill"></span>
-                                        <span><b>{{ advance }} руб.</b></span>                                        
-                                    </div>
-                                </li>
-                            </ul>
-
-                            <h3 class="resume__caption--total">
-                                <span v-if="total >= 0">К оплате: {{ total }} руб.</span>
-                                <span v-else>К сдаче: {{ Math.abs(total) }} руб.</span>
-                            </h3>
-                        </td>
-                    </tr>
             </table>
+
+            <div class="products">
+                <ul class="products__list">
+                    <li class="products__item" v-for="item in activeSubOrders" :key="item.id_rent">
+                        <div class="products__line">
+                            <span>{{ item.product_name }}</span>
+                            <!-- <span class="product-line__fill"></span> -->
+                            <span>{{ item.bill_rent }} руб.</span>                                      
+                        </div>
+
+                        <ul class="products__access-list">
+                            <li class="products__access-item products__line" v-for="accessory in item.extended_accessories" :key="accessory.id_rent">
+                                <span class="products__arrow"> {{ accessory.name }}</span>
+                                <!-- <span class="product-line__fill"></span> -->
+                                <span>{{ accessory.bill_access }} руб.</span>                                        
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+                    <!--<li class="products__item">
+                        <div class="product-line">
+                            <span><b>Итого</b></span>
+                            <span class="product-line__fill"></span>
+                            <span><b>{{ billRentAccess }} руб.</b></span>                                        
+                        </div>
+                    </li>
+                    <li class="products__item" v-if="billRentAccess !== billRentAccessSale">
+                        <div class="product-line">
+                            <span><b>С учетом скидки</b></span>
+                            <span class="product-line__fill"></span>
+                            <span><b>{{ billRentAccessSale }} руб.</b></span>                                        
+                        </div>
+                    </li>
+                    <li class="products__item">
+                        <div class="product-line" v-if="balanceAmound > 0">
+                            <span><b>С учетом суммы, списанной с баланса</b></span>
+                            <span class="product-line__fill"></span>
+                            <span><b>{{ billRentAccessSaleBalance }} руб.</b></span>                                        
+                        </div>
+                    </li>
+
+                    <li class="products__item" v-if="advance > 0" style="margin-top: 30px;">
+                        <div class="product-line">
+                            <span><b>Внесен аванс</b></span>
+                            <span class="product-line__fill"></span>
+                            <span><b>{{ advance }} руб.</b></span>                                        
+                        </div>
+                    </li> -->
+
+            <!-- <h3 class="resume__caption--total">
+                <span v-if="total >= 0">К оплате: {{ total }} руб.</span>
+                <span v-else>К сдаче: {{ Math.abs(total) }} руб.</span>
+            </h3> -->
+
 
             <div class="btn-group">
                 <button class="resume__button" @click="pay('coin')">
@@ -106,6 +102,7 @@
         </div>
     </div> 
 </template>
+
 <script>
     /*
     * Отправляет на сервер информацию о способе оплаты и списание с баланса
@@ -309,12 +306,12 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     .details {
-        top: 100px;
-        width: 500px;
+        top: 50px;
+        width: 420px;
         min-width: 300px;
-        padding: 5px 10px;
+        padding: 5px 30px;
     }
 
     .details__close {
@@ -352,31 +349,78 @@
     .btn-group {
         display: flex;
     }
+    
+
+    .resume__caption {
+        text-align: center;
+        margin: 10px 0 20px;
+    }
+
+    // Таблица содержащая общие сведения
+    .resume__main-table {
+        width: 100%;
+        border-top: 1px solid #333;
+        border-bottom: 1px solid #333;
+
+        td {
+            padding: 5px;
+        }
+
+        td:last-child {
+            text-align: right;
+        }
+    }
+
+    .products {
+        &__list {
+            margin: 20px 30px;
+        }
+        &__item {            
+            display: block;
+            flex-direction: column;
+            width: 100%;
+            margin-top: 15px;
+        }
+        &__line {
+            display: flex;
+            justify-content: space-between;
+        }
+        &__access-item {
+            margin: 5px 0;
+        }
+        &__arrow {
+            display: flex;
+            &::before {
+                display: block;
+                content: '';
+                width: 15px;
+                height: 15px;
+                margin-right: 5px;
+                background-image: url('https://app.rentix.biz/images/arrow.svg');
+                background-size: 15px 15px;
+                background-position: 2px -2px;
+                background-repeat: no-repeat;
+            }
+        }
+    }
+
+
 
     .resume__button {
         display: flex;
     }
-    .resume__table {
-        width: 100%;
-    }
-
     .icon {
         display: block;
         margin-right: 10px;
     }
-
-    .products__item {
-        display: flex;
-        flex-direction: column;
-    }
-    .product-line {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        padding: 5px;
-    }
+    // .product-line {
+    //     width: 100%;
+    //     display: flex;
+    //     justify-content: space-between;
+    //     padding: 5px;
+    // }
     .product-line__fill {
-        border-bottom: 2px dotted lightgray;
+        //border-bottom: 2px dotted lightgray;
         flex-grow: 1;
         margin: 0 5px;
     }

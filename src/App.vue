@@ -198,7 +198,7 @@
     }
 
     .tmp {
-        outline: 1px solid lightgray;
+        outline: 1px solid #333;
     }
 
     .canvas {
