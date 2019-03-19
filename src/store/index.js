@@ -4,12 +4,11 @@ import axios from 'axios'
 
 import options         from './opt'
 import categories      from './categories'
-import history         from './History/history'
 import auth            from './auth-module'
 import initApp           from './init-app-module'
 
 import RentalPointInfo from './modules/rentalPointInfo';
-import Repairs          from './modules/repairs';
+import Repairs         from './modules/repairs';
 import GeneralSettings from './modules/generalSettings';
 import Accessories     from './modules/accessories';
 import Tariffs         from './modules/tariffs';
@@ -17,6 +16,7 @@ import Products        from './modules/products';
 import subOrders       from './modules/subOrders';
 import orders          from './modules/orders';
 import customers       from './modules/customers';
+import history         from './modules/history';
 
 
 
@@ -87,7 +87,7 @@ const store = new Vuex.Store({
                     console.log('front <-- back', r)  
 
                     commit('products',      r.data.products)
-                    commit('setHistory',       r.data.history)
+                    commit('history',       r.data.history)
                     commit('setOptions',       r.data.options)
                     commit('tariffs',       r.data.tariffs)
                     commit('setCategories',    r.data.categories)

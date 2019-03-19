@@ -31,14 +31,14 @@
         components: {
             Details
         },
+        beforeCreate() {
+            this.$store.dispatch('getCustomers');
+        },
         data() {
             return {
                 customer: {},
                 show: false
             }
-        },
-        beforeCreate() {
-            this.$store.dispatch('getCustomers');
         },
         methods: {
             onClick(customer) {

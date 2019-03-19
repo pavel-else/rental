@@ -41,6 +41,9 @@
         components: {
             Details
         },
+        beforeCreate() {
+            this.$store.dispatch('getHistory');
+        },
         data() {
             return {
                 order: {},
