@@ -254,7 +254,7 @@
             stopSubOrder(_subOrder) {
                 const subOrder = copy(_subOrder);
 
-                subOrder.end_time = Time.format('YYYY-MM-DD hh:mm:ss');
+                subOrder.end_time = Time.format('YYYY-MM-DD HH:mm:ss');
                 subOrder.status = "END";
                 return subOrder;
             },
@@ -263,7 +263,8 @@
                 this.order.off_balance = this.balanceAmound;
             },
             shortDate(date) {
-                return Time.format('DD MMMM YYYY hh:mm', date);
+                // return date;
+                return Time.format('DD MMMM YYYY HH:mm', date);
             },
         },
 
