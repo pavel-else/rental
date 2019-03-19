@@ -309,7 +309,8 @@
                 }
             },
 
-            setPosition({order_id, order_id_position}) {
+            setPosition({ order_id, order_id_position }) {
+                console.log(order_id, order_id_position)
                 this.orders.find(i => i.id_rent == order_id)
                     ? this.addSubOrder(order_id)                    
                     : this.newOrder(order_id_position)

@@ -310,9 +310,9 @@
             },
 
             setPosition({ order_id, order_id_position }) {
-                if (!this.orders.find(i => i.order_id == order_id)) {
-                    this.status.splitOrder = true
-                    this.splitOrder(order_id, order_id_position)
+                if (!this.orders.find(i => i.id_rent == order_id)) {
+                    this.status.splitOrder = true;
+                    this.splitOrder(order_id, order_id_position);
                 }
             },
                 

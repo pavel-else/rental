@@ -48,7 +48,7 @@
                 this.select = order_id_position
                 this.selectIcon = item.class
                 
-                this.$emit('setPosition', {id_rent, order_id_position})
+                this.$emit('setPosition', { order_id: id_rent, order_id_position })
 
                 this.open = false
             }
@@ -68,7 +68,8 @@
                 const newId = this.getOrderId('new')
 
                 const iter = (num) => {
-                    const order = orders.find(o => o.order_id_position == num)
+                    const order = orders.find(i => i.order_id_position == num)
+
 
                     result[num] = {
                         position: order ? num : null,

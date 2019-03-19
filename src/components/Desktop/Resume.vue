@@ -232,8 +232,8 @@
                 });
                 this.$store.dispatch('changeSubOrders', stopedSubOrders);
 
-                const stopedOrder = this.stopOrder(this.order);
-                this.$store.dispatch('changeOrder', stopedOrder);
+                this.stopOrder();
+                this.$store.dispatch('changeOrder', this.order);
 
                 // inc product.mileage
                 const products = stopedSubOrders.map(i => {
@@ -258,10 +258,9 @@
                 subOrder.status = "END";
                 return subOrder;
             },
-            stopOrder(_order) {
-                const order = copy(_order);
-                order.status = 'END';
-                return order;
+            stopOrder() {
+                this.order.status = 'END';
+                this.order.off_balance = this.balanceAmound;
             },
             shortDate(date) {
                 return Time.format('DD MMMM YYYY hh:mm', date);
