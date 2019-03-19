@@ -238,14 +238,15 @@
                 // inc product.mileage
                 const products = stopedSubOrders.map(i => {
                     const product = copy(this.$store.getters.products.find(i => i.id_rent == i.product_id));
-                    console.log(product);
                 });
 
 
                 // dec customer.balance
                 const customer = this.customer;
-                customer.balance -= this.balanceAmound;
-                this.$store.dispatch('setCustomer', customer);
+                if (customer) {
+                    customer.balance -= this.balanceAmound;
+                    this.$store.dispatch('setCustomer', customer);
+                }
 
 
                 this.close();

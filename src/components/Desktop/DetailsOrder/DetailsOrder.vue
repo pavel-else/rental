@@ -130,12 +130,17 @@
             SelectDeposit,
         },
 
+        created() {
+            this.isSerial() ? 
+                this.addSubOrder(this.getLastId()) : 
+                this.newOrder()   
+        },
         data() {
             return {
                 order:    {
                     status:             null,              
                     start_time:         null,         
-                    id_rent:           null,           
+                    id_rent:            null,           
                     order_id_position:  null,  
                     advance:            null,            
                     note:               null,               
@@ -165,12 +170,6 @@
 
                 status: null,
             }
-        },
-
-        created() {
-            this.isSerial() ? 
-                this.addSubOrder(this.getLastId()) : 
-                this.newOrder()   
         },
         
         methods: {
@@ -214,8 +213,8 @@
 
                     this.$store.dispatch('send', [
                         {cmd: 'newOrder',           value: this.order},
-                        {cmd: 'addOrderProduct',    value: this.subOrder},
-                        {cmd: 'setOptions',         value: options},
+                        {cmd: 'newSubOrder',        value: this.subOrder},
+                        // {cmd: 'setOptions',         value: options},
                         {cmd: 'setGeneralSettings', value: options},
                     ])
                 }
@@ -225,8 +224,8 @@
                     console.log('addSubOrder')
 
                     this.$store.dispatch('send', [
-                        {cmd: 'addOrderProduct', value: this.subOrder},
-                        {cmd: 'changeOrder',     value: this.order},
+                        {cmd: 'newSubOrder', value: this.subOrder},
+                        {cmd: 'changeOrder', value: this.order},
                     ])
                 }
 
@@ -238,7 +237,7 @@
 
                 this.order.status              = 'ACTIVE'
                 this.order.start_time          = Date.now() + this.registrationTime
-                this.order.id_rent            = this.getOrderId()
+                this.order.id_rent             = this.getOrderId()
                 this.order.order_id_position   = order_id_position || this.getPosition('new')
 
                 this.$set(this.order, 'customer_id', null)
@@ -246,7 +245,7 @@
                 this.subOrder.id_rent    = this.getSubOrderId()
                 this.subOrder.product_id = this.product.id_rent
                 this.subOrder.tariff_id  = this.product.tariff_default
-                this.subOrder.id_rent   = this.order.id_rent
+                this.subOrder.order_id   = this.order.id_rent
                 this.subOrder.status     = 'ACTIVE'
                 this.subOrder.pause_time = 0
                 

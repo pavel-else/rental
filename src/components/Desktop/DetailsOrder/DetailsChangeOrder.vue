@@ -1,7 +1,7 @@
 <template>
     <div class="canvas">
         <div class="details change-order__datails">
-            <h3>Детали заказа<span> - #{{ order.id_rent }} / {{ subOrder.id_rent }}</span></h3>
+            <h3>Детали заказа<span> - # {{ order.id_rent }}/{{ subOrder.id_rent }}</span></h3>
             <form @submit.prevent="">
                 <table>
                     <tr>

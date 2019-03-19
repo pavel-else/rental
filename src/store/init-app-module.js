@@ -48,10 +48,10 @@ export default {
                         console.log('front <-- back', r)  
 
                         commit('products',      r.data.products);
-                        commit('historyistory', r.data.history);
-                        commit('setOptions',       r.data.options);
+                        commit('history',       r.data.history);
+                        commit('setOptions',    r.data.options);
                         commit('tariffs',       r.data.tariffs);
-                        commit('setCategories',    r.data.categories);
+                        commit('setCategories', r.data.categories);
                         commit('customers',     r.data.customers);
                         commit('subOrders',     r.data.sub_orders);
                         commit('orders',        r.data.orders);

@@ -1,9 +1,9 @@
 export default function initOrder() {
     const order = {}
     
+    order.id_rent           = null           
     order.status            = null              
     order.start_time        = null         
-    order.order_id          = null           
     order.order_id_position = null  
     order.advance           = null            
     order.note              = null               
