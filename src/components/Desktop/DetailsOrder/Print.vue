@@ -2,7 +2,7 @@
     <div class="canvas">
         <div class="print">
             <div class="print__page">
-                <h2 class="print__title">Договор  проката №  {{ order.order_id }}</h2>
+                <h2 class="print__title">Договор  проката №  {{ order.id_rent }}</h2>
 
                 <p class="print__p print__p--date">
                     <span>г. Армавир</span>
@@ -157,7 +157,7 @@
             },
 
             products() {
-                const subOrders = this.$store.getters.orderProducts.filter(i => i.order_id == this.order.order_id)
+                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id == this.order.id_rent)
                 const products = subOrders.map(i => this.$store.getters.products.find(j => j.id_rent == i.product_id))
                 
                 return products
@@ -212,7 +212,7 @@
         line-height: 1.2;
 
         background-color: #fff;
-        color: #333;
+        color: #000;
     } 
 
     .print__title {
