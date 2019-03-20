@@ -50,10 +50,15 @@
                     </li>
                     <li class="products__item">
                         <div class="products__line">
-                            <span><b>Итого</b></span>
-                            <span>
-                                <s v-if="billRentAccess > billRentAccessSale">{{ billRentAccess }}</s>
-                                <b> {{ billRentAccessSale }} руб.</b>
+                            <span class="products__text-resume">Итого</span>
+                            <span class="products__text-resume">
+                                <s 
+                                    v-if="billRentAccess > billRentAccessSale"
+                                    style="margin-right: 5px"
+                                >
+                                    {{ billRentAccess }} 
+                                </s>
+                                {{ billRentAccessSale }} руб.
                             </span>
                         </div>
                     </li>
@@ -419,6 +424,9 @@
                 background-position: 2px -2px;
                 background-repeat: no-repeat;
             }
+        }
+        &__text-resume {
+            font-size: 18px;
         }
     }
 
