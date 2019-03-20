@@ -38,8 +38,12 @@
             }
         },
         methods: {
-            fullName({fname, sname, tname}) {
-                return `${fname} ${sname} ${tname}`
+            fullName({ fname, sname, tname }) {
+                const f = fname ? fname : '';
+                const s = sname ? sname : '';
+                const t = tname ? tname : '';
+
+                return `${ f } ${ s } ${ t }`;
             },
         },
         watch: {

@@ -261,9 +261,19 @@
                 const customer = customers.find(i => i.id_rent == order.customer_id)
                 const note = order.note ? order.note : ''
 
-                return customer 
-                    ? `${customer.fname} ${customer.sname[0]}. ${customer.tname[0]}. ${customer.phone} ` 
-                    : `${note}`
+                const getName = (customer) => {
+                    if (!customer) {
+                        return '';
+                    }
+
+                    const f = customer.fname ? customer.fname : '';
+                    const s = customer.sname ? customer.sname[0] + '.' : '';
+                    const t = customer.tname ? customer.tname[0] + '.' : '';
+
+                    return `${ f } ${ s } ${ t }`;
+                };
+
+                return customer ? getName(customer) + ' ' + customer.phone : `${note}`;
             },
 
             getProductName(product_id) {
