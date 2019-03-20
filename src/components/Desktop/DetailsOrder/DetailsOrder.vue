@@ -318,8 +318,14 @@
                 
             setCustomer(customer) {
                 if (customer) {
-                    this.order.customer_id = customer.id_rent 
-                    this.order.customer_name = `${customer.fname} ${customer.sname} ${customer.tname}`
+                    this.order.customer_id = customer.id_rent
+
+                    const f = customer.fname ? customer.fname : '';
+                    const s = customer.sname ? customer.sname : '';
+                    const t = customer.tname ? customer.tname : '';
+
+
+                    this.order.customer_name = `${f} ${s} ${t}`
                 }
             },
 
