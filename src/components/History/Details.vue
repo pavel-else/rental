@@ -186,7 +186,7 @@
             },
             billRentAccessSale() {
                 const summSale = this.subOrders.reduce((acc, item) => {
-                    acc += item.sale;
+                    acc += +item.sale;
                     return acc;
                 }, 0);
 

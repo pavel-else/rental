@@ -247,10 +247,11 @@
                 stopedSubOrders.map(subOrder => {
                     const product = copy(this.$store.getters.products.find(product => product.id_rent === subOrder.product_id));
 
-                    const h = subOrder.time > 0 ? Math.round(subOrder.time / 1000 / 60, 2) : 0;
+                    const h = subOrder.time > 0 ? Math.round((subOrder.time / (1000 * 60 * 60)) * 100) / 100  : 0;
+                    console.log('h', h);
 
                     if (h && h > 0) {
-                        product.mileage = h > 0 ? product.mileage + h : product.mileage;
+                        product.mileage = +product.mileage + h;
 
                         this.$store.dispatch('setProduct', product);
                     }
