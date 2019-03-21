@@ -10,7 +10,7 @@ export default {
         },
     },
     actions: {
-        INIT_APP({ getters, commit, dispatch }, user) {
+        INIT_APP({ getters, commit, dispatch }) {
             if (!getters.isAppInited) {
                 console.log('inited = ', getters.isAppInited)
 

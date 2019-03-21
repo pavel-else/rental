@@ -234,16 +234,26 @@
                 const stopedSubOrders = this.activeSubOrders.map(i => {
                     const stopedSubOrder = this.stopSubOrder(i);
                     stopedSubOrder.paid = paidType;
+
                     return stopedSubOrder;
                 });
+
                 this.$store.dispatch('changeSubOrders', stopedSubOrders);
 
                 this.stopOrder();
                 this.$store.dispatch('changeOrder', this.order);
 
                 // inc product.mileage
-                const products = stopedSubOrders.map(i => {
-                    const product = copy(this.$store.getters.products.find(i => i.id_rent == i.product_id));
+                const products = stopedSubOrders.map(subOrder => {
+                    const product = copy(this.$store.getters.products.find(product => product.id_rent === subOrder.product_id));
+
+                    const h = subOrder.time > 0 ? Math.round(subOrder.time / 1000 / 60, 2) : 0;
+
+                    if (h && h > 0) {
+                        product.mileage = h > 0 ? product.mileage + h : product.mileage;
+
+                        this.$store.dispatch('setProduct', product);
+                    }
                 });
 
 

@@ -24,7 +24,7 @@
                 <td>{{ item.bill }} р.</td>
                 <td>{{ getStatus(item.status) }}</td>
             </tr> -->
-            <tr v-for="item in orders">
+            <tr v-for="item in orders" :key="item.id_rent">
                 <td>
                     {{ item.id_rent }}
                 </td>
