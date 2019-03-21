@@ -50,7 +50,7 @@
                     </li>
                     <li class="products__item">
                         <div class="products__line">
-                            <span class="products__text-resume">Итого</span>
+                            <span class="products__text-resume">Итого<span v-if="saleSize > 0"> (скидка {{ saleSize }}%) </span></span>
                             <span class="products__text-resume">
                                 <s 
                                     v-if="billRentAccess > billRentAccessSale"
@@ -66,44 +66,33 @@
                 </ul>
             </div>
 
-            <div>
-                Баланс клиента {{ balance }} руб, скидка {{ saleInPercent }} %
+            <table>
+                <tr>
+                    <td>Внесен аванс:</td>
+                    <td style="text-align: right">{{ advance }} руб</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span v-if="balance < 0">Долг клиента:</span>
+                        <span v-else>Баланс клиента:</span>
+                    </td>
+                    <td style="text-align: right" :style="styleBalance">{{ Math.abs(balance) }} руб</td>
+                    <td>
+                        <input
+                            type="checkbox"
+                            :checked="isApplyBalance"
+                            :title="balance < 0 ? 'Погасить сейчас' : 'Использовать при оплате'"
+                            @click="checkBalance($event)"
+                        >
+                    </td>
+                </tr>
+            </table>
+
+            <div class="total">
+                <span v-if="total > 0">К оплате</span>
+                <span v-else>Выдать сдачу</span>
+                <span> {{ Math.abs(total) }} руб.</span>
             </div>
-
-             <!--<div class="product-line">
-                <span><b>Итого</b></span>
-                <span class="product-line__fill"></span>
-                <span><b>{{ billRentAccess }} руб.</b></span>                                        
-            </div>
-
-                    <li class="products__item" v-if="billRentAccess !== billRentAccessSale">
-                        <div class="product-line">
-                            <span><b>С учетом скидки</b></span>
-                            <span class="product-line__fill"></span>
-                            <span><b>{{ billRentAccessSale }} руб.</b></span>                                        
-                        </div>
-                    </li>
-                    <li class="products__item">
-                        <div class="product-line" v-if="balanceAmound > 0">
-                            <span><b>С учетом суммы, списанной с баланса</b></span>
-                            <span class="product-line__fill"></span>
-                            <span><b>{{ billRentAccessSaleBalance }} руб.</b></span>                                        
-                        </div>
-                    </li>
-
-                    <li class="products__item" v-if="advance > 0" style="margin-top: 30px;">
-                        <div class="product-line">
-                            <span><b>Внесен аванс</b></span>
-                            <span class="product-line__fill"></span>
-                            <span><b>{{ advance }} руб.</b></span>                                        
-                        </div>
-                    </li> -->
-
-            <!-- <h3 class="resume__caption--total">
-                <span v-if="total >= 0">К оплате: {{ total }} руб.</span>
-                <span v-else>К сдаче: {{ Math.abs(total) }} руб.</span>
-            </h3> -->
-
 
             <div class="btn-group">
                 <button class="resume__button" @click="pay('coin')">
@@ -112,9 +101,6 @@
                 <button class="resume__button" @click="pay('card')">
                     <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
                 </button>
-                <button class="resume__button" v-if="balance > 0 && !clickedBalance" @click="useBalance()">
-                    <i class="fa fa-eur" aria-hidden="true"></i>С баланса: {{ balance }} руб.
-                </button> 
             </div>
 
             <button class="details__close" @click.prevent="close"></button>
@@ -143,12 +129,13 @@
             return {
                 activeSubOrders: [],
                 order: copy(this._order),
-                balanceAmound: 0, // сумма, списываемая с баланса
-                clickedBalance: false // используется для кнопки оплаты с баланса
+                balanceAmound: 0,
+                isApplyBalance: true // используется для чекбокса оплаты с баланса
             }
         },
         created() {
             this.activeSubOrders = this.makeActiveSubOrders();
+            this.balanceAmound = this.getBalanceAmound();
         },
         methods: {
             makeActiveSubOrders() {
@@ -168,7 +155,6 @@
                     }, 0);
 
                     item.sale = this.makeSale(item);
-
 
                     acc.push(item);
                     return acc;
@@ -219,17 +205,9 @@
 
                 return roundBill(sale);
             },
-            useBalance() {
-                // Просчет суммы, списываемой с баланса.
-                // Если сумма проката больше баланса, списывается весь баланс. Если меньше, то только сумма проката
-                this.balanceAmound = this.balance > this.billRentAccessSale ? this.billRentAccessSale : this.balance;
-                this.clickedBalance = true;
-            },
-
             close() {
                 this.$emit('close');
             },
-
             pay(paidType) {
                 const stopedSubOrders = this.activeSubOrders.map(i => {
                     const stopedSubOrder = this.stopSubOrder(i);
@@ -248,7 +226,6 @@
                     const product = copy(this.$store.getters.products.find(product => product.id_rent === subOrder.product_id));
 
                     const h = subOrder.time > 0 ? Math.round((subOrder.time / (1000 * 60 * 60)) * 100) / 100  : 0;
-                    console.log('h', h);
 
                     if (h && h > 0) {
                         product.mileage = +product.mileage + h;
@@ -257,14 +234,12 @@
                     }
                 });
 
-
                 // dec customer.balance
                 const customer = this.customer;
                 if (customer) {
                     customer.balance -= this.balanceAmound;
                     this.$store.dispatch('setCustomer', customer);
                 }
-
 
                 this.close();
             },
@@ -283,6 +258,21 @@
                 // return date;
                 return Time.format('DD MMMM YYYY HH:mm', date);
             },
+            checkBalance() {
+                this.isApplyBalance = !this.isApplyBalance;
+
+                this.balanceAmound = 0;
+
+                if (this.isApplyBalance) {
+                    this.balanceAmound = this.getBalanceAmound();    
+                }
+                console.log(this.balanceAmound);
+            },
+            getBalanceAmound() {
+                return this.balance > this.billRentAccessSaleAdvance 
+                    ? this.balance - this.billRentAccessSaleAdvance 
+                    : this.balance; 
+            }
         },
 
         computed: {
@@ -304,11 +294,14 @@
 
                 return this.billRentAccess - summSale;
             },
-            billRentAccessSaleBalance() {
-                return this.billRentAccessSale - this.balanceAmound;
+            billRentAccessSaleAdvance() {
+                return this.billRentAccessSale - this.advance;
+            },
+            billRentAccessSaleAdvanceBalance() {
+                return this.isApplyBalance ? this.billRentAccessSaleAdvance - this.balance : this.billRentAccessSaleAdvance;
             },
             total() {
-                return this.billRentAccessSaleBalance - this.advance;
+                return this.billRentAccessSaleAdvanceBalance;
             },
 
 
@@ -329,13 +322,18 @@
                 return this.$store.getters.deposits.find(i => i.id_rent === +this.order.deposit)
             },
             balance() {
-                return this.customer && this.customer.balance ? this.customer.balance : 0; 
+                return this.customer && this.customer.balance ? +this.customer.balance : 0; 
             },
             advance() {
-                return this.order.advance ? this.order.advance : 0;
+                return this.order.advance ? +this.order.advance : 0;
             },
-            saleInPercent() {
-                return this.customer ? this.customer.sale : 0;
+            saleSize() {
+                return this.customer ? +this.customer.sale : 0;
+            },
+            styleBalance() {
+                return {
+                    color: this.balance < 0 ? 'red' : 'green'
+                }
             }
         }
     }
@@ -347,6 +345,7 @@
         width: 420px;
         min-width: 300px;
         padding: 5px 30px;
+        padding-bottom: 30px;
     }
 
     .details__close {
@@ -383,6 +382,7 @@
 
     .btn-group {
         display: flex;
+        justify-content: center;
     }
     
 
@@ -442,7 +442,11 @@
         }
     }
 
-
+    .total {
+        font-size: 24px;
+        text-align: center;
+        margin: 50px 0 40px;
+    }
 
     .resume__button {
         display: flex;
@@ -451,12 +455,6 @@
         display: block;
         margin-right: 10px;
     }
-    // .product-line {
-    //     width: 100%;
-    //     display: flex;
-    //     justify-content: space-between;
-    //     padding: 5px;
-    // }
     .product-line__fill {
         //border-bottom: 2px dotted lightgray;
         flex-grow: 1;
