@@ -4,31 +4,31 @@
             <h2 class="resume__caption">Оплата заказа # {{ order.id_rent }}</h2>
 
             <table class="resume__main-table">
-                    <tr>
-                        <td>Клиент</td>
-                        <td>
-                            <span v-if="order.customer_name">{{ order.customer_name }}</span>
-                            <span v-else>-</span>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>Клиент</td>
+                    <td>
+                        <span v-if="order.customer_name">{{ order.customer_name }}</span>
+                        <span v-else>-</span>
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td>Залог</td>
-                        <td>
-                            <span v-if="deposit">{{ deposit.name }}</span>
-                            <span v-else>-</span>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>Залог</td>
+                    <td>
+                        <span v-if="deposit">{{ deposit.name }}</span>
+                        <span v-else>-</span>
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td>Начало</td>
-                        <td>{{ shortDate(order.start_time) }}</td>
-                    </tr>
+                <tr>
+                    <td>Начало</td>
+                    <td>{{ shortDate(order.start_time) }}</td>
+                </tr>
 
-                    <tr>
-                        <td>Продолжительность</td>
-                        <td>{{ activeTime }}</td>
-                    </tr>
+                <tr>
+                    <td>Продолжительность</td>
+                    <td>{{ activeTime }}</td>
+                </tr>
             </table>
 
             <div class="products">
@@ -70,7 +70,7 @@
                 Баланс клиента {{ balance }} руб, скидка {{ saleInPercent }} %
             </div>
 
-<!--             <div class="product-line">
+             <!--<div class="product-line">
                 <span><b>Итого</b></span>
                 <span class="product-line__fill"></span>
                 <span><b>{{ billRentAccess }} руб.</b></span>                                        
