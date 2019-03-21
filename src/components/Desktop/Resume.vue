@@ -155,7 +155,8 @@
                 const subOrders = copy(this.$store.getters.subOrders.filter(i => i.order_id === this.order.id_rent && !i.paid));
 
                 return subOrders.reduce((acc, item) => {
-                    item.product_name = this.$store.getters.productNameById(item.product_id);
+                    const product = this.$store.getters.products.find(i => i.id_rent === item.product_id);
+                    item.product_name = product ? product.name : 'Нет имени';
 
                     item.time = this.getTime(item);
                     item.bill_rent = this.getBillRent(item);
@@ -317,10 +318,10 @@
                 return this.$store.getters.deposits.find(i => i.id_rent === +this.order.deposit)
             },
             balance() {
-                return this.customer ? this.customer.balance : 0; 
+                return this.customer && this.customer.balance ? this.customer.balance : 0; 
             },
             advance() {
-                return this.order.advance;
+                return this.order.advance ? this.order.advance : 0;
             },
             saleInPercent() {
                 return this.customer ? this.customer.sale : 0;

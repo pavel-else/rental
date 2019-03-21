@@ -18,19 +18,19 @@ export default {
 
                 return new Promise((resolve, reject) => {
                     const queue = [
-                        { cmd: 'getProducts', value: '' },
+                        { cmd: 'getProducts', value: 'active' },
                         { cmd: 'getSubOrders', value: '' },
-                        { cmd: 'getOrders', value: '' },
-                        { cmd: 'getCustomers', value: '' },
-                        { cmd: 'getHistory', value: '' },
-                        { cmd: 'getTariffs', value: '' },
-                        { cmd: 'getCategories', value: '' },
-                        { cmd: 'getOptions', value: '' },
-                        { cmd: 'getLogs', value: '' },
-                        { cmd: 'getAccessories', value: '' },
-                        { cmd: 'getHeaders', value: '' },
-                        { cmd: 'getRentalPointInfo', value: '' },
-                        { cmd: 'getGeneralSettings', value: '' },
+                        { cmd: 'getOrders' },
+                        { cmd: 'getCustomers' },
+                        { cmd: 'getHistory' },
+                        { cmd: 'getTariffs' },
+                        { cmd: 'getCategories' },
+                        { cmd: 'getOptions' },
+                        { cmd: 'getLogs' },
+                        { cmd: 'getAccessories' },
+                        { cmd: 'getHeaders' },
+                        { cmd: 'getRentalPointInfo' },
+                        { cmd: 'getGeneralSettings' },
                     ];
                     const token = localStorage.getItem('user-token');
 

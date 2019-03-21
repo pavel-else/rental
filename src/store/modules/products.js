@@ -7,12 +7,12 @@ export default {
         products(state) {
             return state.products;
         },
-        productNameById(state) {
-            return product_id => {
-                const product = state.products.find(i => i.id_rent === product_id);
-                return product ? product.name : '';
-            };
-        }
+        // productNameById(state) {
+        //     return product_id => {
+        //         const product = state.products.find(i => i.id_rent === product_id);
+        //         return product ? product.name : '';
+        //     };
+        // }
     },
     mutations: {
         products(state, products) {

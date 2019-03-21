@@ -1,7 +1,7 @@
 <template>
     <div class="history">
         <h2>История заказов</h2>
-        <table v-if="history && history.length > 0" cellspacing="0" class="history__table">
+        <table v-if="orders && orders.length > 0" cellspacing="0" class="history__table">
             <tr>
                 <th>id</th>
                 <th>ФИО</th>
@@ -9,20 +9,43 @@
                 <th>Длительность</th>
                 <th>Товар</th>
                 <th>Стоимость</th>
-                <th>Статус</th>
+                <!-- <th>Статус</th> -->
             </tr>
-            <tr v-for="item in history" :key="item.order_id" @click="onClick(item)">
+            <!-- <tr v-for="item in history" :key="item.order_id" @click="onClick(item)">
                 <td class="">{{ item.order_id }}</td>
                 <td class="">{{ item.customer_name }}</td>
                 <td class="history__td--start">{{ item.short_start_time }}</td>
 
                 <td class="history__td history__td--time">{{ item.play_time }}</td>
                 <td>
-                    {{getName(item)}}
+                    {{ getName(item) }}
                     <span v-if="item.products.length > 1"> и еще {{ item.products.length - 1 }} шт</span>
                 </td>
                 <td>{{ item.bill }} р.</td>
                 <td>{{ getStatus(item.status) }}</td>
+            </tr> -->
+            <tr v-for="item in orders">
+                <td>
+                    {{ item.id_rent }}
+                </td>
+                <td>                    
+                    {{ item.customer_name }}                
+                </td>
+                <td style="text-align: right">
+                    {{ shortDate(item.start_time) }}
+                </td>
+                <td style="text-align: right">
+                    {{ item.play_time }}
+                </td>
+                <td style="padding-left: 20px">
+                    {{ item.productName }}
+                </td>
+                <td style="text-align: right">
+                    {{ item.bill }} руб
+                </td>
+                <!-- <td>
+                    {{ item.formStatus }}
+                </td> -->
             </tr>
         </table>
         <div v-else>Здесь пока пусто..</div>
@@ -33,8 +56,11 @@
 </template>
 
 <script>
-    import Details    from './Details'
-    import timeFormat from '@/functions/timeFormat'
+    import Details    from './Details';
+    import timeFormat from '@/functions/timeFormat';
+    import copy       from '@/functions/copy';
+    import * as Time  from '@/functions/Time';
+    import isValidDate from '@/functions/isValidDate';
 
     export default {
         name: 'History',
@@ -42,7 +68,10 @@
             Details
         },
         beforeCreate() {
-            this.$store.dispatch('getHistory');
+            // this.$store.dispatch('getHistory');
+            this.$store.dispatch('getOrders', 'all');
+            this.$store.dispatch('getSubOrders');
+            this.$store.dispatch('getProducts');
         },
         data() {
             return {
@@ -51,27 +80,81 @@
             }
         },
         methods: {
-            getTimePlay(order) {
-                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id == order.id_rent)
-                const start = Date.parse(order.start_time)
+            getEndTime(orderId) {
+                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
+                const end_time = subOrders.reduce((acc, item) => {
+                    if (!acc) {
+                        acc = item.end_time;
+                    }
 
-                const end = Math.max(subOrders.map(i => Date.parse(i.end_time)))
+                    if (Date.parse(acc) < Date.parse(item.end_time)) {
+                        acc = item.end_time;
+                    }
 
-                const time = start - Date.parse(end)
 
-                return timeFormat(time)
+                    return acc;
+                }, null);
+                
+                return end_time;
             },
+            getProductName(orderId) {
+                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
+                const firstProductId = subOrders && subOrders.length > 0 ? subOrders[0].product_id : false;
 
-            getName(item) {
-                return item.products[0] ? item.products[0].name : ''
+                if (!subOrders || subOrders.length < 1 || !firstProductId) {
+                    return '';
+                }
+
+                const product = this.$store.getters.products.find(i => i.id_rent === firstProductId);
+                const firstName = product ? product.name : '';
+
+                return subOrders.length > 1 
+                    ? firstName + ' и еще ' + (subOrders.length - 1)
+                    : firstName;
             },
-            getStatus(status) {
-                switch(status) {
-                    case 'END': return 'Завершен';
+            getBill(orderId) {
+                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
+                const bill = subOrders.reduce((acc, item) => {
+                    acc += +item.bill_rent;
+                    acc += +item.bill_access;
+                    acc -= +item.sale;
+                    return acc;
+                }, 0);
+
+                return bill;                
+            },
+            getStatus(order) {
+                const status = order.status;
+                switch (status) {
                     case 'ACTIVE': return 'В прокате';
-                    default: '';
+                    case 'END': return 'Завершен';
+                    default: return status;
                 }
             },
+            getTimePlay(start, end) {
+                const end_time = Date.parse(end);
+                const start_time = Date.parse(start);
+
+                if (isNaN(end_time) || isNaN(start_time)) {
+                    return 'Ошибка парсинга';
+                }
+
+                return timeFormat(end_time - start_time);
+            },
+            shortDate(date) {
+                const now = new Date();
+                const today = now.getDate();
+                const orderDate = new Date(date);
+
+                if (!isValidDate(orderDate)) {
+                    return 'Ошибка парсинга';
+                }
+
+                const format = orderDate.getDate() === today ? 'HHч mmм' : 'DD MMMM YYYY';
+
+                return Time.format(format, orderDate);
+            },
+
 
             onClick(order) {
                 this.order = order
@@ -80,87 +163,65 @@
             onClose() {
                 this.show = false
             },
-            shortDate(date) {
-                if (!date || isNaN(Date.parse(date) || Date.parse(date) < 0)) {
-                    console.log('Date.parse error!');
-                    return false;
-                }
 
-                const getMonth = (date) => {
-                    const position = date.getMonth();
-                    // const months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
-                    const months2 = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-
-                    return months2[position];
-                };
-
-                const getYear = (date) => {
-                    const fullYear = String(date.getFullYear());
-                    return fullYear.substr(2, 2);
-                };
-
-                const getHours = (date) => {
-                    const hours = date.getHours();
-                    return 0 < hours && hours < 10 ? `0${ hours }` : `${ hours }`;
-                };
-                const getMinutes = (date) => {
-                    const minutes = date.getMinutes();
-                    return 0 < minutes && minutes < 10 ? `0${ minutes }` : `${ minutes }`;
-                };
-
-                const dateObject = new Date(date);
-
-                const y = getYear(dateObject);
-                const m = getMonth(dateObject);
-                const d = dateObject.getDate();
-                const h = getHours(dateObject);
-                const min = getMinutes(dateObject);
-
-                const today = new Date();
-
-                if (today.getDate() === d) {
-                    return `${ h }:${ min }`;
-                }
-                if (today.getDate() === d - 1) {
-                    return `вчера ${ h }:${ min }`;
-                }
-
-                return `${ d }.${ m }.${ y }  ${ h }:${ min }`;
-            }
         },
         computed: {
             /**
             * С точки зрения оптимизации выгоднее единожды при создании компонента просчитывать статистические данные.
             * Поэтому перебираем все сабордеры и просчитываем данные для каждого 
             */
-            history() {
-                let history = this.$store.getters.history
+            // history() {
+            //     let history = this.$store.getters.history
 
-                // history = history.filter(o => o.id_rent > 1700) // Ограничитель
-                history = history.map(i => {
-                    i.subOrders = this.$store.getters.subOrders.filter(j => j.order_id === i.id_rent)
-                    i.end_time = Math.max(...i.subOrders.map(j => Date.parse(j.end_time) || 0)) || Date.now()
-                    i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time), { sec: false }) : 0
-                    // i.play_time = i.end_time - Date.parse(i.start_time);
+            //     // history = history.filter(o => o.id_rent > 1700) // Ограничитель
+            //     history = history.map(i => {
+            //         i.subOrders = this.$store.getters.subOrders.filter(j => j.order_id === i.id_rent);
 
-                    i.short_start_time = this.shortDate(i.start_time);
+            //         i.end_time = Math.max(...i.subOrders.map(j => Date.parse(j.end_time) || 0)) || Date.now();
 
-                    const reduce = i.subOrders.reduce((acc, item) => {
-                        acc.access += +item.bill_access
-                        acc.bill += +item.bill_rent + +item.bill_access - +item.sale
-                        acc.sale += +item.sale
-                        return acc
-                    }, {access: 0, bill: 0, sale: 0})
+            //         i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time), { sec: false }) : 0
+            //         // i.play_time = i.end_time - Date.parse(i.start_time);
 
-                    i.bill = reduce.bill
-                    i.sale = reduce.sale
-                    i.access = reduce.access
+            //         i.short_start_time = this.shortDate(i.start_time);
 
-                    return i
-                })
+            //         const reduce = i.subOrders.reduce((acc, item) => {
+            //             acc.access += +item.bill_access
+            //             acc.bill += +item.bill_rent + +item.bill_access - +item.sale
+            //             acc.sale += +item.sale
+            //             return acc
+            //         }, {access: 0, bill: 0, sale: 0})
 
-                return history
-            },
+            //         i.bill = reduce.bill
+            //         i.sale = reduce.sale
+            //         i.access = reduce.access
+
+            //         return i
+            //     })
+
+            //     return history
+            // },
+
+            orders() {
+                const orders = this.$store.getters.orders.reduce((acc, _item) => {
+                    const item = copy(_item);
+
+                    // Отсеиваем завершенные
+                    if (item.status !== 'END') {
+                        return acc;
+                    }
+
+                    item.end_time = this.getEndTime(item.id_rent);
+                    item.play_time = this.getTimePlay(item.start_time, item.end_time);
+                    item.productName = this.getProductName(item.id_rent);
+                    item.bill = this.getBill(item.id_rent);
+                    item.formStatus = this.getStatus(item);
+
+                    acc.push(item);
+                    return acc;
+                }, []);
+
+                return orders;
+            }
         }
     }
 </script>

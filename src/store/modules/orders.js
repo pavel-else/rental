@@ -15,12 +15,12 @@ export default {
         }
     },
     actions: {
-        getorders({ commit, getters }) {
-            console.log('dispatch: getorders');
+        getOrders({ commit, getters }, filter) {
+            console.log('dispatch: getOrders');
 
             return new Promise((resolve, reject) => {
                 const queue = [
-                    { cmd: 'getorders' }
+                    { cmd: 'getOrders', value: filter }
                 ];
                 const url = getters.url;
                 const token = localStorage.getItem('user-token');

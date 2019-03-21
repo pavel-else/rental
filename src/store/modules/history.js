@@ -11,6 +11,8 @@ export default {
     },
     mutations: {
         history(state, history) {
+            console.log('commit: history', history);
+
             if(!history) {
                 return []
             }
@@ -33,8 +35,6 @@ export default {
             }) : []
 
             state.history = history
-
-            console.log('set history')
         }
     },
     actions: {
