@@ -244,7 +244,7 @@
                 this.$store.dispatch('changeOrder', this.order);
 
                 // inc product.mileage
-                const products = stopedSubOrders.map(subOrder => {
+                stopedSubOrders.map(subOrder => {
                     const product = copy(this.$store.getters.products.find(product => product.id_rent === subOrder.product_id));
 
                     const h = subOrder.time > 0 ? Math.round(subOrder.time / 1000 / 60, 2) : 0;
