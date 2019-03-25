@@ -65,11 +65,28 @@
                             </span>
                         </div>
                     </li>
+                    <li class="products__item" v-if="order.off_balance < 0">
+                        <div class="products__line">
+                            <span class="products__text-resume">Списано с баланса</span>
+                            <span class="products__text-resume">
+                                {{ order.off_balance }} руб.
+                            </span>
+                        </div>
+                    </li>
+                    <li class="products__item" v-if="order.off_balance > 0">
+                        <div class="products__line">
+                            <span class="products__text-resume">Погашена задолженость</span>
+                            <span class="products__text-resume">
+                                {{ order.off_balance }} руб.
+                            </span>
+                        </div>
+                    </li>
+
                     <li class="products__item" v-if="paidCoin > 0">
                         <div class="products__line">
                             <span class="products__text-resume">Оплачено наличными</span>
                             <span class="products__text-resume">
-                                {{ paidCoin }} руб.
+                                {{ paidCoin + offBalance}} руб.
                             </span>
                         </div>
                     </li>
@@ -77,15 +94,7 @@
                         <div class="products__line">
                             <span class="products__text-resume">Оплачено картой</span>
                             <span class="products__text-resume">
-                                {{ paidCard }} руб.
-                            </span>
-                        </div>
-                    </li>
-                    <li class="products__item" v-if="order.off_balance > 0">
-                        <div class="products__line">
-                            <span class="products__text-resume">Списано с баланса</span>
-                            <span class="products__text-resume">
-                                {{ order.off_balance }} руб.
+                                {{ paidCard + offBalance}} руб.
                             </span>
                         </div>
                     </li>
@@ -206,7 +215,7 @@
                     return acc;
                 }, 0);
 
-                return summ - this.order.off_balance;
+                return summ;
             },
             paidCard() {
                 const summ = this.subOrders.reduce((acc, item) => {
@@ -219,9 +228,11 @@
                     return acc;
                 }, 0);
 
-                return summ - this.order.off_balance;
+                return summ;
+            },
+            offBalance() {
+                return +this.order.off_balance;
             }
-            
         }
     }
 </script>

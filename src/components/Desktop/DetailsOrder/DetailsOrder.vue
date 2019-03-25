@@ -206,7 +206,7 @@
                 // newOrder
                 if (this.status == 'newOrder') {
 
-                    const options = {
+                    const settings = {
                         lastOrderTime: Date.now(),
                         lastOrderID: this.order.id_rent
                     }
@@ -215,7 +215,7 @@
                         {cmd: 'newOrder',           value: this.order},
                         {cmd: 'newSubOrder',        value: this.subOrder},
                         // {cmd: 'setOptions',         value: options},
-                        {cmd: 'setGeneralSettings', value: options},
+                        {cmd: 'setGeneralSettings', value: settings},
                     ])
                 }
 

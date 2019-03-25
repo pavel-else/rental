@@ -64,7 +64,7 @@
                 */
 
                 const result = []
-                const orders = this.$store.getters.orders
+                const orders = this.$store.getters.orders.filter(i => i.status === 'ACTIVE');
                 const newId = this.getOrderId('new')
 
                 const iter = (num) => {

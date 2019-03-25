@@ -95,11 +95,11 @@
             </div>
 
             <div class="btn-group">
-                <button class="resume__button" @click="pay('coin')">
-                    <i class="fa fa-eur" aria-hidden="true"></i>Наличными
-                </button>
                 <button class="resume__button" @click="pay('card')">
                     <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
+                </button>
+                <button class="resume__button" @click="pay('coin')">
+                    <i class="fa fa-eur" aria-hidden="true"></i>Наличными
                 </button>
             </div>
 
@@ -237,7 +237,7 @@
                 // dec customer.balance
                 const customer = this.customer;
                 if (customer) {
-                    customer.balance -= this.balanceAmound;
+                    customer.balance = +customer.balance + this.balanceAmound;
                     this.$store.dispatch('setCustomer', customer);
                 }
 
@@ -269,9 +269,10 @@
                 console.log(this.balanceAmound);
             },
             getBalanceAmound() {
-                return this.balance > this.billRentAccessSaleAdvance 
-                    ? this.balance - this.billRentAccessSaleAdvance 
-                    : this.balance; 
+                const bill =  this.billRentAccessSaleAdvance;
+                const balance = this.balance;
+
+                return balance > bill ? -(bill) : -(balance);
             }
         },
 
