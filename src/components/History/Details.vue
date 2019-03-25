@@ -65,14 +65,6 @@
                             </span>
                         </div>
                     </li>
-                    <li class="products__item" v-if="order.off_balance < 0">
-                        <div class="products__line">
-                            <span class="products__text-resume">Списано с баланса</span>
-                            <span class="products__text-resume">
-                                {{ order.off_balance }} руб.
-                            </span>
-                        </div>
-                    </li>
                     <li class="products__item" v-if="order.off_balance > 0">
                         <div class="products__line">
                             <span class="products__text-resume">Погашена задолженость</span>
@@ -82,22 +74,59 @@
                         </div>
                     </li>
 
+                    <li class="products__item" v-if="order.off_balance < 0">
+                        <div class="products__line">
+                            <span class="products__text-resume">Списано с баланса</span>
+                            <span class="products__text-resume">
+                                {{ Math.abs(order.off_balance) }} руб.
+                            </span>
+                        </div>
+                    </li>
+
+                    <li class="products__item" v-if="order.advance > 0">
+                        <div class="products__line">
+                            <span class="products__text-resume">Внесен аванс</span>
+                            <span class="products__text-resume">
+                                {{ order.advance }} руб.
+                            </span>
+                        </div>
+                    </li>
+
                     <li class="products__item" v-if="paidCoin > 0">
                         <div class="products__line">
                             <span class="products__text-resume">Оплачено наличными</span>
                             <span class="products__text-resume">
-                                {{ paidCoin + offBalance}} руб.
+                                {{ paidCoin + offBalance - order.advance }} руб.
                             </span>
                         </div>
                     </li>
+
                     <li class="products__item" v-if="paidCard > 0">
                         <div class="products__line">
                             <span class="products__text-resume">Оплачено картой</span>
                             <span class="products__text-resume">
-                                {{ paidCard + offBalance}} руб.
+                                {{ paidCard + offBalance - order.advance }} руб.
                             </span>
                         </div>
                     </li>
+
+                    <li class="products__item" v-if="paidCard + paidCoin < 0">
+                        <div class="products__line">
+                            <span class="products__text-resume">Сдача</span>
+                            <span class="products__text-resume">
+                                {{ paidCoin + offBalance - order.advance }} руб.
+                            </span>
+                        </div>
+                    </li>
+
+<!--                     <li class="products__item">
+                        <div class="products__line">
+                            <span class="products__text-resume">Сдача</span>
+                            <span class="products__text-resume">
+                                {{ changeMoney }} руб.
+                            </span>
+                        </div>
+                    </li> -->
 
                 </ul>
             </div>
@@ -232,6 +261,18 @@
             },
             offBalance() {
                 return +this.order.off_balance;
+            },
+            bill() {
+               return  (this.paidCard + this.paidCoin) + this.offBalance;
+            },
+            changeMoney() {
+                if (this.order.advance <= 0) {
+                    return 0;
+                }
+                if (this.offBalance !== 0) {
+                    return +this.order.advance - this.offBalance;
+                }
+                //return +this.order.advance - this.paidCard - this.paidCoin - this.offBalance;
             }
         }
     }

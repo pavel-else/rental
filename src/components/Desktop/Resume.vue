@@ -89,11 +89,10 @@
             </table>
 
             <div class="total">
-                <span v-if="total > 0">К оплате</span>
-                <span v-else>Выдать сдачу</span>
-                <span> {{ Math.abs(total) }} руб.</span>
+                <span>{{ msgTotal }}</span>
+                <span> {{ total }} руб.</span>
             </div>
-
+            <!-- off_balance: {{ balanceAmound }} -->
             <div class="btn-group">
                 <button class="resume__button" @click="pay('card')">
                     <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
@@ -130,12 +129,15 @@
                 activeSubOrders: [],
                 order: copy(this._order),
                 balanceAmound: 0,
-                isApplyBalance: true // используется для чекбокса оплаты с баланса
+                isApplyBalance: true, // используется для чекбокса оплаты с баланса
+                total: 0,
+                msgTotal: ''
             }
         },
         created() {
             this.activeSubOrders = this.makeActiveSubOrders();
-            this.balanceAmound = this.getBalanceAmound();
+            // this.balanceAmound = this.getBalanceAmound();
+            this.makeTotal();
         },
         methods: {
             makeActiveSubOrders() {
@@ -260,19 +262,80 @@
             },
             checkBalance() {
                 this.isApplyBalance = !this.isApplyBalance;
+                this.makeTotal();
 
-                this.balanceAmound = 0;
+                // this.balanceAmound = 0;
 
-                if (this.isApplyBalance) {
-                    this.balanceAmound = this.getBalanceAmound();    
-                }
-                console.log(this.balanceAmound);
+                // if (this.isApplyBalance) {
+                //     this.balanceAmound = this.getBalanceAmound();    
+                // }
+                // console.log(this.balanceAmound);
             },
             getBalanceAmound() {
-                const bill =  this.billRentAccessSaleAdvance;
+                const bill =  this.billRentAccessSale;
                 const balance = this.balance;
 
                 return balance > bill ? -(bill) : -(balance);
+            },
+            makeTotal() {
+                const bill = this.billRentAccessSale;
+                const balance = this.balance;
+                const advance = this.advance;
+
+                let total = false;
+                let msg = 'msg';
+                let amound = 0;
+
+                // Если был внесен аванс и не используется баланс
+                if (advance > 0 && !this.isApplyBalance) {
+                    total = Math.abs(advance - bill);
+                    msg = advance > bill ? 'К сдаче: ' : 'К оплате: ';
+                }
+
+                // Если аванса не было и не используется баланс
+                if (advance <= 0 && !this.isApplyBalance) {
+                    total = bill;
+                    msg = 'К оплате: ';
+                }
+
+                // Если был внесен аванс и используется баланс
+                if (advance > 0 && this.isApplyBalance) {
+
+                    // если накатано меньше, чем на балансе, в сдаче аванс
+                    if (balance > bill) {
+                        total = advance;
+                        msg = 'Возврат аванса: ';
+
+                        amound = -(bill);
+                    }
+
+                    if (balance <= bill) {
+                        amound = -(balance);
+
+                        const diff = bill - balance;
+
+                        msg = advance > diff ? ' К сдаче: ' : 'К оплате: ';
+                        total = Math.abs(advance - diff); 
+                    }
+                }
+
+                // Если аванса не было и используется баланс
+                if (advance <= 0 && this.isApplyBalance) {
+                    if (balance > bill) {
+                        total = 0;
+                        msg = 'К оплате: ';
+                        amound = -(bill);
+                    }
+                    if (balance <= bill) {
+                        total = bill - balance;
+                        msg = 'К оплате: ';
+                        amound = -(balance);
+                    }
+                }
+
+                this.total = total;
+                this.msgTotal = msg;
+                this.balanceAmound = amound;
             }
         },
 
@@ -299,10 +362,7 @@
                 return this.billRentAccessSale - this.advance;
             },
             billRentAccessSaleAdvanceBalance() {
-                return this.isApplyBalance ? this.billRentAccessSaleAdvance - this.balance : this.billRentAccessSaleAdvance;
-            },
-            total() {
-                return this.billRentAccessSaleAdvanceBalance;
+                return -this.advance
             },
 
 
