@@ -25,7 +25,7 @@ export default {
                         { cmd: 'getHistory' },
                         { cmd: 'getTariffs' },
                         { cmd: 'getCategories' },
-                        { cmd: 'getOptions' },
+                        // { cmd: 'getOptions' },
                         { cmd: 'getLogs' },
                         { cmd: 'getAccessories' },
                         { cmd: 'getHeaders' },

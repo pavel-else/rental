@@ -384,7 +384,6 @@
             },
             registrationTime() {
                 return +this.$store.getters.generalSettings.registration_time
-                // return +this.$store.getters.options.registration_time
             }
         },
     }

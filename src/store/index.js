@@ -88,7 +88,7 @@ const store = new Vuex.Store({
 
                     commit('products',      r.data.products)
                     commit('history',       r.data.history)
-                    commit('setOptions',    r.data.options)
+                    // commit('setOptions',    r.data.options)
                     commit('tariffs',       r.data.tariffs)
                     commit('setCategories', r.data.categories)
                     commit('customers',     r.data.customers)
@@ -108,7 +108,7 @@ const store = new Vuex.Store({
                     'getHistory', 
                     'getTariffs', 
                     'getCategories', 
-                    'getOptions', 
+                    // 'getOptions', 
                     'getLogs',
                     'getAccessories',
                     'getHeaders',
