@@ -17,7 +17,7 @@ export default {
     },
     actions: {
         getOrders({ commit, getters }, filter) {
-            console.log('dispatch: getOrders');
+            console.log('dispatch: getOrders', filter);
 
             return new Promise((resolve, reject) => {
                 const queue = [
