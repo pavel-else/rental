@@ -27,7 +27,6 @@
 
 <style>
     .list {
-        margin-bottom: 50px;
     }
 
     .router-link {
