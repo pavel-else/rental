@@ -7,6 +7,7 @@
                 :key="index"
                 @click="onClick(item, index)"
             >
+                <!-- {{ item.id_rent }} -->
                 <Icon 
                     :id="index" 
                     :show="select == index || typeof(item.position) == 'number'" 
@@ -64,12 +65,12 @@
                 */
 
                 const result = []
-                const orders = this.$store.getters.orders.filter(i => i.status === 'ACTIVE');
-                const newId = this.getOrderId('new')
+                const orders = this.$store.getters.activeOrders;
+                // const newId = this.getOrderId('new')
+                const newId = null;
 
                 const iter = (num) => {
                     const order = orders.find(i => i.order_id_position == num)
-
 
                     result[num] = {
                         position: order ? num : null,

@@ -294,7 +294,7 @@
 
             getPosition(cmd) {
                 const newPosition = () => {
-                    const orders = this.$store.getters.orders.filter(i => i.status === 'ACTIVE');
+                    const orders = this.$store.getters.activeOrders;
                     const count = 15
                     let id = null
 
@@ -314,7 +314,6 @@
                     return newPosition()
                 }
 
-                console.log('status', this.status)
                 if (this.status == 'newOrder') {
                     return newPosition()
                 }
