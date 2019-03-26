@@ -278,12 +278,8 @@
         },
 
         computed: {
-            /**
-            * Каждый раз при ререндеринге компонента будут вызываться все методы, обозначенные в шаблоне.
-            * С точки зрения оптимизации, лучше сразу при создании просчитывать свойства объекта
-            */
             orders() {
-                return this.$store.getters.orders.reduce((acc, i) => {
+                return this.$store.getters.activeOrders.reduce((acc, i) => {
                     i.format_start_time = this.getStartTime(i.start_time)
                     i.title = this.getTitle(i)
 
@@ -293,23 +289,14 @@
             },
             subOrders() {
                 // Возвращает объект массивов, где ключ - order_id, массив - subOrders
-                const check = item => {
 
-                    return this.orders[item.order_id]
-                        && (item.status === "ACTIVE" || item.status === "PAUSE")
-                        ? true
-                        : false
-                }
+                return this.$store.getters.activeSubOrders.reduce((acc, item) => {
 
-                return this.$store.getters.subOrders.reduce((acc, item) => {
-                    if (!check(item)) {
-                        return acc
-                    }
-
-                    item.product_name = this.getProductName(item.product_id)
+                    item.product_name = this.getProductName(item.product_id);
                     
-                    acc[item.order_id] ? acc[item.order_id].push(item) : acc[item.order_id] = [item]
-                    return acc
+                    acc[item.order_id] ? acc[item.order_id].push(item) : acc[item.order_id] = [item];
+
+                    return acc;
                 }, {})
             },
 

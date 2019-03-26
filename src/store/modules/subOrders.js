@@ -88,7 +88,8 @@ export default {
                 const queue = subOrders.map(i => {
                     return { cmd: 'changeSubOrder', value: i };
                 });
-                queue.push({ cmd: 'getSubOrders'});
+                
+                // queue.push({ cmd: 'getSubOrders'});
 
                 const url = getters.url;
                 const token = localStorage.getItem('user-token');
@@ -103,7 +104,7 @@ export default {
                 })
                 .then(resp => {
                     console.log(resp)
-                    commit('subOrders', resp.data.sub_orders);
+                    // commit('subOrders', resp.data.sub_orders);
                     resolve(true);                        
                 }).
                 catch(err => {
@@ -118,7 +119,7 @@ export default {
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'changeSubOrder', value: subOrder },
-                    { cmd: 'getSubOrders'}
+                    // { cmd: 'getSubOrders'}
                 ];
 
                 const url = getters.url;
@@ -134,7 +135,7 @@ export default {
                 })
                 .then(resp => {
                     console.log(resp)
-                    commit('subOrders', resp.data.sub_orders);
+                    // commit('subOrders', resp.data.sub_orders);
                     resolve(true);                        
                 }).
                 catch(err => {

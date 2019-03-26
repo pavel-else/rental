@@ -76,7 +76,9 @@
                     const result = filter.find(i => !i.end_time);
                     return !!result;
                 };
+                
                 const list = this.$store.getters.products;
+
                 return list ? list.filter(item => !isRent(item.id_rent) && item.status == 'active' && !isBroken(item.id_rent)) : [];
             },
         },

@@ -29,9 +29,16 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
             }
         },
         beforeCreate() {
-            this.$store.dispatch('getActiveOrders');
-            this.$store.dispatch('getActiveSubOrders');
+            const queue = [
+                { cmd: 'getActiveOrders' }, 
+                { cmd: 'getActiveSubOrders' }, 
+                { cmd: 'getProducts' }, 
+                { cmd: 'getTariffs' }, 
+                { cmd: 'getCustomers' }, 
+                { cmd: 'getAccessories' }
+            ];
 
+            this.$store.dispatch('multipleRequest', queue);
         },
         methods: {
             addOrder(product) {

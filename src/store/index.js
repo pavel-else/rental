@@ -17,6 +17,7 @@ import subOrders       from './modules/subOrders';
 import orders          from './modules/orders';
 import customers       from './modules/customers';
 import history         from './modules/history';
+import multipleRequest from './modules/multipleRequest';
 
 
 
@@ -39,6 +40,7 @@ const store = new Vuex.Store({
         Accessories,
         Tariffs,
         Products,
+        multipleRequest
     },
 
     actions: {

@@ -258,6 +258,7 @@
 
                 subOrder.end_time = Time.format('YYYY-MM-DD HH:mm:ss');
                 subOrder.status = "END";
+                
                 return subOrder;
             },
             stopOrder() {
