@@ -14,7 +14,6 @@ import GeneralSettings from '@/components/Options/GeneralSettings';
 import Tariffs         from '@/components/Tariffs';
 import Accessories     from '@/components/Accessories';
 import Products        from '@/components/Products';
-import Totals          from '@/components/Totals';
 
 const Login = () => import('@/views/Login');
 const LoginByToken = () => import('@/components/LoginByToken');
@@ -56,11 +55,6 @@ export default new Router({
         {
             path: '/history',
             component: History,
-            beforeEnter: ifAuthenticated,
-        },
-        {
-            path: '/totals',
-            component: Totals,
             beforeEnter: ifAuthenticated,
         },
         {

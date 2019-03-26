@@ -1,21 +1,14 @@
 <template>
     <div class="totals">
-        <h2>Итоги дня</h2>
         <table>
             <tr>
-                <td>Наличные: </td>
-                <td>{{ coin }} руб.</td>
+                <td><b>Итого за день:</b></td>
+                <td>Наличные: {{ coin }} руб.</td>
+                <td>По карте: {{ card }} руб.</td>
+                <td>Всего: {{ total }} руб.</td>
             </tr>
-            <tr>
-                <td>По карте:</td>
-                <td>{{ card }} руб.</td>
-            </tr>
-            <tr>
-                <td><b>Итого за день: </b></td>
-                <td><b>{{ total }} руб.</b></td>
-            </tr>
-        </table>
 
+        </table>
     </div>
 </template>
 <script>
@@ -76,6 +69,9 @@
 </script>
 <style lang="scss" scoped>
     .totals {
+        table {
+            width: 100%;
+        }
 
         td {
             padding: 5px 10px;

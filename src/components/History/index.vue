@@ -1,5 +1,7 @@
 <template>
     <div class="history">
+        <Totals></Totals>
+
         <h2>История заказов</h2>
         <table class="history__table" v-if="orders && orders.length > 0" cellspacing="0">
             <tr>
@@ -9,7 +11,6 @@
                 <th>Длительность</th>
                 <th>Товар</th>
                 <th>Стоимость</th>
-                <!-- <th>Статус</th> -->
             </tr>
 
             <tr v-for="item in orders" :key="item.id_rent" @click="onClick(item)">
@@ -31,29 +32,26 @@
                 <td style="text-align: right">
                     {{ item.bill }} руб
                 </td>
-                <!-- <td>
-                    {{ item.formStatus }}
-                </td> -->
             </tr>
         </table>
         <div v-else>Здесь пока пусто..</div>
 
         <Details :_order="order" @close="onClose" v-if="show"></Details>
-    </div>
-  
+    </div>  
 </template>
 
 <script>
-    import Details    from './Details';
-    import timeFormat from '@/functions/timeFormat';
-    import copy       from '@/functions/copy';
-    import * as Time  from '@/functions/Time';
+    import Details     from './Details';
+    import Totals      from '@/components/Totals';
+    import timeFormat  from '@/functions/timeFormat';
+    import copy        from '@/functions/copy';
+    import * as Time   from '@/functions/Time';
     import isValidDate from '@/functions/isValidDate';
 
     export default {
         name: 'History',
         components: {
-            Details
+            Details, Totals
         },
         beforeCreate() {
             this.$store.dispatch('getOrders', 'all');
@@ -179,13 +177,18 @@
 </script>
 
 <style lang="scss" scoped>
-    .history__table {
-        td {
-            padding: 5px;
+    .history {        
+        h2 {
+            margin-top: 50px;
         }
-        tr:not(:first-child):hover {
-            outline: 1px solid #333;
-            cursor: pointer;
+        &__table {
+            td {
+                padding: 5px;
+            }
+            tr:not(:first-child):hover {
+                outline: 1px solid #333;
+                cursor: pointer;
+            }
         }
     }
 </style>
