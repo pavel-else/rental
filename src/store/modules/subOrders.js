@@ -2,20 +2,25 @@ import axios from 'axios';
 export default {
     state: {
         subOrders: [],
+        activeSubOrders: []
     },
     getters: {
         subOrders(state) {
             return state.subOrders;
         },
         activeSubOrders(state) {
-            return state.subOrders.filter(item => item.status === 'ACTIVE');
-        }
+            return state.activeSubOrders;
+        },
     },
     mutations: {
         subOrders(state, subOrders) {
             console.log('commit: subOrders', subOrders);
             state.subOrders = subOrders;
-        }
+        },
+        activeSubOrders(state, activeSubOrders) {
+            console.log('commit: activeSubOrders', activeSubOrders);
+            state.activeSubOrders = activeSubOrders;
+        },
     },
     actions: {
         getSubOrders({ commit, getters }) {
@@ -39,6 +44,35 @@ export default {
                 .then(resp => {
                     console.log(resp)
                     commit('subOrders', resp.data.sub_orders);
+                    resolve(true);                        
+                }).
+                catch(err => {
+                    console.log(err)
+                    reject(err);
+                })
+            });
+        },
+        getActiveSubOrders({ commit, getters }) {
+            console.log('dispatch: getActiveSubOrders');
+
+            return new Promise((resolve, reject) => {
+                const queue = [
+                    { cmd: 'getActiveSubOrders' }
+                ];
+                const url = getters.url;
+                const token = localStorage.getItem('user-token');
+
+                axios({ 
+                    url,
+                    data: {
+                        queue,
+                        token
+                    },
+                    method: 'POST',
+                })
+                .then(resp => {
+                    console.log(resp)
+                    commit('activeSubOrders', resp.data.active_sub_orders);
                     resolve(true);                        
                 }).
                 catch(err => {

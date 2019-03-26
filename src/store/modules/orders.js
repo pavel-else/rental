@@ -7,6 +7,9 @@ export default {
     getters: {
         orders(state) {
             return state.orders;
+        },
+        activeOrders(state) {
+            return state.activeOrders;
         }
     },
     mutations: {

@@ -30,6 +30,7 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
         },
         beforeCreate() {
             this.$store.dispatch('getActiveOrders');
+            this.$store.dispatch('getActiveSubOrders');
 
         },
         methods: {
