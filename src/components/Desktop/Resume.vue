@@ -29,6 +29,10 @@
                     <td>Продолжительность</td>
                     <td>{{ activeTime }}</td>
                 </tr>
+                <tr v-if="order.note">
+                    <td>Примечание</td>
+                    <td>{{ order.note }}</td>
+                </tr>
             </table>
 
             <div class="products">

@@ -33,6 +33,10 @@
                     <td>Продолжительность</td>
                     <td>{{ order.play_time }}</td>
                 </tr>
+                <tr v-if="order.note">
+                    <td>Примечание</td>
+                    <td>{{ order.note }}</td>
+                </tr>
             </table>
                 <!-- {{ order }} -->
 
