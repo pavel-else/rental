@@ -72,8 +72,8 @@
                         <td>Макс</td>
                         <td><input v-model="tariff._h_max"></td>
                     </tr>
-                    <tr v-if="tariff.type !== 'h'">
-                        <td>Пробег, ч</td>
+                    <tr v-if="tariff.type === 'f'">
+                        <td>Пробег<br><small>часов за весь период</small></td>
                         <td><input v-model="tariff.mileage"></td>                        
                     </tr>
                     <tr v-if="tariff.type != 'h'">

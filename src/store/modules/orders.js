@@ -2,6 +2,7 @@ import axios from 'axios';
 export default {
     state: {
         orders: [],
+        activeOrders: [],
     },
     getters: {
         orders(state) {
