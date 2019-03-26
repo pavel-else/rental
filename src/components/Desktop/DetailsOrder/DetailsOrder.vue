@@ -137,7 +137,7 @@
         },
         data() {
             return {
-                order:    {
+                order: {
                     status:             null,              
                     start_time:         null,         
                     id_rent:            null,           
@@ -257,7 +257,7 @@
 
                 this.$set(this.order, 'customer_id', null)
                 
-                this.subOrder.id_rent    = this.getSubOrderId()
+                this.subOrder.id_rent    = null;
                 this.subOrder.product_id = this.product.id_rent
                 this.subOrder.tariff_id  = this.product.tariff_default
                 this.subOrder.order_id   = this.order.id_rent
@@ -281,7 +281,7 @@
 
                 this.order = copy(order)
 
-                this.subOrder.id_rent    = this.getSubOrderId()
+                this.subOrder.id_rent    = null;
                 this.subOrder.product_id = this.product.id_rent
                 this.subOrder.tariff_id  = this.product.tariff_default
                 this.subOrder.order_id   = this.order.id_rent
@@ -366,7 +366,7 @@
 
         computed: {
             orders() {
-                return this.$store.getters.orders
+                return this.$store.getters.activeOrders;
             },
             customers() {
                 return this.$store.getters.customers

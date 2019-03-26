@@ -147,7 +147,7 @@
         },
         methods: {
             makeActiveSubOrders() {
-                const subOrders = copy(this.$store.getters.subOrders.filter(i => i.order_id === this.order.id_rent && !i.paid));
+                const subOrders = copy(this.$store.getters.activeSubOrders.filter(i => i.order_id === this.order.id_rent && !i.paid));
 
                 return subOrders.reduce((acc, item) => {
                     const product = this.$store.getters.products.find(i => i.id_rent === item.product_id);
@@ -251,7 +251,7 @@
                     customer.balance = +customer.balance + this.balanceAmound;
                     this.$store.dispatch('setCustomer', customer);
                 }
-
+                
                 this.close();
             },
             stopSubOrder(_subOrder) {
