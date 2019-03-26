@@ -8,12 +8,8 @@
             <form @input="onChange">
                 <table>
                     <tr>
-                        <td>id</td>
-                        <td><input :value="newTariff.id_rent" disabled></td>
-                    </tr>
-                    <tr>
                         <td>Название</td>
-                        <td><input v-model="newTariff.name"></td>
+                        <td><input v-model="tariff.name"></td>
                     </tr>
                     <tr class="details__tr details__tr--type">
                         <td>Тип</td>
@@ -24,8 +20,8 @@
                                 type="radio" 
                                 id="tariff_type--h" 
                                 value="h" 
-                                v-model="newTariff.type" 
-                                :checked="newTariff.type == 'h'"
+                                v-model="tariff.type" 
+                                :checked="tariff.type == 'h'"
                             >
                             <label for="tariff_type--h" class="tariff__type-label">Почасовой</label>
 
@@ -35,8 +31,8 @@
                                 type="radio" 
                                 id="tariff_type--f" 
                                 value="f" 
-                                v-model="newTariff.type" 
-                                :checked="newTariff.type == 'f'"
+                                v-model="tariff.type" 
+                                :checked="tariff.type == 'f'"
                             >
                             <label for="tariff_type--f" class="tariff__type-label">Фиксированный</label>
                         
@@ -46,43 +42,47 @@
                                 type="radio" 
                                 id="tariff_type--d" 
                                 value="d" 
-                                v-model="newTariff.type" 
-                                :checked="newTariff.type == 'd'"
+                                v-model="tariff.type" 
+                                :checked="tariff.type == 'd'"
                             >
                             <label for="tariff_type--d" class="tariff__type-label">Посуточный</label>
                         </td>
 
                     </tr>
-                    <tr v-if="newTariff.type == 'h'">
+                    <tr v-if="tariff.type == 'h'">
                         <td>Расчасовка,<br>руб</td>
                         <td>
                             <table>
-                                <tr v-for="(item, index) in newTariff._h_h" :key="index">
+                                <tr v-for="(item, index) in tariff._h_h" :key="index">
                                     <td>
-                                        {{ index + 1}}<span v-if="newTariff._h_h.length === index + 1">+</span> час
+                                        {{ index + 1}}<span v-if="tariff._h_h.length === index + 1">+</span> час
                                     </td>
-                                    <td><input v-model="newTariff._h_h[index]"></td>
+                                    <td><input v-model="tariff._h_h[index]"></td>
                                 </tr>
                             </table>
                             <button @click="addH">+</button>
                             <button @click="rmH">-</button>
                         </td>
                     </tr>
-                    <tr v-if="newTariff.type == 'h'">
+                    <tr v-if="tariff.type == 'h'">
                         <td>Мин</td>
-                        <td><input v-model="newTariff._h_min"></td>
+                        <td><input v-model="tariff._h_min"></td>
                     </tr>
-                    <tr v-if="newTariff.type == 'h'">
+                    <tr v-if="tariff.type == 'h'">
                         <td>Макс</td>
-                        <td><input v-model="newTariff._h_max"></td>
+                        <td><input v-model="tariff._h_max"></td>
                     </tr>
-                    <tr v-if="newTariff.type != 'h'">
+                    <tr v-if="tariff.type !== 'h'">
+                        <td>Пробег, ч</td>
+                        <td><input v-model="tariff.mileage"></td>                        
+                    </tr>
+                    <tr v-if="tariff.type != 'h'">
                         <td>Стоимость</td>
-                        <td><input v-model="newTariff.cost"></td>
+                        <td><input v-model="tariff.cost"></td>
                     </tr>
                     <tr>
                         <td>Примечание</td>
-                        <td><input v-model="newTariff.note"></td>
+                        <td><input v-model="tariff.note"></td>
                     </tr>
                 </table>
             </form>     
@@ -99,36 +99,37 @@
 </template>
 
 <script>
-    import Tarification from "./Tarification"
+    // import Tarification from "./Tarification";
+    import copy from '@/functions/copy';
     export default {
         props: {
-            tariff: Object
+            _tariff: Object
         },
         components: {
-            Tarification
+            // Tarification
         },
         data() {
             return {
                 // Не смог по-нормальному скопировать объект без геттеров, поэтому так
-                newTariff: JSON.parse(JSON.stringify(this.tariff)),
+                tariff: copy(this._tariff),
                 change: false
             }
         },
         methods: {
             save() {
                 // Предобработка, удаление пустых полей
-                this.newTariff._h_h = this.newTariff._h_h ? this.newTariff._h_h.filter(h => {
+                this.tariff._h_h = this.tariff._h_h ? this.tariff._h_h.filter(h => {
                     if (h) return h
                 }) : ''
 
                 // При переключении типа тарифa, некоторые поля следует отчищать
-                this.newTariff._h_h = this.newTariff.type === 'h' ? this.newTariff._h_h : null
-                this.newTariff.cost = this.newTariff.type === 'h' ? null : this.newTariff.cost
-                this.newTariff._d_min = this.newTariff.type !== 'h' ? null : this.newTariff._d_min
-                this.newTariff._d_max = this.newTariff.type !== 'h' ? null : this.newTariff._d_max
+                this.tariff._h_h = this.tariff.type === 'h' ? this.tariff._h_h : null
+                this.tariff.cost = this.tariff.type === 'h' ? null : this.tariff.cost
+                this.tariff._d_min = this.tariff.type !== 'h' ? null : this.tariff._d_min
+                this.tariff._d_max = this.tariff.type !== 'h' ? null : this.tariff._d_max
 
 
-                this.$store.dispatch('setTariff', this.newTariff);
+                this.$store.dispatch('setTariff', this.tariff);
 
                 this.$emit('close')
             },
@@ -143,8 +144,8 @@
                 }
             },
             remove() {
-                if (confirm(`Вы действительно хотите удалить тариф '${this.newTariff.name}'?`)) {
-                    this.$store.dispatch('deleteTariff', this.newTariff.id_rent);
+                if (confirm(`Вы действительно хотите удалить тариф '${this.tariff.name}'?`)) {
+                    this.$store.dispatch('deleteTariff', this.tariff.id_rent);
                     this.$emit('close');
                 }
 
@@ -153,21 +154,21 @@
                 e.preventDefault()
 
                 // Если расчасовка пустая, подменим ее на пустой массив, чтобы пуш сработал
-                if (!this.newTariff._h_h) {
-                    this.newTariff._h_h = []
+                if (!this.tariff._h_h) {
+                    this.tariff._h_h = []
                 }
 
-                this.newTariff._h_h.push('')
+                this.tariff._h_h.push('')
                 this.change = true
             },
             rmH(e) {
                 e.preventDefault()
 
-                if (!this.newTariff._h_h) {
+                if (!this.tariff._h_h) {
                     return
                 }
 
-                this.newTariff._h_h.pop()
+                this.tariff._h_h.pop()
                 this.change = true
             },
             onChange(e) {

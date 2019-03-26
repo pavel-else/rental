@@ -2,7 +2,6 @@
     <div class="option option-tariffs">
         <table>
             <tr>
-                <th>id</th>
                 <th>Название</th>
                 <th>Тип</th>
                 <th>Расчасовка</th>
@@ -12,9 +11,8 @@
                 <th>Примечание</th>
             </tr>
             <tr v-for="tariff in tariffs" :key="tariff.id_rent" @click="onClick(tariff)">
-                <td>{{ tariff.id_rent }}</td>
                 <td>{{ tariff.name }}</td>
-                <td>{{ tariff.type }}</td>
+                <td>{{ getType(tariff) }}</td>
                 <td>{{ getHours(tariff._h_h) }}</td>
                 <td>{{ tariff._h_min }}</td>
                 <td>{{ tariff._h_max }}</td>
@@ -25,7 +23,7 @@
 
         <button class="tariff__button tariff__button--add" @click="addTariff">Добавить</button>
 
-        <Details :tariff="tariff"  @close="onClose" v-if="show"></Details>
+        <Details :_tariff="tariff"  @close="onClose" v-if="show"></Details>
     </div>
 </template>
 <script>
@@ -75,6 +73,16 @@
                     _d_after: null,
                     cost: null,
                     note: ''
+                }
+            },
+            getType(tariff) {
+                if (!tariff || !tariff.type) {
+                    return 'Нет типа тарифа';
+                }
+                switch(tariff.type) {
+                    case 'h' : return 'Почасовой';
+                    case 'd' : return 'Посуточный';
+                    case 'f' : return 'Фиксированный';
                 }
             }
 

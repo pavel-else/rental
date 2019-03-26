@@ -121,6 +121,7 @@
     import getBill          from '@/functions/getBill';
     import getBillAccessory from '@/functions/getBillAccessory';
     import getSale          from '@/functions/getSale';
+    import getMileage       from '@/functions/getMileage';
     import * as Time        from '@/functions/Time';
     import copy             from '@/functions/copy';
 
@@ -232,10 +233,12 @@
                 stopedSubOrders.map(subOrder => {
                     const product = copy(this.$store.getters.products.find(product => product.id_rent === subOrder.product_id));
 
-                    const h = subOrder.time > 0 ? Math.round((subOrder.time / (1000 * 60 * 60)) * 100) / 100  : 0;
+                    const tariff = this.$store.getters.tariffs.find(i => i.id_rent === subOrder.tariff_id);
+                    const mileage = getMileage(subOrder.time, tariff);;
 
-                    if (h && h > 0) {
-                        product.mileage = +product.mileage + h;
+
+                    if (mileage && mileage > 0) {
+                        product.mileage = +product.mileage + mileage;
 
                         this.$store.dispatch('setProduct', product);
                     }
