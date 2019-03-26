@@ -13,7 +13,7 @@
                 <td>{{ customer.fname }} {{ customer.sname }} {{ customer.tname }}</td>
                 <td>{{ customer.phone }}</td>
                 <td class="col--sale"><span v-if="customer && customer.sale > 0">{{ customer.sale }} %</span></td>
-                <td class="col--balance"><span v-if="customer && customer.balance !== 0">{{ customer.balance }} р</span></td>
+                <td class="col--balance"><span v-if="customer && customer.balance != 0">{{ customer.balance }} р</span></td>
             </tr>
         </table>
         <div class="customer_buttons">
