@@ -79,6 +79,7 @@
                     <td style="text-align: right" :style="styleBalance">{{ Math.abs(balance) }} руб</td>
                     <td>
                         <input
+                            v-if="balance !== 0"
                             type="checkbox"
                             :checked="isApplyBalance"
                             :title="balance < 0 ? 'Погасить сейчас' : 'Использовать при оплате'"

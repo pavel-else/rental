@@ -7,13 +7,14 @@ import Home      from './components/Desktop'
 import History   from './components/History'
 import Customers from './components/Customers'
 import Repairs   from './components/Repairs'
-import AdminPage   from '@/views/AdminPage'
+import AdminPage from '@/views/AdminPage'
 
 import RentalPointInfo from '@/components/Options/RentalPointInfo';
 import GeneralSettings from '@/components/Options/GeneralSettings';
-import Tariffs from '@/components/Tariffs';
-import Accessories from '@/components/Accessories';
-import Products from '@/components/Products';
+import Tariffs         from '@/components/Tariffs';
+import Accessories     from '@/components/Accessories';
+import Products        from '@/components/Products';
+import Totals          from '@/components/Totals';
 
 const Login = () => import('@/views/Login');
 const LoginByToken = () => import('@/components/LoginByToken');
@@ -57,10 +58,11 @@ export default new Router({
             component: History,
             beforeEnter: ifAuthenticated,
         },
-        // {
-        //     path: '/options/main',
-        //     component: OptionsMain
-        // },
+        {
+            path: '/totals',
+            component: Totals,
+            beforeEnter: ifAuthenticated,
+        },
         {
             path: '/settings',
             redirect: '/settings/main',

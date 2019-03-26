@@ -15,6 +15,7 @@
                 </ul>
             </li>
             <li><router-link class="router-link" to="/repairs">Ремонт</router-link></li>
+            <li><router-link class="router-link" to="/totals">Итоги дня</router-link></li>
         </ul>
     </div>
 </template>
