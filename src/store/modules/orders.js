@@ -13,10 +13,14 @@ export default {
         orders(state, orders) {
             console.log('commit: orders', orders);
             state.orders = orders;
+        },
+        activeOrders(state, activeOrders) {
+            console.log('commit: activeOrders', activeOrders);
+            state.activeOrders = activeOrders;
         }
     },
     actions: {
-        getOrders({ commit, getters }, filter) {
+        getOrders({ commit, getters }) {
             console.log('dispatch: getOrders', filter);
 
             return new Promise((resolve, reject) => {
@@ -37,6 +41,35 @@ export default {
                 .then(resp => {
                     console.log(resp)
                     commit('orders', resp.data.orders);
+                    resolve(true);                        
+                }).
+                catch(err => {
+                    console.log(err)
+                    reject(err);
+                })
+            });
+        },
+        getActiveOrders({ commit, getters }) {
+            console.log('dispatch: getActiveOrders');
+
+            return new Promise((resolve, reject) => {
+                const queue = [
+                    { cmd: 'getActiveOrders'}
+                ];
+                const url = getters.url;
+                const token = localStorage.getItem('user-token');
+
+                axios({ 
+                    url,
+                    data: {
+                        queue,
+                        token
+                    },
+                    method: 'POST',
+                })
+                .then(resp => {
+                    console.log(resp)
+                    commit('activeOrders', resp.data.active_orders);
                     resolve(true);                        
                 }).
                 catch(err => {
