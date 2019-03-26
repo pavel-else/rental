@@ -58,6 +58,7 @@
             :dataSubOrder="subOrder" 
             @close="closeDetails"
             @openResume="openResume($event)"
+            @updateState="updateState()"
         >
         </DetailsOrder>
 
@@ -103,6 +104,10 @@
 
         methods: {
             ...stopSubOrder,
+
+            updateState() {
+                this.$emit('update');
+            },
 
             toChange(order, subOrder) {
                 this.order = order

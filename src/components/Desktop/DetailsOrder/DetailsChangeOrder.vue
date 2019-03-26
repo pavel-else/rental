@@ -219,7 +219,7 @@
                         }
                     ])
                 }
-              
+                this.$emit('updateState');
                 this.close()
             },
 

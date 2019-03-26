@@ -30,7 +30,7 @@
         },
         components: { Multiselect },
         created() {
-            console.log(this.dataTariffs, this.dataTariffDefault)
+            // console.log(this.dataTariffs, this.dataTariffDefault)
         },
         data () {
             return {

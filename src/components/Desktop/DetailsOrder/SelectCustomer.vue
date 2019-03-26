@@ -55,7 +55,7 @@
             value() {
                 this.$emit('setCustomer', this.value)
                 if (!this.value) {
-                    console.log('empty value')
+                    // console.log('empty value')
                 }
             }
         }

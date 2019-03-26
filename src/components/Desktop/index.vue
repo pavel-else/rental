@@ -3,7 +3,7 @@
 
         <product-list class="snippet snippet__products" @addOrder="addOrder($event)"></product-list>
         
-        <order-list class="snippet snippet__orders"></order-list>
+        <order-list class="snippet snippet__orders" ></order-list>
 
         <DetailsOrder v-if="show" :product="product" @close="onClose"></DetailsOrder>
     </div>
@@ -28,17 +28,18 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
                 show: false,
             }
         },
-        beforeCreate() {
-            const queue = [
-                { cmd: 'getActiveOrders' }, 
-                { cmd: 'getActiveSubOrders' }, 
-                { cmd: 'getProducts' }, 
-                { cmd: 'getTariffs' }, 
-                { cmd: 'getCustomers' }, 
-                { cmd: 'getAccessories' }
-            ];
+        created() {
+                const queue = [
+                    { cmd: 'getActiveOrders' }, 
+                    { cmd: 'getActiveSubOrders' }, 
+                    { cmd: 'getProducts' }, 
+                    { cmd: 'getTariffs' }, 
+                    { cmd: 'getCustomers' }, 
+                    { cmd: 'getAccessories' },
+                    { cmd: 'getGeneralSettings' }
+                ];
 
-            this.$store.dispatch('multipleRequest', queue);
+                this.$store.dispatch('multipleRequest', queue);               
         },
         methods: {
             addOrder(product) {
@@ -48,7 +49,7 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
             },
             onClose() {
                 this.show = false
-            }
+            },
         },
     }
 </script>

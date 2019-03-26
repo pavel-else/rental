@@ -216,6 +216,7 @@
             close() {
                 this.$emit('close');
             },
+            
             pay(paidType) {
                 const stopedSubOrders = this.activeSubOrders.map(i => {
                     const stopedSubOrder = this.stopSubOrder(i);
@@ -258,7 +259,7 @@
 
                 subOrder.end_time = Time.format('YYYY-MM-DD HH:mm:ss');
                 subOrder.status = "END";
-                
+
                 return subOrder;
             },
             stopOrder() {

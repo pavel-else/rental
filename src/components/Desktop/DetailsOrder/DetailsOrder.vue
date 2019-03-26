@@ -211,25 +211,40 @@
                         lastOrderID: this.order.id_rent
                     }
 
-                    this.$store.dispatch('send', [
-                        {cmd: 'newOrder',           value: this.order},
-                        {cmd: 'newSubOrder',        value: this.subOrder},
-                        // {cmd: 'setOptions',         value: options},
-                        {cmd: 'setGeneralSettings', value: settings},
-                    ])
+                    this.$store.dispatch('multipleRequest', [
+                        { cmd: 'newOrder',           value: this.order },
+                        { cmd: 'newSubOrder',        value: this.subOrder },
+                        { cmd: 'setGeneralSettings', value: settings },
+
+                        { cmd: 'getActiveOrders' }, 
+                        { cmd: 'getActiveSubOrders' }, 
+                        { cmd: 'getProducts' }, 
+                        { cmd: 'getTariffs' }, 
+                        { cmd: 'getCustomers' }, 
+                        { cmd: 'getAccessories' },
+                        { cmd: 'getGeneralSettings' }
+                    ]);
+
                 }
 
                 // addSubOrder
                 if (this.status == 'addSubOrder') {
-                    console.log('addSubOrder')
+                    this.$store.dispatch('multipleRequest', [
+                        { cmd: 'newSubOrder', value: this.subOrder },
+                        { cmd: 'changeOrder', value: this.order },
+                        // Why disabled GeneralSettings ?
 
-                    this.$store.dispatch('send', [
-                        {cmd: 'newSubOrder', value: this.subOrder},
-                        {cmd: 'changeOrder', value: this.order},
-                    ])
+                        { cmd: 'getActiveOrders' }, 
+                        { cmd: 'getActiveSubOrders' }, 
+                        { cmd: 'getProducts' }, 
+                        { cmd: 'getTariffs' }, 
+                        { cmd: 'getCustomers' }, 
+                        { cmd: 'getAccessories' },
+                        { cmd: 'getGeneralSettings' }
+                    ]);
                 }
-
-                this.close()
+                
+                this.close();
             },
 
             newOrder(order_id_position) {
@@ -237,7 +252,7 @@
 
                 this.order.status              = 'ACTIVE'
                 this.order.start_time          = Date.now() + this.registrationTime
-                this.order.id_rent             = this.getOrderId()
+                this.order.id_rent             = null;//this.getOrderId()
                 this.order.order_id_position   = order_id_position || this.getPosition('new')
 
                 this.$set(this.order, 'customer_id', null)
@@ -310,7 +325,7 @@
             },
 
             setPosition({ order_id, order_id_position }) {
-                console.log(order_id, order_id_position)
+
                 this.orders.find(i => i.id_rent == order_id)
                     ? this.addSubOrder(order_id)                    
                     : this.newOrder(order_id_position)
@@ -379,7 +394,7 @@
                     if (find) acc.push(find)
                     return acc
                 }, [])
-                console.log(result)
+
                 return result
             },
             registrationTime() {

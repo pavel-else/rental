@@ -1,5 +1,8 @@
 import axios from 'axios';
 export default {
+    state: {
+        initCmds: []
+    },
     actions: {
         multipleRequest({ commit, getters }, queue) {
             if (!queue || !queue.map) {
@@ -17,10 +20,11 @@ export default {
                         case 'tariffs'           : commit('tariffs', data[i]); break;
                         case 'customers'         : commit('customers', data[i]); break;
                         case 'accessories'       : commit('accessories', data[i]); break;
+                        case 'general_settings'   : commit('generalSettings', data[i]); break;
 
                         case 'logs' : break;
 
-                        default : console.log('multipleRequest: Unknown type data - ', i);
+                        default : console.warn('multipleRequest: Unknown type data - ', i);
                     }
 
                 }
