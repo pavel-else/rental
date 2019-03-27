@@ -128,9 +128,15 @@
             },
 
             renter() {
-                return this.order.customer_name 
-                    ? this.order.customer_name 
-                    : '_______________________'
+                if (!this.customer) {
+                    return '_______________________';
+                }
+
+                const f = this.customer.fname ? this.customer.fname : '';
+                const s = this.customer.sname ? this.customer.sname : '';
+                const t = this.customer.tname ? this.customer.tname : '';
+
+                return `${ f } ${ s } ${ t }`.trim();
             },
             passport() {
                 return this.customer ? this.customer.passport : ''
@@ -157,10 +163,10 @@
             },
 
             products() {
-                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id == this.order.id_rent)
-                const products = subOrders.map(i => this.$store.getters.products.find(j => j.id_rent == i.product_id))
+                const subOrders = this.$store.getters.activeSubOrders.filter(i => i.order_id == this.order.id_rent);
+                const products = subOrders.map(i => this.$store.getters.products.find(j => j.id_rent == i.product_id));
                 
-                return products
+                return products;
             },
             products_name_and_cost() {
                 return this.products.reduce((acc, item) => {

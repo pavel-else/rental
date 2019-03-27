@@ -208,7 +208,6 @@
 
                     const settings = {
                         lastOrderTime: Date.now(),
-                        lastOrderID: this.order.id_rent
                     }
 
                     this.$store.dispatch('multipleRequest', [
