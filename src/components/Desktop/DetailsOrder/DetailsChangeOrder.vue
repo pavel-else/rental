@@ -235,42 +235,37 @@
             },
 
             abortSubOrder() {
-                const subOrder = this.subOrder
-                const order    = this.order
+                const subOrder = this.subOrder;
+                const order    = this.order;
 
-                const title = "Почему Вы хотите удалить этот товар?"
-                const def = "Причина удаления"
-                const answer = prompt(title, def)
+                const title = "Почему Вы хотите удалить этот товар?";
+                const def = "Причина удаления";
+                const answer = prompt(title, def);
 
                 if (!answer) {
-                    return 
+                    return false;
                 }
 
-                const cmd = []
+                const cmds = [];
 
                 // SUBORDER
-                subOrder.note = answer
-                subOrder.status = 'DEL'
-                subOrder.end_time = Math.floor(Date.now() / 1000)
-                subOrder.pause_start = Date.parse(subOrder.pause_start) / 1000
-                cmd.push({cmd: 'changeSubOrder', value: subOrder})
+                subOrder.note = answer;
+                subOrder.status = 'DEL';
+                subOrder.end_time = Math.floor(Date.now() / 1000);
+                subOrder.pause_start = Date.parse(subOrder.pause_start) / 1000;
+                cmds.push({ cmd: 'changeSubOrder', value: subOrder });
 
                 // ORDER
                 // Если сабордер единственный, деактивируем ордер
                 if (this.subOrders.length < 1) {
-                    order.status = 'DEL'
-                    cmd.push({cmd: 'changeOrder', value: order})
+                    order.status = 'DEL';
+                    cmds.push({ cmd: 'changeOrder', value: order });
                 }
+               
+                cmds.push({ cmd: 'getActiveOrders' }, { cmd: 'getActiveSubOrders' });
+                this.$store.dispatch('multipleRequest', cmds);
 
-                // PRODUCT
-                this.product.status = 'active'                      
-                this.product.updated = Date.parse(this.product.updated) / 1000                      
-                cmd.push({cmd: 'setProduct', value: this.product})
-                
-
-                this.$store.dispatch('send', cmd)
-
-                this.$emit('close')
+                this.$emit('close');
             },
 
             stop() {
