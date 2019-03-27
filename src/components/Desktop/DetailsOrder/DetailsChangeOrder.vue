@@ -109,7 +109,7 @@
                         Удалить
                     </button>
 
-                    <button class="change-order__button" @click.prevent="stop()">
+                    <button disabled class="change-order__button" @click.prevent="stop()">
                         Стоп
                     </button>
 

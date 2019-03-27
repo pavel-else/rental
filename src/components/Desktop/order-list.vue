@@ -30,7 +30,7 @@
 
                         <td class="td-5" @click="toChange(order, subOrder)" >
                             {{ getBillWrap(order, subOrder) }} р
-                        </td>                          
+                        </td>
                     </tr>
                 </td>
 
@@ -67,6 +67,10 @@
             @close="showResume = false" 
         >
         </Resume>
+
+        <!-- {{ orders }}
+        <hr>
+        {{ subOrders }} -->
     </div>
 </template>
 
@@ -179,25 +183,29 @@
                     }
                 }
 
-                if (subOrder.status == "END") {                   
+                if (subOrder.status == "END") {
                     return timeFormat(Date.parse(subOrder.end_time) - start - pause)
                 }
             },
 
             getBillWrap(order, subOrder) {
-                let time
+                let time;
                 
                 if (subOrder.status == "ACTIVE") {
-                    time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time
+                    time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time;
                 }
 
                 if (subOrder.status == "PAUSE") {
-                    time = subOrder.pause_start - Date.parse(order.start_time)
+                    const lastPause = Date.now() - +subOrder.pause_start;
+                    const pause = +subOrder.pause_time + lastPause;
+
+                    time = Date.now() - Date.parse(order.start_time)- pause;
                 }
 
                 if (subOrder.status == "END") {
-                    time = Date.parse(subOrder.end_time) - Date.parse(order.start_time)
+                    time = Date.parse(subOrder.end_time) - Date.parse(order.start_time);
                 }
+
                 const billRent = getBill(subOrder.tariff_id, time);
                 const billAccess = getBillAccessories(subOrder.accessories, this.$store.getters.accessories, billRent);
 
@@ -228,12 +236,12 @@
                     return activeList.map(i => {
                         return { cmd: 'changeSubOrder', value: pause(i) };
                     });
-                }
+                };
                 const makeActive = () => {
                     return pauseList.map(i => {
                         return { cmd: 'changeSubOrder', value: pause(i) };
                     });
-                }
+                };
 
                 const cmds = activeList.length > 0 ? makePause() : makeActive();
 
@@ -243,8 +251,8 @@
             },
 
             stopOrder(order) {
-                this.order = order
-                this.showResume = true           
+                this.order = order;
+                this.showResume = true;
             },
 
             getSubOrders(order_id) {
@@ -300,7 +308,7 @@
                     acc[item.order_id] ? acc[item.order_id].push(item) : acc[item.order_id] = [item];
 
                     return acc;
-                }, {})
+                }, {});
             },
 
             countActiveSubOrders() {

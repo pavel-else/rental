@@ -170,8 +170,19 @@
             },
             getTime(subOrder) {
                 const start = Date.parse(this.order.start_time);
-                const pause = subOrder.pause_time; // Проверить, не надо ли добавлять. если сабордер на паузе
+
+                let pause = 0;
+
+                if (subOrder.status === 'PAUSE') {
+                    const lastPause = Date.now() - +subOrder.pause_start;
+                    pause = +subOrder.pause_time + lastPause;
+                } else {
+                    pause = subOrder.pause_time; // Проверить, не надо ли добавлять. если сабордер на паузе
+                }
+
+
                 const end = subOrder.end_time ? Date.parse(subOrder.end_time) : Date.now();
+
                 return end - start - pause; 
             },
             getBillRent(subOrder) {
