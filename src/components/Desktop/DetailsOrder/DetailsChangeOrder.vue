@@ -58,8 +58,9 @@
                             <textarea 
                                 class="add-order__input add-order__input--note" 
                                 cols="30" 
-                                rows="3" 
-                                v-model="order.note"
+                                rows="3"
+                                @input="setNote($event)"
+                                :value="order.note"
                             >
                             </textarea>
                         </td>
@@ -209,15 +210,17 @@
                 if (this.status.splitOrder) {
                     console.log('splitOrder')
 
-                    this.$store.dispatch('send', [
+                    this.$store.dispatch('multipleRequest', [
                         {
                             cmd: 'splitOrder', 
                             value: {
                                 order:    this.order,
                                 subOrder: this.subOrder
                             }
-                        }
-                    ])
+                        },
+                        { cmd: 'getActiveOrders' },
+                        { cmd: 'getActiveSubOrders' },
+                    ]);
                 }
                 this.$emit('updateState');
                 this.close()
@@ -331,6 +334,11 @@
                 this.order.deposit = deposit.id_rent
 
                 this.status.changeOrder = true
+            },
+
+            setNote(event) {
+                this.order.note = event.target.value;
+                this.status.changeOrder = true;
             },             
 
             setPromotion(promotion) {
