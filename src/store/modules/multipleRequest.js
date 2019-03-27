@@ -20,7 +20,8 @@ export default {
                         case 'tariffs'           : commit('tariffs', data[i]); break;
                         case 'customers'         : commit('customers', data[i]); break;
                         case 'accessories'       : commit('accessories', data[i]); break;
-                        case 'general_settings'   : commit('generalSettings', data[i]); break;
+                        case 'general_settings'  : commit('generalSettings', data[i]); break;
+                        case 'rental_point_info' : commit('rentalPointInfo', data[i]); break;
 
                         case 'logs' : break;
 
