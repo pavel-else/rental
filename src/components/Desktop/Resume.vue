@@ -218,6 +218,9 @@
             },
             
             pay(paidType) {
+                let cmds = [];
+
+                // Останавливаем сабордеры
                 const stopedSubOrders = this.activeSubOrders.map(i => {
                     const stopedSubOrder = this.stopSubOrder(i);
                     stopedSubOrder.paid = paidType;
@@ -225,35 +228,48 @@
                     return stopedSubOrder;
                 });
 
-                this.$store.dispatch('changeSubOrders', stopedSubOrders);
+                // Загоняем их в массив для отправки
+                stopedSubOrders.map(i => cmds.push({ cmd: 'changeSubOrder', value: i }));
 
+                // Остановка ордера
                 this.stopOrder();
-                this.$store.dispatch('changeOrder', this.order);
+                cmds.push({ cmd: 'changeOrder', value: this.order });
 
-                // inc product.mileage
+                // Увеличиваем пробег
                 stopedSubOrders.map(subOrder => {
                     const product = copy(this.$store.getters.products.find(product => product.id_rent === subOrder.product_id));
 
                     const tariff = this.$store.getters.tariffs.find(i => i.id_rent === subOrder.tariff_id);
-                    const mileage = getMileage(subOrder.time, tariff);;
-
+                    const mileage = getMileage(subOrder.time, tariff);
 
                     if (mileage && mileage > 0) {
                         product.mileage = +product.mileage + mileage;
-
-                        this.$store.dispatch('setProduct', product);
+                        cmds.push({ cmd: 'setProduct', value: product});
                     }
                 });
 
-                // dec customer.balance
+                // Уменьшаем баланс клиента
                 const customer = this.customer;
                 if (customer) {
                     customer.balance = +customer.balance + this.balanceAmound;
-                    this.$store.dispatch('setCustomer', customer);
+                    cmds.push({ cmd: 'setCustomer', value: customer});
                 }
-                
+
+                cmds = [
+                ...cmds, 
+                    { cmd: 'getActiveOrders' }, 
+                    { cmd: 'getActiveSubOrders' }, 
+                    { cmd: 'getProducts' }, 
+                    { cmd: 'getTariffs' }, 
+                    { cmd: 'getCustomers' }, 
+                    { cmd: 'getAccessories' },
+                    { cmd: 'getGeneralSettings' }
+                ];
+
+                this.$store.dispatch('multipleRequest', cmds);
                 this.close();
             },
+
             stopSubOrder(_subOrder) {
                 const subOrder = copy(_subOrder);
 
