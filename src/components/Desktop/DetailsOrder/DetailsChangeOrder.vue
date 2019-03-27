@@ -195,7 +195,7 @@
             },
 
             save() {
-                console.log('changeOrder', this.status)
+                console.log('changeOrder', this.status);
                 // changeOrder
                 if (this.status.changeOrder) {                    
                     this.$store.dispatch('changeOrder', this.order);
@@ -208,8 +208,6 @@
 
                 // splitOrder
                 if (this.status.splitOrder) {
-                    console.log('splitOrder')
-
                     this.$store.dispatch('multipleRequest', [
                         {
                             cmd: 'splitOrder', 
