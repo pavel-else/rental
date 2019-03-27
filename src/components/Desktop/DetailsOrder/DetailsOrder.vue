@@ -180,23 +180,23 @@
                 /*
                 * Функция определяет, является ли новый сабордер новым заказом или же это часть предыдущего ордера
                 */
-                const lastTime = this.$store.getters.generalSettings.lastOrderTime || false
-                const interval = this.$store.getters.generalSettings.lastOrderInterval
-                const now      = this.$store.getters.now
-                const lastID   = this.getLastId()
-                const order    = this.orders.find(i => i.id_rent == lastID)
-
-                //console.log('isSerial', this.$store.getters.generalSettings);
+                const lastTime = this.$store.getters.generalSettings.lastOrderTime || false;
+                const interval = this.$store.getters.generalSettings.lastOrderInterval;
+                const now      = this.$store.getters.now;
+                const lastID   = this.getLastId();
+                const order    = this.orders.find(i => i.id_rent == lastID);
 
                 // Если последний ордер уже закрыт
                 if (!order || order.status === 'END' || order.status === 'DEL') {
                     return false;
                 }
 
-                return lastTime && now - lastTime < interval;
+                return (lastTime) && (now - lastTime < interval);
             },
             getLastId() {
-                return this.$store.getters.generalSettings.lastOrderID;
+                const ids = this.$store.getters.activeOrders.map(i => i.id_rent);
+
+                return Math.max(...ids);
             },
             close() {
                 this.$emit('close')
