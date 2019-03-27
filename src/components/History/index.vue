@@ -1,6 +1,16 @@
 <template>
     <div class="history">
-        <!-- <Totals></Totals> -->
+        <div class="totals">
+            <table>
+                <tr>
+                    <td><b>Итого за день:</b></td>
+                    <td>Наличные: {{ coin }} руб.</td>
+                    <td>По карте: {{ card }} руб.</td>
+                    <td>Всего: {{ total }} руб.</td>
+                </tr>
+
+            </table>
+        </div>
 
         <h2>История заказов</h2>
         <table class="history__table" v-if="orders && orders.length > 0" cellspacing="0">
@@ -150,7 +160,6 @@
             onClose() {
                 this.show = false;
             },
-
         },
         computed: {
             orders() {
@@ -175,6 +184,44 @@
 
                 return orders.sort((a, b) => Date.parse(b.end_time) - Date.parse(a.end_time));               
             },
+
+            // FOR TOTAL
+            currentSubOrders() {
+                const isCurrent = (endTime) => {
+                    const obj = new Date(endTime);
+
+                    if (!isValidDate(obj)) {
+                        console.warn('Totals: date parse error');
+                        return false;
+                    }
+
+                    const today = new Date();
+
+                    return obj.getDate() === today.getDate()
+                        && obj.getMonth() === today.getMonth()
+                        && obj.getYear() === today.getYear();
+                };
+
+                return this.$store.getters.subOrders.filter(i => isCurrent(i.end_time));
+            },
+            coin() {
+                const filterByCoin = this.currentSubOrders.filter(i => i.paid === 'coin');
+                return filterByCoin.reduce((acc, item) => {
+                    acc += +item.bill_rent + +item.bill_access - +item.sale;
+
+                    return acc;
+                }, 0);
+            },
+            card() {
+                const filterByCard = this.currentSubOrders.filter(i => i.paid === 'card');
+                return filterByCard.reduce((acc, item) => {
+                    acc += +item.bill_rent + +item.bill_access - +item.sale;
+                    return acc;
+                }, 0);
+            },
+            total() {
+                return this.coin + this.card;
+            }
         }
     }
 </script>
@@ -192,6 +239,15 @@
                 outline: 1px solid #333;
                 cursor: pointer;
             }
+        }
+    }
+    .totals {
+        table {
+            width: 100%;
+        }
+
+        td {
+            padding: 5px 10px;
         }
     }
 </style>

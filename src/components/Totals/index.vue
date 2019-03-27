@@ -24,7 +24,6 @@
         },
         methods: {
             getBill(subOrder) {
-                console.log(subOrder)
                 return +subOrder.bill_rent + +subOrder.bill_access - +subOrder.sale;
             }
         },
