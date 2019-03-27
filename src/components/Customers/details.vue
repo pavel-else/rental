@@ -71,13 +71,14 @@
 </template>
 
 <script>
+    import copy from '@/functions/copy';
     export default {
         props: {
             customer: Object,
         },
         data() {
             return {
-                C: Object.assign({}, this.customer),
+                C: copy(this.customer),
                 change: false
             }
         },
@@ -86,33 +87,30 @@
                 if (!this.C.fname) {
                     alert("Введите фамилию")
 
-                    return
+                    return false;
                 }
 
-                this.$store.dispatch('send', {
-                    cmd: 'setCustomer',
-                    value: this.C
-                })
-
+                this.$store.dispatch('multipleRequest', [
+                    { cmd: 'setCustomer', value: this.C },
+                    { cmd: 'getCustomers' }
+                ]);
                
-                this.close()
+                this.close();
             },
             close() {
                 this.$emit('close')
             },
             toDelete() {
-                const id = this.C.id_rent
+                const id = this.C.id_rent;
 
-                if (confirm(`Вы действительно хотите удалить клиента #${id}?`)) {
-                    this.$store.dispatch('send', {
-                        cmd: 'deleteCustomer',
-                        value: id
-                    })
+                if (confirm(`Вы действительно хотите удалить клиента #${ id }?`)) {
+                    this.$store.dispatch('multipleRequest', [
+                        { cmd: 'deleteCustomer', value: id },
+                        { cmd: 'getCustomers' }
+                    ]);
                 }
                 
-                this.close()                    
-                // console.log(id)
-                //deleteCustomer
+                this.close();
             },
 
             onChange() {
