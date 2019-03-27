@@ -231,7 +231,6 @@
                     this.$store.dispatch('multipleRequest', [
                         { cmd: 'newSubOrder', value: this.subOrder },
                         { cmd: 'changeOrder', value: this.order },
-                        // Why disabled GeneralSettings ?
 
                         { cmd: 'getActiveOrders' }, 
                         { cmd: 'getActiveSubOrders' }, 

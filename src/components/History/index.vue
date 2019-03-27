@@ -1,6 +1,6 @@
 <template>
     <div class="history">
-        <Totals></Totals>
+        <!-- <Totals></Totals> -->
 
         <h2>История заказов</h2>
         <table class="history__table" v-if="orders && orders.length > 0" cellspacing="0">
@@ -54,9 +54,11 @@
             Details, Totals
         },
         beforeCreate() {
-            this.$store.dispatch('getOrders', 'all');
-            this.$store.dispatch('getSubOrders');
-            this.$store.dispatch('getProducts');
+            this.$store.dispatch('multipleRequest', [
+                { cmd: 'getOrders' },
+                { cmd: 'getSubOrders'},
+                { cmd: 'getProducts'}
+            ]);
         },
         data() {
             return {
@@ -152,7 +154,8 @@
         },
         computed: {
             orders() {
-                const orders = this.$store.getters.orders.reduce((acc, _item) => {
+                const compleated = this.$store.getters.orders.filter(i => i.status === 'END');
+                const orders = compleated.reduce((acc, _item) => {
                     const item = copy(_item);
 
                     // Отсеиваем завершенные
