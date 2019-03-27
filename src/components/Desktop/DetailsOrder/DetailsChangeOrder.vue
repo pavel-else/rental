@@ -263,6 +263,7 @@
                 }
                
                 cmds.push({ cmd: 'getActiveOrders' }, { cmd: 'getActiveSubOrders' });
+
                 this.$store.dispatch('multipleRequest', cmds);
 
                 this.$emit('close');
@@ -274,9 +275,12 @@
             },
 
             pauseSubOrder() {
-                pause(this.subOrder)
+                pause(this.subOrder);
                 
-                this.$store.dispatch('send', {cmd: 'changeSubOrder', value: this.subOrder})
+                this.$store.dispatch('multipleRequest', [
+                    { cmd: 'changeSubOrder', value: this.subOrder },
+                    { cmd: 'getSubOrders' }
+                ]);
             },
 
             getPosition() {
