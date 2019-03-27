@@ -58,7 +58,6 @@
             :dataSubOrder="subOrder" 
             @close="closeDetails"
             @openResume="openResume($event)"
-            @updateState="updateState()"
         >
         </DetailsOrder>
 
@@ -82,7 +81,9 @@
     import getSale       from '@/functions/getSale'
     import timeFormat    from '@/functions/timeFormat'
     import roundBill     from '@/functions/roundBill'
-    import pause         from './functions/pause'
+    import pause         from './functions/pause';
+
+    import copy from '@/functions/copy';
 
 
     export default {
@@ -104,10 +105,6 @@
 
         methods: {
             ...stopSubOrder,
-
-            updateState() {
-                this.$emit('update');
-            },
 
             toChange(order, subOrder) {
                 this.order = order
@@ -215,33 +212,34 @@
                 // Если в ордере есть активные сабордеры - делаем паузу для всех активных 
                 // Если нету, снимаем все с паузы
 
-                const subOrders = this.$store.getters.subOrders.filter(i => {
-                    return i.order_id === order.id_rent
-                })
+                const _subOrders = this.$store.getters.activeSubOrders.filter(i => {
+                    return i.order_id === order.id_rent;
+                });
+                const subOrders = copy(_subOrders);
 
                 if (subOrders.length === 0) {
-                    return
+                    return false;
                 }
 
-                const activeList = subOrders.filter( i => i.status === "ACTIVE")
-                const pauseList  = subOrders.filter( i => i.status === "PAUSE")
+                const activeList = subOrders.filter( i => i.status === "ACTIVE");
+                const pauseList  = subOrders.filter( i => i.status === "PAUSE");
 
                 const makePause = () => {
                     return activeList.map(i => {
-                        pause(i)
-                        return {cmd: 'changeSubOrder', value: i}
-                    })
+                        return { cmd: 'changeSubOrder', value: pause(i) };
+                    });
                 }
                 const makeActive = () => {
                     return pauseList.map(i => {
-                        pause(i)
-                        return {cmd: 'changeSubOrder', value: i}
-                    })
+                        return { cmd: 'changeSubOrder', value: pause(i) };
+                    });
                 }
 
-                const cmds = activeList.length ? makePause() : makeActive()
+                const cmds = activeList.length > 0 ? makePause() : makeActive();
+
+                cmds.push({ cmd: 'getActiveSubOrders' });
                 
-                this.$store.dispatch('send', cmds)
+                this.$store.dispatch('multipleRequest', cmds);
             },
 
             stopOrder(order) {

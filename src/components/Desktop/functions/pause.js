@@ -23,4 +23,6 @@ export default function pause(subOrder) {
     }
 
     subOrder.status == "ACTIVE" ? makePause() : makeActive();
+
+    return subOrder;
 }
