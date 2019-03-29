@@ -1,7 +1,7 @@
 <template>
     <div class="canvas">
         <div class="details resume">
-            <h2 class="resume__caption">Оплата заказа # {{ order.id_rent }}</h2>
+            <h2 class="resume__caption">Оплата заказа # {{ order.id_rent }} / {{ subOrder.id_rent }}</h2>
 
             <table class="resume__main-table">
                 <tr>
@@ -104,7 +104,10 @@
                 </button>
                 <button class="resume__button" @click="pay('coin')">
                     <i class="fa fa-eur" aria-hidden="true"></i>Наличными
-                </button>
+                </button><!-- 
+                <button class="resume__button" @click="pay('no')">
+                    <i class="fa" aria-hidden="true"></i>Без оплаты
+                </button> -->
             </div>
 
             <button class="details__close" @click.prevent="close"></button>
@@ -128,12 +131,16 @@
     export default {
         props: {
             _order: Object,
+            _subOrder: Object
         },
 
         data() {
             return {
                 activeSubOrders: [],
+
                 order: copy(this._order),
+                subOrder: copy(this._subOrder),
+
                 balanceAmound: 0,
                 isApplyBalance: true, // используется для чекбокса оплаты с баланса
                 total: 0,
@@ -142,12 +149,15 @@
         },
         created() {
             this.activeSubOrders = this.makeActiveSubOrders();
-            // this.balanceAmound = this.getBalanceAmound();
             this.makeTotal();
         },
         methods: {
             makeActiveSubOrders() {
-                const subOrders = copy(this.$store.getters.activeSubOrders.filter(i => i.order_id === this.order.id_rent && !i.paid));
+                let subOrders = [];
+
+                if (this.subOrder) {
+                    subOrders.push(this.subOrder);
+                }
 
                 return subOrders.reduce((acc, item) => {
                     const product = this.$store.getters.products.find(i => i.id_rent === item.product_id);
@@ -168,6 +178,7 @@
                     return acc;
                 }, []);
             },
+
             getTime(subOrder) {
                 const start = Date.parse(this.order.start_time);
 
@@ -243,8 +254,8 @@
                 stopedSubOrders.map(i => cmds.push({ cmd: 'changeSubOrder', value: i }));
 
                 // Остановка ордера
-                this.stopOrder();
-                cmds.push({ cmd: 'changeOrder', value: this.order });
+                // this.stopOrder();
+                // cmds.push({ cmd: 'changeOrder', value: this.order });
 
                 // Увеличиваем пробег
                 stopedSubOrders.map(subOrder => {

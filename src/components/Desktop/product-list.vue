@@ -33,13 +33,11 @@
 <script>
     import Bike   from '../Bike'
     import Photo  from '../Photo'
-    import Resume from './Resume'
 
     export default {
         components: {
             Bike,
             Photo,
-            Resume
         },
 
         data() {

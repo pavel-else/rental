@@ -98,19 +98,19 @@
                     </tr>
                 </table>
                 <div class="btn-group">
-                    <button class="change-order__button" @click="toPrint">
+                    <button class="change-order__button" @click="toPrint()">
                         Печать
                     </button>
 
-                    <button class="change-order__button" @click.prevent="save">
+                    <button class="change-order__button" @click.prevent="save()">
                         Сохранить                        
                     </button>
 
-                    <button class="change-order__button" @click.prevent="abortSubOrder">
+                    <button class="change-order__button" @click.prevent="abortSubOrder()">
                         Удалить
                     </button>
 
-                    <button disabled class="change-order__button" @click.prevent="stop()">
+                    <button class="change-order__button" @click.prevent="stop()">
                         Стоп
                     </button>
 
@@ -123,7 +123,9 @@
             </form>
 
             <Print v-if="print" :order="order" @close="closePrint"></Print>
-            <Resume :_order="order" :_subOrder="subOrder" @close="closeResume" v-if="showResume"></Resume>
+
+            <TotalResume v-if="showTotalResume" :_order="order" @close="close()"></TotalResume>
+            <ResumeForOne v-if="showResumeForOne" :_order="order" :_subOrder="subOrder" @close="close()"></ResumeForOne>
         </div>
     </div>
 </template>
@@ -138,7 +140,8 @@
     import Print             from './Print'
     import stopSubOrder      from '../functions/stopSubOrder'
     import pause             from '../functions/pause'
-    import Resume            from '../Resume'
+    import TotalResume       from '../TotalResume';
+    import ResumeForOne      from '../ResumeForOne';
 
     import copy from '@/functions/copy';
 
@@ -156,7 +159,8 @@
             SelectPromotion,
             SelectDeposit,
             Print,
-            Resume
+            TotalResume,
+            ResumeForOne
         },
 
         data() {
@@ -175,7 +179,8 @@
                 },
 
                 print: false,
-                showResume: false,
+                showTotalResume: false,
+                showResumeForOne: false
             }
         },
 
@@ -194,32 +199,31 @@
             },
 
             save() {
-                console.log('changeOrder', this.status);
+                // console.log('changeOrder', this.status);
+
+                const cmds = [];
+
                 // changeOrder
-                if (this.status.changeOrder) {                    
-                    this.$store.dispatch('changeOrder', this.order);
+                if (this.status.changeOrder) {  
+                    cmds.push({cmd: 'changeOrder', value: this.order });                  
                 }
 
                 // changeProduct
-                if (this.status.changeSubOrder && !this.status.splitOrder) {                    
-                    this.$store.dispatch('changeSubOrder', this.subOrder);
+                if (this.status.changeSubOrder && !this.status.splitOrder) {
+                    cmds.push({cmd: 'changeSubOrder', value: this.subOrder });
                 }
 
                 // splitOrder
                 if (this.status.splitOrder) {
-                    this.$store.dispatch('multipleRequest', [
-                        {
-                            cmd: 'splitOrder', 
-                            value: {
-                                order:    this.order,
-                                subOrder: this.subOrder
-                            }
-                        },
-                        { cmd: 'getActiveOrders' },
-                        { cmd: 'getActiveSubOrders' },
-                    ]);
+                    cmds.push({ cmd: 'splitOrder', value: { order: this.subOrder, subOrder: this.subOrder } });
                 }
-                this.$emit('updateState');
+
+                cmds.push(
+                    { cmd: 'getActiveOrders' },
+                    { cmd: 'getActiveSubOrders' },
+                );
+
+                this.$store.dispatch('multipleRequest', cmds);
                 this.close()
             },
 
@@ -228,10 +232,6 @@
             },
             closePrint() {
                 this.print = false
-            },
-            closeResume() {
-                this.showResume = false
-                this.close()
             },
 
             abortSubOrder() {
@@ -270,8 +270,19 @@
             },
 
             stop() {
-                this.stopSubOrder(this.order, this.subOrder)
-                this.showResume = true
+                const isLast = (subOrder) => {
+                    const list = this.$store.getters.activeSubOrders.filter(i => {
+                        return i.order_id === subOrder.order_id && i.id_rent !== subOrder.id_rent;
+                    });
+
+                    return list.length === 0;
+                };
+
+                if (isLast(this.subOrder)) {
+                    this.showTotalResume = true;
+                } else {
+                    this.showResumeForOne = true;
+                }
             },
 
             pauseSubOrder() {
@@ -290,22 +301,19 @@
             },
 
             splitOrder(order_id, position) {
-                const order = this.order
-                const subOrder = this.subOrder
+                const order = this.order;
+                const subOrder = this.subOrder;
 
-                this.status.splitOrder = true
+                this.status.splitOrder = true;
 
-                order.old_id = this.order.id_rent
+                order.old_id = this.order.id_rent;
 
-                order.id_rent = order_id
-                order.start_time = Date.parse(this.order.start_time)
-                order.order_id_position = position
+                order.id_rent = order_id;
+                order.start_time = Date.parse(this.order.start_time);
+                order.order_id_position = position;
 
-
-                //subOrder.product_id = this.product.id_rent
-
-                this.order = order
-                this.subOrder = subOrder
+                this.order = order;
+                this.subOrder = subOrder;
             },
 
             setPosition({ order_id, order_id_position }) {
@@ -360,6 +368,7 @@
 
                 this.status.changeSubOrder = true
             },
+
             getStatus(status) {
                 switch(status) {
                     case 'END': return 'Завершен';

@@ -75,7 +75,7 @@
 </template>
 
 <script>
-    import Resume        from './Resume'
+    import TotalResume   from './TotalResume';
     import stopSubOrder  from './functions/stopSubOrder'
     import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
     import Icon          from  '@/components/Icon/Icon'
@@ -92,7 +92,7 @@
 
     export default {
         components: {
-            Resume,
+            Resume: TotalResume,
             DetailsOrder,
             Icon
         },
