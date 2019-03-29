@@ -104,10 +104,10 @@
                 </button>
                 <button class="resume__button" @click="pay('coin')">
                     <i class="fa fa-eur" aria-hidden="true"></i>Наличными
-                </button><!-- 
-                <button class="resume__button" @click="pay('no')">
-                    <i class="fa" aria-hidden="true"></i>Без оплаты
-                </button> -->
+                </button>
+                <button class="resume__button" @click="pay('advance')">
+                    <i class="fa" aria-hidden="true"></i>С аванса
+                </button>
             </div>
 
             <button class="details__close" @click.prevent="close"></button>
@@ -334,52 +334,55 @@
                 let msg = 'msg';
                 let amound = 0;
 
-                // Если был внесен аванс и не используется баланс
-                if (advance > 0 && !this.isApplyBalance) {
-                    total = Math.abs(advance - bill);
-                    msg = advance > bill ? 'К сдаче: ' : 'К оплате: ';
-                }
+                total = bill;
+                msg = 'К оплате: ';
 
-                // Если аванса не было и не используется баланс
-                if (advance <= 0 && !this.isApplyBalance) {
-                    total = bill;
-                    msg = 'К оплате: ';
-                }
+                // // Если был внесен аванс и не используется баланс
+                // if (advance > 0 && !this.isApplyBalance) {
+                //     total = Math.abs(advance - bill);
+                //     msg = advance > bill ? 'К сдаче: ' : 'К оплате: ';
+                // }
 
-                // Если был внесен аванс и используется баланс
-                if (advance > 0 && this.isApplyBalance) {
+                // // Если аванса не было и не используется баланс
+                // if (advance <= 0 && !this.isApplyBalance) {
+                //     total = bill;
+                //     msg = 'К оплате: ';
+                // }
 
-                    // если накатано меньше, чем на балансе, в сдаче аванс
-                    if (balance > bill) {
-                        total = advance;
-                        msg = 'Возврат аванса: ';
+                // // Если был внесен аванс и используется баланс
+                // if (advance > 0 && this.isApplyBalance) {
 
-                        amound = -(bill);
-                    }
+                //     // если накатано меньше, чем на балансе, в сдаче аванс
+                //     if (balance > bill) {
+                //         total = advance;
+                //         msg = 'Возврат аванса: ';
 
-                    if (balance <= bill) {
-                        amound = -(balance);
+                //         amound = -(bill);
+                //     }
 
-                        const diff = bill - balance;
+                //     if (balance <= bill) {
+                //         amound = -(balance);
 
-                        msg = advance > diff ? ' К сдаче: ' : 'К оплате: ';
-                        total = Math.abs(advance - diff); 
-                    }
-                }
+                //         const diff = bill - balance;
 
-                // Если аванса не было и используется баланс
-                if (advance <= 0 && this.isApplyBalance) {
-                    if (balance > bill) {
-                        total = 0;
-                        msg = 'К оплате: ';
-                        amound = -(bill);
-                    }
-                    if (balance <= bill) {
-                        total = bill - balance;
-                        msg = 'К оплате: ';
-                        amound = -(balance);
-                    }
-                }
+                //         msg = advance > diff ? ' К сдаче: ' : 'К оплате: ';
+                //         total = Math.abs(advance - diff); 
+                //     }
+                // }
+
+                // // Если аванса не было и используется баланс
+                // if (advance <= 0 && this.isApplyBalance) {
+                //     if (balance > bill) {
+                //         total = 0;
+                //         msg = 'К оплате: ';
+                //         amound = -(bill);
+                //     }
+                //     if (balance <= bill) {
+                //         total = bill - balance;
+                //         msg = 'К оплате: ';
+                //         amound = -(balance);
+                //     }
+                // }
 
                 this.total = total;
                 this.msgTotal = msg;

@@ -17,10 +17,10 @@
             </tr>
         </table>
         <div class="customer_buttons">
-            <button @click="addCustomer">Добавить</button>
+            <button @click="addCustomer()">Добавить</button>
         </div>
         
-        <Details :customer="customer" @close="onClose" v-if="show"></Details>
+        <Details :customer="customer" @close="onClose()" v-if="show"></Details>
     </div>
 </template>
 
@@ -46,8 +46,8 @@
                 this.show = true
             },
             addCustomer() {
-                this.show = true
-                this.customer = {}
+                this.show = true;
+                this.customer = {};
             },
             onClose() {
                 this.show = false

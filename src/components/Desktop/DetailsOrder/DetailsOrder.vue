@@ -253,7 +253,7 @@
                 this.order.id_rent             = null;//this.getOrderId()
                 this.order.order_id_position   = order_id_position || this.getPosition('new')
 
-                this.$set(this.order, 'customer_id', null)
+                this.order.customer_id = this.getIdNewCustomer();
                 
                 this.subOrder.id_rent    = null;
                 this.subOrder.product_id = this.product.id_rent
@@ -327,7 +327,21 @@
                     ? this.addSubOrder(order_id)                    
                     : this.newOrder(order_id_position)
             },
-                
+            
+            getIdNewCustomer() {
+                // Если клиент создан недавно, в течении установленного Периода,
+                // то выводить его в автозаполнении
+
+                const lastCustomer = this.$store.getters.lastCustomer;
+
+                const period = 1000 * 60 * (3 + 3); // ms * s * (отставание часов сервера + значение периода в минутах)
+
+                if (Date.parse(lastCustomer.created) + period > Date.now()) {
+                    return lastCustomer.id_rent;
+                }
+
+                return null;
+            },
             setCustomer(customer) {
                 if (customer) {
                     this.order.customer_id = customer.id_rent

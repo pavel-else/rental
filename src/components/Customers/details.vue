@@ -38,12 +38,12 @@
                         <td><input type="text" v-model="C.passport" placeholder="Серия и номер паспорта"></td>                
                     </tr>
                     <tr>
-                        <td>Адрес</td>                
-                        <td><input type="text" v-model="C.address" placeholder="Адрес"></td>
-                    </tr>
-                    <tr>
                         <td>Дата рождения</td>                
                         <td><input type="date" v-model="C.birth_date" placeholder="Дата рождения"></td>
+                    </tr>
+                    <tr>
+                        <td>Адрес</td>                
+                        <td><input type="text" v-model="C.address" placeholder="Адрес"></td>
                     </tr>
                     <tr>
                         <td class="customer_td--sale">Скидка, %</td>                

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import isValidDate from '@/functions/isValidDate';
+
 export default {
     state: {
         customers: []
@@ -13,6 +15,26 @@ export default {
                 return customer;
             };
         },
+        lastCustomer(state) {
+            const lastCustomer = state.customers.reduce((acc, item) => {
+                if (acc === null) {
+                    acc = item;
+                }
+
+                if (!isValidDate(new Date(item.created))) {
+                    console.warn('Date parse error! Customers.js, customer_id = ' + item.id_rent);
+                }
+
+                if (Date.parse(item.created) > Date.parse(acc.created)) {
+                    acc = item;
+                }
+
+                return acc;
+                
+            }, null);
+
+            return lastCustomer;
+        }
     },
     mutations: {
         customers(state, customers) {
