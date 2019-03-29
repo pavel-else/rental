@@ -54,8 +54,8 @@
 
         <DetailsOrder 
             v-if="showDetails" 
-            :dataOrder="order" 
-            :dataSubOrder="subOrder" 
+            :_order="order" 
+            :_subOrder="subOrder" 
             @close="closeDetails"
             @openResume="openResume($event)"
         >

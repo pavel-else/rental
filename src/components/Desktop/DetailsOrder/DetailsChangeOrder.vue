@@ -129,9 +129,6 @@
 </template>
 
 <script>
-    // import copy              from '@/functions/copy'
-    import getOrderId        from '../../../functions/getOrderId'
-
     import Position          from './idPosition/idPosition'
     import SelectCustomer    from './SelectCustomer'
     import SelectAccessories from './SelectAccessories'
@@ -143,10 +140,12 @@
     import pause             from '../functions/pause'
     import Resume            from '../Resume'
 
+    import copy from '@/functions/copy';
+
     export default {
         props: {
-            dataOrder: Object,
-            dataSubOrder: Object
+            _order: Object,
+            _subOrder: Object
         },
 
         components: {
@@ -181,17 +180,17 @@
         },
 
         created() {
-            this.order = this.dataOrder
-            this.subOrder = this.dataSubOrder
-            this.product = this.products.find(i => i.id_rent == this.dataSubOrder.product_id)
+            this.order = copy(this._order);
+            this.subOrder = copy(this._subOrder);
+            const product = this.products.find(i => i.id_rent == this.subOrder.product_id);
+            this.product = copy(product);
         },
 
         methods: {
-            ...getOrderId,
             ...stopSubOrder,
 
             close() {
-                this.$emit('close')
+                this.$emit('close');
             },
 
             save() {
