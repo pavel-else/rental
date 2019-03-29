@@ -128,12 +128,12 @@
                     default: return status;
                 }
             },
-            getTimePlay(start, end) {
+            getTimePlay(start, end, orderId) {
                 const end_time = Date.parse(end);
                 const start_time = Date.parse(start);
 
                 if (isNaN(end_time) || isNaN(start_time)) {
-                    return 'Ошибка парсинга';
+                    return 'Ошибка парсинга. order_id = ' + orderId;
                 }
 
                 return timeFormat(end_time - start_time);
@@ -173,7 +173,7 @@
                     }
 
                     item.end_time = this.getEndTime(item.id_rent);
-                    item.play_time = this.getTimePlay(item.start_time, item.end_time);
+                    item.play_time = this.getTimePlay(item.start_time, item.end_time, item.id_rent);
                     item.productName = this.getProductName(item.id_rent);
                     item.bill = this.getBill(item.id_rent);
                     item.formStatus = this.getStatus(item);
@@ -187,11 +187,11 @@
 
             // FOR TOTAL
             currentSubOrders() {
-                const isCurrent = (endTime) => {
+                const isCurrent = (endTime, subOrderId) => {
                     const obj = new Date(endTime);
 
                     if (!isValidDate(obj)) {
-                        console.warn('Totals: date parse error');
+                        console.warn('Totals: date parse error. subOrderId = ' + subOrderId);
                         return false;
                     }
 
@@ -202,7 +202,7 @@
                         && obj.getYear() === today.getYear();
                 };
 
-                return this.$store.getters.subOrders.filter(i => isCurrent(i.end_time));
+                return this.$store.getters.subOrders.filter(i => isCurrent(i.end_time, i.id_rent));
             },
             coin() {
                 const filterByCoin = this.currentSubOrders.filter(i => i.paid === 'coin');
