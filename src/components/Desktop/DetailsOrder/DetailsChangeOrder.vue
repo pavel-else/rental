@@ -142,6 +142,7 @@
     import pause             from '../functions/pause'
     import TotalResume       from '../TotalResume';
     import ResumeForOne      from '../ResumeForOne';
+    import * as Time         from '@/functions/Time'
 
     import copy from '@/functions/copy';
 
@@ -250,19 +251,30 @@
 
                 // SUBORDER
                 subOrder.note = answer;
+
+                if (subOrder.status === 'PAUSE') {
+                    const pause = Date.now() - +subOrder.pause_start;
+                    subOrder.pause_time = +subOrder.pause_time + pause;
+                    subOrder.pause_start = 0;                    
+                }
+
+                subOrder.end_time = Time.format('YYYY-MM-DD HH:mm:ss');
+
                 subOrder.status = 'DEL';
-                subOrder.end_time = Math.floor(Date.now() / 1000);
-                subOrder.pause_start = Date.parse(subOrder.pause_start) / 1000;
+
                 cmds.push({ cmd: 'changeSubOrder', value: subOrder });
 
                 // ORDER
                 // Если сабордер единственный, деактивируем ордер
-                if (this.subOrders.length < 1) {
+                if (this.subOrders.length <= 1) {
                     order.status = 'DEL';
-                    cmds.push({ cmd: 'changeOrder', value: order });
+                    cmds.push({ cmd: 'changeOrder', value: order }, { cmd: 'getActiveOrders' });
                 }
                
-                cmds.push({ cmd: 'getActiveOrders' }, { cmd: 'getActiveSubOrders' });
+                cmds.push(
+                    { cmd: 'getActiveOrders' },
+                    { cmd: 'getActiveSubOrders' },
+                );
 
                 this.$store.dispatch('multipleRequest', cmds);
 
@@ -403,12 +415,7 @@
                 })
             },
             subOrders() {
-                return this.$store.getters.subOrders.filter(i => {
-                    return i.order_id === this.subOrder.order_id && (i.status === 'ACTIVE' || i.status === 'PAUSE')
-                })
-            },
-            activeSubOrders() {
-                return this.subOrders.filter(i => i.status === "ACTIVE")
+                return this.$store.getters.activeSubOrders;
             },
         },
     }
