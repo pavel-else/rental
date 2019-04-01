@@ -18,7 +18,6 @@
                     
                 <td class="products__td">{{ item.name }}</td>
             </tr>
-
         </table>
 
         <Photo 

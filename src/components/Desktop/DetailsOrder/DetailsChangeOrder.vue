@@ -110,9 +110,9 @@
                         Удалить
                     </button>
 
-                    <button class="change-order__button" @click.prevent="stop()">
+                    <!-- <button class="change-order__button" @click.prevent="stop()">
                         Стоп
-                    </button>
+                    </button> -->
 
                     <button class="change-order__button" @click.prevent="pauseSubOrder()">
                         Пауза

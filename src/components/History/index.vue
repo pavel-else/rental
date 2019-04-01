@@ -28,7 +28,7 @@
                     {{ item.id_rent }}
                 </td>
                 <td>                    
-                    {{ item.customer_name }}                
+                    {{ item.customerName }}                
                 </td>
                 <td style="text-align: right">
                     {{ shortDate(item.start_time) }}
@@ -51,12 +51,13 @@
 </template>
 
 <script>
-    import Details     from './Details';
-    import Totals      from '@/components/Totals';
-    import timeFormat  from '@/functions/timeFormat';
-    import copy        from '@/functions/copy';
-    import * as Time   from '@/functions/Time';
-    import isValidDate from '@/functions/isValidDate';
+    import Details          from './Details';
+    import Totals           from '@/components/Totals';
+    import timeFormat       from '@/functions/timeFormat';
+    import copy             from '@/functions/copy';
+    import * as Time        from '@/functions/Time';
+    import isValidDate      from '@/functions/isValidDate';
+    import makeCustomerName from '@/functions/makeCustomerName';
 
     export default {
         name: 'History',
@@ -67,7 +68,8 @@
             this.$store.dispatch('multipleRequest', [
                 { cmd: 'getOrders' },
                 { cmd: 'getSubOrders'},
-                { cmd: 'getProducts'}
+                { cmd: 'getProducts' },
+                { cmd: 'getCustomers' }
             ]);
         },
         data() {
@@ -93,6 +95,18 @@
                 }, null);
                 
                 return end_time;
+            },
+            getCustomerName(customerId) {
+                if (!customerId) {
+                    return '';
+                }
+
+                const customer = this.$store.getters.customers.find(i => i.id_rent === customerId);
+
+                if (!customer) {
+                    console.warn('History.index.getCustomerName: Клиент не найден!');
+                }
+                return customer ? makeCustomerName(customer) : '';
             },
             getProductName(orderId) {
                 const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
@@ -172,6 +186,7 @@
                         return acc;
                     }
 
+                    item.customerName = this.getCustomerName(item.customer_id);
                     item.end_time = this.getEndTime(item.id_rent);
                     item.play_time = this.getTimePlay(item.start_time, item.end_time, item.id_rent);
                     item.productName = this.getProductName(item.id_rent);

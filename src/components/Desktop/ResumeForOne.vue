@@ -327,8 +327,8 @@
             },
             makeTotal() {
                 const bill = this.billRentAccessSale;
-                const balance = this.balance;
-                const advance = this.advance;
+                // const balance = this.balance;
+                // const advance = this.advance;
 
                 let total = false;
                 let msg = 'msg';

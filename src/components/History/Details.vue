@@ -7,7 +7,7 @@
                 <tr>
                     <td>Клиент</td>
                     <td>
-                        <span v-if="order.customer_name">{{ order.customer_name }}</span>
+                        <span v-if="order.customerName">{{ order.customerName }}</span>
                         <span v-else>-</span>
                     </td>
                 </tr>
