@@ -290,7 +290,7 @@
                 
                 this.$store.dispatch('multipleRequest', [
                     { cmd: 'changeSubOrder', value: this.subOrder },
-                    { cmd: 'getSubOrders' }
+                    { cmd: 'getActiveSubOrders' }
                 ]);
             },
 
@@ -426,6 +426,8 @@
     }
     .btn-group {
         margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
     }
     .change-order__button {
         font-size: 12px;
