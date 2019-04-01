@@ -37,7 +37,7 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
                     { cmd: 'getCustomers' }, 
                     { cmd: 'getAccessories' },
                     { cmd: 'getGeneralSettings' },
-                    { cmd: 'getRentalPointInfo' }
+                    { cmd: 'getRentalPointInfo' },
                 ];
 
                 this.$store.dispatch('multipleRequest', queue);               

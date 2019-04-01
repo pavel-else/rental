@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import options         from './opt'
-import categories      from './categories'
 import auth            from './auth-module'
 import initApp           from './init-app-module'
 
@@ -18,6 +17,7 @@ import orders          from './modules/orders';
 import customers       from './modules/customers';
 import history         from './modules/history';
 import multipleRequest from './modules/multipleRequest';
+import categories      from './modules/categories';
 
 
 

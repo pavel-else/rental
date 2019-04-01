@@ -1,7 +1,10 @@
 <template>
     <div>
         <ul class="list">
-            <li><router-link class="router-link" to="/">Прокат</router-link></li>
+            <li class="list__item">
+                <router-link class="router-link" to="/">Прокат</router-link>
+                <RentalCategories class="sublist"></RentalCategories>
+            </li>
             <li><router-link class="router-link" to="/customers">Клиенты</router-link></li>
             <li><router-link class="router-link" to="/history">История</router-link></li>
             <li class="list__item">
@@ -19,8 +22,12 @@
     </div>
 </template>
 <script>
+    import RentalCategories from './RentalCategories';
     export default {
         name: 'admPanel',
+        components: {
+            RentalCategories
+        }
     }
 </script>
 

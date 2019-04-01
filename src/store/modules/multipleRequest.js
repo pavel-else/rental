@@ -12,16 +12,17 @@ export default {
             const setToState = (data) => {
                 for (let i in data) {
                     switch (i) {
-                        case 'active_orders'     : commit('activeOrders', data[i]); break;
-                        case 'orders'            : commit('orders', data[i]); break;
+                        case 'active_orders'     : commit('activeOrders'   , data[i]); break;
+                        case 'orders'            : commit('orders'         , data[i]); break;
                         case 'active_sub_orders' : commit('activeSubOrders', data[i]); break;
-                        case 'sub_orders'        : commit('subOrders', data[i]); break;
-                        case 'products'          : commit('products', data[i]); break;
-                        case 'tariffs'           : commit('tariffs', data[i]); break;
-                        case 'customers'         : commit('customers', data[i]); break;
-                        case 'accessories'       : commit('accessories', data[i]); break;
+                        case 'sub_orders'        : commit('subOrders'      , data[i]); break;
+                        case 'products'          : commit('products'       , data[i]); break;
+                        case 'tariffs'           : commit('tariffs'        , data[i]); break;
+                        case 'customers'         : commit('customers'      , data[i]); break;
+                        case 'accessories'       : commit('accessories'    , data[i]); break;
                         case 'general_settings'  : commit('generalSettings', data[i]); break;
                         case 'rental_point_info' : commit('rentalPointInfo', data[i]); break;
+                        case 'categories'        : commit('categories'     , data[i]); break;
 
                         case 'logs' : break;
 
