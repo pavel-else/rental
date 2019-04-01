@@ -26,6 +26,10 @@
                     >
                         <td class="td-3" @click="toChange(order, subOrder)" >{{ subOrder.product_name }}</td>
 
+                        <!-- <td class="td-3" @click="toChange(order, subOrder)" >
+                            <span v-for="accessory in subOrder.extAccessories" :key="subOrder.id_rent+accessory">{{ accessory }}</span>
+                        </td> -->
+
                         <td class="td-4" @click="toChange(order, subOrder)" >{{ getTimePlay(order, subOrder) }}</td>
 
                         <td class="td-5" @click="toChange(order, subOrder)" >
@@ -286,6 +290,26 @@
 
                 return product.name
             },
+            getExtAccessories(idUsedAccessories) {
+                if (!idUsedAccessories) {
+                    return [];
+                }
+
+                const split = idUsedAccessories.split(','); // [1, 2]
+                const trim = split ? split.map(i => i.trim()) : [];
+
+                const accessories = trim.map(i => {
+                    i = this.$store.getters.accessories.find(j => j.id_rent === i);
+                    return i;
+                });
+
+                const icons = accessories.map(i => {
+                    const firstSymbol = i.name ? i.name[0] : '';
+                    return firstSymbol;
+                });
+
+                return icons;
+            }
         },
 
         computed: {
@@ -304,6 +328,7 @@
                 return this.$store.getters.activeSubOrders.reduce((acc, item) => {
 
                     item.product_name = this.getProductName(item.product_id);
+                    item.extAccessories = this.getExtAccessories(item.accessories);
                     
                     acc[item.order_id] ? acc[item.order_id].push(item) : acc[item.order_id] = [item];
 

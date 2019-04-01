@@ -106,6 +106,7 @@
     import getOrderId        from '@/functions/getOrderId'
     import getSubOrderId     from '@/functions/getSubOrderId'
     import copy              from '@/functions/copy'
+    import makeCustomerName   from '@/functions/makeCustomerName';
 
     import initOrder         from '../functions/initOrder'
 
@@ -253,7 +254,10 @@
                 this.order.id_rent             = null;//this.getOrderId()
                 this.order.order_id_position   = order_id_position || this.getPosition('new')
 
-                this.order.customer_id = this.getIdNewCustomer();
+                const customer = this.getCustomer();
+
+                this.order.customer_id = customer ? customer.id_rent : null;
+                this.order.customer_name = customer ? makeCustomerName(customer) : null;
                 
                 this.subOrder.id_rent    = null;
                 this.subOrder.product_id = this.product.id_rent
@@ -328,7 +332,7 @@
                     : this.newOrder(order_id_position)
             },
             
-            getIdNewCustomer() {
+            getCustomer() {
                 // Если клиент создан недавно, в течении установленного Периода,
                 // то выводить его в автозаполнении
 
@@ -337,7 +341,7 @@
                 const period = 1000 * 60 * (3 + 3); // ms * s * (отставание часов сервера + значение периода в минутах)
 
                 if (Date.parse(lastCustomer.created) + period > Date.now()) {
-                    return lastCustomer.id_rent;
+                    return lastCustomer;
                 }
 
                 return null;
