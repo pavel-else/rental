@@ -6,7 +6,12 @@
                 v-for="category in categories"
                 :key="category.name"
             >
-                <input type="checkbox" v-model="category.check" @change="onSet()">
+                <input 
+                    type="radio"
+                    :checked="productCategory === category.id_rent" 
+                    @change="onSet(category.id_rent)"
+                    name="category"
+                >
                 {{ category.name }}
             </li>
         </ul>
@@ -16,31 +21,23 @@
 <script>
     export default {
         props: {
-            data: String // ids: '1,2,3'
+            productCategory: String 
         },
         data() {
             return {
-                categories: this.$store.getters.categories.map(category => {
-                    const ids = this.data ? this.data.split(',') : []
-
-                    // Поле check нужно для отображения чекбоксов
-                    category.check = ids.find(id => id === category.id_rent) ? true : false
-
-                    return category
-                }),
-
-                map: [[1, [4, [5, 6, 7]]], [2, [3]]]
             }
         },
 
         methods: {
-            onSet() {
-                const filter = this.categories.filter(category => category.check == true)
-                const ids = filter.map(category => category.id_rent)
-
-                this.$emit('setCategories', ids.join())
+            onSet(categoryId) {
+                this.$emit('setCategories', categoryId);
             }
         },
+        computed: {
+            categories() {
+                return this.$store.getters.categories;
+            }
+        }
     }
 </script>
 

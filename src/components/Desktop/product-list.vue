@@ -1,6 +1,10 @@
 <template>
     <div class="product-list">
-        <h3>Свободныe <span v-if="products.length">({{ products.length }})</span></h3>
+        <h3>
+            {{ activeCategoryName }} <br>
+            Свободныe
+            <span v-if="products.length >= 0"> - {{ products.length }} шт</span>
+        </h3>
         <table class="table table-bordered">
             <tr
                 v-for="item in products" 
@@ -76,7 +80,7 @@
                 const belongsActiveCategory = (product) => {
                     const activeCategory = this.$store.getters.activeCategory;
 
-                    return activeCategory ? activeCategory.id_rent === product.categories : true;
+                    return activeCategory ? activeCategory.id_rent == product.category : true;
                 };
                 
                 const list = this.$store.getters.products;
@@ -88,6 +92,10 @@
                         && belongsActiveCategory(item) // и принадлежит активной категории
                 }) : [];
             },
+            activeCategoryName() {
+                const activeCategory = this.$store.getters.activeCategory;
+                return activeCategory ? activeCategory.name : 'Все';
+            }
         },
     }
 </script>
