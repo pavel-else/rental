@@ -257,12 +257,6 @@
                 this.showResume = true;
             },
 
-            // getSubOrders(order_id) {
-            //     return this.$store.getters.subOrders.filter(i => {
-            //         return i.order_id === order_id && (i.status === "ACTIVE" || i.status === "PAUSE")
-            //     })   
-            // },
-
             getTitle(order) {
                 const customers = this.$store.getters.customers
                 const customer = customers.find(i => i.id_rent == order.customer_id)
@@ -313,6 +307,8 @@
 
         computed: {
             orders() {
+                this.$store.getters.activeCategory; // обновление при смене категории. Косяк.
+
                 return this.$store.getters.activeOrders.reduce((acc, order) => {
                     order.format_start_time = this.getStartTime(order.start_time);
                     order.title = this.getTitle(order);
@@ -325,6 +321,7 @@
 
                         return subOrder;
                     });
+
                     order.subOrders = modifySubOrders;
 
                     acc.push(order);
