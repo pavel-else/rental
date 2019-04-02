@@ -4,6 +4,7 @@
             <li 
                 class="rental-categories__item"
                 v-for="category in categories"
+                :key="category.id_rent"
                 @click="click(category)"
             >
                 {{ category.name }}

@@ -1,9 +1,7 @@
 <template>
     <div class="product-list">
         <h3>
-            {{ activeCategoryName }} <br>
-            Свободныe
-            <span v-if="products.length >= 0"> - {{ products.length }} шт</span>
+            {{ activeCategoryName }}<span v-if="products.length >= 0"> ({{ products.length }})</span>
         </h3>
         <table class="table table-bordered">
             <tr

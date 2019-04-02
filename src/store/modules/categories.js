@@ -10,7 +10,8 @@ export default {
             return state.categories;
         },
         activeCategory(state) {
-            return state.activeCategory;
+            // Активной считается выбранная или, если нет такой, первая в списке
+            return state.activeCategory ? state.activeCategory : state.categories ? state.categories[0] : false;
         }
     },
     mutations: {
