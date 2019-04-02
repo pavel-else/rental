@@ -13,17 +13,15 @@
 </template>
 <script>
     export default {
-        beforeCreate() {
-            this.$store.dispatch('getCategories');
-        },
-        data() {
-            return {
-                categories: this.$store.getters.categories,
-            }
-        },
         methods: {
+            // Отмечаем категорию
             click(category) {
                 this.$store.commit('activeCategory', category);
+            }
+        },
+        computed: {
+            categories() {
+                return this.$store.getters.categories;
             }
         }
     }

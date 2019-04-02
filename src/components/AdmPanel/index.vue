@@ -27,6 +27,9 @@
         name: 'admPanel',
         components: {
             RentalCategories
+        },
+        beforeCreate() {
+            this.$store.dispatch('getCategories');
         }
     }
 </script>
@@ -38,7 +41,7 @@
     .router-link {
         padding: 5px 15px;
     }
-
+    
     .sublist {
         display: none;
     }
