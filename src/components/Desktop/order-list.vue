@@ -1,14 +1,12 @@
 <template>
     <div class="order-list">
-        <h3>В прокате <span v-if="countActiveSubOrders">({{ countActiveSubOrders }})</span></h3>
-        <p class="empty" v-if="orders.length == 0">Ативные ордера отсутствуют</p>
+        <h3>В прокате <span>({{ length }})</span></h3>
 
         <table cellspacing="0" class="table">
             <tr 
                 class="table-tr" 
-                v-for="order in orders"
+                v-for="order in ordersByCategory"
                 :key="order.id_rent"
-                v-if="subOrders[order.id_rent]"
                 :title="order.title"
             >
                 <td class="td-1">
@@ -20,7 +18,7 @@
                 <td>
                     <tr 
                         class="product-tr"
-                        v-for="subOrder in subOrders[order.id_rent]" 
+                        v-for="subOrder in order.subOrders" 
                         :key="subOrder.id_rent" 
                         :class="subOrder.status === 'PAUSE' ? 'suborder--pause' : 'suborder--active'"
                     >
@@ -259,12 +257,6 @@
                 this.showResume = true;
             },
 
-            getSubOrders(order_id) {
-                return this.$store.getters.subOrders.filter(i => {
-                    return i.order_id === order_id && (i.status === "ACTIVE" || i.status === "PAUSE")
-                })   
-            },
-
             getTitle(order) {
                 const customers = this.$store.getters.customers
                 const customer = customers.find(i => i.id_rent == order.customer_id)
@@ -309,44 +301,69 @@
                 });
 
                 return icons;
-            }
+            },
+
         },
 
         computed: {
             orders() {
-                return this.$store.getters.activeOrders.reduce((acc, i) => {
-                    i.format_start_time = this.getStartTime(i.start_time)
-                    i.title = this.getTitle(i)
+                this.$store.getters.activeCategory; // обновление при смене категории. Косяк.
 
-                    acc[i.id_rent] = i
-                    return acc
-                }, {})
-            },
-            subOrders() {
-                // Возвращает объект массивов, где ключ - order_id, массив - subOrders
+                return this.$store.getters.activeOrders.reduce((acc, order) => {
+                    order.format_start_time = this.getStartTime(order.start_time);
+                    order.title = this.getTitle(order);
 
-                return this.$store.getters.activeSubOrders.reduce((acc, item) => {
+                    const subOrders = this.$store.getters.activeSubOrders.filter(i => i.order_id === order.id_rent);
 
-                    item.product_name = this.getProductName(item.product_id);
-                    item.extAccessories = this.getExtAccessories(item.accessories);
-                    
-                    acc[item.order_id] ? acc[item.order_id].push(item) : acc[item.order_id] = [item];
+                    const modifySubOrders = subOrders.map(subOrder => {
+                        subOrder.product_name = this.getProductName(subOrder.product_id);
+                        subOrder.extAccessories = this.getExtAccessories(subOrder.accessories);
+
+                        return subOrder;
+                    });
+
+                    order.subOrders = modifySubOrders;
+
+                    acc.push(order);
 
                     return acc;
-                }, {});
+                }, []);
             },
+            ordersByCategory() {
+                const isBelongsCategory = (subOrder) => {
+                    const product = this.$store.getters.products.find(i => i.id_rent === subOrder.product_id);
+                    const activeCategory = this.$store.getters.activeCategory;
 
-            countActiveSubOrders() {
-                let length = 0
-                for (let i in this.subOrders) {
-                    length += this.subOrders[i].length
+                    return product.category === activeCategory.id_rent;
+                };
+
+                return this.orders.reduce((acc, order) => {
+                    const modifySubOrders = order.subOrders.filter(i => isBelongsCategory(i));
+
+                    if (modifySubOrders.length === 0) {
+                        return acc;
+                    }
+
+                    order.subOrders = modifySubOrders;
+
+                    acc.push(order);
+                    return acc;
+                }, []);
+            },
+            length() {
+                let count = 0;
+                const orders = this.ordersByCategory;
+
+                for (let i = 0; i < orders.length; i +=1) {
+                    const subOrders = orders[i].subOrders;
+
+                    for (let j = 0; j < subOrders.length; j +=1) {
+                        count += 1;
+                    }
                 }
-                return length
-            },
 
-            products() {
-                return this.$store.getters.products
-            },
+                return count;
+            }
         }
     }
 </script>
@@ -354,10 +371,6 @@
 <style scoped>
     .order-list {
         width: 480px;
-    }
-
-    .empty {
-        padding: 0 20px;
     }
 
     .icon {

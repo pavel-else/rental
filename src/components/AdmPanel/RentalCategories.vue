@@ -1,10 +1,10 @@
 <template>
     <div class="rental-categories">
-        adsf
         <ul class="rental-categories__list">
             <li 
                 class="rental-categories__item"
                 v-for="category in categories"
+                :key="category.id_rent"
                 @click="click(category)"
             >
                 {{ category.name }}
@@ -15,20 +15,15 @@
 </template>
 <script>
     export default {
-        created() {
-            this.initCategories();
-        },
-        data() {
-            return {
-                categories: [],
-            }
-        },
         methods: {
+            // Отмечаем категорию
             click(category) {
                 this.$store.commit('activeCategory', category);
             },
-            initCategories() {
-                this.categories = this.$store.getters.categories;
+        },
+        computed: {
+            categories() {
+                return this.$store.getters.categories;
             }
         }
     }

@@ -78,12 +78,12 @@
                             </Tariffs>                            
                         </td>
                     </tr>
-                <!--<tr>
-                        <td>Категории</td>
+                <tr>
+                        <td>Категория</td>
                         <td>
-                            <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>
+                            <Categories :productCategory="product.category" @setCategories="setCategories($event)"></Categories>
                         </td>
-                    </tr> -->
+                    </tr> 
                     <tr>
                         <td>Описание</td>
                         <td><textarea class="textarea" v-model="product.note"></textarea></td>
@@ -247,8 +247,8 @@
             setTariffDefault(id) {
                 this.product.tariff_default = id
             },
-            setCategories(ids) {
-                this.product.categories = ids
+            setCategories(categoryId) {
+                this.product.category = categoryId;
             },
             setColor(color) {
                 this.product.color = color
