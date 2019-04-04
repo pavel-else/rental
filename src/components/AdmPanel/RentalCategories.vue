@@ -1,5 +1,6 @@
 <template>
     <div class="rental-categories">
+        adsf
         <ul class="rental-categories__list">
             <li 
                 class="rental-categories__item"
@@ -8,22 +9,26 @@
             >
                 {{ category.name }}
             </li>
+            <!-- <li>afsd</li> -->
         </ul>
     </div>
 </template>
 <script>
     export default {
-        beforeCreate() {
-            this.$store.dispatch('getCategories');
+        created() {
+            this.initCategories();
         },
         data() {
             return {
-                categories: this.$store.getters.categories,
+                categories: [],
             }
         },
         methods: {
             click(category) {
                 this.$store.commit('activeCategory', category);
+            },
+            initCategories() {
+                this.categories = this.$store.getters.categories;
             }
         }
     }

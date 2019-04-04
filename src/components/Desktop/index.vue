@@ -38,6 +38,7 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
                     { cmd: 'getAccessories' },
                     { cmd: 'getGeneralSettings' },
                     { cmd: 'getRentalPointInfo' },
+                    { cmd: 'getCategories' },
                 ];
 
                 this.$store.dispatch('multipleRequest', queue);               
