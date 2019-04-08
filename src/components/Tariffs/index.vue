@@ -72,6 +72,7 @@
                     _d_before: null,
                     _d_after: null,
                     cost: null,
+                    mileage: 0,
                     note: ''
                 }
             },
