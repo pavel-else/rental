@@ -22,7 +22,7 @@ const timeFormat = (ms /**number*/) => {
     const str = Math.floor(day) ? `${Math.floor(day)} дн. ` : ''
 
     // При небольшом времени выводить с секундами
-    if (minutes < 3) {
+    if (day < 1 && hours < 1 && minutes < 3) {
         return `${sign} ${ num(minutes) }м ${ num(seconds) }с`.trim();
     }
 

@@ -141,14 +141,8 @@
 </template>
 
 <script>
-    /*
-    * Отправляет на сервер информацию о способе оплаты и списание с баланса
-    */
-    // import timeFormat       from '@/functions/timeFormat';
     import roundBill        from '@/functions/roundBill';
-    // import getBill          from '@/functions/getBill';
     import getBillAccessory from '@/functions/getBillAccessory';
-    // import getSale          from '@/functions/getSale';
     import * as Time        from '@/functions/Time';
     import copy             from '@/functions/copy';
 
