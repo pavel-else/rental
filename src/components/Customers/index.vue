@@ -11,7 +11,7 @@
             <tr v-for="customer in customers" :key="customer.id_rent" @click="onClick(customer)">
                 <td>{{ customer.id_rent }}</td>
                 <td>{{ customer.fname }} {{ customer.sname }} {{ customer.tname }}</td>
-                <td ref="phone">{{ customer.phone }}</td>
+                <td>{{ customer.formatPhone }}</td>
                 <td class="col--sale"><span v-if="customer && customer.sale > 0">{{ customer.sale }} %</span></td>
                 <td class="col--balance"><span v-if="customer && customer.balance != 0">{{ customer.balance }} р</span></td>
             </tr>
@@ -21,13 +21,12 @@
         </div>
         
         <Details :customer="customer" @close="onClose()" v-if="show"></Details>
-        <button @click="setTo">Отправить обновленные данные</button>
     </div>
 </template>
 
 <script>
     import Details from './details';
-    import Inputmask from 'inputmask';
+    import copy from '@/functions/copy';
 
     export default {
         components: {
@@ -35,12 +34,6 @@
         },
         beforeCreate() {
             this.$store.dispatch('getCustomers')
-            .then(() => {
-                this.preparePhone();
-            });
-        },
-        updated() {
-            this.preparePhone();
         },
         data() {
             return {
@@ -61,29 +54,28 @@
                 this.show = false
             },
             preparePhone() {
-                const phone = new Inputmask("+7 (999) 999-99-99");
-                phone.mask(this.$refs.phone);
+                // const phone = new Inputmask("+7 (999) 999-99-99");
+                // phone.mask(this.$refs.phone);
             },
-            setTo() {
-                const customers = this.$store.getters.customers;
-
-                const clear = (phone) => {
-                    return phone.replace(/[^.\d]+/g, "");
-                }
-
-                const cmds = [];
-
-                customers.map(i => {
-                    i.phone = clear(i.phone);
-                    cmds.push({ cmd: 'setCustomer', value: i });
-                });
-
-                this.$store.dispatch('multipleRequest', cmds);
-            }
         },
         computed: {
             customers() {
-                return this.$store.getters.customers
+                const customers = copy(this.$store.getters.customers);
+                return customers.reduce((acc, item) => {
+
+                    if (!item.phone || item.phone.length < 11) {
+                        item.formatPhone = item.phone;
+                        acc.push(item);
+                        return acc;
+                    }
+
+                    const i = item.phone;
+
+                    item.formatPhone = `+${i[0]} (${i[1]}${i[2]}${i[3]}) ${i[4]}${i[5]}${i[6]}-${i[7]}${i[8]}-${i[9]}${i[10]}`;
+
+                    acc.push(item);
+                    return acc;
+                }, []);
             }
         }
     }
