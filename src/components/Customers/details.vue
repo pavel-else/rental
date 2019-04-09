@@ -31,11 +31,11 @@
                     </tr>
                     <tr>
                         <td>Телефон</td>
-                        <td><input type="text" v-model="C.phone" placeholder="Номер мобильного телефона"></td>
+                        <td><input type="text" v-model="C.phone" placeholder="Номер мобильного телефона" ref="phone"></td>
                     </tr>
                     <tr>
                         <td>Паспорт</td>
-                        <td><input type="text" v-model="C.passport" placeholder="Серия и номер паспорта"></td>                
+                        <td><input type="text" v-model="C.passport" placeholder="Серия и номер паспорта" ref="pass"></td>                
                     </tr>
                     <tr>
                         <td>Дата рождения</td>                
@@ -72,9 +72,19 @@
 
 <script>
     import copy from '@/functions/copy';
+    import Inputmask from 'inputmask';
+
     export default {
         props: {
             customer: Object,
+        },
+        mounted() {
+            // ... используем
+            const phone = new Inputmask("+7 (999) 999-99-99");
+            phone.mask(this.$refs.phone);
+
+            const pass = new Inputmask("9999 999999");
+            pass.mask(this.$refs.pass);
         },
         data() {
             return {
@@ -85,10 +95,16 @@
         methods: {
             save() {
                 if (!this.C.fname) {
-                    alert("Введите фамилию")
+                    alert("Введите фамилию");
 
                     return false;
                 }
+
+                const preparePhone = (phone) => {
+                    return phone.replace(/[^.\d]+/g,"");
+                };
+
+                this.C.phone = preparePhone(this.C.phone);
 
                 this.$store.dispatch('multipleRequest', [
                     { cmd: 'setCustomer', value: this.C },
