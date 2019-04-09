@@ -112,7 +112,7 @@
                 }
 
                 const preparePhone = (phone) => {
-                    return phone.replace(/[^.\d]+/g,"");
+                    return phone.replace(/[^.\d]+/g, "");
                 };
 
                 this.C.phone = preparePhone(this.C.phone);

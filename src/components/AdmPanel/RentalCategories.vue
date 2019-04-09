@@ -19,6 +19,7 @@
             // Отмечаем категорию
             click(category) {
                 this.$store.commit('activeCategory', category);
+                this.$router.push('/');
             },
         },
         computed: {
