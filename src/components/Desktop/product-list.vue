@@ -18,7 +18,10 @@
                     <Bike :_color="item.color" :_type="+item.type"></Bike>
                 </td>
                     
-                <td class="products__td">{{ item.name }}</td>
+                <td class="products__td">
+                    {{ item.name }} 
+                    <span v-if="item.size && item.category != 1">({{ item.size }})</span>
+                </td>
             </tr>
         </table>
 

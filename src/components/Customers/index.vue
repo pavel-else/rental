@@ -21,6 +21,7 @@
         </div>
         
         <Details :customer="customer" @close="onClose()" v-if="show"></Details>
+        <button @click="setTo">Отправить обновленные данные</button>
     </div>
 </template>
 
@@ -62,6 +63,22 @@
             preparePhone() {
                 const phone = new Inputmask("+7 (999) 999-99-99");
                 phone.mask(this.$refs.phone);
+            },
+            setTo() {
+                const customers = this.$store.getters.customers;
+
+                const clear = (phone) => {
+                    return phone.replace(/[^.\d]+/g, "");
+                }
+
+                const cmds = [];
+
+                customers.map(i => {
+                    i.phone = clear(i.phone);
+                    cmds.push({ cmd: 'setCustomer', value: i });
+                });
+
+                this.$store.dispatch('multipleRequest', cmds);
             }
         },
         computed: {
