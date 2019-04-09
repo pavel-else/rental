@@ -14,7 +14,7 @@
                     <tr>
                         <td>Фамилия</td>
                         <td>
-                            <input type="text" v-model="C.fname" placeholder="Фамилия">
+                            <input type="text" v-model="C.fname" placeholder="Фамилия" ref="fname">
                         </td>
                     </tr>
                     <tr>
@@ -79,12 +79,23 @@
             customer: Object,
         },
         mounted() {
-            // ... используем
-            const phone = new Inputmask("+7 (999) 999-99-99");
-            phone.mask(this.$refs.phone);
+            const makeInputMask = () => {
+                const phone = new Inputmask("+7 (999) 999-99-99");
+                phone.mask(this.$refs.phone);
 
-            const pass = new Inputmask("9999 999999");
-            pass.mask(this.$refs.pass);
+                const pass = new Inputmask("9999 999999");
+                pass.mask(this.$refs.pass);
+            };
+
+            makeInputMask();
+
+            const setFocus = () => {
+                if (!this.C.id_rent) {
+                    this.$nextTick(() => this.$refs.fname.focus());
+                }
+            };
+
+            setFocus();
         },
         data() {
             return {
