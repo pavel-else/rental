@@ -182,8 +182,8 @@
                     const item = copy(_item);
 
                     // Отсеиваем завершенные
-                    if (item.status !== 'END') {
-                        return acc;
+                    if (item.id_rent == '133') {
+                        console.log('order', item)
                     }
 
                     item.customerName = this.getCustomerName(item.customer_id);

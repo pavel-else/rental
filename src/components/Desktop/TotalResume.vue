@@ -70,11 +70,11 @@
             </div>
 
             <table>
-                <tr>
+                <tr v-if="advance && advance > 0">
                     <td>Внесен аванс:</td>
                     <td style="text-align: right">{{ advance }} руб</td>
                 </tr>
-                <tr>
+                <tr v-if="balance && balance !== 0">
                     <td>
                         <span v-if="balance < 0">Долг клиента:</span>
                         <span v-else>Баланс клиента:</span>

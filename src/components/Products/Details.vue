@@ -89,7 +89,7 @@
                         <td><textarea class="textarea" v-model="product.note"></textarea></td>
                     </tr>
                     <tr>
-                        <td>Размер рамы</td>
+                        <td>Размер</td>
                         <td><input class="input" v-model="product.size"></td>
                     </tr>
                     <tr>

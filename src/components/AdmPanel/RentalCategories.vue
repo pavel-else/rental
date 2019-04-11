@@ -9,6 +9,7 @@
             >
                 {{ category.name }}
             </li>
+            <!-- <li>afsd</li> -->
         </ul>
     </div>
 </template>
@@ -18,7 +19,8 @@
             // Отмечаем категорию
             click(category) {
                 this.$store.commit('activeCategory', category);
-            }
+                this.$router.push('/');
+            },
         },
         computed: {
             categories() {

@@ -11,7 +11,7 @@
             <tr v-for="customer in customers" :key="customer.id_rent" @click="onClick(customer)">
                 <td>{{ customer.id_rent }}</td>
                 <td>{{ customer.fname }} {{ customer.sname }} {{ customer.tname }}</td>
-                <td>{{ customer.phone }}</td>
+                <td>{{ customer.formatPhone }}</td>
                 <td class="col--sale"><span v-if="customer && customer.sale > 0">{{ customer.sale }} %</span></td>
                 <td class="col--balance"><span v-if="customer && customer.balance != 0">{{ customer.balance }} р</span></td>
             </tr>
@@ -25,14 +25,15 @@
 </template>
 
 <script>
-    import Details from './details'
+    import Details from './details';
+    import copy from '@/functions/copy';
 
     export default {
         components: {
             Details
         },
         beforeCreate() {
-            this.$store.dispatch('getCustomers');
+            this.$store.dispatch('getCustomers')
         },
         data() {
             return {
@@ -51,11 +52,30 @@
             },
             onClose() {
                 this.show = false
-            }           
+            },
+            preparePhone() {
+                // const phone = new Inputmask("+7 (999) 999-99-99");
+                // phone.mask(this.$refs.phone);
+            },
         },
         computed: {
             customers() {
-                return this.$store.getters.customers
+                const customers = copy(this.$store.getters.customers);
+                return customers.reduce((acc, item) => {
+
+                    if (!item.phone || item.phone.length < 11) {
+                        item.formatPhone = item.phone;
+                        acc.push(item);
+                        return acc;
+                    }
+
+                    const i = item.phone;
+
+                    item.formatPhone = `+${i[0]} (${i[1]}${i[2]}${i[3]}) ${i[4]}${i[5]}${i[6]}-${i[7]}${i[8]}-${i[9]}${i[10]}`;
+
+                    acc.push(item);
+                    return acc;
+                }, []);
             }
         }
     }
