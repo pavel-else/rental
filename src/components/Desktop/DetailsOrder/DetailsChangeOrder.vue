@@ -142,7 +142,8 @@
     import pause             from '../functions/pause'
     import TotalResume       from '../TotalResume';
     import ResumeForOne      from '../ResumeForOne';
-    import * as Time         from '@/functions/Time'
+    import * as Time         from '@/functions/Time';
+    import getMileage        from '@/functions/getMileage';
 
     import copy from '@/functions/copy';
 
@@ -234,6 +235,23 @@
             closePrint() {
                 this.print = false
             },
+            getTime(subOrder) {
+                const start = Date.parse(this.order.start_time);
+
+                let pause = 0;
+
+                if (subOrder.status === 'PAUSE') {
+                    const lastPause = Date.now() - +subOrder.pause_start;
+                    pause = +subOrder.pause_time + lastPause;
+                } else {
+                    pause = subOrder.pause_time;
+                }
+
+
+                const end = subOrder.end_time ? Date.parse(subOrder.end_time) : Date.now();
+
+                return end - start - pause; 
+            },
 
             abortSubOrder() {
                 const subOrder = this.subOrder;
@@ -262,6 +280,18 @@
 
                 subOrder.status = 'DEL';
 
+                // Mileaage
+                const product = copy(this.$store.getters.products.find(product => product.id_rent === subOrder.product_id));
+                const tariff = this.$store.getters.tariffs.find(i => i.id_rent === subOrder.tariff_id);
+                const playTime = this.getTime(subOrder);
+                const mileage = getMileage(playTime, tariff);
+                console.log('mileage', mileage)
+
+                if (mileage && mileage > 0) {
+                    product.mileage = +product.mileage + mileage;
+                    cmds.push({ cmd: 'setProduct', value: product});
+                }
+
                 cmds.push({ cmd: 'changeSubOrder', value: subOrder });
 
                 // ORDER
@@ -275,6 +305,7 @@
                     { cmd: 'getActiveOrders' },
                     { cmd: 'getActiveSubOrders' },
                 );
+                console.log('MMM', cmds)
 
                 this.$store.dispatch('multipleRequest', cmds);
 
