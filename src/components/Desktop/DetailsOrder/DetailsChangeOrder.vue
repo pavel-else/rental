@@ -217,7 +217,7 @@
 
                 // splitOrder
                 if (this.status.splitOrder) {
-                    cmds.push({ cmd: 'splitOrder', value: { order: this.subOrder, subOrder: this.subOrder } });
+                    cmds.push({ cmd: 'splitOrder', value: { order: this.order, subOrder: this.subOrder } });
                 }
 
                 cmds.push(
@@ -305,7 +305,6 @@
                     { cmd: 'getActiveOrders' },
                     { cmd: 'getActiveSubOrders' },
                 );
-                console.log('MMM', cmds)
 
                 this.$store.dispatch('multipleRequest', cmds);
 
@@ -354,6 +353,7 @@
                 order.id_rent = order_id;
                 order.start_time = Date.parse(this.order.start_time);
                 order.order_id_position = position;
+                console.log('position', position)
 
                 this.order = order;
                 this.subOrder = subOrder;
