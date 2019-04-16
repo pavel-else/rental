@@ -45,7 +45,14 @@
                     <li class="products__item" v-for="item in subOrders" :key="item.id_rent">
                         <div class="products__line">
                             <span>{{ item.product_name }}</span>
-                            <span>{{ item.bill_rent }} руб.</span>                                      
+                            <span 
+                                v-if="item.status === 'DEL'"
+                                :title="item.end_time + ' ' + item.note"
+                                style="color: red"
+                            >✖</span> 
+                            <span v-else>
+                                {{ item.bill_rent }} руб.
+                            </span>                                                                           
                         </div>
 
                         <ul class="products__access-list">
