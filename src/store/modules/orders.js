@@ -24,11 +24,11 @@ export default {
     },
     actions: {
         getOrders({ commit, getters }) {
-            console.log('dispatch: getOrders', filter);
+            console.log('dispatch: getOrders');
 
             return new Promise((resolve, reject) => {
                 const queue = [
-                    { cmd: 'getOrders', value: filter }
+                    { cmd: 'getOrders' }
                 ];
                 const url = getters.url;
                 const token = localStorage.getItem('user-token');

@@ -3,7 +3,11 @@
         <div class="app__wrap">
             <span class="app__branch" v-if="dev">β</span>
             <adm-panel class="adm"></adm-panel>
-            <router-view></router-view>        
+            <div class="app__content">
+                <iframe class="banner banner--left" src=""></iframe>                
+                <router-view></router-view>
+                <iframe class="banner banner--right" src="https://rentix.biz/banners/b1/adv_bike2.html"></iframe>                
+            </div>
         </div>
     </div>
 </template>
@@ -188,13 +192,18 @@
     }
 
     .app__wrap {
-        width: 960px;
+        width: 100%;
         padding-top: 10px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         padding-top: 100px;
+    }
+    .app__content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .tmp {
@@ -277,5 +286,17 @@
         top: 0;
         background-color: #000;
         border-bottom: 1px solid #333;
+    }
+    .banner {
+        // position: absolute;
+        border: none;
+        margin: 0 20px;
+        &--left {
+            width: 400px;
+        }
+        &--right {
+            width: 400px;
+            height: 800px;
+        }
     }
 </style>

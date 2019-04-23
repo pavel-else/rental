@@ -56,7 +56,7 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     .desktop {
         display: flex;
         flex-direction: row;
@@ -78,5 +78,4 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
     .snippet h3 {
         text-align: center;
     }
-
 </style>

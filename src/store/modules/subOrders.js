@@ -81,7 +81,7 @@ export default {
                 })
             });
         },
-        changeSubOrders({ commit, getters }, subOrders) {
+        changeSubOrders({ getters }, subOrders) {
             console.log('dispatch: changeSubOrders');
 
             return new Promise((resolve, reject) => {
@@ -113,7 +113,7 @@ export default {
                 })
             }); 
         },
-        changeSubOrder({ commit, getters }, subOrder) {
+        changeSubOrder({ getters }, subOrder) {
             console.log('dispatch: changeSubOrder', subOrder);
 
             return new Promise((resolve, reject) => {
@@ -135,7 +135,6 @@ export default {
                 })
                 .then(resp => {
                     console.log(resp)
-                    // commit('subOrders', resp.data.sub_orders);
                     resolve(true);                        
                 }).
                 catch(err => {
