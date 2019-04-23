@@ -4,9 +4,11 @@
             <span class="app__branch" v-if="dev">β</span>
             <adm-panel class="adm"></adm-panel>
             <div class="app__content">
-                <iframe class="banner banner--left" src=""></iframe>                
+                <!-- <iframe class="banner banner--left" src="https://rentix.biz/banners/b1/adv_bike2.html"></iframe>                 -->
+                <iframe class="banner banner--left" src=""></iframe>                               
                 <router-view></router-view>
                 <iframe class="banner banner--right" src="https://rentix.biz/banners/b1/adv_bike2.html"></iframe>                
+                <!-- <div v-html="ul"></div> -->
             </div>
         </div>
     </div>
@@ -198,9 +200,10 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-top: 100px;
+        padding: 100px 50px 0;
     }
     .app__content {
+        width: 100%;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -288,15 +291,18 @@
         border-bottom: 1px solid #333;
     }
     .banner {
-        // position: absolute;
         border: none;
-        margin: 0 20px;
+        margin: 0;
+        position: relative;
         &--left {
             width: 400px;
+            height: 800px;
+            margin-right: 90px;
         }
         &--right {
             width: 400px;
             height: 800px;
+            margin-left: 90px;
         }
     }
 </style>

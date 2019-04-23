@@ -88,7 +88,7 @@
 
                 return list ? list.filter(item => { 
                     return !isRent(item.id_rent)          // не находится в прокате
-                        && item.status == 'active'     // не отключен в настройках товара и не удален
+                        && item.status === 'active'     // не отключен в настройках товара и не удален
                         && !isBroken(item.id_rent)     // не находится в ремонте
                         && belongsActiveCategory(item) // и принадлежит активной категории
                 }) : [];

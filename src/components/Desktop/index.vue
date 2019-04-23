@@ -63,11 +63,12 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
         justify-content: center;
     }
     .snippet {
-        padding: 20px;
+        padding: 0 20px;
     }
 
     .black .snippet {
-       border: 1px solid #333; 
+       border: 1px solid rgba(255,255,255,.1);
+       // background: rgba(255,255,255,.05);
     }
     .white .snippet {
        border: 1px solid lightgray;
