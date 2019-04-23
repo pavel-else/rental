@@ -57,8 +57,10 @@
             }
         },
         computed: {
-            products() {
+            // выводит список продуктов с учетом их последнего ремонта
+            products() {                
                 const getLastRepair = (product_id) => {
+                    const repairs = copy(this.$store.getters.repairs);
                     const filter = repairs.filter(i => i.product_id == product_id && i.end_time);
 
                     const lastRepair = filter.reduce((acc, repair) => {
@@ -78,9 +80,9 @@
                 };
 
                 const products = copy(this.$store.getters.products);
-                const repairs = copy(this.$store.getters.repairs);
+                const notDeleted = products.filter(i => i.status !== 'deleted');
 
-                return products.map(i => {
+                return notDeleted.map(i => {
                     const lastRepair = getLastRepair(i.id_rent);
                     i.last_repair_time = lastRepair ? lastRepair.end_time : '';
                     return i;

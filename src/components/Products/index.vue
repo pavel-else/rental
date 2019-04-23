@@ -97,7 +97,12 @@
         },
         computed: {
             products() {
-                return this.$store.getters.products;
+                const products = this.$store.getters.products;
+
+                // Filters
+                const notDeleted = (product) => product.status !== 'deleted';
+
+                return products.filter(i => notDeleted(i));
             }
         }
         
