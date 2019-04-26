@@ -125,7 +125,10 @@
                 return this.repairTypes ? this.repairTypes.filter(i => i.is_plan === '1') : [];
             },
             simpleTypes() {
-                return this.repairTypes ? this.repairTypes.filter(i => i.is_plan === '0') : [];
+                const repairTypes = this.repairTypes ? this.repairTypes.filter(i => i.is_plan === '0') : [];
+                const sorted = repairTypes.sort((a, b) => b.id_rent - a.id_rent);
+                
+                return sorted;
             },
         }
     }
