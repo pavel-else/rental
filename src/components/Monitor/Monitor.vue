@@ -95,4 +95,19 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
     .snippet h3 {
         text-align: center;
     }
+    .banner {
+        border: none;
+        margin: 0;
+        position: relative;
+        &--left {
+            width: 400px;
+            height: 800px;
+            margin-right: 110px;
+        }
+        &--right {
+            width: 400px;
+            height: 800px;
+            margin-left: 110px;
+        }
+    }
 </style>

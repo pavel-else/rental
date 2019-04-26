@@ -185,18 +185,18 @@
 
     .app__wrap {
         width: 100%;
-        padding-top: 10px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 100px 50px 0;
+        padding: 10px 50px 0;
     }
     .app__content {
         width: 100%;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        margin-top: 40px;
     }
 
     .tmp {
@@ -279,20 +279,5 @@
         top: 0;
         background-color: #000;
         border-bottom: 1px solid #333;
-    }
-    .banner {
-        border: none;
-        margin: 0;
-        position: relative;
-        &--left {
-            width: 400px;
-            height: 800px;
-            margin-right: 90px;
-        }
-        &--right {
-            width: 400px;
-            height: 800px;
-            margin-left: 90px;
-        }
     }
 </style>
