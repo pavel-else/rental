@@ -5,9 +5,9 @@
             <adm-panel class="adm"></adm-panel>
             <div class="app__content">
                 <!-- <iframe class="banner banner--left" src="https://rentix.biz/banners/b1/adv_bike2.html"></iframe>                 -->
-                <iframe class="banner banner--left" src=""></iframe>                               
+                <!-- <iframe class="banner banner--left" src=""></iframe>                                -->
                 <router-view></router-view>
-                <iframe class="banner banner--right" src="https://rentix.biz/banners/b1/adv_bike2.html"></iframe>                
+                <!-- <iframe class="banner banner--right" src="https://rentix.biz/banners/b1/adv_bike2.html"></iframe>                 -->
                 <!-- <div v-html="ul"></div> -->
             </div>
         </div>
