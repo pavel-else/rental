@@ -29,19 +29,21 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
             }
         },
         created() {
-                const queue = [
-                    { cmd: 'getActiveOrders' }, 
-                    { cmd: 'getActiveSubOrders' }, 
-                    { cmd: 'getProducts' }, 
-                    { cmd: 'getTariffs' }, 
-                    { cmd: 'getCustomers' }, 
-                    { cmd: 'getAccessories' },
-                    { cmd: 'getGeneralSettings' },
-                    { cmd: 'getRentalPointInfo' },
-                    { cmd: 'getCategories' },
-                ];
+            const queue = [
+                { cmd: 'getActiveOrders' }, 
+                { cmd: 'getActiveSubOrders' }, 
+                { cmd: 'getProducts' }, 
+                { cmd: 'getTariffs' }, 
+                { cmd: 'getCustomers' }, 
+                { cmd: 'getAccessories' },
+                { cmd: 'getGeneralSettings' },
+                { cmd: 'getRentalPointInfo' },
+                { cmd: 'getCategories' },
+            ];
 
-                this.$store.dispatch('multipleRequest', queue);               
+            this.$store.dispatch('multipleRequest', queue);
+
+            this.updateOrders();
         },
         methods: {
             addOrder(product) {
@@ -52,6 +54,16 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
             onClose() {
                 this.show = false
             },
+            updateOrders() {
+                setInterval(() => {
+                    const queue = [
+                        { cmd: 'getActiveOrders' },
+                        { cmd: 'getActiveSubOrders' }
+                    ];
+
+                    this.$store.dispatch('multipleRequest', queue);
+                }, 5000);
+            }
         },
     }
 </script>
