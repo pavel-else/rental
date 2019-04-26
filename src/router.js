@@ -2,17 +2,17 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 
-import Home      from './components/Desktop'
+import Main      from './components/Main'
 import History   from './components/History'
 import Customers from './components/Customers'
 import Repairs   from './components/Repairs'
-import AdminPage from '@/views/AdminPage'
 
 import RentalPointInfo from '@/components/Options/RentalPointInfo';
 import GeneralSettings from '@/components/Options/GeneralSettings';
 import Tariffs         from '@/components/Tariffs';
 import Accessories     from '@/components/Accessories';
 import Products        from '@/components/Products';
+import Monitor        from '@/components/Monitor/Monitor';
 
 const Login = () => import('@/views/Login');
 const LoginByToken = () => import('@/components/LoginByToken');
@@ -42,7 +42,12 @@ export default new Router({
     routes: [
         {
             path: '/',
-            component: Home,
+            component: Main,
+            beforeEnter: ifAuthenticated,
+        },
+        {
+            path: '/monitor',
+            component: Monitor,
             beforeEnter: ifAuthenticated,
         },
         {
@@ -88,11 +93,6 @@ export default new Router({
         {
             path: '/repairs',
             component: Repairs,
-            beforeEnter: ifAuthenticated,
-        },
-        {
-            path: '/admin',
-            component: AdminPage,
             beforeEnter: ifAuthenticated,
         },
         {

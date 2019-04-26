@@ -1,14 +1,9 @@
 <template> 
     <div class="app black">
         <div class="app__wrap">
-            <span class="app__branch" v-if="dev">β</span>
             <adm-panel class="adm"></adm-panel>
             <div class="app__content">
-                <!-- <iframe class="banner banner--left" src="https://rentix.biz/banners/b1/adv_bike2.html"></iframe>                 -->
-                <!-- <iframe class="banner banner--left" src=""></iframe>                                -->
                 <router-view></router-view>
-                <!-- <iframe class="banner banner--right" src="https://rentix.biz/banners/b1/adv_bike2.html"></iframe>                 -->
-                <!-- <div v-html="ul"></div> -->
             </div>
         </div>
     </div>
@@ -26,11 +21,6 @@
         created() {        
             // Обновление таймеров
             this.$store.dispatch('startTimer');
-        },
-        computed: {
-            dev() {
-                return this.$store.getters.activeBranch === 'dev'
-            }
         }
     }
 
