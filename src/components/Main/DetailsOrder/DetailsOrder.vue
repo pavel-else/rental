@@ -288,9 +288,22 @@
                 this.subOrder.tariff_id  = this.product.tariff_default
                 this.subOrder.order_id   = this.order.id_rent
                 this.subOrder.status     = 'ACTIVE'
-                this.subOrder.pause_time = 0
 
                 this.status = 'addSubOrder'
+
+                // Если сабордер добавляется сильно после старта одрера, то разницу между стартом ордера
+                // и стартом сабордера (если она не отрицательная) нужно записать в паузу сабордера
+                const startOrder = Date.parse(this.order.start_time);
+
+                if (isNaN(startOrder)) {
+                    console.warn('Date parse error in DetailsOrder');
+                }
+
+                const startSubOrder = Date.now();
+
+                const diff = startSubOrder - startOrder;
+                this.subOrder.pause_time = diff > 0 ? diff : 0;
+                
                 // console.log(this.subOrder)
             },
 
