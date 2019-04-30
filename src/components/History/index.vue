@@ -161,7 +161,7 @@
                     return 'Ошибка парсинга';
                 }
 
-                const format = orderDate.getDate() === today ? 'HHч mmм' : 'DD MMMM YYYY';
+                const format = orderDate.getDate() === today ? 'HH:mm' : 'DD MMMM YYYY';
 
                 return Time.format(format, orderDate);
             },
