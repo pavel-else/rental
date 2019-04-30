@@ -10,7 +10,7 @@
                         v-model="tariff.check" 
                         @change="setTariffs"
                     >
-                    <label :for="'check__tariff-' + tariff.id_rent" title="Привязать к товару">
+                    <label class="tariffs__checkbox-lbl" :for="'check__tariff-' + tariff.id_rent" title="Привязать к товару">
                     </label>
 
                     <input 
@@ -72,5 +72,8 @@
     li {
         display: block;
         border-bottom: 1px solid lightgray;
+    }
+    .tariffs__checkbox-lbl {
+        margin-right: 5px;
     }
 </style>

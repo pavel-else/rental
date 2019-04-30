@@ -10,7 +10,7 @@ const timeFormat = (ms /**number*/) => {
     const num = (val) => {
         val = Math.floor(val)
 
-        return val < 10 ? '0' + val : val
+        return 1 < val && val < 10 ? '0' + val : val
     }
 
     const sec     = ms  / 1000
@@ -21,7 +21,12 @@ const timeFormat = (ms /**number*/) => {
 
     const str = Math.floor(day) ? `${Math.floor(day)} дн. ` : ''
 
-    return `${sign} ${str}${num(hours)}:${num(minutes)}:${num(seconds)}`.trim()
+    // При небольшом времени выводить с секундами
+    if (day < 1 && hours < 1 && minutes < 3) {
+        return `${sign} ${ num(minutes) }м ${ num(seconds) }с`.trim();
+    }
+
+    return `${sign} ${ str }${ num(hours) }ч ${ num(minutes) }м`.trim();
 }
 
 export default timeFormat

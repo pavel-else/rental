@@ -19,15 +19,21 @@ export default  function getBill(tariff_id, time /*ms*/) {
         * 1. Если откатано меньше минималки - возврат минимальной суммы
         * 2. Иначе в счетчике последовательно складываем стоимости каждого часа
         * 3. Последний час будет неполный, поэтому он просчитывается вне счетчика
-        * 4. Если откатано больше максималки - возврат максимальной суммы
+        * 4. Если откатано больше максималки (если она есть) - возврат максимальной суммы
         */
 
-        // Алиасы
-        const minTime = store.getters.options.rent_min_time // Порог минималки, 30 min
-        const hh = tariff._h_h // расчасовка
+        // АЛИАСЫ
+
+        // Порог минималки, (30 min)
+        // const minTime = store.getters.options.rent_min_time 
+        const minTime = store.getters.generalSettings.rent_min_time 
+        // расчасовка
+        const hh = tariff._h_h
+        // Последний час проката расчасовки
         let last_h = +tariff._h_h[0]
+        // Максимальная стоимость. Если не указана, равна +бесконечности
+        const h_max = tariff._h_max > 0 ? tariff._h_max : Infinity
         
-        //console.log('time', time)
 
         if (time < 0) {
             return 0
@@ -43,15 +49,15 @@ export default  function getBill(tariff_id, time /*ms*/) {
             result += hh[i] ? +hh[i] : last_h
             last_h = hh[i] ? +hh[i] : last_h
 
-            if (result > tariff._h_max) {
-                return tariff._h_max
+            if (result > h_max) {
+                return h_max
             }
         }
 
         result += last_h * (h - Math.floor(h))
 
-        if (result > tariff._h_max) {
-            result = tariff._h_max
+        if (result > h_max) {
+            result = h_max
         } else if (result < tariff._h_min) {
             result = tariff._h_min
         }
@@ -67,8 +73,8 @@ export default  function getBill(tariff_id, time /*ms*/) {
     }
 
     switch (tariff.type) {
-        case 'd': return d(tariff, time)
-        case 'f': return tariff.cost
-        case 'h': return h(tariff, time)
+        case 'd': return +d(tariff, time)
+        case 'f': return +tariff.cost
+        case 'h': return +h(tariff, time)
     }
 }

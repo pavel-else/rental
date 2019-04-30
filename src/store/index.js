@@ -2,30 +2,47 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-import products        from './products'
-import subOrders   from './subOrders'
-import customers       from './Customers/customers'
-import orders          from './orders'
 import options         from './opt'
-import tariffs         from './tariffs'
-import categories      from './categories'
-import history         from './History/history'
-import accessories     from './accessories'
+import auth            from './auth-module'
+import initApp           from './init-app-module'
+
+import RentalPointInfo from './modules/rentalPointInfo';
+import Repairs         from './modules/repairs';
+import GeneralSettings from './modules/generalSettings';
+import Accessories     from './modules/accessories';
+import Tariffs         from './modules/tariffs';
+import Products        from './modules/products';
+import subOrders       from './modules/subOrders';
+import orders          from './modules/orders';
+import customers       from './modules/customers';
+import history         from './modules/history';
+import multipleRequest from './modules/multipleRequest';
+import categories      from './modules/categories';
+import print           from './modules/print';
+
 
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
+    // strict: true,
     modules: {
-        products,
         subOrders,
         customers,
         orders,
         options,
-        tariffs,
         categories,
         history,
-        accessories,
+        auth,
+        initApp,
+        RentalPointInfo,
+        Repairs,
+        GeneralSettings,
+        Accessories,
+        Tariffs,
+        Products,
+        multipleRequest,
+        print
     },
 
     actions: {
@@ -46,7 +63,7 @@ const store = new Vuex.Store({
                 }
 
                 if (cmds.cmd) {
-                    return [{cmd: cmds.cmd, value: cmds.value}]
+                    return [{ cmd: cmds.cmd, value: cmds.value }]
                 }
 
                 return cmds
@@ -62,10 +79,10 @@ const store = new Vuex.Store({
                     method: 'post',
                     url,
                     data: {
-                        queue
+                        queue,
+                        token: localStorage.getItem('user-token')
                     },
-                    config
-                    
+                    config,                    
                 })
                 .catch(e => {
                     console.log(e)
@@ -73,15 +90,16 @@ const store = new Vuex.Store({
                 .then(r => {
                     console.log('front <-- back', r)  
 
-                    commit('setProducts',      r.data.products)
-                    commit('setHistory',       r.data.history)
-                    commit('setOptions',       r.data.options)
-                    commit('setTariffs',       r.data.tariffs)
-                    commit('setCategories',    r.data.categories)
-                    commit('setCustomers',     r.data.customers)
-                    commit('setSubOrders',     r.data.sub_orders)
-                    commit('setOrders',        r.data.orders)
-                    commit('setAccessories',   r.data.accessories)
+                    commit('products',      r.data.products)
+                    commit('history',       r.data.history)
+                    // commit('setOptions',    r.data.options)
+                    commit('tariffs',       r.data.tariffs)
+                    commit('setCategories', r.data.categories)
+                    commit('customers',     r.data.customers)
+                    commit('subOrders',     r.data.sub_orders)
+                    commit('orders',        r.data.orders)
+                    commit('accessories',   r.data.accessories)
+                    commit('generalSettings', r.data.general_settings)
                 })
             }
 
@@ -94,9 +112,12 @@ const store = new Vuex.Store({
                     'getHistory', 
                     'getTariffs', 
                     'getCategories', 
-                    'getOptions', 
+                    // 'getOptions', 
                     'getLogs',
-                    'getAccessories'
+                    'getAccessories',
+                    'getHeaders',
+                    'getRentalPointInfo',
+                    'getGeneralSettings',
                 ]
 
                 const queue = cmds.map(i => {

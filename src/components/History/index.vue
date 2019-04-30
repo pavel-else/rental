@@ -1,45 +1,76 @@
 <template>
     <div class="history">
+        <div class="totals">
+            <table>
+                <tr>
+                    <td><b>Итого за день:</b></td>
+                    <td>Наличные: {{ coin }} руб.</td>
+                    <td>По карте: {{ card }} руб.</td>
+                    <td>Всего: {{ total }} руб.</td>
+                </tr>
+
+            </table>
+        </div>
+
         <h2>История заказов</h2>
-        <table cellspacing="0" class="history__table">
+        <table class="history__table" v-if="orders && orders.length > 0" cellspacing="0">
             <tr>
                 <th>id</th>
                 <th>ФИО</th>
-                <th>Старт</th>
-                <th>В прокате</th>
-                <th>Продукт</th>
+                <th>Начало</th>
+                <th>Длительность</th>
+                <th>Товар</th>
                 <th>Стоимость</th>
-                <th>Статус</th>
             </tr>
-            <tr v-for="item in history" :key="item.order_id" @click="onClick(item)">
-                <td class="">{{ item.order_id }}</td>
-                <td class="">{{ item.customer_name }}</td>
-                <td class="">{{ item.start_time }}</td>
 
-                <td class="history__td history__td--time">{{ item.play_time }}</td>
+            <tr v-for="item in orders" :key="item.id_rent" @click="onClick(item)">
                 <td>
-                    {{getName(item)}}
-                    <span v-if="item.products.length > 1"> и еще {{ item.products.length - 1 }} шт</span>
+                    {{ item.id_rent }}
                 </td>
-                <td>{{ item.bill }} р.</td>
-                <td>{{ item.status }}</td>
+                <td>                    
+                    {{ item.customerName }}                
+                </td>
+                <td style="text-align: right">
+                    {{ shortDate(item.start_time) }}
+                </td>
+                <td style="text-align: right">
+                    {{ item.play_time }}
+                </td>
+                <td style="padding-left: 20px">
+                    {{ item.productName }}
+                </td>
+                <td style="text-align: right">
+                    {{ item.bill }} руб
+                </td>
             </tr>
         </table>
+        <div v-else>Здесь пока пусто..</div>
 
-        <Details :order="order" @close="onClose" v-if="show"></Details>
-    </div>
-  
+        <Details :_order="order" @close="onClose" v-if="show"></Details>
+    </div>  
 </template>
 
 <script>
-    import Details    from './Details'
-    import getTime    from '../../functions/getTime'
-    import timeFormat from '@/functions/timeFormat'
+    import Details          from './Details';
+    import Totals           from '@/components/Totals';
+    import timeFormat       from '@/functions/timeFormat';
+    import copy             from '@/functions/copy';
+    import * as Time        from '@/functions/time';
+    import isValidDate      from '@/functions/isValidDate';
+    import makeCustomerName from '@/functions/makeCustomerName';
 
     export default {
         name: 'History',
         components: {
-            Details
+            Details, Totals
+        },
+        beforeCreate() {
+            this.$store.dispatch('multipleRequest', [
+                { cmd: 'getOrders' },
+                { cmd: 'getSubOrders'},
+                { cmd: 'getProducts' },
+                { cmd: 'getCustomers' }
+            ]);
         },
         data() {
             return {
@@ -48,75 +79,190 @@
             }
         },
         methods: {
-            ...getTime,
+            getEndTime(orderId) {
+                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
+                const end_time = subOrders.reduce((acc, item) => {
+                    if (!acc) {
+                        acc = item.end_time;
+                    }
 
-            getTimePlay(order) {
-                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id == order.order_id)
-                const start = Date.parse(order.start_time)
+                    if (Date.parse(acc) < Date.parse(item.end_time)) {
+                        acc = item.end_time;
+                    }
 
-                const end = Math.max(subOrders.map(i => Date.parse(i.end_time)))
 
-                const time = start - Date.parse(end)
+                    return acc;
+                }, null);
+                
+                return end_time;
+            },
+            getCustomerName(customerId) {
+                if (!customerId) {
+                    return '';
+                }
 
-                return timeFormat(time)
+                const customer = this.$store.getters.customers.find(i => i.id_rent === customerId);
+
+                if (!customer) {
+                    console.warn('History.index.getCustomerName: Клиент не найден!');
+                }
+                return customer ? makeCustomerName(customer) : '';
+            },
+            getProductName(orderId) {
+                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
+                const firstProductId = subOrders && subOrders.length > 0 ? subOrders[0].product_id : false;
+
+                if (!subOrders || subOrders.length < 1 || !firstProductId) {
+                    return '';
+                }
+
+                const product = this.$store.getters.products.find(i => i.id_rent === firstProductId);
+                const firstName = product ? product.name : '';
+
+                return subOrders.length > 1 
+                    ? firstName + ' и еще ' + (subOrders.length - 1)
+                    : firstName;
+            },
+            getBill(orderId) {
+                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
+                const bill = subOrders.reduce((acc, item) => {
+                    acc += +item.bill_rent;
+                    acc += +item.bill_access;
+                    acc -= +item.sale;
+                    return acc;
+                }, 0);
+
+                return bill;                
+            },
+            getStatus(order) {
+                const status = order.status;
+                switch (status) {
+                    case 'ACTIVE': return 'В прокате';
+                    case 'END': return 'Завершен';
+                    default: return status;
+                }
+            },
+            getTimePlay(start, end, orderId) {
+                const end_time = Date.parse(end);
+                const start_time = Date.parse(start);
+
+                if (isNaN(end_time) || isNaN(start_time)) {
+                    return 'Ошибка парсинга. order_id = ' + orderId;
+                }
+
+                return timeFormat(end_time - start_time);
+            },
+            shortDate(date) {
+                const now = new Date();
+                const today = now.getDate();
+                const orderDate = new Date(date);
+
+                if (!isValidDate(orderDate)) {
+                    return 'Ошибка парсинга';
+                }
+
+                const format = orderDate.getDate() === today ? 'HHч mmм' : 'DD MMMM YYYY';
+
+                return Time.format(format, orderDate);
             },
 
-            getName(item) {
-                return item.products[0] ? item.products[0].name : ''
-            },
 
             onClick(order) {
-                this.order = order
-                this.show = true
+                this.order = order;
+                this.show = true;
             },
             onClose() {
-                this.show = false
-            }
+                this.show = false;
+            },
         },
         computed: {
-            /**
-            * С точки зрения оптимизации выгоднее единожды при создании компонента просчитывать статистические данные.
-            * Поэтому перебираем все сабордеры и просчитываем данные для каждого 
-            */
-            history() {
-                let history = this.$store.getters.history
+            orders() {
+                const compleated = this.$store.getters.orders.filter(i => i.status === 'END');
+                const orders = compleated.reduce((acc, _item) => {
+                    const item = copy(_item);
 
-                // history = history.filter(o => o.order_id > 1700) // Ограничитель
-                history = history.map(i => {
-                    i.subOrders = this.$store.getters.subOrders.filter(j => j.order_id === i.order_id)
-                    i.end_time = Math.max(...i.subOrders.map(j => Date.parse(j.end_time) || 0)) || Date.now()
-                    i.play_time = i.end_time > 0 ? timeFormat(i.end_time - Date.parse(i.start_time)) : 0
+                    // Отсеиваем завершенные
+                    if (item.id_rent == '133') {
+                        console.log('order', item)
+                    }
 
-                    const reduce = i.subOrders.reduce((acc, item) => {
-                        acc.bill += +item.bill_rent + +item.bill_access - +item.sale
-                        acc.sale += +item.sale
-                        return acc
-                    }, {bill: 0, sale: 0})
+                    item.customerName = this.getCustomerName(item.customer_id);
+                    item.end_time = this.getEndTime(item.id_rent);
+                    item.play_time = this.getTimePlay(item.start_time, item.end_time, item.id_rent);
+                    item.productName = this.getProductName(item.id_rent);
+                    item.bill = this.getBill(item.id_rent);
+                    item.formStatus = this.getStatus(item);
 
-                    i.bill = reduce.bill
-                    i.sale = reduce.sale
+                    acc.push(item);
+                    return acc;
+                }, []);
 
-                    return i
-                })
-
-                return history
+                return orders.sort((a, b) => Date.parse(b.end_time) - Date.parse(a.end_time));               
             },
+
+            // FOR TOTAL
+            currentSubOrders() {
+                const isCurrent = (endTime, subOrderId) => {
+                    const obj = new Date(endTime);
+
+                    if (!isValidDate(obj)) {
+                        console.warn('Totals: date parse error. subOrderId = ' + subOrderId);
+                        return false;
+                    }
+
+                    const today = new Date();
+
+                    return obj.getDate() === today.getDate()
+                        && obj.getMonth() === today.getMonth()
+                        && obj.getYear() === today.getYear();
+                };
+
+                return this.$store.getters.subOrders.filter(i => isCurrent(i.end_time, i.id_rent));
+            },
+            coin() {
+                const filterByCoin = this.currentSubOrders.filter(i => i.paid === 'coin');
+                return filterByCoin.reduce((acc, item) => {
+                    acc += +item.bill_rent + +item.bill_access - +item.sale;
+
+                    return acc;
+                }, 0);
+            },
+            card() {
+                const filterByCard = this.currentSubOrders.filter(i => i.paid === 'card');
+                return filterByCard.reduce((acc, item) => {
+                    acc += +item.bill_rent + +item.bill_access - +item.sale;
+                    return acc;
+                }, 0);
+            },
+            total() {
+                return this.coin + this.card;
+            }
         }
     }
 </script>
 
-<style scoped>
-    .history {
+<style lang="scss" scoped>
+    .history {        
+        h2 {
+            margin-top: 50px;
+        }
+        &__table {
+            td {
+                padding: 5px;
+            }
+            tr:not(:first-child):hover {
+                outline: 1px solid #333;
+                cursor: pointer;
+            }
+        }
     }
-    .history__table tr:not(:first-child):hover {
-        cursor: pointer;
-        box-shadow: 0px 0px 1px 0px;
-    }
+    .totals {
+        table {
+            width: 100%;
+        }
 
-    .black .history__table td {
-        padding: 5px 10px;
-    }
-    .history__td--time {
-        text-align: right;
+        td {
+            padding: 5px 10px;
+        }
     }
 </style>

@@ -17,14 +17,18 @@
         
         <button @click="newAccessory">Добавить</button>
 
-        <Details :data="accessory" @close="onClose" v-if="show"></Details>
+        <Details :payload="accessory" @close="onClose" v-if="show"></Details>
     </div>
 </template>
 <script>
-    import Details from './Details'
+    import Details from './Details';
+    import copy from '@/functions/copy';
     export default {
         components: {
             Details
+        },
+        beforeCreate() {
+            this.$store.dispatch('getAccessories');
         },
         data() {
             return {
@@ -38,17 +42,20 @@
                 this.show = false
             },
             onClick(accessory) {
-                this.accessory = accessory
-                this.show = true
+                this.accessory = copy(accessory);
+                this.accessory.is_new = true;
+                this.show = true;
             },
             newAccessory() {
-                this.show = true
-                this.accessory = {}
+                this.show = true;
+                this.accessory = {};
+                this.accessory.is_new = false;
+                this.accessory.type = 'rub';
             }
         },
         computed: {
             accessories() {
-                return this.$store.getters.accessories
+                return this.$store.getters.accessories;
             }
         }
         

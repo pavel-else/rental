@@ -1,6 +1,6 @@
 <template>
-    <div class="option option-products">
-        <template v-if="products.length">
+    <div class="products">
+        <template v-if="products && products.length">
             <table>
                 <tr v-for="product in products" :key="product.id_rent" @click="onClick(product)">
                     <td class="product__td--status">
@@ -49,6 +49,9 @@
             Bike,
             Photo
         },
+        beforeCreate() {
+            this.$store.dispatch('getProducts');
+        },
         data() {
             return {
                 showDetails: false,
@@ -85,18 +88,21 @@
                     cost:       0,
                     name:       '',
                     note:       null,
-                    status:     'free',
+                    status:     'active',
                     tariff_default: null,
                     tariff_ids: null,
-                    type: 1
+                    type: 1,
                 }
-
-                console.log('product', this.product)
             }
         },
         computed: {
             products() {
-                return this.$store.getters.products
+                const products = this.$store.getters.products;
+
+                // Filters
+                const notDeleted = (product) => product.status !== 'deleted';
+
+                return products.filter(i => notDeleted(i));
             }
         }
         
@@ -121,8 +127,9 @@
         text-align: center;
     }
 
-    .option-products {
+    .products {
         display: flex;
+        width: 700px;
     }
 
     .products__button--add {
@@ -143,7 +150,7 @@
     }
     .product__status--free {
     }
-    .product__status--busy {
+    .product__status--off {
         background-color: #333;
         border: 1px solid lightgray;
 

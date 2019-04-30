@@ -9,11 +9,11 @@
                 <table>
                     <tr>
                         <td>id</td>
-                        <td><input :value="product.id_rent" disabled></td>
+                        <td><input class="input" :value="product.id_rent" disabled></td>
                     </tr>
                     <tr>
                         <td>Название</td>
-                        <td><input v-model="product.name"></td>
+                        <td><input class="input" v-model="product.name"></td>
                     </tr>
                     <tr>
                         <td>Фото</td>
@@ -65,7 +65,7 @@
                     </tr>
                     <tr>
                         <td>Стоимость</td>
-                        <td><input v-model="product.cost"></td>
+                        <td><input class="input" v-model="product.cost"></td>
                     </tr>
                     <tr class="products_tr--tariffs">
                         <td>Тарифы,<br>по умолчанию</td>
@@ -78,30 +78,51 @@
                             </Tariffs>                            
                         </td>
                     </tr>
-                <!--<tr>
-                        <td>Категории</td>
+                <tr>
+                        <td>Категория</td>
                         <td>
-                            <Categories :data="product.categories" @setCategories="setCategories($event)"></Categories>
+                            <Categories :productCategory="product.category" @setCategories="setCategories($event)"></Categories>
                         </td>
-                    </tr> -->
+                    </tr> 
+                    <tr>
+                        <td>Описание</td>
+                        <td><textarea class="textarea" v-model="product.note"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Размер</td>
+                        <td><input class="input" v-model="product.size"></td>
+                    </tr>
                     <tr>
                         <td>Статус</td>
-                        <td>
-                            <select v-model="product.status">
-                                <option disabled value=""></option>
-                                <option value="free">free</option>
-                                <option value="fix">fix</option>
-                                <option value="busy">busy</option>
-                            </select>
+                        <td class="details__td details__td--status">
+                            <input 
+                                type="radio" 
+                                name="status" 
+                                value="active" 
+                                id="status_active"
+                                @click="checkStatus($event)" 
+                                :checked="product.status == 'active'"
+                            >
+                            <label for="status_active">Active</label>
+
+                            <input 
+                                type="radio" 
+                                name="status" 
+                                value="off" 
+                                id="status_off"
+                                @click="checkStatus($event)"
+                                :checked="product.status == 'off' || !product.status"
+                                >
+                            <label for="status_off">Off</label>
                         </td>
                     </tr>
                 </table>
             </form>
             
             <div class="btn-group">
-                <button @click="save" :disabled="!change">Сохранить</button>
+                <button @click="save">Сохранить</button>
                 <button @click="close">Отмена</button>
-                <button @click="remove" v-if="product.id_rent">Удалить</button>      
+                <button @click="remove" v-if="!product.newProduct">Удалить</button>      
             </div>
 
             <p class="products__updated" v-if="product.id_rent">Дата последнего изменения: {{ product.updated }}</p> 
@@ -144,17 +165,23 @@
             }
         },
         methods: {
+            checkStatus(status) {
+                this.product.status = status.target.value;
+            },
             check() {
                 if (!this.product.name) {
                     console.log('empty product name')
+                    alert('Укажите название товара')
                     return false
                 }
                 if (!this.product.tariff_ids) {
                     console.log('empty tariffs')
+                    alert('Укажите доступные тарифы')
                     return false
                 }
                 if (!this.product.tariff_default) {
                     console.log('empty tariff default')
+                    alert('Укажите тариф по умолчанию')
                     return false
                 }
 
@@ -165,7 +192,7 @@
                 const file = e.target.files[0]
                 const time = Math.floor(Date.now() / 1000)
                 const ext = getExtention(file.type)
-                const name = `${this.$store.getters.appID}_${this.product.id_rent}_${time}${ext}`
+                const name = `${ this.$store.getters.rentalPointInfo.id_rent }_${ this.product.id_rent }_${ time }${ ext }`
 
                 const formData = new FormData()
 
@@ -176,47 +203,36 @@
 
                 if (result) {
                     this.uploadStatus = 'Загрузка завершена'
-                    this.product.img = `${time}${ext}`
+                    this.product.img = `${ time }${ ext }`
                 } 
 
                 this.refresh = true     
             },
 
             save() {
-                this.product.updated = Math.floor(Date.now() / 1000)
-
-                //console.log(this.product)
+                this.product.updated = Math.floor(Date.now() / 1000);
 
                 if (!this.check()) {
-                    return
+                    return;
                 }
 
-                this.$store.dispatch('send', {
-                    cmd: 'setProduct',
-                    value: this.product
-                })
-
-                this.$emit('close')
+                this.$store.dispatch('setProduct', this.product);
+                this.$emit('close');
             },
             close() {
-                console.log('close')
                 if (!this.change) {
-                    this.$emit('close')
-                    return
+                    this.$emit('close');
+                    return;
                 }
 
                 if (confirm('Изменения не сохранены. Вы уверены, что хотите выйти?')) {
-                    this.$emit('close')
+                    this.$emit('close');
                 }
             },
             remove() {
                 if (confirm('Вы уверены, что хотите безвозвратно удалить товар?')) {
-                    this.$store.dispatch('send', {
-                        cmd: 'deleteProduct',
-                        value: this.product.id_rent
-                    })
-
-                    this.$emit('close')
+                    this.$store.dispatch('deleteProduct', this.product.id_rent);
+                    this.$emit('close');
                 }
             },
 
@@ -224,8 +240,6 @@
                 e.preventDefault()
 
                 this.change = true
-
-                //console.log(this.product)
             },
             setTariffs(ids) {
                 this.product.tariff_ids = ids
@@ -233,8 +247,8 @@
             setTariffDefault(id) {
                 this.product.tariff_default = id
             },
-            setCategories(ids) {
-                this.product.categories = ids
+            setCategories(categoryId) {
+                this.product.category = categoryId;
             },
             setColor(color) {
                 this.product.color = color
@@ -262,8 +276,10 @@
         margin-top: 30px;
         overflow-y: hidden;
     }
-    input {
-        width: 200px;
+    .input, 
+    textarea {
+        box-sizing: border-box;
+        width: 220px;
     }
     td {
         padding: 5px;
@@ -305,7 +321,20 @@
     .product__photo--label {
         display: flex;
         flex-direction: row;
+    }
 
+    .details__td--status {
+        /*box-sizing: border-box;*/
+        display: flex;
+
+    }
+    .details__td--status label {
+        margin-right: 10px;
+    }
+
+    .textarea {
+        resize: vertical;
+        min-height: 50px;
     }
 
 </style>

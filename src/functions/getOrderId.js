@@ -1,5 +1,5 @@
 export default {
     getOrderId() {
-        return Math.max(...this.$store.getters.history.map(o => +o.order_id), 0) + 1
+        return Math.max(...this.$store.getters.history.map(i => +i.id_rent), 0) + 1
     }    
 }

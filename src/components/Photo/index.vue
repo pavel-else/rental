@@ -18,10 +18,10 @@
                 }
 
                 const path = this.$store.getters.activePath
-                const appID = this.$store.getters.appID
+                const appID = this.$store.getters.rentalPointInfo.id_rent
                 const ext = this.product.img
                 const rand = this.refresh ? '?' + Math.floor(Math.random() * 1000000) : ''
-                const url = `${path}user_uploads/${appID}_${this.product.id_rent}_${ext}${rand}`
+                const url = `${ path }user_uploads/${ appID }_${ this.product.id_rent }_${ ext }${ rand }`
 
                 return url 
             },

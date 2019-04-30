@@ -5,7 +5,7 @@
                 <span v-if="customer.id">Сведения о клиенте</span>
                 <span v-else>Добавить нового клиента</span>
             </h3>
-            <form @click="onChange">
+            <form @input="onChange">
                 <table>
                     <tr v-if="customer.id">
                         <td>id</td>
@@ -14,7 +14,7 @@
                     <tr>
                         <td>Фамилия</td>
                         <td>
-                            <input type="text" v-model="C.fname" placeholder="Фамилия">
+                            <input type="text" v-model="C.fname" placeholder="Фамилия" ref="fname">
                         </td>
                     </tr>
                     <tr>
@@ -31,26 +31,26 @@
                     </tr>
                     <tr>
                         <td>Телефон</td>
-                        <td><input type="text" v-model="C.phone" placeholder="Номер мобильного телефона"></td>
+                        <td><input type="text" v-model="C.phone" placeholder="Номер мобильного телефона" ref="phone"></td>
                     </tr>
                     <tr>
                         <td>Паспорт</td>
-                        <td><input type="text" v-model="C.passport" placeholder="Серия и номер паспорта"></td>                
-                    </tr>
-                    <tr>
-                        <td>Адрес</td>                
-                        <td><input type="text" v-model="C.address" placeholder="Адрес"></td>
+                        <td><input type="text" v-model="C.passport" placeholder="Серия и номер паспорта" ref="pass"></td>                
                     </tr>
                     <tr>
                         <td>Дата рождения</td>                
                         <td><input type="date" v-model="C.birth_date" placeholder="Дата рождения"></td>
                     </tr>
                     <tr>
-                        <td>Скидка, %</td>                
+                        <td>Адрес</td>                
+                        <td><input type="text" v-model="C.address" placeholder="Адрес"></td>
+                    </tr>
+                    <tr>
+                        <td class="customer_td--sale">Скидка, %</td>                
                         <td><input type="text" v-model="C.sale" placeholder="Скидка, %"></td>
                     </tr>
                     <tr>
-                        <td>Баланс, р.</td>                
+                        <td class="customer_td--balance">Баланс, р.</td>                
                         <td><input type="text" v-model="C.balance" placeholder="Текущий баланс, руб"></td>
                     </tr>
                     <tr>
@@ -71,48 +71,73 @@
 </template>
 
 <script>
+    import copy from '@/functions/copy';
+    import Inputmask from 'inputmask';
+
     export default {
         props: {
             customer: Object,
         },
+        mounted() {
+            const makeInputMask = () => {
+                const phone = new Inputmask("+7 (999) 999-99-99");
+                phone.mask(this.$refs.phone);
+
+                const pass = new Inputmask("9999 999999");
+                pass.mask(this.$refs.pass);
+            };
+
+            makeInputMask();
+
+            const setFocus = () => {
+                if (!this.C.id_rent) {
+                    this.$nextTick(() => this.$refs.fname.focus());
+                }
+            };
+
+            setFocus();
+        },
         data() {
             return {
-                C: Object.assign({}, this.customer),
+                C: copy(this.customer),
                 change: false
             }
         },
         methods: {
             save() {
                 if (!this.C.fname) {
-                    alert("Введите фамилию")
+                    alert("Введите фамилию");
 
-                    return
+                    return false;
                 }
 
-                this.$store.dispatch('send', {
-                    cmd: 'setCustomer',
-                    value: this.C
-                })
+                const preparePhone = (phone) => {
+                    return phone.replace(/[^.\d]+/g, "");
+                };
 
+                this.C.phone = preparePhone(this.C.phone);
+
+                this.$store.dispatch('multipleRequest', [
+                    { cmd: 'setCustomer', value: this.C },
+                    { cmd: 'getCustomers' }
+                ]);
                
-                this.close()
+                this.close();
             },
             close() {
                 this.$emit('close')
             },
             toDelete() {
-                const id = this.C.id_rent
+                const id = this.C.id_rent;
 
-                if (confirm(`Вы действительно хотите удалить клиента #${id}?`)) {
-                    this.$store.dispatch('send', {
-                        cmd: 'deleteCustomer',
-                        value: id
-                    })
+                if (confirm(`Вы действительно хотите удалить клиента #${ id }?`)) {
+                    this.$store.dispatch('multipleRequest', [
+                        { cmd: 'deleteCustomer', value: id },
+                        { cmd: 'getCustomers' }
+                    ]);
                 }
                 
-                this.close()                    
-                // console.log(id)
-                //deleteCustomer
+                this.close();
             },
 
             onChange() {

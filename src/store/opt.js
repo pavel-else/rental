@@ -1,6 +1,5 @@
 export default {
     state: {
-        // url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
         cmds: [
             'getProducts',
             'getOrders', 
@@ -9,35 +8,40 @@ export default {
             'getTariffs', 
             'getCategories', 
             'getOptions', 
-            'getLogs'
+            'getLogs',
+            'getHeaders'
         ],
+        
+        // Необходимо для работы некоторых компонентов, например Картинок товара
+        app_id: null,
 
         // options передается на сервер
         options: {
-            app_id: 8800000001,
 
             rent_min_time:     0, //min
             rent_round_bill:   0,
 
             lastOrderID:       null,
             lastOrderTime:     null,
-            lastOrderInterval: 0, //ms 
+            lastOrderInterval: 180000, //ms 
 
             registration_time: 0,
         },
+        
         now: Date.now(),
 
-        activeBranch: 'dev',
-        // activeBranch: 'master',
 
+
+        // activeBranch: 'dev',
+        activeBranch: 'master',
         branch: {
-            dev: {
-                url: 'http://overhost.net/rental2/api_v1/ajax/Dev/request.php',
-                path: 'http://overhost.net/rental2/api_v1/ajax/Dev/'
-            },
             master: {
-                url: 'http://overhost.net/rental2/api_v1/ajax/App/request.php',
-                path: 'http://overhost.net/rental2/api_v1/ajax/App/'
+                url: 'https://rentix.biz/api/request.php',
+                path: 'https://rentix.biz/' // Параметр нужен для запросов user_uploads
+            },
+            dev: {
+                url: 'https://test.rentix.biz/api/request.php',
+                path: 'localhost:8080/'
             }
         },
     
@@ -115,13 +119,19 @@ export default {
         },
         now(state, date) {
             state.now = date
+        },
+        setAppId(state, appId) {
+            state.app_id = appId;
         }
     },
 
     actions: {
         startTimer({commit}) {
-            setInterval(() => {commit('now', Date.now())}, 1000)
+            setInterval(() => {commit('now', Date.now())}, 1000);
         },
+        setAppId(commit, appId) {
+            commit('setAppId', appId);
+        }
     },
 
     getters: {
@@ -156,7 +166,7 @@ export default {
         },
 
         appID(state) {
-            return state.options.app_id
+            return state.app_id;
         },
     }
 }
