@@ -118,6 +118,7 @@
     import SelectDeposit     from './SelectDeposit'
 
     export default {
+        name: "DetailsOrder",
         props: {
             product: Object
         },
@@ -420,7 +421,7 @@
     }
 </script>
 
-<style>
+<style lang="scss" scoped>
     .add-order {
         width: 400px;
         margin-top: 50px;
@@ -430,9 +431,11 @@
     .add-order td {
         padding: 5px 0;
     }
+
     .btn-group {
         margin-top: 20px;
     }
+
     .add-order__input {
         width: 300px;
         min-height: 40px;
@@ -441,55 +444,39 @@
         padding-left: 10px;
     }
 
-    .black .add-order__input--advance {
+    .add-order__input--advance {
         background-color: #000;
         border: 1px solid #333;
         color: rgba(255, 255, 255, 0.8);
     }
-    .white .add-order__input--advance {
-        background-color: rgba(255, 255, 255, 0.8);
-        border: 1px solid lightgray;
-    }
 
-    .black .add-order__input--note {
+    .add-order__input--note {
         resize: vertical;
         width: 101%;
         background-color: #000;
         border-color: #333;
         color: rgba(255, 255, 255, 0.8);
         font-family: Roboto Condensed;
+    }
+</style>
 
-    }
-    .white .add-order__input--note {
-        resize: vertical;
-        width: 98%;
-        border-color: lightgray;
-        color: #333;
-        font-family: Roboto Condensed;
-    }
+<style lang="scss">
+    /*Style to Multiple Select*/
+    .add-order {
+        .multiselect {
+            background-color: #000;
+            border-radius: 0;
+            border: 1px solid #333;
+        }
 
-    .black .multiselect {
-        background-color: #000;
-        border-radius: 0;
-        border: 1px solid #333;
-    }
-    .white .multiselect {
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 0;
-        border: 1px solid lightgray;
-    }  
+        .multiselect__tags {
+            background-color: #000;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+        }
 
-    .black .multiselect__tags {
-        background-color: #000;
-        border: none;
-        color: rgba(255, 255, 255, 0.8);
-    }  
-    .white .multiselect__tags {
-        background-color: rgba(255, 255, 255, 0.8);
-        border: none;
-        color: #333;
-    }
-    .black .multiselect__single {
-        background-color: #000;
+        .multiselect__single {
+            background-color: #000;
+        }    
     }
 </style>

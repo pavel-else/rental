@@ -148,6 +148,7 @@
     import copy from '@/functions/copy';
 
     export default {
+        name: "DetailsChangeOrder",
         props: {
             _order: Object,
             _subOrder: Object
@@ -452,7 +453,7 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     .change-order__datails {
         width: 420px;
         margin-top: 50px;
@@ -479,17 +480,13 @@
         padding-left: 10px;
     }
 
-    .black .add-order__input--advance {
+    .add-order__input--advance {
         background-color: #000;
         border: 1px solid #333;
         color: rgba(255, 255, 255, 0.8);
     }
-    .white .add-order__input--advance {
-        background-color: rgba(255, 255, 255, 0.8);
-        border: 1px solid lightgray;
-    }
 
-    .black .add-order__input--note {
+    .add-order__input--note {
         resize: vertical;
         width: 101%;
         background-color: #000;
@@ -498,36 +495,25 @@
         font-family: Roboto Condensed;
 
     }
-    .white .add-order__input--note {
-        resize: vertical;
-        width: 98%;
-        border-color: lightgray;
-        color: #333;
-        font-family: Roboto Condensed;
-    }
+</style>
 
-    .black .multiselect {
-        background-color: #000;
-        border-radius: 0;
-        border: 1px solid #333;
-    }
-    .white .multiselect {
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 0;
-        border: 1px solid lightgray;
-    }  
+<style lang="scss">
+    /*Style to Multiple Select*/
+    .change-order__datails {
+        .multiselect {
+            background-color: #000;
+            border-radius: 0;
+            border: 1px solid #333;
+        }
 
-    .black .multiselect__tags {
-        background-color: #000;
-        border: none;
-        color: rgba(255, 255, 255, 0.8);
-    }  
-    .white .multiselect__tags {
-        background-color: rgba(255, 255, 255, 0.8);
-        border: none;
-        color: #333;
-    }
-    .black .multiselect__single {
-        background-color: #000;
+        .multiselect__tags {
+            background-color: #000;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .multiselect__single {
+            background-color: #000;
+        }    
     }
 </style>

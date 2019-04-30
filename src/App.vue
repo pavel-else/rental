@@ -1,5 +1,5 @@
 <template> 
-    <div class="app black">
+    <div class="app">
         <div class="app__wrap">
             <adm-panel class="adm"></adm-panel>
             <div class="app__content">
@@ -35,15 +35,8 @@
         display: flex;
         justify-content: center;
         align-items: flex-start;
-    }
-
-    .app.black {
         background-color: #000;
         color: rgba(255, 255, 255, 0.8);        
-    }
-    .app.white {
-        background-color: rgba(255, 255, 255, 0.8);
-        color: rgba(0, 0, 0, 0.8);        
     }
 
     .app__wrap {
