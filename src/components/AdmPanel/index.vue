@@ -15,6 +15,7 @@
                     <li><router-link class="sub-item" to="/settings/tariffs/">Тарифы</router-link></li>
                     <li><router-link class="sub-item" to="/settings/products/">Товары</router-link></li>
                     <li><router-link class="sub-item" to="/settings/accessories/">Аксессуары</router-link></li>
+                    <li><router-link class="sub-item" to="/monitor/">Монитор</router-link></li>
                 </ul>
             </li>
             <li><router-link class="router-link" to="/repairs">Ремонт</router-link></li>
