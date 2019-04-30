@@ -27,7 +27,7 @@
     </div>
 </template>
 <script>
-    import * as Time from '@/functions/Time';
+    import * as Time from '@/functions/time';
     import copy from '@/functions/copy';
     export default {
         data() {

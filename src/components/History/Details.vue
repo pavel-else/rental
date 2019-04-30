@@ -150,7 +150,7 @@
 <script>
     import roundBill        from '@/functions/roundBill';
     import getBillAccessory from '@/functions/getBillAccessory';
-    import * as Time        from '@/functions/Time';
+    import * as Time        from '@/functions/time';
     import copy             from '@/functions/copy';
 
     export default {

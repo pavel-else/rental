@@ -125,7 +125,7 @@
     import getBillAccessory from '@/functions/getBillAccessory';
     import getSale          from '@/functions/getSale';
     import getMileage       from '@/functions/getMileage';
-    import * as Time        from '@/functions/Time';
+    import * as Time        from '@/functions/time';
     import copy             from '@/functions/copy';
 
     export default {

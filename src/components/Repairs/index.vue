@@ -83,7 +83,7 @@
 </template>
 <script>
     import copy from '@/functions/copy';
-    import * as Time from '@/functions/Time';
+    import * as Time from '@/functions/time';
     import Details from './Details';
     import BikeList from './BikeList';
     export default {

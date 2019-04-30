@@ -55,7 +55,7 @@
     import Totals           from '@/components/Totals';
     import timeFormat       from '@/functions/timeFormat';
     import copy             from '@/functions/copy';
-    import * as Time        from '@/functions/Time';
+    import * as Time        from '@/functions/time';
     import isValidDate      from '@/functions/isValidDate';
     import makeCustomerName from '@/functions/makeCustomerName';
 

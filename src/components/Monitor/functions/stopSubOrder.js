@@ -4,7 +4,7 @@ import getSale from '@/functions/getSale'
 //import activateProduct from './activateProduct'
 import roundBill from '@/functions/roundBill'
 
-import * as Time from '@/functions/Time';
+import * as Time from '@/functions/time';
 
 export default {
     stopSubOrder(order, subOrder, send) {

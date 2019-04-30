@@ -139,7 +139,7 @@
     import pause             from '../functions/pause'
     import TotalResume       from '../TotalResume';
     import ResumeForOne      from '../ResumeForOne';
-    import * as Time         from '@/functions/Time';
+    import * as Time         from '@/functions/time';
     import getMileage        from '@/functions/getMileage';
 
     import copy from '@/functions/copy';

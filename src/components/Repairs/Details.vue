@@ -72,7 +72,7 @@
 <script>
     import copy from '@/functions/copy';
     import shortDate from '@/functions/shortDate';
-    import * as Time from '@/functions/Time';
+    import * as Time from '@/functions/time';
 
     export default {
         props: {
