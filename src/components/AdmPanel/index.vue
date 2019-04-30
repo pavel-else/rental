@@ -18,7 +18,15 @@
                     <li><router-link class="sub-item" to="/monitor/">Монитор</router-link></li>
                 </ul>
             </li>
-            <li><router-link class="router-link" to="/repairs">Ремонт</router-link></li>
+            <li class="list__item">
+                <router-link class="router-link" to="/repairs">Ремонт</router-link>
+                <ul class="sublist">
+                    <li><router-link class="sub-item" to="/repairs/">Плановое ТО</router-link></li>
+                    <li><router-link class="sub-item" to="/repairs/">В ремонте</router-link></li>
+                    <li><router-link class="sub-item" to="/repairs/">История</router-link></li>
+                    <li><router-link class="sub-item" to="/repairs/settings/">Настройки</router-link></li>
+                </ul>
+            </li>
         </ul>
     </div>
 </template>
