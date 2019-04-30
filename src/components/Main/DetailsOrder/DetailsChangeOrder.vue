@@ -122,8 +122,6 @@
                 <button class="details__close" @click.prevent="close"></button>
             </form>
 
-            <Print v-if="print" :order="order" @close="closePrint"></Print>
-
             <TotalResume v-if="showTotalResume" :_order="order" @close="close()"></TotalResume>
             <ResumeForOne v-if="showResumeForOne" :_order="order" :_subOrder="subOrder" @close="close()"></ResumeForOne>
         </div>
@@ -137,7 +135,6 @@
     import SelectTariff      from './SelectTariff'
     import SelectPromotion   from './SelectPromotion'
     import SelectDeposit     from './SelectDeposit'
-    import Print             from './Print'
     import stopSubOrder      from '../functions/stopSubOrder'
     import pause             from '../functions/pause'
     import TotalResume       from '../TotalResume';
@@ -161,7 +158,6 @@
             SelectTariff,
             SelectPromotion,
             SelectDeposit,
-            Print,
             TotalResume,
             ResumeForOne
         },
@@ -231,10 +227,10 @@
             },
 
             toPrint() {
-                this.print = true
+                this.$store.dispatch('setOrderToPrint', this.order);
             },
             closePrint() {
-                this.print = false
+                this.$store.dispatch('unsetOrderToPrint');
             },
             getTime(subOrder) {
                 const start = Date.parse(this.order.start_time);
