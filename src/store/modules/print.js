@@ -23,10 +23,7 @@ export default {
         },
         unsetOrderToPrint({ commit }, order) {
             console.log('dispatch: unsetOrderToPrint');
-
-            return new Promise((resolve, reject) => {
-                commit('orderToPrint', null);
-            });
+            commit('orderToPrint', null);
         },
     }
 }
