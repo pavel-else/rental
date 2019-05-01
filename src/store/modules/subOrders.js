@@ -20,6 +20,14 @@ export default {
         activeSubOrders(state, activeSubOrders) {
             console.log('commit: activeSubOrders', activeSubOrders);
             state.activeSubOrders = activeSubOrders;
+        },        
+        unsetActiveSubOrders(state) {
+            console.log('commit: unsetActiveSubOrders');
+            state.activeSubOrders = [];
+        },        
+        unsetSubOrders(state) {
+            console.log('commit: unsetSubOrders');
+            state.subOrders = [];
         },
     },
     actions: {

@@ -25,6 +25,14 @@ export default {
 
             state.activeCategory = category;
         },
+        unsetCategories(state) {
+            console.log('commit: unsetCategories');
+            state.categories = [];
+        },
+        unsetActiveCategories(state) {
+            console.log('commit: unsetActiveCategories');
+            state.activeCategories = false;
+        },
 
     },
     actions: {

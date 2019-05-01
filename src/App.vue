@@ -23,6 +23,13 @@
             admPanel,
             Print
         },
+        beforeCreate() {
+            if (this.$store.getters.isAuthenticated) {
+                this.$store.dispatch('initStore');
+            } else {
+                this.$router.push('/#/login');
+            }
+        },
         created() {        
             // Обновление таймеров
             this.$store.dispatch('startTimer');

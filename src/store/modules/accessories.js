@@ -14,7 +14,11 @@ export default {
         accessories(state, accessories) {
             console.log('commit: accessories', accessories);
             state.accessories = accessories;
-        }
+        },
+        unsetAccessories(state) {
+            console.log('commit: unsetAccessories');
+            state.accessories = [];
+        },
     },
     actions: {
         getAccessories({ commit, getters }) {

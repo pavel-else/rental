@@ -20,7 +20,15 @@ export default {
         activeOrders(state, activeOrders) {
             console.log('commit: activeOrders', activeOrders);
             state.activeOrders = activeOrders;
-        }
+        },
+        unsetOrders(state) {
+            console.log('commit: unsetOrders');
+            state.orders = [];
+        },
+        unsetActiveOrders(state) {
+            console.log('commit: unsetActiveOrders');
+            state.activeOrders = [];
+        },
     },
     actions: {
         getOrders({ commit, getters }) {
@@ -111,6 +119,6 @@ export default {
                     reject(err);
                 })
             }); 
-        }
+        },
     },
 }

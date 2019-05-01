@@ -28,9 +28,9 @@ export default {
     login() {
       const { id, password } = this;
 
-      this.$store.dispatch('AUTH_REQUEST', { id, password })
+      this.$store.dispatch('authRequest', { id, password })
       .then(() => {
-        
+        this.$store.dispatch('initStore');      
         this.$router.push('/');
       })
       .catch((err) => {

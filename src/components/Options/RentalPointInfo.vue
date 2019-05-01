@@ -77,8 +77,7 @@
                 .then(this.showMessage('Данные обновлены'));
             },
             logout() {
-                this.$store.dispatch('AUTH_LOGOUT');
-                this.$store.dispatch('REBOOT_APP_INIT_STATUS');
+                this.$store.dispatch('authLogout');
                 this.$router.push('/Login');
             },
             showMessage(message) {
@@ -117,8 +116,5 @@
         width: 100%;
         display: inline-flex;
         justify-content: space-between;
-        align-items: 
-    }
-    .option-general__button {
     }
 </style>

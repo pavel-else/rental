@@ -23,6 +23,8 @@ export default {
                         case 'general_settings'  : commit('generalSettings', data[i]); break;
                         case 'rental_point_info' : commit('rentalPointInfo', data[i]); break;
                         case 'categories'        : commit('categories'     , data[i]); break;
+                        case 'repairs'           : commit('repairs'        , data[i]); break;
+                        case 'repair_types'      : commit('repairTypes'    , data[i]); break;
 
                         case 'logs' : break;
 

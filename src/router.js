@@ -2,17 +2,18 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 
-import Main      from './components/Main'
-import History   from './components/History'
-import Customers from './components/Customers'
-import Repairs   from './components/Repairs'
+import Main              from '@/components/Main';
+import History           from '@/components/History';
+import Customers         from '@/components/Customers';
+import Repairs           from '@/components/Repairs';
+import RepairsSettings   from '@/components/Repairs/RepairsSettings';
 
 import RentalPointInfo from '@/components/Options/RentalPointInfo';
 import GeneralSettings from '@/components/Options/GeneralSettings';
 import Tariffs         from '@/components/Tariffs';
 import Accessories     from '@/components/Accessories';
 import Products        from '@/components/Products';
-import Monitor        from '@/components/Monitor/Monitor';
+import Monitor         from '@/components/Monitor/Monitor';
 
 const Login = () => import('@/views/Login');
 const LoginByToken = () => import('@/components/LoginByToken');
@@ -92,8 +93,20 @@ export default new Router({
         },
         {
             path: '/repairs',
-            component: Repairs,
+            component: {
+                render(c) { return c('router-view') }
+            },
             beforeEnter: ifAuthenticated,
+            children: [
+                {
+                    path: '',
+                    component: Repairs
+                },
+                {
+                    path: 'settings',
+                    component: RepairsSettings
+                },
+            ]
         },
         {
             path: '/login',

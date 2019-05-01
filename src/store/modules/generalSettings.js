@@ -28,7 +28,17 @@ export default {
             for (let i in settings) {
                 state[i] = settings[i];
             }
-        }
+        },
+        unsetGeneralSettings(state) {
+            console.log('commit: unsetGeneralSettings'); 
+
+            state.rent_min_time = 0; 
+            state.rent_round_bill = 0;
+            state.lastOrderID = null;
+            state.lastOrderTime = null;
+            state.lastOrderInterval = 180000;
+            state.registration_time = 0;
+        },
     },
     actions: {
         getGeneralSettings({ commit, getters }) {

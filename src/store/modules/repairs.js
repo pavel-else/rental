@@ -21,7 +21,15 @@ export default {
         repairTypes(state, repairTypes) {
             console.log('commit: repairTypes', repairTypes);
             state.repairTypes = repairTypes;
-        }
+        },
+        unsetRepairs(state) {
+            console.log('commit: unsetRepairs');
+            state.repairs = [];
+        },
+        unsetRepairTypes(state) {
+            console.log('commit: unsetRepairTypes');
+            state.repairTypes = [];
+        },
     },
     actions: {
         getRepairs({ commit, getters }) {
