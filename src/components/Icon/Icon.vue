@@ -48,13 +48,7 @@
     .fill {
         width: 100%;
         height: 100%;
-        background-color: rgba(256,256,256,0.8);
-    }
-    .white .fill {
-        background-color: rgba(256,256,256,0.8);
-    }
-    .black .fill {
-        background-color: rgba(0,0,0,0.75);
+        background-color: rgba(0,0,0,0.6);
     }
 
     .d0 {

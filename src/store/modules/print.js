@@ -16,12 +16,9 @@ export default {
     actions: {
         setOrderToPrint({ commit }, order) {
             console.log('dispatch: setOrderToPrint', order);
-
-            return new Promise((resolve, reject) => {
-                commit('orderToPrint', order);
-            });
+            commit('orderToPrint', order);
         },
-        unsetOrderToPrint({ commit }, order) {
+        unsetOrderToPrint({ commit }) {
             console.log('dispatch: unsetOrderToPrint');
             commit('orderToPrint', null);
         },

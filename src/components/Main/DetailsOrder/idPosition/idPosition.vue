@@ -87,44 +87,36 @@
     }
 </script>
 
-<style>
+<style lang="scss" scoped>
     .btns {
         width: 120px;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
-    }
-    .black .btns {
         border: 1px solid #333;
-    }
-    .white .btns {
-        border: 1px solid lightgray;
-    }
+        .btn {
+            width: 25px;
+            height: 25px;
+        /*background-color: #eee;*/
+            box-sizing: border-box;
+            margin: 2px;
+            font-size: 12px;
+            text-align: center;
+            &:hover {
+                outline: 1px solid lightgray;
+                cursor: pointer;
+            }
+        }
+        .active {
+            outline: 1px solid red;
+        }
+        .select {
+            outline: 1px solid red;
+        }
 
-    .btn {
-        width: 25px;
-        height: 25px;
-      /*background-color: #eee;*/
-        box-sizing: border-box;
-        margin: 2px;
-        font-size: 12px;
-        text-align: center;
+        .icon {
+            width: 100%;
+            height: 100%;       
+        }
     }
-    .btn:hover {
-        outline: 1px solid lightgray;
-        cursor: pointer;
-    }
-    .active {
-        outline: 1px solid red;
-    }
-    .select {
-        outline: 1px solid red;
-    }
-
-    .icon {
-        width: 100%;
-        height: 100%;       
-    }
-
-
 </style>
