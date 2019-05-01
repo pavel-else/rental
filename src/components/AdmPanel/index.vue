@@ -32,6 +32,11 @@
                     <li class="menu__item">
                         <router-link class="menu__link" to="/monitor/">Монитор</router-link>
                     </li>
+                    <li class="menu__item">
+                        <router-link class="menu__link" to="/login/">
+                            <span @click="logout()">Выйти из приложения</span>
+                        </router-link>
+                    </li>
                 </ul>
             </li>
             <li class="menu__item">
@@ -77,6 +82,11 @@
         name: 'admPanel',
         components: {
             RentalCategories
+        },
+        methods: {
+            logout() {
+                this.$store.dispatch('authLogout');
+            }
         },
         computed: {
             planRepairs() {

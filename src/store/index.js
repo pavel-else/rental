@@ -3,9 +3,8 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import options         from './opt'
-import auth            from './auth-module'
-import initApp           from './init-app-module'
 
+import auth            from './modules/auth';
 import RentalPointInfo from './modules/rentalPointInfo';
 import Repairs         from './modules/repairs';
 import GeneralSettings from './modules/generalSettings';
@@ -19,6 +18,7 @@ import history         from './modules/history';
 import multipleRequest from './modules/multipleRequest';
 import categories      from './modules/categories';
 import print           from './modules/print';
+import initStore       from './modules/initStore';
 
 
 
@@ -27,6 +27,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     // strict: true,
     modules: {
+        initStore,
         subOrders,
         customers,
         orders,
@@ -34,7 +35,6 @@ const store = new Vuex.Store({
         categories,
         history,
         auth,
-        initApp,
         RentalPointInfo,
         Repairs,
         GeneralSettings,

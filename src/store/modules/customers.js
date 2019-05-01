@@ -41,7 +41,11 @@ export default {
             console.log('commit: customers', customers);
 
             state.customers = customers;
-        }
+        },
+        unsetCustomers(state) {
+            console.log('commit: unsetCustomers');
+            state.customers = [];
+        },
     },
     actions: {
         getCustomers({ commit, getters }) {

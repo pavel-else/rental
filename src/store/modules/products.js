@@ -18,7 +18,11 @@ export default {
         products(state, products) {
             console.log('commit: products', products);
             state.products = products;
-        }
+        },
+        unsetProducts(state) {
+            console.log('commit: unsetProducts');
+            state.products = [];
+        },
     },
     actions: {
         getProducts({ commit, getters }) {

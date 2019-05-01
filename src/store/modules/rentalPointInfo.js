@@ -9,7 +9,7 @@ export default {
         close: null,
         phone: null,
         description: null,
-        coordinates: null
+        coordinates: null,
     },
     getters: {
         rentalPointInfo(state) {
@@ -22,7 +22,17 @@ export default {
             for (let i in rentalPointInfo) {
                 state[i] = rentalPointInfo[i];
             }
-        }
+        },        
+        unsetRentalPointInfo(state) {
+            console.log('commit: unsetRentalPointInfo');            
+            state.name = null;
+            state.address = null;
+            state.open = null;
+            state.close = null;
+            state.phone = null;
+            state.description = null;
+            state.coordinates = null;
+        },
     },
     actions: {
         getRentalPointInfo({ commit, getters }) {

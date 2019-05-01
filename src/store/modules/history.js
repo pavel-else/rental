@@ -35,7 +35,12 @@ export default {
             }) : []
 
             state.history = history
-        }
+        },
+        unsetHistory(state) {
+            console.log('commit: unsetHistory');
+            state.history = [];
+        },
+
     },
     actions: {
         getHistory({ commit, getters }) {

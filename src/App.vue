@@ -24,19 +24,11 @@
             Print
         },
         beforeCreate() {
-            this.$store.dispatch('multipleRequest', [
-                { cmd: 'getActiveOrders' },
-                { cmd: 'getActiveSubOrders' },
-                { cmd: 'getProducts' },
-                { cmd: 'getCustomers' },
-                { cmd: 'getTariffs' },
-                { cmd: 'getCategories' },
-                { cmd: 'getAccessories' },
-                { cmd: 'getGeneralSettings' },
-                { cmd: 'getRentalPointInfo' },
-                { cmd: 'getRepairs' },
-                { cmd: 'getRepairTypes' },
-            ]);
+            if (this.$store.getters.isAuthenticated) {
+                this.$store.dispatch('initStore');
+            } else {
+                this.$router.push('/#/login');
+            }
         },
         created() {        
             // Обновление таймеров
