@@ -36,11 +36,24 @@
             </li>
             <li class="menu__item">
                 <router-link class="menu__link" to="/repairs">
-                    <span class="sign sign__warn"></span>Ремонт
+                    <span 
+                        class="sign sign__warn"
+                        v-if="isThereAnyPlanRepairs"
+                        :title="countPlanRepairs + 'шт'"
+                    ></span>
+                    Ремонт
                 </router-link>
                 <ul class="menu__sublist">
                     <li class="menu__item">
-                        <router-link class="menu__link" to="/repairs/">Плановое ТО</router-link>
+                        <router-link class="menu__link" to="/repairs/">
+                            <span 
+                                class="sign sign__warn"
+                                v-if="isThereAnyPlanRepairs"
+                                :title="countPlanRepairs + 'шт'"
+                            ></span>
+                            Плановое ТО
+                            <span v-if="countPlanRepairs"> ({{ countPlanRepairs }})</span>
+                        </router-link>
                     </li>
                     <li class="menu__item">
                         <router-link class="menu__link" to="/repairs/">В ремонте</router-link>
@@ -58,13 +71,24 @@
 </template>
 <script>
     import RentalCategories from './RentalCategories';
+    import getPlanRepairs   from '@/components/Repairs/getPlanRepairs';
+
     export default {
         name: 'admPanel',
         components: {
             RentalCategories
         },
-        beforeCreate() {
-            this.$store.dispatch('getCategories');
+        computed: {
+            planRepairs() {
+                return getPlanRepairs(this.$store);
+            },
+            isThereAnyPlanRepairs() {
+                return this.planRepairs.length > 0;
+            },
+            countPlanRepairs() {
+                return this.planRepairs.length;
+            }
+
         }
     }
 </script>

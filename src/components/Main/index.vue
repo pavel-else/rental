@@ -20,6 +20,10 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
             orderList,
             DetailsOrder
         },
+        created() {
+            // Костыль
+            this.updateOrders();
+        },
         data() {
             return {
                 product: {},
@@ -27,23 +31,6 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
                 subOrder: null,
                 show: false,
             }
-        },
-        created() {
-            const queue = [
-                { cmd: 'getActiveOrders' }, 
-                { cmd: 'getActiveSubOrders' }, 
-                { cmd: 'getProducts' }, 
-                { cmd: 'getTariffs' }, 
-                { cmd: 'getCustomers' }, 
-                { cmd: 'getAccessories' },
-                { cmd: 'getGeneralSettings' },
-                { cmd: 'getRentalPointInfo' },
-                { cmd: 'getCategories' },
-            ];
-
-            this.$store.dispatch('multipleRequest', queue);
-
-            this.updateOrders();
         },
         methods: {
             addOrder(product) {
