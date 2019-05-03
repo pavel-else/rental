@@ -26,7 +26,6 @@
     </div>
 </template>
 <script>
-    import copy from '@/functions/copy';
     import getPlanRepairs from './getPlanRepairs';
     import Details from './Details';
 

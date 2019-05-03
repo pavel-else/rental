@@ -109,6 +109,10 @@ export default new Router({
                     component: RepairsPlan
                 },
                 {
+                    path: 'history',
+                    component: () => import('@/components/Repairs/RepairsHistory'),
+                },
+                {
                     path: 'settings',
                     component: RepairsSettings
                 },
