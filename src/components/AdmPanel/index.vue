@@ -113,7 +113,6 @@
             countCurrentRepairs() {
                 return this.currentRepairs.length;
             },
-
         }
     }
 </script>

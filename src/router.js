@@ -97,6 +97,10 @@ export default new Router({
             beforeEnter: ifAuthenticated,
             children: [
                 {
+                    path: '/',
+                    redirect: 'plan'
+                },
+                {
                     path: 'plan',
                     component: () => import('@/components/Repairs/RepairsPlan'),
                 },
