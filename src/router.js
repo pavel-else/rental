@@ -6,9 +6,6 @@ import Main              from '@/components/Main';
 import History           from '@/components/History';
 import Customers         from '@/components/Customers';
 import Repairs           from '@/components/Repairs';
-import RepairsPlan       from '@/components/Repairs/RepairsPlan';
-
-import RepairsSettings   from '@/components/Repairs/RepairsSettings';
 
 import RentalPointInfo from '@/components/Options/RentalPointInfo';
 import GeneralSettings from '@/components/Options/GeneralSettings';
@@ -106,7 +103,11 @@ export default new Router({
                 },
                 {
                     path: 'plan',
-                    component: RepairsPlan
+                    component: () => import('@/components/Repairs/RepairsPlan'),
+                },
+                {
+                    path: 'current',
+                    component: () => import('@/components/Repairs/RepairsCurrent'),
                 },
                 {
                     path: 'history',
@@ -114,7 +115,7 @@ export default new Router({
                 },
                 {
                     path: 'settings',
-                    component: RepairsSettings
+                    component: () => import('@/components/Repairs/RepairsSettings'),
                 },
             ]
         },

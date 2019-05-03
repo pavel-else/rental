@@ -61,7 +61,7 @@
                         </router-link>
                     </li>
                     <li class="menu__item">
-                        <router-link class="menu__link" to="/repairs/">В ремонте</router-link>
+                        <router-link class="menu__link" to="/repairs/current">В ремонте</router-link>
                     </li>
                     <li class="menu__item">
                         <router-link class="menu__link" to="/repairs/history/">История</router-link>

@@ -49,7 +49,6 @@
             },
             select(item) {                
                 this.$emit('select', item);
-                this.$emit('close');
             },
             shortDate(date) {
                 // return date;

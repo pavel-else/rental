@@ -1,13 +1,12 @@
 <template>
     <div class="repairs">
-        <input type="" name="" placeholder="Начните вводить название" @input="search()">
-
         <div class="table__wrap">
             <div class="caption-wrap">
-                <h2 class="repairs__caption">Завершено </h2>
-                <small> {{ compleatedRepairs.length }} шт</small>
+                <h2 class="repairs__caption">В ремонте</h2>
+                <small> {{ currentRepairs.length }} шт</small>
+                <button @click="newRepair()">Добавить в ремонт</button>            
             </div>
-            <table class="repairs__table" v-if="show === 'repairs'">
+            <table class="repairs__table">
                 <tr>
                     <th></th>
                     <th>Название</th>
@@ -15,58 +14,65 @@
                     <th colspan="2">Стоимость комплектующих <br>и работы</th>
                     <th>Примечание</th>
                     <th>Начало</th>
-                    <th>Конец</th>
                 </tr>
-                <tr v-for="item in compleatedRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
-                    <td class="repairs__td col--sign"><span class="sign sign--end"></span></td>
+                <tr v-for="item in currentRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
+                    <td class="repairs__td col--sign"><span class="sign sign--act"></span></td>
                     <td class="repairs__td col--name">{{ item.product_name }}</td>
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
                     <td class="repairs__td">{{ item.cost_comp }}</td>
                     <td class="repairs__td">{{ item.cost_work }}</td>
                     <td class="repairs__td col--note">{{ item.note | formNote }}</td>
                     <td class="repairs__td col--start">{{ item.start_time | shortDate }}</td>                
-                    <td class="repairs__td col--start">{{ item.end_time | shortDate }}</td>                
                 </tr>
             </table>
         </div>
 
         <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
+        <BikeList v-if="show === 'bikeList'" @close="show = 'repairs'" @select="addBikeToNewRepair($event)"></BikeList>
     </div>
 </template>
 <script>
     import copy from '@/functions/copy';
     import * as Time from '@/functions/time';
     import Details from './Details';
+    import BikeList from './BikeList';
 
     export default {
         components: {
             Details,
+            BikeList
         },
         data() {
             return {
                 filt: i => i,
                 repair: {},
-                show: 'repairs', // repairs || details
+                show: 'repairs', // repairs || details || bikeList
             }
         },
         methods: {
-            search() {
-                // Метод просто обновляет фильтр, через который Vue пропускает список ремонтов в шаблоне
-                const searchText = event.target.value;
-
-                this.filt = repair => {
-                    const product = this.$store.getters.products.find(i => i.id_rent === repair.product_id);
-                    const name = product ? product.name : '';
-
-                    return name.toUpperCase().indexOf(searchText.toUpperCase()) >= 0;
-                };
-            },
             changeRepair(repair) {
                 this.repair = repair;
                 this.show = 'details';
             },
+            newRepair() {
+                this.repair = {
+                    cost_work: 0,
+                    cost_comp: 0,
+                    start_time: new Date(),
+                    repair_type: null
+                };
 
-            // Методы вспомогательные для свойства compleatedRepairs
+                this.repair.isNew = true;
+                this.repair.isPlan = false;
+                this.show = 'bikeList';
+            },
+            addBikeToNewRepair(item) {
+                this.repair.product_id = item.id_rent;
+                this.repair.product_name = item.name;
+                this.show = 'details';
+            },
+
+            // Методы вспомогательные для свойства currentRepairs
             getProductName(product_id) {
                 const product = this.$store.getters.products.find(i => i.id_rent === product_id);
                 return product ? product.name : '';
@@ -75,27 +81,24 @@
                 const repairType = this.$store.getters.repairTypes.find(i => i.id_rent === id_rent);
                 return repairType ? repairType.name : '';
             },
-            sortByStart(repairs) {
-                return repairs ? repairs.sort((a, b) => {
-                    return Date.parse(b.end_time) - Date.parse(a.end_time);
-                }) : [];
-            },
         },
         computed: {
-            compleatedRepairs() {
+            currentRepairs() {
                 const repairs = this.$store.getters.repairs;
-                const filter = copy(repairs.filter(i => i.end_time));
-                const sort = this.sortByStart(filter);
-                const map = sort.map(i => {
+                const filter = copy(repairs.filter(i => !i.end_time));
+                return filter.map(i => {
                     i.product_name = this.getProductName(i.product_id);
                     i.repair_type_name = this.getRepairTypeName(i.repair_type);
+                    i.mileage = this.$store.getters.products.find(product => product.id_rent === i.product_id).mileage;
                     return i;
                 });
-
-                return map;  
-            }
+            },
         },
         filters: {
+            // Округление проката
+            round(mileage) {
+                return mileage ? Math.round(mileage) : 0;
+            },
             shortDate(date) {
                 return Time.format('DD.MM.YY', date);
             },
@@ -133,7 +136,10 @@
     .repairs__caption {
         font-size: 20px;
     }
+    .repairs__caption:hover {
+        cursor: pointer;
 
+    }
     .repairs__table {
         /*outline: 1px solid #333;*/
         border-collapse: collapse;
