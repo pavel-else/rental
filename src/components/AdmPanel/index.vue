@@ -50,7 +50,7 @@
                 </router-link>
                 <ul class="menu__sublist">
                     <li class="menu__item">
-                        <router-link class="menu__link" to="/repairs/">
+                        <router-link class="menu__link" to="/repairs/plan/">
                             <span 
                                 class="sign sign__warn"
                                 v-if="isThereAnyPlanRepairs"

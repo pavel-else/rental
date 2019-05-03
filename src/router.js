@@ -6,6 +6,8 @@ import Main              from '@/components/Main';
 import History           from '@/components/History';
 import Customers         from '@/components/Customers';
 import Repairs           from '@/components/Repairs';
+import RepairsPlan       from '@/components/Repairs/RepairsPlan';
+
 import RepairsSettings   from '@/components/Repairs/RepairsSettings';
 
 import RentalPointInfo from '@/components/Options/RentalPointInfo';
@@ -101,6 +103,10 @@ export default new Router({
                 {
                     path: '',
                     component: Repairs
+                },
+                {
+                    path: 'plan',
+                    component: RepairsPlan
                 },
                 {
                     path: 'settings',
