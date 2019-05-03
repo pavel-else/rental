@@ -34,8 +34,8 @@
 <script>
     import copy from '@/functions/copy';
     import * as Time from '@/functions/time';
-    import Details from './Details';
-    import BikeList from './BikeList';
+    import Details from './details';
+    import BikeList from './bikeList';
 
     export default {
         components: {
@@ -108,81 +108,6 @@
         }
     }
 </script>
-<style scoped>
-    .repairs {
-        width: 900px;
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 100px;
-    }
-
-    .table__wrap {
-        display: flex;
-        flex-direction: column;
-        padding-top: 50px;
-    }
-
-    .caption-wrap {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-    }
-    .caption-wrap small {
-        margin-left: 10px;
-    }
-    .caption-wrap button {
-        margin-left: 50px;
-    }
-    .repairs__caption {
-        font-size: 20px;
-    }
-    .repairs__caption:hover {
-        cursor: pointer;
-
-    }
-    .repairs__table {
-        /*outline: 1px solid #333;*/
-        border-collapse: collapse;
-        border: none;
-        padding: 10px;
-    }
-    .repairs__td {
-        border: 1px solid #333;
-        padding: 5px;
-    }
-    .repairs tr:not(:first-child):hover {
-        cursor: pointer;
-        background-color: #333;
-    }
-    .col--sign {
-        width: 15px;
-        border: none;
-    }
-    .col--name {
-        width: 150px;
-    }
-    .col--note {
-        font-size: 14px;
-    }
-    .sign {
-        display: block;
-        width: 4px;
-        height: 4px;
-        border: 1px solid;
-        border-radius: 50%;
-    }
-    .sign--end {
-        border-color: red;
-    }
-    .sign--warn {
-        border-color: orange;
-    }
-    .sign--act {
-        border-color: green;
-    }
-
-    .showbtn {
-        padding: 3px;
-        text-align: center;
-    }
+<style lang="scss" >
+    @import './style.scss';
 </style>

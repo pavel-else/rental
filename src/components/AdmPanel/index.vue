@@ -123,7 +123,6 @@
         &__item {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             position: relative;
         }
         &__link {
@@ -163,16 +162,16 @@
         .router-link-exact-active {
             border: 2px solid #333;
         }
-    }
-    
-
+    }    
+</style>
+<style lang="scss" scoped>
     .sign {
         display: inline-block;
         position: absolute;
-        left: 5px;
+        left: 8px;
         width: 5px;
         height: 5px;
-        margin: 5px 5px 1px 0;
+        margin: 5px 0 0 0;
         padding: 0;
         border: 1px solid white;
         border-radius: 50%;

@@ -5,7 +5,6 @@ import store from '@/store'
 import Main              from '@/components/Main';
 import History           from '@/components/History';
 import Customers         from '@/components/Customers';
-import Repairs           from '@/components/Repairs';
 
 import RentalPointInfo from '@/components/Options/RentalPointInfo';
 import GeneralSettings from '@/components/Options/GeneralSettings';
@@ -97,10 +96,6 @@ export default new Router({
             },
             beforeEnter: ifAuthenticated,
             children: [
-                {
-                    path: '',
-                    component: Repairs
-                },
                 {
                     path: 'plan',
                     component: () => import('@/components/Repairs/RepairsPlan'),
