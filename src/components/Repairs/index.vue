@@ -19,7 +19,7 @@
                     <td class="repairs__td col--sign"><span class="sign sign--warn"></span></td>
                     <td class="repairs__td col--name">{{ item.product_name }}</td>
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
-                    <td class="repairs__td">{{ item.mileage }}<span v-if="item.last_repair_mileage"></span></td>
+                    <td class="repairs__td">{{ item.mileage | round }} ч.<span v-if="item.last_repair_mileage"></span></td>
                 </tr>
             </table>            
         </div>
@@ -212,6 +212,12 @@
                 });
 
                 return map;  
+            }
+        },
+        filters: {
+            // Округление проката
+            round(mileage) {
+                return mileage ? Math.round(mileage) : 0;
             }
         }
     }

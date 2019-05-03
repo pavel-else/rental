@@ -1,4 +1,5 @@
 const getMileage = (time /*ms*/, tariff) => {
+    // Тариф нужен для правильного вычисления пробега на посуточных и других не часовых тарифных планах
     if (!tariff || !tariff.type) {
         return false;
     }
