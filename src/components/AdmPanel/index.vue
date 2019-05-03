@@ -50,21 +50,26 @@
                 </router-link>
                 <ul class="menu__sublist">
                     <li class="menu__item">
-                        <router-link class="menu__link" to="/repairs/">
+
+                        <router-link class="menu__link" to="/repairs/plan/">
                             <span 
                                 class="sign sign__warn"
                                 v-if="isThereAnyPlanRepairs"
                                 :title="countPlanRepairs + 'шт'"
                             ></span>
                             Плановое ТО
-                            <span v-if="countPlanRepairs"> ({{ countPlanRepairs }})</span>
+
+                            <span v-if="isThereAnyPlanRepairs"> ({{ countPlanRepairs }})</span>
                         </router-link>
                     </li>
                     <li class="menu__item">
-                        <router-link class="menu__link" to="/repairs/">В ремонте</router-link>
+                        <router-link class="menu__link" to="/repairs/current">
+                        В ремонте
+                        <span v-if="isThereAnyCurrentRepairs"> ({{ countCurrentRepairs }})</span>
+                        </router-link>
                     </li>
                     <li class="menu__item">
-                        <router-link class="menu__link" to="/repairs/">История</router-link>
+                        <router-link class="menu__link" to="/repairs/history/">История</router-link>
                     </li>
                     <li class="menu__item">
                         <router-link class="menu__link" to="/repairs/settings/">Настройки</router-link>
@@ -97,8 +102,19 @@
             },
             countPlanRepairs() {
                 return this.planRepairs.length;
-            }
+            },
 
+            currentRepairs() {
+                const repairs = this.$store.getters.repairs;
+                const filter = repairs.filter(i => !i.end_time);
+                return filter;
+            },
+            isThereAnyCurrentRepairs() {
+                return this.currentRepairs.length > 0;
+            },
+            countCurrentRepairs() {
+                return this.currentRepairs.length;
+            },
         }
     }
 </script>
@@ -108,6 +124,7 @@
         &__item {
             margin: 0;
             padding: 0;
+            position: relative;
         }
         &__link {
             padding: 5px 20px;
@@ -120,10 +137,11 @@
             }
         }
         &__item:hover &__sublist {
+            border: 0;
             position: absolute;
             display: none;
             flex-direction: column;
-            margin: 6px 0;
+            margin: 5px 0 0 0;
             outline: 1px solid #333;
             background-color: #000;
             align-items: stretch;
@@ -145,14 +163,17 @@
         .router-link-exact-active {
             border: 2px solid #333;
         }
-    }
-    
 
+    }    
+</style>
+<style lang="scss" scoped>
     .sign {
         display: inline-block;
+        position: absolute;
+        left: 8px;
         width: 5px;
         height: 5px;
-        margin: 0 5px 1px 0;
+        margin: 5px 0 0 0;
         padding: 0;
         border: 1px solid white;
         border-radius: 50%;

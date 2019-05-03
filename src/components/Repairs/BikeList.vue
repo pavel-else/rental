@@ -17,8 +17,8 @@
                 </tr>
                 <tr v-for="item in products.filter(filt)" :key="item.id_rent" @click="select(item)">
                     <td>{{ item.name }}</td>
-                    <td>{{ item.mileage > 0 ? item.mileage + ' ч': ''}}</td>
-                    <td>{{ shortDate(item.last_repair_time) }}</td>
+                    <td style="text-align: right">{{ item.mileage | round }} ч.</td>
+                    <td>{{ item.last_repair_time | shortDate }}</td>
                 </tr>
             </table>
             
@@ -49,12 +49,7 @@
             },
             select(item) {                
                 this.$emit('select', item);
-                this.$emit('close');
             },
-            shortDate(date) {
-                // return date;
-                return Time.format('DD MMMM YYYY', date);
-            }
         },
         computed: {
             // выводит список продуктов с учетом их последнего ремонта
@@ -88,6 +83,15 @@
                     return i;
                 });
             }
+        },
+        filters: {
+            round(mileage) {
+                return mileage ? Math.round(mileage) : 0;
+            },
+            shortDate(date) {
+                // return date;
+                return Time.format('DD MMMM YYYY', date);
+            },
         }
     }
 </script>

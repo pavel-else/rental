@@ -76,11 +76,11 @@
 
     export default {
         props: {
-            payload: Object, // Repair
+            _repair: Object, // Repair
         },
         data() {
             return {
-                repair: copy(this.payload),
+                repair: copy(this._repair),
             }
         },
         methods: {

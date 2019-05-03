@@ -5,8 +5,6 @@ import store from '@/store'
 import Main              from '@/components/Main';
 import History           from '@/components/History';
 import Customers         from '@/components/Customers';
-import Repairs           from '@/components/Repairs';
-import RepairsSettings   from '@/components/Repairs/RepairsSettings';
 
 import RentalPointInfo from '@/components/Options/RentalPointInfo';
 import GeneralSettings from '@/components/Options/GeneralSettings';
@@ -99,12 +97,24 @@ export default new Router({
             beforeEnter: ifAuthenticated,
             children: [
                 {
-                    path: '',
-                    component: Repairs
+                    path: '/',
+                    redirect: 'plan'
+                },
+                {
+                    path: 'plan',
+                    component: () => import('@/components/Repairs/RepairsPlan'),
+                },
+                {
+                    path: 'current',
+                    component: () => import('@/components/Repairs/RepairsCurrent'),
+                },
+                {
+                    path: 'history',
+                    component: () => import('@/components/Repairs/RepairsHistory'),
                 },
                 {
                     path: 'settings',
-                    component: RepairsSettings
+                    component: () => import('@/components/Repairs/RepairsSettings'),
                 },
             ]
         },
