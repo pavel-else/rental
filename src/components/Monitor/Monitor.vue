@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import productList  from './product-list'
-import orderList    from './order-list'
-import DetailsOrder from './DetailsOrder/DetailsOrder'
+import productList  from '@/components/Main/product-list';
+import orderList    from '@/components/Main/order-list';
+import DetailsOrder from '@/components/Main/DetailsOrder/DetailsOrder';
 
     export default {
         components: {

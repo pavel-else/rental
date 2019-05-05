@@ -103,8 +103,6 @@
 </template>
 
 <script>
-    import getOrderId        from '@/functions/getOrderId'
-    import getSubOrderId     from '@/functions/getSubOrderId'
     import copy              from '@/functions/copy'
     import makeCustomerName   from '@/functions/makeCustomerName';
 
@@ -175,9 +173,6 @@
         },
         
         methods: {
-            ...getOrderId,
-            ...getSubOrderId,
-
             isSerial() {
                 /*
                 * Функция определяет, является ли новый сабордер новым заказом или же это часть предыдущего ордера
@@ -252,7 +247,7 @@
 
                 this.order.status              = 'ACTIVE'
                 this.order.start_time          = Date.now() + this.registrationTime
-                this.order.id_rent             = null;//this.getOrderId()
+                this.order.id_rent             = null;
                 this.order.order_id_position   = order_id_position || this.getPosition('new')
 
                 const customer = this.getCustomer();
