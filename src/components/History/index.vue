@@ -109,8 +109,14 @@
                 return customer ? makeCustomerName(customer) : '';
             },
             getProductName(orderId) {
-                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
-                const firstProductId = subOrders && subOrders.length > 0 ? subOrders[0].product_id : false;
+                const notDel = subOrder => subOrder.status != 'DEL';
+                const byOrderId = subOrder => subOrder.order_id === orderId;
+
+                const subOrders = this.$store.getters.subOrders.filter(i => byOrderId(i) && notDel(i));
+
+                const firstProductId = subOrders && subOrders.length > 0 
+                    ? subOrders[0].product_id 
+                    : false;
 
                 if (!subOrders || subOrders.length < 1 || !firstProductId) {
                     return '';

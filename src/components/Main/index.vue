@@ -49,7 +49,7 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
                     ];
 
                     this.$store.dispatch('multipleRequest', queue);
-                }, 5000);
+                }, 10000);
             }
         },
     }

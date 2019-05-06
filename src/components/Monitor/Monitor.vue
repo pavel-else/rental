@@ -23,14 +23,6 @@ import DetailsOrder from '@/components/Main/DetailsOrder/DetailsOrder';
             orderList,
             DetailsOrder
         },
-        data() {
-            return {
-                product: {},
-                order: {},
-                subOrder: null,
-                show: false,
-            }
-        },
         created() {
             const queue = [
                 { cmd: 'getActiveOrders' }, 
@@ -47,6 +39,14 @@ import DetailsOrder from '@/components/Main/DetailsOrder/DetailsOrder';
             this.$store.dispatch('multipleRequest', queue);  
 
             this.updateOrders();             
+        },
+        data() {
+            return {
+                product: {},
+                order: {},
+                subOrder: null,
+                show: false,
+            }
         },
         methods: {
             addOrder(product) {
@@ -65,7 +65,7 @@ import DetailsOrder from '@/components/Main/DetailsOrder/DetailsOrder';
                     ];
 
                     this.$store.dispatch('multipleRequest', queue);
-                }, 5000);
+                }, 10000);
             }
         },
 
