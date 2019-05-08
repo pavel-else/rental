@@ -163,10 +163,11 @@
                 const subOrdersByOrderId = subOrders.filter(i => i.order_id === orderId && i.status !== 'DEL');
                 const products = subOrdersByOrderId.map(subOrder => {
                     const product = this.$store.getters.products.find(product => product.id_rent === subOrder.product_id);
-                    return product;
+
+                    return product ? product : null;
                 });
 
-                return products;
+                return products.filter(i => i); // В списке есть удаленные товары, т.е. i === null
             },
             getBill(orderId) {
                 const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
