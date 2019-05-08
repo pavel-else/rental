@@ -1,6 +1,6 @@
 <template>
     <div class="repairs">
-        <input type="" name="" placeholder="Начните вводить название" @input="search()">
+        <input placeholder="Начните вводить название" @input="search()">
 
         <div class="table__wrap">
             <div class="caption-wrap">
@@ -54,7 +54,7 @@
                 // Метод просто обновляет фильтр, через который Vue пропускает список ремонтов в шаблоне
                 const searchText = event.target.value;
 
-                this.filt = repair => {
+                this.filt = (repair) => {
                     const product = this.$store.getters.products.find(i => i.id_rent === repair.product_id);
                     const name = product ? product.name : '';
 

@@ -8,13 +8,14 @@
                     <td>По карте: {{ card }} руб.</td>
                     <td>Всего: {{ total }} руб.</td>
                 </tr>
-
             </table>
         </div>
 
+        <input class="input__serch" placeholder="Начните вводить фамилию или название" @input="search()">
+
         <h2>История заказов</h2>
         <table class="history__table" v-if="orders && orders.length > 0" cellspacing="0">
-            <tr>
+            <tr class="tr__caption">
                 <th>id</th>
                 <th>ФИО</th>
                 <th>Начало</th>
@@ -23,24 +24,26 @@
                 <th>Стоимость</th>
             </tr>
 
-            <tr v-for="item in orders" :key="item.id_rent" @click="onClick(item)">
+            <tr v-for="order in orders.filter(filt)" :key="order.id_rent" @click="onClick(order)">
                 <td>
-                    {{ item.id_rent }}
+                    {{ order.id_rent }}
                 </td>
                 <td>                    
-                    {{ item.customerName }}                
+                    {{ order.customerName }}                
                 </td>
                 <td style="text-align: right">
-                    {{ shortDate(item.start_time) }}
+                    {{ shortDate(order.start_time) }}
                 </td>
                 <td style="text-align: right">
-                    {{ item.play_time }}
+                    {{ order.play_time }}
                 </td>
                 <td style="padding-left: 20px">
-                    {{ item.productName }}
+                    <div class="product" v-for="(product, index) in order.products" :key="order.id_rent + '_' + product.id_rent + '_' + index">
+                        {{ product.name }}
+                    </div>
                 </td>
                 <td style="text-align: right">
-                    {{ item.bill }} руб
+                    {{ order.bill }} руб
                 </td>
             </tr>
         </table>
@@ -75,10 +78,57 @@
         data() {
             return {
                 order: {},
-                show: false
+                show: false,
+                filt: i => i,
             }
         },
         methods: {
+            search() {
+                // Метод просто обновляет фильтр, через который Vue пропускает список
+                const searchText = event.target.value.trim();
+
+                this.filt = order => {
+                    const products = this.getProducts(order.id_rent);
+
+                    const productMutches = products.filter(product => {
+                        const name = product ? product.name : '';
+                        return name.toUpperCase().indexOf(searchText.toUpperCase()) >= 0;
+                    });
+
+                    if (productMutches && productMutches.length > 0) {
+                        return true;
+                    }
+
+                    // Поиск среди ФИО
+                    const customerMutches = order.customerName.toUpperCase().indexOf(searchText.toUpperCase()) >= 0;
+
+                    if (customerMutches) {
+                        return true;
+                    }
+                };
+            },
+            onClick(order) {
+                this.order = order;
+                this.show = true;
+            },
+            onClose() {
+                this.show = false;
+            },
+            shortDate(date) {
+                const now = new Date();
+                const today = now.getDate();
+                const orderDate = new Date(date);
+
+                if (!isValidDate(orderDate)) {
+                    return 'Ошибка парсинга';
+                }
+
+                const format = orderDate.getDate() === today ? 'HH:mm' : 'DD MMMM YYYY';
+
+                return Time.format(format, orderDate);
+            },
+
+            // Блок вспомогательных методов для свойства orders
             getEndTime(orderId) {
                 const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
                 const end_time = subOrders.reduce((acc, item) => {
@@ -108,26 +158,15 @@
                 }
                 return customer ? makeCustomerName(customer) : '';
             },
-            getProductName(orderId) {
-                const notDel = subOrder => subOrder.status != 'DEL';
-                const byOrderId = subOrder => subOrder.order_id === orderId;
+            getProducts(orderId) {
+                const subOrders = this.$store.getters.subOrders;
+                const subOrdersByOrderId = subOrders.filter(i => i.order_id === orderId && i.status !== 'DEL');
+                const products = subOrdersByOrderId.map(subOrder => {
+                    const product = this.$store.getters.products.find(product => product.id_rent === subOrder.product_id);
+                    return product;
+                });
 
-                const subOrders = this.$store.getters.subOrders.filter(i => byOrderId(i) && notDel(i));
-
-                const firstProductId = subOrders && subOrders.length > 0 
-                    ? subOrders[0].product_id 
-                    : false;
-
-                if (!subOrders || subOrders.length < 1 || !firstProductId) {
-                    return '';
-                }
-
-                const product = this.$store.getters.products.find(i => i.id_rent === firstProductId);
-                const firstName = product ? product.name : '';
-
-                return subOrders.length > 1 
-                    ? firstName + ' и еще ' + (subOrders.length - 1)
-                    : firstName;
+                return products;
             },
             getBill(orderId) {
                 const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
@@ -158,28 +197,6 @@
 
                 return timeFormat(end_time - start_time);
             },
-            shortDate(date) {
-                const now = new Date();
-                const today = now.getDate();
-                const orderDate = new Date(date);
-
-                if (!isValidDate(orderDate)) {
-                    return 'Ошибка парсинга';
-                }
-
-                const format = orderDate.getDate() === today ? 'HH:mm' : 'DD MMMM YYYY';
-
-                return Time.format(format, orderDate);
-            },
-
-
-            onClick(order) {
-                this.order = order;
-                this.show = true;
-            },
-            onClose() {
-                this.show = false;
-            },
         },
         computed: {
             orders() {
@@ -190,11 +207,12 @@
                     item.customerName = this.getCustomerName(item.customer_id);
                     item.end_time = this.getEndTime(item.id_rent);
                     item.play_time = this.getTimePlay(item.start_time, item.end_time, item.id_rent);
-                    item.productName = this.getProductName(item.id_rent);
+                    item.products = this.getProducts(item.id_rent);
                     item.bill = this.getBill(item.id_rent);
                     item.formStatus = this.getStatus(item);
 
                     acc.push(item);
+
                     return acc;
                 }, []);
 
@@ -243,17 +261,29 @@
 </script>
 
 <style lang="scss" scoped>
-    .history {        
+    .history {
+        .input__serch {
+            width: 100%;
+            margin-top: 25px;
+        }        
         h2 {
             margin-top: 50px;
         }
         &__table {
             td {
-                padding: 5px;
+                padding: 5px 15px;
+                vertical-align: top;              
             }
             tr:not(:first-child):hover {
                 outline: 1px solid #333;
                 cursor: pointer;
+
+            }
+            .tr__caption th {
+                padding: 10px 0;
+            }
+            .product {
+                padding-bottom: 5px;
             }
         }
     }
