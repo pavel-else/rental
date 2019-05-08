@@ -23,7 +23,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Тип ремонта <span title="Обязательно к заполнению">*</span>
+                    <td>Тип ремонта <span title="Обязательно к заполнению">*</span></td>
+                    <td>
                         <select v-model="repair.repair_type">
                             <option value="null" disabled>Выбрать</option>
                             <option v-for="item in planTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
@@ -125,7 +126,7 @@
         }
     }
 </script>
-<style scoped>
+<style lang="scss" scoped>
     .details {
 /*        display: flex;
         flex-direction: column;
@@ -134,14 +135,22 @@
         margin-top: 30px;
         margin-bottom: 100px;
         overflow-y: hidden;
-    }
-    .details td {
-        padding: 5px;
-    }
-    .details input,
-    .details textarea,
-    .details select {
-        width: 100%;
-        box-sizing: border-box;
+
+        td {
+            padding: 5px;
+        }
+
+        & input,
+        & textarea,
+        & select {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
     }
 </style>
