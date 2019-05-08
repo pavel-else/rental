@@ -52,6 +52,7 @@
         methods: {
             changeRepair(repair) {
                 this.repair = repair;
+                this.repair.isNew = true;
                 this.show = 'details';
             },
             newRepair() {

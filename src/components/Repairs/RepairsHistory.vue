@@ -63,6 +63,7 @@
             },
             changeRepair(repair) {
                 this.repair = repair;
+                this.repair.isNew = false;
                 this.show = 'details';
             },
 
