@@ -187,11 +187,6 @@
                 const orders = compleated.reduce((acc, _item) => {
                     const item = copy(_item);
 
-                    // Отсеиваем завершенные
-                    if (item.id_rent == '133') {
-                        console.log('order', item)
-                    }
-
                     item.customerName = this.getCustomerName(item.customer_id);
                     item.end_time = this.getEndTime(item.id_rent);
                     item.play_time = this.getTimePlay(item.start_time, item.end_time, item.id_rent);

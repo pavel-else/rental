@@ -9,7 +9,8 @@ export default {
         lastOrderTime:     null,
         lastOrderInterval: 180000, //ms 
 
-        registration_time: 0
+        registration_time: 0,
+        timeToUpdateMonitor: 0, //ms
     },
     getters: {
         generalSettings(state) {
@@ -38,6 +39,7 @@ export default {
             state.lastOrderTime = null;
             state.lastOrderInterval = 180000;
             state.registration_time = 0;
+            state.timeToUpdateMonitor = 0;
         },
     },
     actions: {

@@ -36,9 +36,7 @@ import DetailsOrder from '@/components/Main/DetailsOrder/DetailsOrder';
                 { cmd: 'getCategories' },
             ];
 
-            this.$store.dispatch('multipleRequest', queue);  
-
-            this.updateOrders();             
+            this.$store.dispatch('multipleRequest', queue);             
         },
         data() {
             return {
@@ -56,19 +54,8 @@ import DetailsOrder from '@/components/Main/DetailsOrder/DetailsOrder';
             },
             onClose() {
                 this.show = false
-            },
-            updateOrders() {
-                setInterval(() => {
-                    const queue = [
-                        { cmd: 'getActiveOrders' },
-                        { cmd: 'getActiveSubOrders' }
-                    ];
-
-                    this.$store.dispatch('multipleRequest', queue);
-                }, 10000);
             }
-        },
-
+        }
     }
 </script>
 

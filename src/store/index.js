@@ -2,25 +2,24 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-import options         from './opt'
+import options          from './opt'
 
-import auth            from './modules/auth';
-import RentalPointInfo from './modules/rentalPointInfo';
-import Repairs         from './modules/repairs';
-import GeneralSettings from './modules/generalSettings';
-import Accessories     from './modules/accessories';
-import Tariffs         from './modules/tariffs';
-import Products        from './modules/products';
-import subOrders       from './modules/subOrders';
-import orders          from './modules/orders';
-import customers       from './modules/customers';
-import history         from './modules/history';
-import multipleRequest from './modules/multipleRequest';
-import categories      from './modules/categories';
-import print           from './modules/print';
-import initStore       from './modules/initStore';
-
-
+import auth             from './modules/auth';
+import RentalPointInfo  from './modules/rentalPointInfo';
+import Repairs          from './modules/repairs';
+import GeneralSettings  from './modules/generalSettings';
+import Accessories      from './modules/accessories';
+import Tariffs          from './modules/tariffs';
+import Products         from './modules/products';
+import subOrders        from './modules/subOrders';
+import orders           from './modules/orders';
+import customers        from './modules/customers';
+import history          from './modules/history';
+import multipleRequest  from './modules/multipleRequest';
+import categories       from './modules/categories';
+import print            from './modules/print';
+import initStore        from './modules/initStore';
+import autoUpdateOrders from './modules/autoUpdateOrders';
 
 Vue.use(Vuex)
 
@@ -42,7 +41,8 @@ const store = new Vuex.Store({
         Tariffs,
         Products,
         multipleRequest,
-        print
+        print,
+        autoUpdateOrders
     },
 
     actions: {
