@@ -37,6 +37,20 @@ import DetailsOrder from './DetailsOrder/DetailsOrder';
             onClose() {
                 this.show = false
             },
+            updateOrders() {
+                const timeToUpdateMonitor = this.$store.getters.getGeneralSettings.timeToUpdateMonitor;
+
+                if (timeToUpdateMonitor > 0) {
+                    setInterval(() => {
+                        const queue = [
+                            { cmd: 'getActiveOrders' },
+                            { cmd: 'getActiveSubOrders' }
+                        ];
+
+                        this.$store.dispatch('multipleRequest', queue);
+                    }, timeToUpdateMonitor * 1000);
+                }
+            }
         },
     }
 </script>
