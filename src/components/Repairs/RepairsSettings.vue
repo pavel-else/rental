@@ -34,6 +34,5 @@
 				return this.$store.getters.repairTypes;
 			}
 		}
-		
 	}
 </script>
