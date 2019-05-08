@@ -109,8 +109,14 @@
                 return customer ? makeCustomerName(customer) : '';
             },
             getProductName(orderId) {
-                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
-                const firstProductId = subOrders && subOrders.length > 0 ? subOrders[0].product_id : false;
+                const notDel = subOrder => subOrder.status != 'DEL';
+                const byOrderId = subOrder => subOrder.order_id === orderId;
+
+                const subOrders = this.$store.getters.subOrders.filter(i => byOrderId(i) && notDel(i));
+
+                const firstProductId = subOrders && subOrders.length > 0 
+                    ? subOrders[0].product_id 
+                    : false;
 
                 if (!subOrders || subOrders.length < 1 || !firstProductId) {
                     return '';
@@ -180,11 +186,6 @@
                 const compleated = this.$store.getters.orders.filter(i => i.status === 'END');
                 const orders = compleated.reduce((acc, _item) => {
                     const item = copy(_item);
-
-                    // Отсеиваем завершенные
-                    if (item.id_rent == '133') {
-                        console.log('order', item)
-                    }
 
                     item.customerName = this.getCustomerName(item.customer_id);
                     item.end_time = this.getEndTime(item.id_rent);

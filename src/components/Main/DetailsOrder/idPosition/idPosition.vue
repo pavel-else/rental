@@ -22,8 +22,7 @@
     </div>
 </template>
 
-<script>
-    import getOrderId from '@/functions/getOrderId'
+<script> 
     import Icon from '../../../Icon/Icon'
 
     export default {
@@ -41,8 +40,6 @@
             }
         },
         methods: {
-            ...getOrderId,
-
             onClick(item, order_id_position) {
                 const id_rent = item.id_rent
 

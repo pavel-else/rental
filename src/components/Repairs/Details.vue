@@ -3,8 +3,7 @@
         <div class="details details--repair">
             <h3>
                 <span v-if="repair.isNew">Новый ремонт</span>
-                <span v-if="!repair.isNew && !repair.end_time">Редактировать ремонт</span>
-                <span v-if="!repair.isNew && repair.end_time">Детальная информация</span>
+                <span v-if="!repair.isNew">Детальная информация</span>
             </h3>            
             <table>
                 <tr>
@@ -25,7 +24,7 @@
                 </tr>
                 <tr>
                     <td>Тип ремонта <span title="Обязательно к заполнению">*</span></td>
-                    <td v-if="repair.isNew && !repair.isPlan">
+                    <td>
                         <select v-model="repair.repair_type">
                             <option value="null" disabled>Выбрать</option>
                             <option v-for="item in planTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
@@ -33,37 +32,31 @@
                             <option v-for="item in simpleTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
                         </select>
                     </td>
-                    <td v-else>
-                        <span>{{ repair.repair_type_name }}</span>
-                    </td>
                 </tr>
                 <tr>
                     <td>Стоимость комплектующих</td>
                     <td>
-                        <span v-if="repair.end_time">{{ repair.cost_comp }}р</span>
-                        <input v-else v-model="repair.cost_comp">
+                        <input v-model="repair.cost_comp">
                     </td>
                 </tr>
                 <tr>
                     <td>Стоимость работы</td>
                     <td>
-                        <span v-if="repair.end_time">{{ repair.cost_work }}р</span>
-                        <input v-else v-model="repair.cost_work">
+                        <input v-model="repair.cost_work">
                     </td>
                 </tr>
                 <tr>
-                    <td>Примечание <span v-if="repair.repair_type === '0'" title="Обязательно к заполнению">*</span></td>
+                    <td>Примечание</td>
                     <td>
-                        <span v-if="repair.end_time">{{ repair.note }}</span>
-                        <textarea v-else v-model="repair.note"></textarea>
+                        <textarea v-model="repair.note"></textarea>
                     </td>
                 </tr>
             </table>
 
-            <div class="btn-group" v-if="!repair.end_time">
+            <div class="btn-group">
                 <button @click="save">Сохранить</button>
                 <button @click="close">Отмена</button>
-                <button v-if="!repair.isNew" @click="stop">Завершить ремонт</button>      
+                <button v-if="repair.isNew" @click="stop">Завершить ремонт</button>      
             </div>
             <div class="details__close" @click="close"></div>
         </div>
@@ -133,7 +126,7 @@
         }
     }
 </script>
-<style scoped>
+<style lang="scss" scoped>
     .details {
 /*        display: flex;
         flex-direction: column;
@@ -142,14 +135,22 @@
         margin-top: 30px;
         margin-bottom: 100px;
         overflow-y: hidden;
-    }
-    .details td {
-        padding: 5px;
-    }
-    .details input,
-    .details textarea,
-    .details select {
-        width: 100%;
-        box-sizing: border-box;
+
+        td {
+            padding: 5px;
+        }
+
+        & input,
+        & textarea,
+        & select {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
     }
 </style>

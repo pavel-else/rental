@@ -50,7 +50,6 @@
                 </router-link>
                 <ul class="menu__sublist">
                     <li class="menu__item">
-
                         <router-link class="menu__link" to="/repairs/plan/">
                             <span 
                                 class="sign sign__warn"
@@ -58,7 +57,6 @@
                                 :title="countPlanRepairs + 'шт'"
                             ></span>
                             Плановое ТО
-
                             <span v-if="isThereAnyPlanRepairs"> ({{ countPlanRepairs }})</span>
                         </router-link>
                     </li>
@@ -163,7 +161,6 @@
         .router-link-exact-active {
             border: 2px solid #333;
         }
-
     }    
 </style>
 <style lang="scss" scoped>

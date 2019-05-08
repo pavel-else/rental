@@ -10,19 +10,15 @@
 </template>
 
 <script>
-import productList  from './product-list'
-import orderList    from './order-list'
-import DetailsOrder from './DetailsOrder/DetailsOrder'
+import productList  from './product-list';
+import orderList    from './order-list';
+import DetailsOrder from './DetailsOrder/DetailsOrder';
 
     export default {
         components: {
             productList,
             orderList,
             DetailsOrder
-        },
-        created() {
-            // Костыль
-            this.updateOrders();
         },
         data() {
             return {
@@ -41,16 +37,6 @@ import DetailsOrder from './DetailsOrder/DetailsOrder'
             onClose() {
                 this.show = false
             },
-            updateOrders() {
-                setInterval(() => {
-                    const queue = [
-                        { cmd: 'getActiveOrders' },
-                        { cmd: 'getActiveSubOrders' }
-                    ];
-
-                    this.$store.dispatch('multipleRequest', queue);
-                }, 5000);
-            }
         },
     }
 </script>
