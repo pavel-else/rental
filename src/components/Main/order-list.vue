@@ -69,10 +69,6 @@
             @close="showResume = false" 
         >
         </Resume>
-
-        <!-- {{ orders }}
-        <hr>
-        {{ subOrders }} -->
     </div>
 </template>
 
@@ -419,7 +415,7 @@
         width: 240px;
     }
     .td-4 {
-        width: 90px;
+        width: 100px;
     }
     .td-5 {
         width: 70px;
