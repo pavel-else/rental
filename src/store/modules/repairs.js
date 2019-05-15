@@ -133,5 +133,65 @@ export default {
                 });
             });
         },
+        setRepairType({ commit, getters }, repairType) {
+            console.log('dispatch: setRepairType', repairType);
+
+            return new Promise((resolve, reject) => {
+                const queue = [
+                    { cmd: 'setRepairType', value: repairType },
+                    { cmd: 'getRepairTypes' },
+                ];
+                const url = getters.url;
+                const token = localStorage.getItem('user-token');
+
+                axios({ 
+                    url,
+                    data: {
+                        queue,
+                        token
+                    },
+                    method: 'POST',
+                })
+                .then(resp => {
+                    console.log(resp);
+                    commit('repairTypes', resp.data.repair_types);
+                    resolve(resp);                        
+                }).
+                catch(err => {
+                    console.log(err)
+                    reject(err);
+                });
+            });
+        },
+        deleteRepairType({ commit, getters }, repairTypeId) {
+            console.log('dispatch: deleteRepairType', repairTypeId);
+
+            return new Promise((resolve, reject) => {
+                const queue = [
+                    { cmd: 'deleteRepairType', value: repairTypeId },
+                    { cmd: 'getRepairTypes' },
+                ];
+                const url = getters.url;
+                const token = localStorage.getItem('user-token');
+
+                axios({ 
+                    url,
+                    data: {
+                        queue,
+                        token
+                    },
+                    method: 'POST',
+                })
+                .then(resp => {
+                    console.log(resp);
+                    commit('repairTypes', resp.data.repair_types);
+                    resolve(resp);                        
+                }).
+                catch(err => {
+                    console.log(err)
+                    reject(err);
+                });
+            });
+        },
     }
-}
+};

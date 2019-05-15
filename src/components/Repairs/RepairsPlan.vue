@@ -28,7 +28,7 @@
 
 <script>
     import getPlanRepairs from './getPlanRepairs';
-    import Details from './details';
+    import Details from './repairDetails';
 
     export default {
         components: {
@@ -66,7 +66,7 @@
                 return mileage ? Math.round(mileage) : 0;
             }
         }
-    }
+    };
 </script>
 
 <style lang="scss" >

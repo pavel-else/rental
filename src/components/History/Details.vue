@@ -280,7 +280,7 @@
                 //return +this.order.advance - this.paidCard - this.paidCoin - this.offBalance;
             }
         }
-    }
+    };
 </script>
 
 <style lang="scss" scoped>
