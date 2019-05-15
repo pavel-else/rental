@@ -36,7 +36,7 @@
 <script>
     import copy from '@/functions/copy';
     import * as Time from '@/functions/time';
-    import Details from './details';
+    import Details from './repairDetails';
 
     export default {
         components: {

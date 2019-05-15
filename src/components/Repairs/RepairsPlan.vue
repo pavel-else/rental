@@ -28,7 +28,7 @@
 
 <script>
     import getPlanRepairs from './getPlanRepairs';
-    import Details from './details';
+    import Details from './repairDetails';
 
     export default {
         components: {
