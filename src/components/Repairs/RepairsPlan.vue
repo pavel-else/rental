@@ -66,7 +66,8 @@
                 return mileage ? Math.round(mileage) : 0;
             }
         }
-    }
+
+    };
 </script>
 
 <style lang="scss" >
