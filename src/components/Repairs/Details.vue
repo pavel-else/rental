@@ -124,13 +124,10 @@
                 return sorted;
             },
         }
-    }
+    };
 </script>
 <style lang="scss" scoped>
     .details {
-/*        display: flex;
-        flex-direction: column;
-        align-items: stretch;*/
         width: 400px;
         margin-top: 30px;
         margin-bottom: 100px;
