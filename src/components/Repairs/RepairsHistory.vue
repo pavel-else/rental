@@ -9,7 +9,6 @@
             </div>
             <table class="repairs__table" v-if="show === 'repairs'">
                 <tr>
-                    <th></th>
                     <th>Название</th>
                     <th>Тип</th>
                     <th colspan="2">Стоимость комплектующих <br>и работы</th>
@@ -18,7 +17,6 @@
                     <th>Конец</th>
                 </tr>
                 <tr v-for="item in compleatedRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
-                    <td class="repairs__td col--sign"><span class="sign sign--end"></span></td>
                     <td class="repairs__td col--name">{{ item.product_name }}</td>
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
                     <td class="repairs__td">{{ item.cost_comp }}</td>
@@ -64,6 +62,7 @@
             changeRepair(repair) {
                 this.repair = repair;
                 this.repair.isNew = false;
+                this.repair.isCompleate = true;
                 this.show = 'details';
             },
 
