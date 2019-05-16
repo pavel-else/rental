@@ -56,7 +56,7 @@
             <div class="btn-group">
                 <button @click="save">Сохранить</button>
                 <button @click="close">Отмена</button>
-                <button v-if="repair.isNew" @click="stop">Завершить ремонт</button>      
+                <button v-if="!repair.isCompleate && !repair.isNew" @click="stop">Завершить ремонт</button>
             </div>
             <div class="details__close" @click="close"></div>
         </div>
@@ -100,6 +100,7 @@
                 if (!this.repair.repair_type) {
                     return false;
                 }
+
                 if (this.repair.repair_type === 'other' && !this.repair.note) {
                     return false;
                 }
@@ -112,7 +113,7 @@
             },
             repairTypes() {
                 const types = this.$store.getters.repairTypes;
-                return types;
+                return types.filter(i => i.status === 'active');
             },
             planTypes() {
                 return this.repairTypes ? this.repairTypes.filter(i => i.is_plan === '1') : [];

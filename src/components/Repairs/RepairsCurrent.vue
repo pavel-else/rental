@@ -8,7 +8,6 @@
             </div>
             <table class="repairs__table">
                 <tr>
-                    <th></th>
                     <th>Название</th>
                     <th>Тип</th>
                     <th colspan="2"><small>Стоимости <br>компл. и работы</small></th>
@@ -16,7 +15,6 @@
                     <th>Начало</th>
                 </tr>
                 <tr v-for="item in currentRepairs.filter(filt)" @click="changeRepair(item)" :key="item.id_rent">
-                    <td class="repairs__td col--sign"><span class="sign sign--act"></span></td>
                     <td class="repairs__td col--name">{{ item.product_name }}</td>
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
                     <td class="repairs__td">{{ item.cost_comp }}</td>
@@ -28,19 +26,19 @@
         </div>
 
         <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
-        <BikeList v-if="show === 'bikeList'" @close="show = 'repairs'" @select="addBikeToNewRepair($event)"></BikeList>
+        <BikesList v-if="show === 'bikeList'" @close="show = 'repairs'" @select="addBikeToNewRepair($event)" />
     </div>
 </template>
 <script>
     import copy from '@/functions/copy';
     import * as Time from '@/functions/time';
     import Details from './repairDetails';
-    import BikeList from './bikeList';
+    import BikesList from './bikesList';
 
     export default {
         components: {
             Details,
-            BikeList
+            BikesList
         },
         data() {
             return {
@@ -52,7 +50,7 @@
         methods: {
             changeRepair(repair) {
                 this.repair = repair;
-                this.repair.isNew = true;
+                this.repair.isNew = false;
                 this.show = 'details';
             },
             newRepair() {
@@ -65,6 +63,7 @@
 
                 this.repair.isNew = true;
                 this.repair.isPlan = false;
+                this.repair.isCompleate = false;
                 this.show = 'bikeList';
             },
             addBikeToNewRepair(item) {
