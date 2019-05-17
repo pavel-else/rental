@@ -22,6 +22,8 @@
             <div v-else>Здесь пока пусто ...</div>
         </div>
 
+        <Tasks class="tasks"/>
+
         <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
     </div>
 </template>
@@ -29,10 +31,12 @@
 <script>
     import getPlanRepairs from './getPlanRepairs';
     import Details from './repairDetails';
+    import Tasks from './repairTasks';
 
     export default {
         components: {
             Details,
+            Tasks
         },
         data() {
             return {
@@ -71,6 +75,12 @@
     };
 </script>
 
-<style lang="scss" >
+<style lang="scss">
     @import './style.scss';
+</style>
+
+<style lang="scss" scoped>
+   .tasks {
+       margin-top: 50px;
+   }
 </style>
