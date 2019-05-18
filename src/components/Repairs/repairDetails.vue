@@ -4,7 +4,7 @@
             <h3>
                 <span v-if="repair.isNew">Новый ремонт</span>
                 <span v-if="!repair.isNew">Детальная информация</span>
-            </h3>            
+            </h3>
             <table>
                 <tr>
                     <td>Товар</td>

@@ -4,7 +4,7 @@
             <div class="caption-wrap">
                 <h2 class="repairs__caption">В ремонте</h2>
                 <small> {{ currentRepairs.length }} шт</small>
-                <button @click="newRepair()">Добавить в ремонт</button>            
+                <button @click="newRepair()">Добавить в ремонт</button>
             </div>
             <table class="repairs__table">
                 <tr>
@@ -20,7 +20,7 @@
                     <td class="repairs__td">{{ item.cost_comp }}</td>
                     <td class="repairs__td">{{ item.cost_work }}</td>
                     <td class="repairs__td col--note">{{ item.note | formNote }}</td>
-                    <td class="repairs__td col--start">{{ item.start_time | shortDate }}</td>                
+                    <td class="repairs__td col--start">{{ item.start_time | shortDate }}</td>
                 </tr>
             </table>
         </div>
