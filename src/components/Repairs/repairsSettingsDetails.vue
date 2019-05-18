@@ -35,7 +35,7 @@
             <div class="btn-group">
                 <button @click="save">Сохранить</button>
                 <button @click="close">Отмена</button>
-                <button v-if="!repairType.isNew" @click="remove">Удалить</button>      
+                <button v-if="!repairType.isNew" @click="remove">Удалить</button>
             </div>
 
             <div class="details__close" @click="close"></div>

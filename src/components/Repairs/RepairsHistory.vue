@@ -1,5 +1,7 @@
 <template>
     <div class="repairs">
+        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
+
         <input placeholder="Начните вводить название" @input="search()">
 
         <div class="table__wrap">
@@ -22,13 +24,12 @@
                     <td class="repairs__td">{{ item.cost_comp }}</td>
                     <td class="repairs__td">{{ item.cost_work }}</td>
                     <td class="repairs__td col--note">{{ item.note | formNote }}</td>
-                    <td class="repairs__td col--start">{{ item.start_time | shortDate }}</td>                
-                    <td class="repairs__td col--start">{{ item.end_time | shortDate }}</td>                
+                    <td class="repairs__td col--start">{{ item.start_time | shortDate }}</td>
+                    <td class="repairs__td col--start">{{ item.end_time | shortDate }}</td>
                 </tr>
             </table>
         </div>
 
-        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
     </div>
 </template>
 <script>
@@ -84,7 +85,7 @@
         computed: {
             compleatedRepairs() {
                 const repairs = this.$store.getters.repairs;
-                const filter = copy(repairs.filter(i => i.end_time));
+                const filter = copy(repairs.filter(i => i.status === 'end'));
                 const sort = this.sortByStart(filter);
                 const map = sort.map(i => {
                     i.product_name = this.getProductName(i.product_id);
@@ -92,7 +93,7 @@
                     return i;
                 });
 
-                return map;  
+                return map;
             }
         },
         filters: {

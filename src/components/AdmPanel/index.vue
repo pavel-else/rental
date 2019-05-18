@@ -41,7 +41,7 @@
             </li>
             <li class="menu__item">
                 <router-link class="menu__link" to="/repairs">
-                    <span 
+                    <span
                         class="sign sign__warn"
                         v-if="isThereAnyPlanRepairs"
                         :title="countPlanRepairs + 'шт'"
@@ -51,7 +51,7 @@
                 <ul class="menu__sublist">
                     <li class="menu__item">
                         <router-link class="menu__link" to="/repairs/plan/">
-                            <span 
+                            <span
                                 class="sign sign__warn"
                                 v-if="isThereAnyPlanRepairs"
                                 :title="countPlanRepairs + 'шт'"
@@ -104,7 +104,7 @@
 
             currentRepairs() {
                 const repairs = this.$store.getters.repairs;
-                const filter = repairs.filter(i => !i.end_time);
+                const filter = repairs.filter(i => i.status === 'active');
                 return filter;
             },
             isThereAnyCurrentRepairs() {

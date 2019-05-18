@@ -78,7 +78,7 @@ const getPlanRepairs = ($store) => {
         return acc;
     }, []);
 
-    return planRepairs;                
+    return planRepairs;
 };
 
 export default getPlanRepairs;

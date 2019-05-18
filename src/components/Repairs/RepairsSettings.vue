@@ -1,5 +1,7 @@
 <template>
     <div class="repair-settings">
+        <DetailsType v-if="show === 'details'" :_repairType="repairType" @close="closeDetails()"/>
+
         <div class="tables">
             <div class="table__container">
                 <h3 class="table__caption">Плановое ТО</h3>
@@ -24,7 +26,6 @@
             </div>
         </div>
 
-        <DetailsType v-if="show === 'details'" :_repairType="repairType" @close="closeDetails()"/>
 
         <button class="button repair-settings__button" @click="createType()">Добавить</button>
     </div>

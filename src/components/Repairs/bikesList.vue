@@ -1,30 +1,32 @@
 <template>
+<div>
     <div class="canvas">
-        <div class="details bikelist">
-            <div class="bikelist__caption">
-                <h3>
-                    <span>Добавить в ремонт</span>
-                </h3>
-            </div>
-
-            <input placeholder="Начните вводить название" @input="search()">
-
-            <table class="bikelist__table" v-if="products && products.length > 0">
-                <tr>
-                    <th>Название</th>
-                    <th>Пробег</th>
-                    <th>Дата последнего ремонта</th>
-                </tr>
-                <tr v-for="item in products.filter(filt)" :key="item.id_rent" @click="select(item)">
-                    <td>{{ item.name }}</td>
-                    <td style="text-align: right">{{ item.mileage | round }} ч.</td>
-                    <td>{{ item.last_repair_time | shortDate }}</td>
-                </tr>
-            </table>
-            
-            <div class="details__close" @click="close()"></div>
-        </div>  
     </div>
+    <div class="details bikelist">
+        <div class="bikelist__caption">
+            <h3>
+                <span>Добавить в ремонт</span>
+            </h3>
+        </div>
+
+        <input placeholder="Начните вводить название" @input="search()">
+
+        <table class="bikelist__table" v-if="products && products.length > 0">
+            <tr>
+                <th>Название</th>
+                <th>Пробег</th>
+                <th>Дата последнего ремонта</th>
+            </tr>
+            <tr v-for="item in products.filter(filt)" :key="item.id_rent" @click="select(item)">
+                <td>{{ item.name }}</td>
+                <td style="text-align: right">{{ item.mileage | round }} ч.</td>
+                <td>{{ item.last_repair_time | shortDate }}</td>
+            </tr>
+        </table>
+
+        <div class="details__close" @click="close()"></div>
+    </div>
+</div>
 </template>
 <script>
     import * as Time from '@/functions/time';
@@ -47,13 +49,13 @@
             close() {
                 this.$emit('close');
             },
-            select(item) {                
+            select(item) {
                 this.$emit('select', item);
             },
         },
         computed: {
             // выводит список продуктов с учетом их последнего ремонта
-            products() {                
+            products() {
                 const getLastRepair = (product_id) => {
                     const repairs = copy(this.$store.getters.repairs);
                     const filter = repairs.filter(i => i.product_id == product_id && i.end_time);

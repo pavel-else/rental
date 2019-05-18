@@ -1,12 +1,15 @@
 <template>
     <div class="repairs">
+        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
+        <BikesList v-if="show === 'bikeList'" @close="show = 'repairs'" @select="addBikeToNewRepair($event)" />
+
         <div class="table__wrap">
             <div class="caption-wrap">
                 <h2 class="repairs__caption">В ремонте</h2>
                 <small> {{ currentRepairs.length }} шт</small>
                 <button @click="newRepair()">Добавить в ремонт</button>
             </div>
-            <table class="repairs__table">
+            <table class="repairs__table" v-if="currentRepairs.length > 0">
                 <tr>
                     <th>Название</th>
                     <th>Тип</th>
@@ -23,10 +26,9 @@
                     <td class="repairs__td col--start">{{ item.start_time | shortDate }}</td>
                 </tr>
             </table>
+            <div v-else>Здесь пока пусто ...</div>
         </div>
 
-        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
-        <BikesList v-if="show === 'bikeList'" @close="show = 'repairs'" @select="addBikeToNewRepair($event)" />
     </div>
 </template>
 <script>
@@ -85,7 +87,8 @@
         computed: {
             currentRepairs() {
                 const repairs = this.$store.getters.repairs;
-                const filter = copy(repairs.filter(i => !i.end_time));
+                const filter = copy(repairs.filter(i => i.status === 'active'));
+
                 return filter.map(i => {
                     i.product_name = this.getProductName(i.product_id);
                     i.repair_type_name = this.getRepairTypeName(i.repair_type);

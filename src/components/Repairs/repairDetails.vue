@@ -1,8 +1,11 @@
 <template>
-    <div class="canvas">
+    <div>
+        <div class="canvas">
+        </div>
         <div class="details details--repair">
             <h3>
-                <span v-if="repair.isNew">Новый ремонт</span>
+                <span v-if="repair.isNew && repair.status !== 'task'">Добавить в ремонт</span>
+                <span v-if="repair.isNew && repair.status === 'task'">Добавить в список задач</span>
                 <span v-if="!repair.isNew">Детальная информация</span>
             </h3>
             <table>
@@ -54,9 +57,11 @@
             </table>
 
             <div class="btn-group">
-                <button @click="save">Сохранить</button>
-                <button @click="close">Отмена</button>
-                <button v-if="!repair.isCompleate && !repair.isNew" @click="stop">Завершить ремонт</button>
+                <button v-if="repair.status === 'task' && !repair.isNew" @click="addToRepairs()">Добавить в ремонт</button>
+                <button @click="save()">Сохранить</button>
+                <button @click="close()">Отмена</button>
+                <button v-if="repair.status === 'active' && !repair.isNew" @click="stop()">Завершить ремонт</button>
+                <button v-if="repair.status === 'task' && !repair.isNew" @click="deleteRepair()">Удалить</button>
             </div>
             <div class="details__close" @click="close"></div>
         </div>
@@ -88,10 +93,19 @@
                     alert('Укажите необходимые данные!');
                 }
             },
+            addToRepairs() {
+                this.repair.status = 'active';
+                this.save();
+            },
             stop() {
                 this.repair.end_time = new Date();
+                this.repair.status = 'end';
                 this.$store.dispatch('stopRepair', this.repair);
                 this.$emit('close');
+            },
+            deleteRepair() {
+                this.repair.status = 'delete';
+                this.save();
             },
             short(date) {
                 return Time.format('DD MMMM YYYY', date);
@@ -121,7 +135,7 @@
             simpleTypes() {
                 const repairTypes = this.repairTypes ? this.repairTypes.filter(i => i.is_plan === '0') : [];
                 const sorted = repairTypes.sort((a, b) => b.id_rent - a.id_rent);
-                
+
                 return sorted;
             },
         }

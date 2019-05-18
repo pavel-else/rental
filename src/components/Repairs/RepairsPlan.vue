@@ -1,5 +1,7 @@
 <template>
     <div class="repairs">
+        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
+
         <div class="table__wrap">
             <div class="caption-wrap">
                 <h2 class="repairs__caption">Плановое ТО</h2>
@@ -12,7 +14,7 @@
                     <th>Тип</th>
                     <th title="Текущий пробег в часах">Текущий пробег</th>
                 </tr>
-                
+
                 <tr class="repairs__tr" v-for="item in planRepairs.filter(filt)" @click="createRepair(item)" :key="item.product_id + '_' + item.repair_type">
                     <td class="repairs__td col--name">{{ item.product_name }}</td>
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
@@ -24,7 +26,6 @@
 
         <Tasks class="tasks"/>
 
-        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
     </div>
 </template>
 
@@ -50,6 +51,7 @@
                 this.repair = repair;
 
                 this.repair.cost_work = 0;
+                this.repair.status = 'active';
                 this.repair.cost_comp = 0;
                 this.repair.start_time = new Date();
 
