@@ -28,6 +28,7 @@
                 this.$store.dispatch('initStore')
                 .then(() => {
                     const time = this.$store.getters.generalSettings.timeToUpdateMonitor;
+
                     if (time > 0) {
                         this.$store.dispatch('startAutoUpdateOrders', time);
                     }
@@ -39,13 +40,28 @@
         created() {        
             // Обновление таймеров
             this.$store.dispatch('startTimer');
+
+            const startPingRecursive = () => {
+                let counter = 0;
+                
+                const f = () => {
+                    this.$store.dispatch('ping', { url: 'https://rentix.biz/api/ping.php', counter , serverName: 'realServer' });
+                    this.$store.dispatch('ping', { url: 'http://84.201.130.39:80/api/ping.php', counter , serverName: 'testServer' });
+                    counter += 1;
+                };
+
+                setInterval(f, 1000);
+                
+            };
+
+            startPingRecursive();
         },
         computed: {
             mode() {
                 return this.$store.getters.orderToPrint ? 'print' : 'app'; // app || print
             }
         }
-    }
+    };
 
 </script>
 

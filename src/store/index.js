@@ -20,6 +20,7 @@ import categories       from './modules/categories';
 import print            from './modules/print';
 import initStore        from './modules/initStore';
 import autoUpdateOrders from './modules/autoUpdateOrders';
+import ping             from './modules/ping';
 
 Vue.use(Vuex)
 
@@ -42,7 +43,8 @@ const store = new Vuex.Store({
         Products,
         multipleRequest,
         print,
-        autoUpdateOrders
+        autoUpdateOrders,
+        ping
     },
 
     actions: {
