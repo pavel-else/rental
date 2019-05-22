@@ -114,7 +114,7 @@
                 return this.currentRepairs.length;
             },
         }
-    }
+    };
 </script>
 
 <style lang="scss">
@@ -137,7 +137,7 @@
         &__item:hover &__sublist {
             border: 0;
             position: absolute;
-            display: none;
+            display: flex;
             flex-direction: column;
             margin: 5px 0 0 0;
             outline: 1px solid #333;
