@@ -46,7 +46,7 @@
                 
                 const f = () => {
                     this.$store.dispatch('ping', { url: 'https://rentix.biz/api/ping.php', counter , serverName: 'realServer' });
-                    this.$store.dispatch('ping', { url: 'http://84.201.130.39:80/api/ping.php', counter , serverName: 'testServer' });
+                    // this.$store.dispatch('ping', { url: 'http://84.201.156.113/', counter , serverName: 'testServer' });
                     counter += 1;
                 };
 
@@ -54,7 +54,7 @@
                 
             };
 
-            startPingRecursive();
+            //startPingRecursive();
         },
         computed: {
             mode() {
