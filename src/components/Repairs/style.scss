@@ -1,5 +1,6 @@
 
 .repairs {
+    position: relative;
     width: 900px;
     display: flex;
     flex-direction: column;
@@ -38,7 +39,7 @@
             border: 1px solid #333;
             padding: 5px;
         }
-        
+
         tr:not(:first-child):hover {
             cursor: pointer;
             background-color: #333;

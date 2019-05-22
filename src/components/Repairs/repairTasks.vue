@@ -1,5 +1,9 @@
 <template>
     <div class="reapir-tasks">
+
+        <Details v-if="show === 'details'" :_repair="task" @close="show = 'tasks'" />
+        <BikesList v-if="show === 'bikeList'" @close="show = 'tasks'" @select="addBikeToNewRepair($event)" />
+
         <div class="caption-wrap">
             <h2 class="repairs__caption">Задачи на ремонт</h2>
         </div>
@@ -20,8 +24,6 @@
 
         <button class="btn-create" @click="createTask()">Добавить</button>
 
-        <Details v-if="show === 'details'" :_repair="task" @close="show = 'tasks'" />
-        <BikesList v-if="show === 'bikeList'" @close="show = 'tasks'" @select="addBikeToNewRepair($event)" />
     </div>
 </template>
 

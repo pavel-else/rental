@@ -82,7 +82,10 @@
 </style>
 
 <style lang="scss" scoped>
-   .tasks {
-       margin-top: 50px;
-   }
+    .repairs {
+        position: relative;
+    }
+    .tasks {
+        margin-top: 50px;
+    }
 </style>

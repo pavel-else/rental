@@ -99,6 +99,9 @@
 </script>
 <style scoped>
     .details {
+        position: absolute;
+        top: 0;
+        left: calc(50% - 285px);
         display: flex;
         flex-direction: column;
         width: 570px;

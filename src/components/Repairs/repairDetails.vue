@@ -143,6 +143,9 @@
 </script>
 <style lang="scss" scoped>
     .details {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 400px;
         margin-top: 30px;
         margin-bottom: 100px;
