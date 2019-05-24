@@ -1,8 +1,6 @@
 <template>
 <div>
-    <div class="canvas">
-    </div>
-    <div class="details bikelist">
+    <div class="bikelist">
         <div class="bikelist__caption">
             <h3>
                 <span>Добавить в ремонт</span>

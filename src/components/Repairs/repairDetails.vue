@@ -1,8 +1,6 @@
 <template>
-    <div>
-        <div class="canvas">
-        </div>
-        <div class="details details--repair">
+    <Dialog>
+        <div class="details-repairs">
             <h3>
                 <span v-if="repair.isNew && repair.status !== 'task'">Добавить в ремонт</span>
                 <span v-if="repair.isNew && repair.status === 'task'">Добавить в список задач</span>
@@ -63,16 +61,20 @@
                 <button v-if="repair.status === 'active' && !repair.isNew" @click="stop()">Завершить ремонт</button>
                 <button v-if="repair.status === 'task' && !repair.isNew" @click="deleteRepair()">Удалить</button>
             </div>
-            <div class="details__close" @click="close"></div>
         </div>
-    </div>
+    </Dialog>
 </template>
+
 <script>
+    import Dialog from '@/components/Dialog';
     import copy from '@/functions/copy';
     import shortDate from '@/functions/shortDate';
     import * as Time from '@/functions/time';
 
     export default {
+        components: {
+            Dialog
+        },
         props: {
             _repair: Object, // Repair
         },
@@ -141,15 +143,10 @@
         }
     };
 </script>
+
 <style lang="scss" scoped>
-    .details {
-        position: absolute;
-        top: 0;
-        left: 0;
+    .details-repairs {
         width: 400px;
-        margin-top: 30px;
-        margin-bottom: 100px;
-        overflow-y: hidden;
 
         td {
             padding: 5px;
