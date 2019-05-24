@@ -60,6 +60,10 @@ export default new Router({
             beforeEnter: ifAuthenticated,
         },
         {
+            path: '/test',
+            component: () => import('@/components/Test'),
+        },
+        {
             path: '/settings',
             redirect: '/settings/main',
             beforeEnter: ifAuthenticated,

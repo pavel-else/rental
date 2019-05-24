@@ -26,6 +26,30 @@
 
         <Tasks class="tasks"/>
 
+        <v-dialog v-model="dialog3" max-width="500px">
+            <v-card>
+                <v-card-title>
+                    <span>Dialog 3</span>
+                    <v-spacer></v-spacer>
+                    <v-menu bottom left>
+                        <template v-slot:activator="{ on }">
+                            <v-btn icon v-on="on">
+                                <v-icon>more_vert</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-list>
+                            <v-list-tile v-for="(item, i) in items" :key="i" @click="">
+                                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list>
+                    </v-menu>
+                </v-card-title>
+                <v-card-actions>
+                    <v-btn color="primary" flat @click="dialog3=false">Close</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
     </div>
 </template>
 
@@ -44,6 +68,7 @@
                 filt: i => i,
                 show: 'repairs',
                 repair: {},
+                dialog: true
             }
         },
         methods: {
