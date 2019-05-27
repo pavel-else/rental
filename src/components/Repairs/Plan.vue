@@ -22,7 +22,7 @@
             <div v-else>Здесь пока пусто ...</div>
         </div>
 
-        <!-- <Tasks class="tasks"/> -->
+        <Tasks class="tasks"/>
 
         <Dialog v-if="show === 'details'" @close="show = 'repairs'">
             <Details :_repair="repair"></Details>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-    import getPlanRepairs from './getPlanRepairs';
+    import getPlanRepairs from './js/getPlanRepairs';
     import Dialog from '@/components/Dialog';
     import Details from './elements/details';
     import Tasks   from './elements/tasks';
@@ -41,7 +41,7 @@
         components: {
             Details,
             Dialog,
-            // Tasks
+            Tasks
         },
         data() {
             return {

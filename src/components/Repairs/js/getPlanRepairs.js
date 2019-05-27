@@ -1,3 +1,8 @@
+/*
+* Функция для генерации списка планового ТО
+* Используется в компонентах Repairs/Plan и AdmPanel
+*/
+
 import copy from '@/functions/copy';
 
 const getPlanRepairs = ($store) => {

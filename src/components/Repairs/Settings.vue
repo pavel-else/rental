@@ -1,27 +1,24 @@
 <template>
     <div class="repair-settings">
-        
-        <div class="tables">
-            <div class="table__container">
-                <h3 class="table__caption">Плановое ТО</h3>
-                <table>
-                    <tr class="pointer" v-for="item in planRepairTypes" :key="item.id_rent" @click="selectType(item)">
-                        <td>{{ item.name }}</td>
-                        <td> - </td>
-                        <td style="text-align: right">
-                             {{ item.period }} ч.
-                        </td>
-                    </tr>
-                </table>
+
+        <div class="r-types__wrap">
+
+            <div class="r-types r-types--plan">
+                <h3 class="r-types__caption">Плановое ТО</h3>
+                <ul class="r-types__list">
+                    <li class="r-types__item pointer" v-for="item in planRepairTypes" :key="item.id_rent" @click="selectType(item)">
+                        <span>{{ item.name }}</span> <span> - {{ item.period }} ч.</span>
+                    </li>
+                </ul>
             </div>
 
-            <div class="table__container">
-                <h3 class="table__caption">Внеплановое ТО</h3>
-                <table>
-                    <tr class="pointer" v-for="item in notPlanRepairTypes" :key="item.id_rent" @click="selectType(item)">
-                        <td>{{ item.name }}</td>
-                    </tr>
-                </table>
+            <div class="r-types r-types--unplan">
+                <h3 class="r-types__caption">Внеплановое ТО</h3>
+                <ul class="r-types__list">
+                    <li class="r-types__item pointer" v-for="item in notPlanRepairTypes" :key="item.id_rent" @click="selectType(item)">
+                        {{ item.name }}
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -36,7 +33,7 @@
 
 <script>
     import Details from './elements/settingsDetails';
-    import Dialog from '@/components/Dialog';
+    import Dialog  from '@/components/Dialog';
 
     export default {
         components: {
@@ -86,18 +83,38 @@
     };
 </script>
 
-<style lang="scss" scoped>
-    .repair-settings {
-        .tables {
-            display: flex;
-            justify-content: space-between;
-            min-width: 420px;
-        }
-        .table__container:first-child {
-            margin-right: 50px;
-        }
-        &__button {
-            
-        }
-    }
+<style lang="sass" scoped>
+
+.repair-settings
+
+    .r-types__wrap
+        display: flex
+        justify-content: space-between
+        flex-wrap: wrap
+
+    .r-types
+        margin-bottom: 20px
+
+    .r-types__caption
+        margin-bottom: 10px
+
+    .r-types__list
+        margin: 0
+        padding: 0
+        display: flex
+        flex-direction: column
+
+    .r-types__item
+        margin: 0
+        padding: 2px 5px 2px 0
+        display: flex
+        justify-content: space-between
+
+        &:hover
+            background-color: #333
+
+    .r-types--plan
+        margin-right: 20px
+
+    
 </style>

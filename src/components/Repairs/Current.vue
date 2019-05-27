@@ -35,6 +35,7 @@
         </Dialog>
     </div>
 </template>
+
 <script>
     import copy from '@/functions/copy';
     import * as Time from '@/functions/time';
@@ -116,5 +117,5 @@
                 return note && note.length > 20 ? note.substr(0, 19) + '...' : note;
             },
         }
-    }
+    };
 </script>

@@ -79,7 +79,7 @@
 </template>
 <script>
     import RentalCategories from './RentalCategories';
-    import getPlanRepairs   from '@/components/Repairs/getPlanRepairs';
+    import getPlanRepairs   from '@/components/Repairs/js/getPlanRepairs';
 
     export default {
         name: 'admPanel',
@@ -105,6 +105,7 @@
             currentRepairs() {
                 const repairs = this.$store.getters.repairs;
                 const filter = repairs.filter(i => i.status === 'active');
+                
                 return filter;
             },
             isThereAnyCurrentRepairs() {
