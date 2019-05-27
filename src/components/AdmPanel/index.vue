@@ -2,7 +2,14 @@
     <div class="menu">
         <ul class="menu__list">
             <li class="menu__item">
-                <router-link class="menu__link" to="/">Прокат</router-link>
+                <router-link class="menu__link" to="/">
+                    <span
+                        class="sign sign__warn"
+                        v-if="isThereAnyActiveOrders"
+                        :title="countPlanRepairs + 'шт'"
+                    ></span>
+                    Прокат
+                </router-link>
                 <RentalCategories class="menu__sublist"></RentalCategories>
             </li>
             <li class="menu__item">
@@ -114,6 +121,15 @@
             countCurrentRepairs() {
                 return this.currentRepairs.length;
             },
+
+            activeOrders() {
+                console.log(this.$store.getters.activeOrders)
+                return this.$store.getters.activeOrders;
+            },
+            isThereAnyActiveOrders() {
+                console.log()
+                return this.$store.getters.activeOrders.length > 0;
+            }
         }
     };
 </script>
