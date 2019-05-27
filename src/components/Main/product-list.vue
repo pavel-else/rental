@@ -98,23 +98,27 @@
                 return activeCategory ? activeCategory.name : 'Все';
             }
         },
-    }
+    };
 </script>
 
-<style scoped>
-    .products__td {
-        padding: 0px 0px 10px 5px;
-    }
-    .products__product:hover {
-        cursor: pointer;
-        outline: 1px solid #333;
-    }
-    .products__photo {
-        position: absolute;
-        margin-left: -180px;
-        top: 200px;
-        left: 50%;
-        width: 480px;
-        height: 320px;
-    }
+<style lang="sass" scoped>
+
+.product-list
+    padding: 10px
+    
+    .products__td 
+        padding: 0px 0px 10px 5px
+    
+    .products__product:hover 
+        cursor: pointer
+        outline: 1px solid #333
+    
+    .products__photo 
+        position: absolute
+        margin-left: -180px
+        top: 200px
+        left: 50%
+        width: 480px
+        height: 320px
+    
 </style>
