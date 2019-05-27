@@ -106,7 +106,7 @@ export default new Router({
                 },
                 {
                     path: 'plan',
-                    component: () => import('@/components/Repairs/RepairsPlan'),
+                    component: () => import('@/components/Repairs/Plan'),
                 },
                 {
                     path: 'current',
@@ -118,7 +118,7 @@ export default new Router({
                 },
                 {
                     path: 'settings',
-                    component: () => import('@/components/Repairs/RepairsSettings'),
+                    component: () => import('@/components/Repairs/Settings'),
                 },
             ]
         },

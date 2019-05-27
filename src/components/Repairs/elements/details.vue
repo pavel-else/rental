@@ -64,15 +64,11 @@
 </template>
 
 <script>
-    import Dialog from '@/components/Dialog';
     import copy from '@/functions/copy';
     import shortDate from '@/functions/shortDate';
     import * as Time from '@/functions/time';
 
     export default {
-        components: {
-            Dialog
-        },
         props: {
             _repair: Object, // Repair
         },

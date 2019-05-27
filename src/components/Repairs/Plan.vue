@@ -1,7 +1,5 @@
 <template>
     <div class="repairs">
-        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
-
         <div class="table__wrap">
             <div class="caption-wrap">
                 <h2 class="repairs__caption">Плановое ТО</h2>
@@ -24,20 +22,26 @@
             <div v-else>Здесь пока пусто ...</div>
         </div>
 
-        <Tasks class="tasks"/>
+        <!-- <Tasks class="tasks"/> -->
+
+        <Dialog v-if="show === 'details'" @close="show = 'repairs'">
+            <Details :_repair="repair"></Details>
+        </Dialog>
 
     </div>
 </template>
 
 <script>
     import getPlanRepairs from './getPlanRepairs';
-    import Details from './repairDetails';
-    import Tasks from './repairTasks';
+    import Dialog from '@/components/Dialog';
+    import Details from './elements/details';
+    import Tasks   from './elements/tasks';
 
     export default {
         components: {
             Details,
-            Tasks
+            Dialog,
+            // Tasks
         },
         data() {
             return {
@@ -83,9 +87,6 @@
 </style>
 
 <style lang="scss" scoped>
-    .repairs {
-        position: relative;
-    }
     .tasks {
         margin-top: 50px;
     }

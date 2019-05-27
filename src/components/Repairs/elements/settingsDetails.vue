@@ -1,44 +1,40 @@
 <template>
-    <div class="canvas">
-        <div class="details details--repair-type">
-            <h3>
-                <span v-if="repairType.isNew">Новый тип ремонта</span>
-                <span v-else>Редактировать ремонт</span>
-            </h3>
+    <div class="settings-details">
+        <h3>
+            <span v-if="repairType.isNew">Новый тип ремонта</span>
+            <span v-else>Редактировать ремонт</span>
+        </h3>
 
-            <div class="errors" v-if="errors">
-                <ul>
-                    <li v-for="error in errors" :key="error">{{ error }}</li>
-                </ul>
-            </div>
+        <div class="errors" v-if="errors">
+            <ul>
+                <li v-for="error in errors" :key="error">{{ error }}</li>
+            </ul>
+        </div>
 
-            <table>
-                <tr>
-                    <td>Название</td>
-                    <td><input type="text" v-model="repairType.name"></td>
-                </tr>
-                <tr>
-                    <td>Используется <br> в плановом ТО</td>
-                    <td><input type="checkbox" v-model="repairType.is_plan"></td>
-                </tr>
-                <tr v-if="repairType.is_plan">
-                    <td>Прериод <br> проведения ТО, часов</td>
-                    <td><input type="text" v-model="repairType.period"></td>
-                </tr>
-                <tr>
-                    <td>Примечание</td>
-                    <td><textarea v-model="repairType.note"></textarea></td>
-                </tr>
-            </table>
+        <table>
+            <tr>
+                <td>Название</td>
+                <td><input type="text" v-model="repairType.name"></td>
+            </tr>
+            <tr>
+                <td>Используется <br> в плановом ТО</td>
+                <td><input type="checkbox" v-model="repairType.is_plan"></td>
+            </tr>
+            <tr v-if="repairType.is_plan">
+                <td>Прериод <br> проведения ТО, часов</td>
+                <td><input type="text" v-model="repairType.period"></td>
+            </tr>
+            <tr>
+                <td>Примечание</td>
+                <td><textarea v-model="repairType.note"></textarea></td>
+            </tr>
+        </table>
 
 
-            <div class="btn-group">
-                <button @click="save">Сохранить</button>
-                <button @click="close">Отмена</button>
-                <button v-if="!repairType.isNew" @click="remove">Удалить</button>
-            </div>
-
-            <div class="details__close" @click="close"></div>
+        <div class="btn-group">
+            <button @click="save">Сохранить</button>
+            <button @click="close">Отмена</button>
+            <button v-if="!repairType.isNew" @click="remove">Удалить</button>
         </div>
     </div>
 </template>
@@ -129,7 +125,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .details {
+    .settings-details {
         display: flex;
         flex-direction: column;
         align-items: stretch;

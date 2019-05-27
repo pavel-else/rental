@@ -1,9 +1,5 @@
 <template>
-    <div class="reapir-tasks">
-
-        <Details v-if="show === 'details'" :_repair="task" @close="show = 'tasks'" />
-        <BikesList v-if="show === 'bikeList'" @close="show = 'tasks'" @select="addBikeToNewRepair($event)" />
-
+    <div class="tasks">
         <div class="caption-wrap">
             <h2 class="repairs__caption">Задачи на ремонт</h2>
         </div>
@@ -24,15 +20,25 @@
 
         <button class="btn-create" @click="createTask()">Добавить</button>
 
+        <Dialog v-if="show === 'details'" @close="show = 'repairs'">
+            <Details :_repair="repair"></Details>
+        </Dialog>
+
+        <Dialog v-if="show === 'bikeList'" @close="show = 'repairs'">
+            <BikesList @select="addBikeToNewRepair($event)" />
+        </Dialog>
+
     </div>
 </template>
 
 <script>
-    import getPlanRepairs from './getPlanRepairs';
-    import Details from './repairDetails';
-    import BikesList from './bikesList';
     import * as Time from '@/functions/time';
-    import copy from '@/functions/copy';
+
+    import copy   from '@/functions/copy';
+    import Dialog from '@/components/Dialog';
+
+    import Details   from './details';
+    import BikesList from './bikesList';
 
     export default {
         components: {
@@ -92,6 +98,7 @@
                 const tasksExtended = tasksSorted.map(i => {
                     i.product_name = this.getProductName(i.product_id);
                     i.repair_type_name = this.getRepairTypeName(i.repair_type);
+
                     return i;
                 });
 
@@ -109,9 +116,6 @@
     };
 </script>
 
-<style lang="scss" >
-    @import './style.scss';
-</style>
 <style lang="scss" scoped>
     .btn-create {
         margin-top: 30px;

@@ -38,9 +38,10 @@
 <script>
     import copy from '@/functions/copy';
     import * as Time from '@/functions/time';
-    import Details from './repairDetails';
-    import BikesList from './bikesList';
-    import Dialog from '@/components/Dialog';
+
+    import Details   from './elements/details';
+    import BikesList from './elements/bikesList';
+    import Dialog    from '@/components/Dialog';
 
     export default {
         components: {

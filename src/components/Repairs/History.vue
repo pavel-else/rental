@@ -30,7 +30,7 @@
         </div>
 
         <Dialog v-if="show === 'details'" @close="show = 'repairs'">
-            <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
+            <Details :_repair="repair"></Details>
         </Dialog>
 
     </div>
@@ -38,7 +38,7 @@
 <script>
     import copy from '@/functions/copy';
     import * as Time from '@/functions/time';
-    import Details from './repairDetails';
+    import Details from './elements/details';
     import Dialog from '@/components/Dialog';
 
     export default {

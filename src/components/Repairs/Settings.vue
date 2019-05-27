@@ -1,7 +1,6 @@
 <template>
     <div class="repair-settings">
-        <DetailsType v-if="show === 'details'" :_repairType="repairType" @close="closeDetails()"/>
-
+        
         <div class="tables">
             <div class="table__container">
                 <h3 class="table__caption">Плановое ТО</h3>
@@ -28,15 +27,21 @@
 
 
         <button class="button repair-settings__button" @click="createType()">Добавить</button>
+
+        <Dialog v-if="show === 'details'" @close="show = 'list'">
+            <Details :_repairType="repairType"></Details>
+        </Dialog>
     </div>
 </template>
 
 <script>
-    import DetailsType from './repairsSettingsDetails';
+    import Details from './elements/settingsDetails';
+    import Dialog from '@/components/Dialog';
 
     export default {
         components: {
-            DetailsType
+            Details,
+            Dialog
         },
         data() {
             return {
@@ -52,6 +57,7 @@
                     is_plan: false,
                     period: 0
                 };
+
                 this.show = 'details';
             },
             selectType(type) {
@@ -77,7 +83,7 @@
                 return this.repairTypes.filter(i => i.is_plan !== '1');
             }
         }
-    }
+    };
 </script>
 
 <style lang="scss" scoped>
