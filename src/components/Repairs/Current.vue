@@ -1,7 +1,5 @@
 <template>
     <div class="repairs">
-
-
         <div class="table__wrap">
             <div class="caption-wrap">
                 <h2 class="repairs__caption">В ремонте</h2>

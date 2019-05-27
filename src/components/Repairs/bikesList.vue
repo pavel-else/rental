@@ -19,6 +19,11 @@
                 <td style="text-align: right">{{ item.mileage | round }} ч.</td>
                 <td>{{ item.last_repair_time | shortDate }}</td>
             </tr>
+            <tr v-for="item in products.filter(filt)" :key="item.id_rent" @click="select(item)">
+                <td>{{ item.name }}</td>
+                <td style="text-align: right">{{ item.mileage | round }} ч.</td>
+                <td>{{ item.last_repair_time | shortDate }}</td>
+            </tr>
         </table>
     </div>
 </template>
