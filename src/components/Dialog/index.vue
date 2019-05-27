@@ -1,19 +1,19 @@
 <template>
-    <div class="dialog" v-if="show">
-        <div class="background" @click="show = false">
+    <div class="dialog">
+        <div class="background" @click="close()">
         </div>
         <div class="modal">
             <slot></slot>
-            <div class="details__close" @click="show = false"></div>
+            <div class="details__close" @click="close()"></div>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        data () {
-            return {
-                show: true
+        methods: {
+            close() {
+                this.$emit('close');
             }
         }
     }
@@ -43,15 +43,6 @@
         border: 1px solid #333;
         z-index: 120;
 
-    }
-    .miss {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        background: #0D7F8B;
-        z-index: 110;
     }
 }
 </style>

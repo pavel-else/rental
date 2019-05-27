@@ -1,5 +1,4 @@
 <template>
-<div>
     <div class="bikelist">
         <div class="bikelist__caption">
             <h3>
@@ -21,15 +20,18 @@
                 <td>{{ item.last_repair_time | shortDate }}</td>
             </tr>
         </table>
-
-        <div class="details__close" @click="close()"></div>
     </div>
-</div>
 </template>
+
 <script>
     import * as Time from '@/functions/time';
     import copy from '@/functions/copy';
+    import Dialog from '@/components/Dialog';
+
     export default {
+        components: {
+            Dialog
+        },
         data() {
             return {
                 filt: i => i,
@@ -93,51 +95,41 @@
                 return Time.format('DD MMMM YYYY', date);
             },
         }
-    }
+    };
 </script>
-<style scoped>
-    .details {
-        position: absolute;
-        top: 0;
-        left: calc(50% - 285px);
-        display: flex;
-        flex-direction: column;
-        width: 570px;
-        margin-top: 30px;
-        overflow-y: hidden;
-        margin-bottom: 100px;
-    }
-    .bikelist__caption {
-        display: inline-flex;
-    }
-    .caption__clarification {
-        font-size: 12px;
-        padding: 5px 10px;
-        margin-left: 10px;
-        cursor: pointer;
-    }
-    .caption__clarification--select {
-        outline: 1px solid lightgray;
-    }
 
-    .bikelist__table {
-        margin-top: 30px;
-    }
-    .details td {
-        padding: 5px 20px;
-    }
-    .details tr:first-child th {
-        padding-bottom: 20px;
-    }
-    .details tr:not(:first-child):hover {
-        cursor: pointer;
-    }
+<style lang="sass" scoped>
 
-    .sign--fix {
-        display: block;
-        width: 4px;
-        height: 4px;
-        border: 1px solid red;
-        border-radius: 50%;
-    }
+.bikelist
+    max-width: 400px
+    width: 100%
+    display: flex
+    flex-direction: column
+
+    .bikelist__caption
+        display: inline-flex
+
+
+    .caption__clarification
+        font-size: 12px
+        padding: 5px 10px
+        margin-left: 10px
+        cursor: pointer
+
+    .caption__clarification--select
+        outline: 1px solid lightgray
+
+
+    .bikelist__table
+        border-collapse: collapse
+        margin-top: 30px
+
+        td
+            padding: 2px 5px
+
+        tr:hover td
+            cursor: pointer
+            background: #333
+
+
 </style>

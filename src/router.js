@@ -110,7 +110,7 @@ export default new Router({
                 },
                 {
                     path: 'current',
-                    component: () => import('@/components/Repairs/RepairsCurrent'),
+                    component: () => import('@/components/Repairs/Current'),
                 },
                 {
                     path: 'history',

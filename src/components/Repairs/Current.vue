@@ -1,7 +1,6 @@
 <template>
     <div class="repairs">
-        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
-        <BikesList v-if="show === 'bikeList'" @close="show = 'repairs'" @select="addBikeToNewRepair($event)" />
+
 
         <div class="table__wrap">
             <div class="caption-wrap">
@@ -29,6 +28,13 @@
             <div v-else>Здесь пока пусто ...</div>
         </div>
 
+        <Dialog v-if="show === 'details'" @close="show = 'repairs'">
+            <Details :_repair="repair"></Details>
+        </Dialog>
+
+        <Dialog v-if="show === 'bikeList'" @close="show = 'repairs'">
+            <BikesList @select="addBikeToNewRepair($event)" />
+        </Dialog>
     </div>
 </template>
 <script>
@@ -36,9 +42,11 @@
     import * as Time from '@/functions/time';
     import Details from './repairDetails';
     import BikesList from './bikesList';
+    import Dialog from '@/components/Dialog';
 
     export default {
         components: {
+            Dialog,
             Details,
             BikesList
         },
@@ -111,6 +119,3 @@
         }
     }
 </script>
-<style lang="scss" >
-    @import './style.scss';
-</style>

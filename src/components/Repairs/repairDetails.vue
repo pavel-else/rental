@@ -1,68 +1,66 @@
 <template>
-    <Dialog>
-        <div class="details-repairs">
-            <h3>
-                <span v-if="repair.isNew && repair.status !== 'task'">Добавить в ремонт</span>
-                <span v-if="repair.isNew && repair.status === 'task'">Добавить в список задач</span>
-                <span v-if="!repair.isNew">Детальная информация</span>
-            </h3>
-            <table>
-                <tr>
-                    <td>Товар</td>
-                    <td>{{ repair.product_name }}</td>
-                </tr>
-                <tr>
-                    <td>Начало ремонта</td>
-                    <td>
-                        <span>{{ short(repair.start_time) }}</span>
-                    </td>
-                </tr>
-                <tr v-if="repair.end_time">
-                    <td>Конец ремонта</td>
-                    <td>
-                        <span v-if="repair.end_time">{{ short(repair.end_time) }}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Тип ремонта <span title="Обязательно к заполнению">*</span></td>
-                    <td>
-                        <select v-model="repair.repair_type">
-                            <option value="null" disabled>Выбрать</option>
-                            <option v-for="item in planTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
-                            <option value="null" disabled>__________________________</option>
-                            <option v-for="item in simpleTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Стоимость комплектующих</td>
-                    <td>
-                        <input v-model="repair.cost_comp">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Стоимость работы</td>
-                    <td>
-                        <input v-model="repair.cost_work">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Примечание</td>
-                    <td>
-                        <textarea v-model="repair.note"></textarea>
-                    </td>
-                </tr>
-            </table>
+    <div class="details-repairs">
+        <h3>
+            <span v-if="repair.isNew && repair.status !== 'task'">Добавить в ремонт</span>
+            <span v-if="repair.isNew && repair.status === 'task'">Добавить в список задач</span>
+            <span v-if="!repair.isNew">Детальная информация</span>
+        </h3>
+        <table>
+            <tr>
+                <td>Товар</td>
+                <td>{{ repair.product_name }}</td>
+            </tr>
+            <tr>
+                <td>Начало ремонта</td>
+                <td>
+                    <span>{{ short(repair.start_time) }}</span>
+                </td>
+            </tr>
+            <tr v-if="repair.end_time">
+                <td>Конец ремонта</td>
+                <td>
+                    <span v-if="repair.end_time">{{ short(repair.end_time) }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Тип ремонта <span title="Обязательно к заполнению">*</span></td>
+                <td>
+                    <select v-model="repair.repair_type">
+                        <option value="null" disabled>Выбрать</option>
+                        <option v-for="item in planTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
+                        <option value="null" disabled>__________________________</option>
+                        <option v-for="item in simpleTypes" :value="item.id_rent" :key="item.id_rent">{{ item.name }}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Стоимость комплектующих</td>
+                <td>
+                    <input v-model="repair.cost_comp">
+                </td>
+            </tr>
+            <tr>
+                <td>Стоимость работы</td>
+                <td>
+                    <input v-model="repair.cost_work">
+                </td>
+            </tr>
+            <tr>
+                <td>Примечание</td>
+                <td>
+                    <textarea v-model="repair.note"></textarea>
+                </td>
+            </tr>
+        </table>
 
-            <div class="btn-group">
-                <button v-if="repair.status === 'task' && !repair.isNew" @click="addToRepairs()">Добавить в ремонт</button>
-                <button @click="save()">Сохранить</button>
-                <button @click="close()">Отмена</button>
-                <button v-if="repair.status === 'active' && !repair.isNew" @click="stop()">Завершить ремонт</button>
-                <button v-if="repair.status === 'task' && !repair.isNew" @click="deleteRepair()">Удалить</button>
-            </div>
+        <div class="btn-group">
+            <button v-if="repair.status === 'task' && !repair.isNew" @click="addToRepairs()">Добавить в ремонт</button>
+            <button @click="save()">Сохранить</button>
+            <button @click="close()">Отмена</button>
+            <button v-if="repair.status === 'active' && !repair.isNew" @click="stop()">Завершить ремонт</button>
+            <button v-if="repair.status === 'task' && !repair.isNew" @click="deleteRepair()">Удалить</button>
         </div>
-    </Dialog>
+    </div>
 </template>
 
 <script>
