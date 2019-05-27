@@ -1,3 +1,8 @@
+/*
+* Функция для генерации списка планового ТО
+* Используется в компонентах Repairs/Plan и AdmPanel
+*/
+
 import copy from '@/functions/copy';
 
 const getPlanRepairs = ($store) => {
@@ -33,7 +38,7 @@ const getPlanRepairs = ($store) => {
         const repairTypes = copy($store.getters.repairTypes);
 
         // Отбираем только плановые
-        const filter = repairTypes.filter(i => i.is_plan === '1');
+        const filter = repairTypes.filter(i => i.is_plan === '1' && i.status === 'active');
 
         // Формируем список ТО
         const list = filter.reduce((acc, repairType) => {
@@ -78,7 +83,7 @@ const getPlanRepairs = ($store) => {
         return acc;
     }, []);
 
-    return planRepairs;                
+    return planRepairs;
 };
 
 export default getPlanRepairs;

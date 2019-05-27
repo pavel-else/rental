@@ -12,7 +12,7 @@
                     <th>Тип</th>
                     <th title="Текущий пробег в часах">Текущий пробег</th>
                 </tr>
-                
+
                 <tr class="repairs__tr" v-for="item in planRepairs.filter(filt)" @click="createRepair(item)" :key="item.product_id + '_' + item.repair_type">
                     <td class="repairs__td col--name">{{ item.product_name }}</td>
                     <td class="repairs__td">{{ item.repair_type_name }}</td>
@@ -22,23 +22,33 @@
             <div v-else>Здесь пока пусто ...</div>
         </div>
 
-        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
+        <Tasks class="tasks"/>
+
+        <Dialog v-if="show === 'details'" @close="show = 'repairs'">
+            <Details :_repair="repair" @close="show = 'repairs'"></Details>
+        </Dialog>
+
     </div>
 </template>
 
 <script>
-    import getPlanRepairs from './getPlanRepairs';
-    import Details from './repairDetails';
+    import getPlanRepairs from './js/getPlanRepairs';
+    import Dialog from '@/components/Dialog';
+    import Details from './elements/details';
+    import Tasks   from './elements/tasks';
 
     export default {
         components: {
             Details,
+            Dialog,
+            Tasks
         },
         data() {
             return {
                 filt: i => i,
                 show: 'repairs',
                 repair: {},
+                dialog: true
             }
         },
         methods: {
@@ -46,6 +56,7 @@
                 this.repair = repair;
 
                 this.repair.cost_work = 0;
+                this.repair.status = 'active';
                 this.repair.cost_comp = 0;
                 this.repair.start_time = new Date();
 
@@ -71,6 +82,12 @@
     };
 </script>
 
-<style lang="scss" >
+<style lang="scss">
     @import './style.scss';
+</style>
+
+<style lang="scss" scoped>
+    .tasks {
+        margin-top: 50px;
+    }
 </style>

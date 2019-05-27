@@ -45,12 +45,12 @@
                 return this.$store.getters.orderToPrint ? 'print' : 'app'; // app || print
             }
         }
-    }
+    };
 
 </script>
 
 <style lang="scss">
-   @import 'assets/scss/style'; 
+   @import 'assets/scss/style';
 </style>
 
 <style lang="scss" scoped>

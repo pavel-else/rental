@@ -41,7 +41,7 @@
             </li>
             <li class="menu__item">
                 <router-link class="menu__link" to="/repairs">
-                    <span 
+                    <span
                         class="sign sign__warn"
                         v-if="isThereAnyPlanRepairs"
                         :title="countPlanRepairs + 'шт'"
@@ -51,7 +51,7 @@
                 <ul class="menu__sublist">
                     <li class="menu__item">
                         <router-link class="menu__link" to="/repairs/plan/">
-                            <span 
+                            <span
                                 class="sign sign__warn"
                                 v-if="isThereAnyPlanRepairs"
                                 :title="countPlanRepairs + 'шт'"
@@ -79,7 +79,7 @@
 </template>
 <script>
     import RentalCategories from './RentalCategories';
-    import getPlanRepairs   from '@/components/Repairs/getPlanRepairs';
+    import getPlanRepairs   from '@/components/Repairs/js/getPlanRepairs';
 
     export default {
         name: 'admPanel',
@@ -104,7 +104,8 @@
 
             currentRepairs() {
                 const repairs = this.$store.getters.repairs;
-                const filter = repairs.filter(i => !i.end_time);
+                const filter = repairs.filter(i => i.status === 'active');
+                
                 return filter;
             },
             isThereAnyCurrentRepairs() {
@@ -114,7 +115,7 @@
                 return this.currentRepairs.length;
             },
         }
-    }
+    };
 </script>
 
 <style lang="scss">
@@ -137,7 +138,7 @@
         &__item:hover &__sublist {
             border: 0;
             position: absolute;
-            display: none;
+            display: flex;
             flex-direction: column;
             margin: 5px 0 0 0;
             outline: 1px solid #333;

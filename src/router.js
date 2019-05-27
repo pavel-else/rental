@@ -60,6 +60,10 @@ export default new Router({
             beforeEnter: ifAuthenticated,
         },
         {
+            path: '/test',
+            component: () => import('@/components/Test'),
+        },
+        {
             path: '/settings',
             redirect: '/settings/main',
             beforeEnter: ifAuthenticated,
@@ -102,19 +106,19 @@ export default new Router({
                 },
                 {
                     path: 'plan',
-                    component: () => import('@/components/Repairs/RepairsPlan'),
+                    component: () => import('@/components/Repairs/Plan'),
                 },
                 {
                     path: 'current',
-                    component: () => import('@/components/Repairs/RepairsCurrent'),
+                    component: () => import('@/components/Repairs/Current'),
                 },
                 {
                     path: 'history',
-                    component: () => import('@/components/Repairs/RepairsHistory'),
+                    component: () => import('@/components/Repairs/History'),
                 },
                 {
                     path: 'settings',
-                    component: () => import('@/components/Repairs/RepairsSettings'),
+                    component: () => import('@/components/Repairs/Settings'),
                 },
             ]
         },

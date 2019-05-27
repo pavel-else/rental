@@ -5,32 +5,32 @@
         </h3>
         <table class="table table-bordered">
             <tr
-                v-for="item in products" 
+                v-for="item in products"
                 :key="item.id_rent"
-                @click="onClick(item)" 
+                @click="onClick(item)"
                 class="products__product"
             >
-                <td 
-                    class="products__td products__td--icon" 
+                <td
+                    class="products__td products__td--icon"
                     @mousemove="openPhoto(item)"
                     @mouseout="closePhoto()"
                 >
                     <Bike :_color="item.color" :_type="+item.type"></Bike>
                 </td>
-                    
+
                 <td class="products__td">
-                    {{ item.name }} 
+                    {{ item.name }}
                     <span v-if="item.size && item.category != 1">({{ item.size }})</span>
                 </td>
             </tr>
         </table>
 
-        <Photo 
+        <Photo
             class="products__photo"
-            v-if="product.id_rent" 
+            v-if="product.id_rent"
             :product="product"
         ></Photo>
-                    
+
     </div>
 </template>
 
@@ -83,10 +83,10 @@
 
                     return activeCategory ? activeCategory.id_rent == product.category : true;
                 };
-                
+
                 const list = this.$store.getters.products;
 
-                return list ? list.filter(item => { 
+                return list ? list.filter(item => {
                     return !isRent(item.id_rent)          // не находится в прокате
                         && item.status === 'active'     // не отключен в настройках товара и не удален
                         && !isBroken(item.id_rent)     // не находится в ремонте

@@ -3,8 +3,8 @@
         <h3>В прокате <span>({{ length }})</span></h3>
 
         <table cellspacing="0" class="table">
-            <tr 
-                class="table-tr" 
+            <tr
+                class="table-tr"
                 v-for="order in ordersByCategory"
                 :key="order.id_rent"
                 :title="order.title"
@@ -16,10 +16,10 @@
                 <td class="td-2">{{ order.format_start_time }}</td>
 
                 <td>
-                    <tr 
+                    <tr
                         class="product-tr"
-                        v-for="subOrder in order.subOrders" 
-                        :key="subOrder.id_rent" 
+                        v-for="subOrder in order.subOrders"
+                        :key="subOrder.id_rent"
                         :class="subOrder.status === 'PAUSE' ? 'suborder--pause' : 'suborder--active'"
                     >
                         <td class="td-3" @click="toChange(order, subOrder)" >{{ subOrder.product_name }}</td>
@@ -37,7 +37,7 @@
                 </td>
 
                 <td class="td-6 td-6-1">
-                    <i 
+                    <i
                         class="icon far fa-pause-circle"
                         @click="pauseOrder(order)"
                     >
@@ -45,28 +45,28 @@
                 </td>
 
                 <td class="td-7">
-                    <i 
+                    <i
                         class="icon far fa-stop-circle"
-                        @click="stopOrder(order)" 
+                        @click="stopOrder(order)"
                     >
-                    </i>   
-                </td>              
+                    </i>
+                </td>
             </tr>
         </table>
 
-        <DetailsOrder 
-            v-if="showDetails" 
-            :_order="order" 
-            :_subOrder="subOrder" 
+        <DetailsOrder
+            v-if="showDetails"
+            :_order="order"
+            :_subOrder="subOrder"
             @close="closeDetails"
             @openResume="openResume($event)"
         >
         </DetailsOrder>
 
-        <Resume 
+        <Resume
             v-if="showResume"
-            :_order="order" 
-            @close="showResume = false" 
+            :_order="order"
+            @close="showResume = false"
         >
         </Resume>
     </div>
@@ -132,7 +132,7 @@
                 }
 
                 const format = (date) => {
-                    return date < 10 
+                    return date < 10
                         ? `0${date}`
                         : `${date}`
                 }
@@ -188,7 +188,7 @@
 
             getBillWrap(order, subOrder) {
                 let time;
-                
+
                 if (subOrder.status == "ACTIVE") {
                     time = Date.now() - Date.parse(order.start_time) - subOrder.pause_time;
                 }
@@ -244,7 +244,7 @@
                 const cmds = activeList.length > 0 ? makePause() : makeActive();
 
                 cmds.push({ cmd: 'getActiveSubOrders' });
-                
+
                 this.$store.dispatch('multipleRequest', cmds);
             },
 
@@ -371,7 +371,7 @@
 
     .icon {
         opacity: 0.2;
-        text-align: center;  
+        text-align: center;
     }
     .icon:hover {
         opacity: 1;
@@ -390,12 +390,10 @@
         margin: 0;
     }
 
-    .black .table-tr > td {
-        border-bottom: 1px solid #333;        
+    .table-tr > td {
+        border-bottom: 1px solid #333;
     }
-    .white .table-tr > td {
-        border-bottom: 1px solid lightgray;        
-    }
+
 
     .table-tr:nth-child(2n - 1) {
         background-color: rgba(0,0,0,0.01);

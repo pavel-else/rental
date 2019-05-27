@@ -1,34 +1,32 @@
 <template>
-    <div class="canvas">
-        <div class="details bikelist">
-            <div class="bikelist__caption">
-                <h3>
-                    <span>Добавить в ремонт</span>
-                </h3>
-            </div>
+    <div class="bikelist">
+        <div class="bikelist__caption">
+            <h3>
+                <span>Добавить в ремонт</span>
+            </h3>
+        </div>
 
-            <input placeholder="Начните вводить название" @input="search()">
+        <input placeholder="Начните вводить название" @input="search()">
 
-            <table class="bikelist__table" v-if="products && products.length > 0">
-                <tr>
-                    <th>Название</th>
-                    <th>Пробег</th>
-                    <th>Дата последнего ремонта</th>
-                </tr>
-                <tr v-for="item in products.filter(filt)" :key="item.id_rent" @click="select(item)">
-                    <td>{{ item.name }}</td>
-                    <td style="text-align: right">{{ item.mileage | round }} ч.</td>
-                    <td>{{ item.last_repair_time | shortDate }}</td>
-                </tr>
-            </table>
-            
-            <div class="details__close" @click="close()"></div>
-        </div>  
+        <table class="bikelist__table" v-if="products && products.length > 0">
+            <tr>
+                <th>Название</th>
+                <th>Пробег</th>
+                <th>Дата последнего ремонта</th>
+            </tr>
+            <tr v-for="item in products.filter(filt)" :key="item.id_rent" @click="select(item)">
+                <td>{{ item.name }}</td>
+                <td style="text-align: right">{{ item.mileage | round }} ч.</td>
+                <td>{{ item.last_repair_time | shortDate }}</td>
+            </tr>
+        </table>
     </div>
 </template>
+
 <script>
     import * as Time from '@/functions/time';
     import copy from '@/functions/copy';
+
     export default {
         data() {
             return {
@@ -47,13 +45,13 @@
             close() {
                 this.$emit('close');
             },
-            select(item) {                
+            select(item) {
                 this.$emit('select', item);
             },
         },
         computed: {
             // выводит список продуктов с учетом их последнего ремонта
-            products() {                
+            products() {
                 const getLastRepair = (product_id) => {
                     const repairs = copy(this.$store.getters.repairs);
                     const filter = repairs.filter(i => i.product_id == product_id && i.end_time);
@@ -93,48 +91,41 @@
                 return Time.format('DD MMMM YYYY', date);
             },
         }
-    }
+    };
 </script>
-<style scoped>
-    .details {
-        display: flex;
-        flex-direction: column;
-        width: 570px;
-        margin-top: 30px;
-        overflow-y: hidden;
-        margin-bottom: 100px;
-    }
-    .bikelist__caption {
-        display: inline-flex;
-    }
-    .caption__clarification {
-        font-size: 12px;
-        padding: 5px 10px;
-        margin-left: 10px;
-        cursor: pointer;
-    }
-    .caption__clarification--select {
-        outline: 1px solid lightgray;
-    }
 
-    .bikelist__table {
-        margin-top: 30px;
-    }
-    .details td {
-        padding: 5px 20px;
-    }
-    .details tr:first-child th {
-        padding-bottom: 20px;
-    }
-    .details tr:not(:first-child):hover {
-        cursor: pointer;
-    }
+<style lang="sass" scoped>
 
-    .sign--fix {
-        display: block;
-        width: 4px;
-        height: 4px;
-        border: 1px solid red;
-        border-radius: 50%;
-    }
+.bikelist
+    max-width: 400px
+    width: 100%
+    display: flex
+    flex-direction: column
+
+    .bikelist__caption
+        display: inline-flex
+
+
+    .caption__clarification
+        font-size: 12px
+        padding: 5px 10px
+        margin-left: 10px
+        cursor: pointer
+
+    .caption__clarification--select
+        outline: 1px solid lightgray
+
+
+    .bikelist__table
+        border-collapse: collapse
+        margin-top: 30px
+
+        td
+            padding: 2px 5px
+
+        tr:hover td
+            cursor: pointer
+            background: #333
+
+
 </style>

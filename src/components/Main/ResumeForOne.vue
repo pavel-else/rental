@@ -41,14 +41,14 @@
                         <div class="products__line">
                             <span>{{ item.product_name }}</span>
                             <!-- <span class="product-line__fill"></span> -->
-                            <span>{{ item.bill_rent }} руб.</span>                                      
+                            <span>{{ item.bill_rent }} руб.</span>
                         </div>
 
                         <ul class="products__access-list">
                             <li class="products__access-item products__line" v-for="accessory in item.extended_accessories" :key="accessory.id_rent">
                                 <span class="products__arrow"> {{ accessory.name }}</span>
                                 <!-- <span class="product-line__fill"></span> -->
-                                <span>{{ accessory.bill_access }} руб.</span>                                        
+                                <span>{{ accessory.bill_access }} руб.</span>
                             </li>
                         </ul>
                     </li>
@@ -56,11 +56,11 @@
                         <div class="products__line">
                             <span class="products__text-resume">Итого<span v-if="saleSize > 0"> (скидка {{ saleSize }}%) </span></span>
                             <span class="products__text-resume">
-                                <s 
+                                <s
                                     v-if="billRentAccess > billRentAccessSale"
                                     style="margin-right: 5px"
                                 >
-                                    {{ billRentAccess }} 
+                                    {{ billRentAccess }}
                                 </s>
                                 {{ billRentAccessSale }} руб.
                             </span>
@@ -194,7 +194,7 @@
 
                 const end = subOrder.end_time ? Date.parse(subOrder.end_time) : Date.now();
 
-                return end - start - pause; 
+                return end - start - pause;
             },
             getBillRent(subOrder) {
                 const bill = getBill(subOrder.tariff_id, subOrder.time);
@@ -278,12 +278,12 @@
                 }
 
                 cmds = [
-                ...cmds, 
-                    { cmd: 'getActiveOrders' }, 
-                    { cmd: 'getActiveSubOrders' }, 
-                    { cmd: 'getProducts' }, 
-                    { cmd: 'getTariffs' }, 
-                    { cmd: 'getCustomers' }, 
+                ...cmds,
+                    { cmd: 'getActiveOrders' },
+                    { cmd: 'getActiveSubOrders' },
+                    { cmd: 'getProducts' },
+                    { cmd: 'getTariffs' },
+                    { cmd: 'getCustomers' },
                     { cmd: 'getAccessories' },
                     { cmd: 'getGeneralSettings' }
                 ];
@@ -315,7 +315,7 @@
                 // this.balanceAmound = 0;
 
                 // if (this.isApplyBalance) {
-                //     this.balanceAmound = this.getBalanceAmound();    
+                //     this.balanceAmound = this.getBalanceAmound();
                 // }
                 // console.log(this.balanceAmound);
             },
@@ -366,7 +366,7 @@
                 //         const diff = bill - balance;
 
                 //         msg = advance > diff ? ' К сдаче: ' : 'К оплате: ';
-                //         total = Math.abs(advance - diff); 
+                //         total = Math.abs(advance - diff);
                 //     }
                 // }
 
@@ -434,7 +434,7 @@
                 return this.$store.getters.deposits.find(i => i.id_rent === +this.order.deposit)
             },
             balance() {
-                return this.customer && this.customer.balance ? +this.customer.balance : 0; 
+                return this.customer && this.customer.balance ? +this.customer.balance : 0;
             },
             advance() {
                 return this.order.advance ? +this.order.advance : 0;
@@ -496,7 +496,7 @@
         display: flex;
         justify-content: center;
     }
-    
+
 
     .resume__caption {
         text-align: center;
@@ -522,7 +522,7 @@
         &__list {
             margin: 20px 50px 50px 30px;
         }
-        &__item {            
+        &__item {
             display: block;
             flex-direction: column;
             width: 100%;

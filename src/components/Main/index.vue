@@ -2,7 +2,7 @@
     <div class="desktop">
 
         <product-list class="snippet snippet__products" @addOrder="addOrder($event)"></product-list>
-        
+
         <order-list class="snippet snippet__orders" ></order-list>
 
         <DetailsOrder v-if="show" :product="product" @close="onClose"></DetailsOrder>
@@ -65,14 +65,12 @@ import DetailsOrder from './DetailsOrder/DetailsOrder';
         padding: 0 20px;
     }
 
-    .black .snippet {
+    .snippet {
        border: 1px solid rgba(255,255,255,.1);
        // background: rgba(255,255,255,.05);
     }
-    .white .snippet {
-       border: 1px solid lightgray;
-    }
-    .snippet:first-child {
+
+.snippet:first-child {
         margin-right: 50px;
     }
     .snippet h3 {

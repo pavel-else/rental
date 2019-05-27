@@ -4,9 +4,9 @@
             <div class="caption-wrap">
                 <h2 class="repairs__caption">В ремонте</h2>
                 <small> {{ currentRepairs.length }} шт</small>
-                <button @click="newRepair()">Добавить в ремонт</button>            
+                <button @click="newRepair()">Добавить в ремонт</button>
             </div>
-            <table class="repairs__table">
+            <table class="repairs__table" v-if="currentRepairs.length > 0">
                 <tr>
                     <th>Название</th>
                     <th>Тип</th>
@@ -20,23 +20,33 @@
                     <td class="repairs__td">{{ item.cost_comp }}</td>
                     <td class="repairs__td">{{ item.cost_work }}</td>
                     <td class="repairs__td col--note">{{ item.note | formNote }}</td>
-                    <td class="repairs__td col--start">{{ item.start_time | shortDate }}</td>                
+                    <td class="repairs__td col--start">{{ item.start_time | shortDate }}</td>
                 </tr>
             </table>
+            <div v-else>Здесь пока пусто ...</div>
         </div>
 
-        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
-        <BikesList v-if="show === 'bikeList'" @close="show = 'repairs'" @select="addBikeToNewRepair($event)" />
+        <Dialog v-if="show === 'details'" @close="show = 'repairs'">
+            <Details :_repair="repair" @close="show = 'repairs'"></Details>
+        </Dialog>
+
+        <Dialog v-if="show === 'bikeList'" @close="show = 'repairs'">
+            <BikesList @select="addBikeToNewRepair($event)" @close="show = 'repairs'"/>
+        </Dialog>
     </div>
 </template>
+
 <script>
     import copy from '@/functions/copy';
     import * as Time from '@/functions/time';
-    import Details from './repairDetails';
-    import BikesList from './bikesList';
+
+    import Details   from './elements/details';
+    import BikesList from './elements/bikesList';
+    import Dialog    from '@/components/Dialog';
 
     export default {
         components: {
+            Dialog,
             Details,
             BikesList
         },
@@ -85,7 +95,8 @@
         computed: {
             currentRepairs() {
                 const repairs = this.$store.getters.repairs;
-                const filter = copy(repairs.filter(i => !i.end_time));
+                const filter = copy(repairs.filter(i => i.status === 'active'));
+
                 return filter.map(i => {
                     i.product_name = this.getProductName(i.product_id);
                     i.repair_type_name = this.getRepairTypeName(i.repair_type);
@@ -106,8 +117,5 @@
                 return note && note.length > 20 ? note.substr(0, 19) + '...' : note;
             },
         }
-    }
+    };
 </script>
-<style lang="scss" >
-    @import './style.scss';
-</style>
