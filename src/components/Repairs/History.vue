@@ -1,6 +1,5 @@
 <template>
-    <div class="repairs">
-        <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
+    <div class="repairs">        
 
         <input placeholder="Начните вводить название" @input="search()">
 
@@ -30,16 +29,22 @@
             </table>
         </div>
 
+        <Dialog v-if="show === 'details'" @close="show = 'repairs'">
+            <Details v-if="show === 'details'" :_repair="repair" @close="show = 'repairs'"></Details>
+        </Dialog>
+
     </div>
 </template>
 <script>
     import copy from '@/functions/copy';
     import * as Time from '@/functions/time';
     import Details from './repairDetails';
+    import Dialog from '@/components/Dialog';
 
     export default {
         components: {
             Details,
+            Dialog
         },
         data() {
             return {

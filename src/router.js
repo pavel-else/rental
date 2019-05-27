@@ -114,7 +114,7 @@ export default new Router({
                 },
                 {
                     path: 'history',
-                    component: () => import('@/components/Repairs/RepairsHistory'),
+                    component: () => import('@/components/Repairs/History'),
                 },
                 {
                     path: 'settings',
