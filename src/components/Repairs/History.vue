@@ -30,7 +30,7 @@
         </div>
 
         <Dialog v-if="show === 'details'" @close="show = 'repairs'">
-            <Details :_repair="repair"></Details>
+            <Details :_repair="repair" @close="show = 'repairs'"></Details>
         </Dialog>
 
     </div>

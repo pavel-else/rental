@@ -1,5 +1,5 @@
 <template>
-    <div class="settings-details">
+    <div class="rental-settings-details">
         <h3>
             <span v-if="repairType.isNew">Новый тип ремонта</span>
             <span v-else>Редактировать ремонт</span>
@@ -31,7 +31,7 @@
         </table>
 
 
-        <div class="btn-group">
+        <div class="button-group">
             <button @click="save">Сохранить</button>
             <button @click="close">Отмена</button>
             <button v-if="!repairType.isNew" @click="remove">Удалить</button>
@@ -96,67 +96,42 @@
                 }
 
                 this.errors = errors.length > 0 ? errors : null;
-            },
-
-            // stop() {
-            //     this.repair.end_time = new Date();
-            //     this.$store.dispatch('stopRepair', this.repair);
-            //     this.$emit('close');
-        },
-        // computed: {
-        //     startMin() {
-        //         return shortDate();
-        //     },
-        //     repairTypes() {
-        //         const types = this.$store.getters.repairTypes;
-        //         return types;
-        //     },
-        //     planTypes() {
-        //         return this.repairTypes ? this.repairTypes.filter(i => i.is_plan === '1') : [];
-        //     },
-        //     simpleTypes() {
-        //         const repairTypes = this.repairTypes ? this.repairTypes.filter(i => i.is_plan === '0') : [];
-        //         const sorted = repairTypes.sort((a, b) => b.id_rent - a.id_rent);
-                
-        //         return sorted;
-        //     },
-        // }
+            }
+        }
     };
 </script>
 
-<style lang="scss" scoped>
-    .settings-details {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        width: 400px;
-        margin-top: 30px;
-        margin-bottom: 100px;
-        overflow-y: hidden;
+<style lang="sass" scoped>
 
-        input[type="text"],
-        textarea {
-            width: 100%;
-            box-sizing: border-box;
-        }
+.rental-settings-details 
+    display: flex
+    flex-direction: column
+    align-items: stretch
+    min-width: 320px
+    overflow-y: hidden
 
-        .errors {
-            background-color: #333;
-            color: red;
-            ul {
-                display: flex;
-                flex-direction: column;
-            }
-        }
+    input[type="text"],
+    textarea 
+        width: 100%
+        box-sizing: border-box
+        border: 1px solid #333
+    
 
-        td {
-            padding: 5px;
-        }
+    .errors 
+        background-color: #333
+        color: red
+        ul 
+            display: flex
+            flex-direction: column       
+    
+    table
+        margin-bottom: 50px
+    td 
+        padding: 5px
 
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-    }
+
+    .button-group
+        margin-top: auto
+
+
 </style>

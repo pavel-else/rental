@@ -21,12 +21,13 @@
         <button class="btn-create" @click="createTask()">Добавить</button>
 
         <Dialog v-if="show === 'details'" @close="show = 'repairs'">
-            <Details :_repair="repair"></Details>
+            <Details :_repair="task" @close="show = 'repairs'"></Details>
         </Dialog>
 
         <Dialog v-if="show === 'bikeList'" @close="show = 'repairs'">
-            <BikesList @select="addBikeToNewRepair($event)" />
+            <BikesList @select="addBikeToNewRepair($event)" @close="show = 'repairs'"/>
         </Dialog>
+
 
     </div>
 </template>
@@ -42,6 +43,7 @@
 
     export default {
         components: {
+            Dialog,
             Details,
             BikesList,
         },

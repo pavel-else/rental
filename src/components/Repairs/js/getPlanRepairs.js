@@ -38,7 +38,7 @@ const getPlanRepairs = ($store) => {
         const repairTypes = copy($store.getters.repairTypes);
 
         // Отбираем только плановые
-        const filter = repairTypes.filter(i => i.is_plan === '1');
+        const filter = repairTypes.filter(i => i.is_plan === '1' && i.status === 'active');
 
         // Формируем список ТО
         const list = filter.reduce((acc, repairType) => {

@@ -26,7 +26,7 @@
         <button class="button repair-settings__button" @click="createType()">Добавить</button>
 
         <Dialog v-if="show === 'details'" @close="show = 'list'">
-            <Details :_repairType="repairType"></Details>
+            <Details :_repairType="repairType" @close="show = 'list'"></Details>
         </Dialog>
     </div>
 </template>

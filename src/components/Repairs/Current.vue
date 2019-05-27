@@ -27,11 +27,11 @@
         </div>
 
         <Dialog v-if="show === 'details'" @close="show = 'repairs'">
-            <Details :_repair="repair"></Details>
+            <Details :_repair="repair" @close="show = 'repairs'"></Details>
         </Dialog>
 
         <Dialog v-if="show === 'bikeList'" @close="show = 'repairs'">
-            <BikesList @select="addBikeToNewRepair($event)" />
+            <BikesList @select="addBikeToNewRepair($event)" @close="show = 'repairs'"/>
         </Dialog>
     </div>
 </template>

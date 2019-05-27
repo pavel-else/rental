@@ -4,7 +4,8 @@ import router   from './router'
 import store    from './store'
 import Vuetify from 'vuetify'
 
-import 'vuetify/dist/vuetify.min.css'
+// Эта штука перекрывает стили кнопок
+//import 'vuetify/dist/vuetify.min.css'
 
 
 
