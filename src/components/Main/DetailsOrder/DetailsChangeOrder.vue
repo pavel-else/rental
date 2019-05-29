@@ -1,131 +1,130 @@
 <template>
-    <div class="canvas">
-        <div class="details change-order__datails">
-            <h3>Детали заказа<span> - # {{ order.id_rent }}/{{ subOrder.id_rent }}</span></h3>
-            <form @submit.prevent="">
-                <table>
-                    <tr>
-                        <td>Товар</td>
-                        <td>{{ product.name }}</td>
-                    </tr>
-                    <tr>
-                        <td>Группа</td>
-                        <td>
-                            <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Статус</td>
-                        <td>
-                            {{ getStatus(subOrder.status) }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Аванс</td>
-                        <td>
-                            <input 
-                                class="add-order__input add-order__input--advance" 
-                                :value="order.advance" 
-                                placeholder="0 руб"
-                                @change="setAdvance($event)"
-                            >
+    <div class="add-order">
+        <h3>Детали заказа<span> - # {{ order.id_rent }}/{{ subOrder.id_rent }}</span></h3>
+        <form @submit.prevent="">
+            <table>
+                <tr>
+                    <td>Товар</td>
+                    <td>{{ product.name }}</td>
+                </tr>
+                <tr>
+                    <td>Группа</td>
+                    <td>
+                        <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Статус</td>
+                    <td>
+                        {{ getStatus(subOrder.status) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Аванс</td>
+                    <td>
+                        <input
+                            class="add-order__input add-order__input--advance"
+                            :value="order.advance"
+                            placeholder="0 руб"
+                            @change="setAdvance($event)"
+                        >
 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Клиент</td>
-                        <td>
-                            <SelectCustomer 
-                                :customer="order.customer_id"
-                                @setCustomer="setCustomer($event)" 
-                            >
-                            </SelectCustomer>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Залог</td>
-                        <td>
-                            <SelectDeposit 
-                                :deposit="order.deposit" 
-                                @setDeposit="setDeposit($event)"
-                            >
-                            </SelectDeposit>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Примечание</td>
-                        <td>
-                            <textarea 
-                                class="add-order__input add-order__input--note" 
-                                cols="30" 
-                                rows="3"
-                                @input="setNote($event)"
-                                :value="order.note"
-                            >
-                            </textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Акция</td>
-                        <td>
-                            <SelectPromotion 
-                                :promotion="order.promotion" 
-                                @setPromotion="setPromotion($event)"
-                            >
-                            </SelectPromotion>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Аксессуары</td>
-                        <td>
-                            <SelectAccessories 
-                                :accessory="subOrder.accessories" 
-                                @setAccessories="setAccessories($event)"
-                            >
-                            </SelectAccessories>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Тарифный план</td>
-                        <td>
-                            <SelectTariff 
-                                :data-tariffs="tariffs" 
-                                :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default"
-                                @setTariff="setTariff($event)"
-                            >
-                            </SelectTariff>
-                        </td>
-                    </tr>
-                </table>
-                <div class="btn-group">
-                    <button class="change-order__button" @click="toPrint()">
-                        Печать
-                    </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Клиент</td>
+                    <td>
+                        <SelectCustomer
+                            :customer="order.customer_id"
+                            @setCustomer="setCustomer($event)"
+                        >
+                        </SelectCustomer>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Залог</td>
+                    <td>
+                        <SelectDeposit
+                            :deposit="order.deposit"
+                            @setDeposit="setDeposit($event)"
+                        >
+                        </SelectDeposit>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Примечание</td>
+                    <td>
+                        <textarea
+                            class="add-order__input add-order__input--note"
+                            cols="30"
+                            rows="3"
+                            @input="setNote($event)"
+                            :value="order.note"
+                        >
+                        </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Акция</td>
+                    <td>
+                        <SelectPromotion
+                            :promotion="order.promotion"
+                            @setPromotion="setPromotion($event)"
+                        >
+                        </SelectPromotion>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Аксессуары</td>
+                    <td>
+                        <SelectAccessories
+                            :accessory="subOrder.accessories"
+                            @setAccessories="setAccessories($event)"
+                        >
+                        </SelectAccessories>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Тарифный план</td>
+                    <td>
+                        <SelectTariff
+                            :data-tariffs="tariffs"
+                            :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default"
+                            @setTariff="setTariff($event)"
+                        >
+                        </SelectTariff>
+                    </td>
+                </tr>
+            </table>
+            <div class="btn-group">
+                <button class="change-order__button" @click="toPrint()">
+                    Печать
+                </button>
 
-                    <button class="change-order__button" @click.prevent="save()">
-                        Сохранить                        
-                    </button>
+                <button class="change-order__button" @click.prevent="save()">
+                    Сохранить
+                </button>
 
-                    <button class="change-order__button" @click.prevent="abortSubOrder()">
-                        Удалить
-                    </button>
+                <button class="change-order__button" @click.prevent="abortSubOrder()">
+                    Удалить
+                </button>
 
-                    <!-- <button class="change-order__button" @click.prevent="stop()">
-                        Стоп
-                    </button> -->
+                <!-- <button class="change-order__button" @click.prevent="stop()">
+                    Стоп
+                </button> -->
 
-                    <button class="change-order__button" @click.prevent="pauseSubOrder()">
-                        Пауза
-                    </button>
-                </div>
+                <button class="change-order__button" @click.prevent="pauseSubOrder()">
+                    Пауза
+                </button>
+            </div>
 
-                <button class="details__close" @click.prevent="close"></button>
-            </form>
+            <button class="details__close" @click.prevent="close"></button>
+        </form>
 
-            <TotalResume v-if="showTotalResume" :_order="order" @close="close()"></TotalResume>
-            <ResumeForOne v-if="showResumeForOne" :_order="order" :_subOrder="subOrder" @close="close()"></ResumeForOne>
+        <TotalResume v-if="showTotalResume" :_order="order" @close="close()"></TotalResume>
+        <ResumeForOne v-if="showResumeForOne" :_order="order" :_subOrder="subOrder" @close="close()"></ResumeForOne>
         </div>
-    </div>
+
 </template>
 
 <script>
@@ -449,53 +448,62 @@
     }
 </script>
 
-<style lang="scss" scoped>
-    .change-order__datails {
-        width: 420px;
-        margin-top: 50px;
-        padding: 10px 20px;
-    }
+<style lang="sass" scoped>
 
-    .change-order__datails td {
-        padding: 5px 0;
-    }
-    .btn-group {
-        margin-top: 20px;
-        display: flex;
-        justify-content: space-between;
-    }
-    .change-order__button {
-        font-size: 12px;
-    }
+.add-order
+    padding: 10px 20px
 
-    .add-order__input {
-        width: 300px;
-        min-height: 40px;
-        box-sizing: border-box;
-        border: 1px solid lightgray;
-        padding-left: 10px;
-    }
+    .add-order__table
+        margin-bottom: 50px
 
-    .add-order__input--advance {
-        background-color: #000;
-        border: 1px solid #333;
-        color: rgba(255, 255, 255, 0.8);
-    }
+    td
+        padding: 5px 0
 
-    .add-order__input--note {
-        resize: vertical;
-        width: 101%;
-        background-color: #000;
-        border-color: #333;
-        color: rgba(255, 255, 255, 0.8);
-        font-family: Roboto Condensed;
+    td:first-child
+        padding-right: 10px
 
-    }
+
+    .btn-group
+        margin-top: 20px
+
+
+    .add-order__input
+        width: 100%
+        min-height: 40px
+        box-sizing: border-box
+        border: 1px solid lightgray
+        padding-left: 10px
+
+
+    .add-order__input--advance
+        background-color: #000
+        border: 1px solid #333
+        color: rgba(255, 255, 255, 0.8)
+
+
+    .add-order__input--note
+        resize: vertical
+        width: 101%
+        background-color: #000
+        border-color: #333
+        color: rgba(255, 255, 255, .8)
+        font-family: Roboto Condensed
+
+    .button-group
+        display: flex
+        justify-content: center
+
+
+@media screen and (max-width: 420px)
+    .add-order
+        td:first-child
+            display: none
+
 </style>
 
 <style lang="scss">
     /*Style to Multiple Select*/
-    .change-order__datails {
+    .add-order {
         .multiselect {
             background-color: #000;
             border-radius: 0;
@@ -510,6 +518,6 @@
 
         .multiselect__single {
             background-color: #000;
-        }    
+        }
     }
 </style>

@@ -54,14 +54,15 @@
             </tr>
         </table>
 
-        <DetailsOrder
-            v-if="showDetails"
-            :_order="order"
-            :_subOrder="subOrder"
-            @close="closeDetails"
-            @openResume="openResume($event)"
-        >
-        </DetailsOrder>
+        <Dialog v-if="showDetails" @close="closeDetails">
+            <DetailsOrder
+                :_order="order"
+                :_subOrder="subOrder"
+                @close="closeDetails"
+                @openResume="openResume($event)"
+            />
+        </Dialog>
+
 
         <Resume
             v-if="showResume"
@@ -76,6 +77,7 @@
     import TotalResume   from './TotalResume';
     import stopSubOrder  from './functions/stopSubOrder'
     import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
+    import Dialog        from  '@/components/Dialog'
     import Icon          from  '@/components/Icon/Icon'
 
     import getBill       from '@/functions/getBill'
@@ -92,7 +94,8 @@
         components: {
             Resume: TotalResume,
             DetailsOrder,
-            Icon
+            Icon,
+            Dialog
         },
 
         data() {

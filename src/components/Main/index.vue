@@ -5,7 +5,9 @@
 
         <order-list class="snippet snippet__orders" ></order-list>
 
-        <DetailsOrder v-if="show" :product="product" @close="onClose"></DetailsOrder>
+        <Dialog v-if="show" @close="show = false">
+            <DetailsOrder :product="product" @close="show = false"></DetailsOrder>
+        </Dialog>
     </div>
 </template>
 
@@ -13,12 +15,14 @@
 import productList  from './product-list';
 import orderList    from './order-list';
 import DetailsOrder from './DetailsOrder/DetailsOrder';
+import Dialog       from '@/components/Dialog';
 
     export default {
         components: {
             productList,
             orderList,
-            DetailsOrder
+            DetailsOrder,
+            Dialog
         },
         data() {
             return {
