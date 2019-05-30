@@ -1,6 +1,5 @@
 <template>
-    <div class="canvas">
-        <div class="details resume">
+    <div class="resume">
             <h2 class="resume__caption">Заказ # {{ order.id_rent }}</h2>
 
             <table class="resume__main-table">
@@ -129,22 +128,9 @@
                             </span>
                         </div>
                     </li>
-
-<!--                     <li class="products__item">
-                        <div class="products__line">
-                            <span class="products__text-resume">Сдача</span>
-                            <span class="products__text-resume">
-                                {{ changeMoney }} руб.
-                            </span>
-                        </div>
-                    </li> -->
-
                 </ul>
             </div>
-
-            <button class="details__close" @click.prevent="close"></button>
         </div>
-    </div> 
 </template>
 
 <script>
