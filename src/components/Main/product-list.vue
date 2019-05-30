@@ -3,7 +3,7 @@
         <h3>
             {{ activeCategoryName }}<span v-if="products.length >= 0"> ({{ products.length }})</span>
         </h3>
-        <table class="table table-bordered">
+        <table class="table">
             <tr
                 v-for="item in products"
                 :key="item.id_rent"
@@ -105,14 +105,23 @@
 
 .product-list
     padding: 10px
+
+    .table
+        border-collapse: collapse
     
     .products__td 
-        padding: 0px 0px 10px 5px
+        padding: 0 0 10px 5px
     
-    .products__product:hover 
+    .products__product
+        box-sizing: border-box
+
+    .products__product:hover
         cursor: pointer
-        outline: 1px solid #333
-    
+        color: #fff
+
+        text-shadow: 0 0 1px #fff
+
+
     .products__photo 
         position: absolute
         margin-left: -180px
