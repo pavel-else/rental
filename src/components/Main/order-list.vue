@@ -63,13 +63,9 @@
             />
         </Dialog>
 
-
-        <Resume
-            v-if="showResume"
-            :_order="order"
-            @close="showResume = false"
-        >
-        </Resume>
+        <Dialog v-if="showResume" @close="showResume = false">
+            <Resume :_order="order" @close="showResume = false" />
+        </Dialog>
     </div>
 </template>
 
