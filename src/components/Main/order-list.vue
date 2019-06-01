@@ -302,7 +302,7 @@
 
         computed: {
             orders() {
-                this.$store.getters.activeCategory; // обновление при смене категории. Косяк.
+                this.$store.getters.activeCategory; // обновление при смене категории. Косяк. Не удалять
 
                 return this.$store.getters.activeOrders.reduce((acc, order) => {
                     order.format_start_time = this.getStartTime(order.start_time);

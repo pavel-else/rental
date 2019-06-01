@@ -1,135 +1,132 @@
 <template>
-    <div class="canvas">
-        <div class="details">
-            <h3>
-                <span v-if="!product.newProduct">Редактирование товара</span>
-                <span v-else>Новый товар</span>
-            </h3>
-            <form @input="onChange">
-                <table>
-                    <tr>
-                        <td>id</td>
-                        <td><input class="input" :value="product.id_rent" disabled></td>
-                    </tr>
-                    <tr>
-                        <td>Название</td>
-                        <td><input class="input" v-model="product.name"></td>
-                    </tr>
-                    <tr>
-                        <td>Фото</td>
-                        <td>
-                            <label class="product__photo--label">
-                                <template>
-                                    <Photo 
-                                        class="details__photo" 
-                                        v-if="product.img" 
-                                        :product="product" 
-                                        :refresh="refresh"
-                                    ></Photo>
-                                    <div v-else class="button">Добавить фото</div>    
-                                </template>
-                                <input class="photo__input" type="file" @input="addImage($event)">
-                            </label>
-                            <span class="details__status">{{ uploadStatus }}</span>
-                            
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Иконка</td>
-                        <td class="bikes">
-                            <div @click="setType(1)">
-                                <Bike
-                                    class="bike"
-                                    :class="{ bike__active: product.type == 1}"
-                                    :style="{ borderColor: product.color }"
-                                    :_color="product.color" 
-                                    :_type="1"                                    
-                                >
-                                </Bike>                                
-                            </div>
-                            <div @click="setType(2)">
-                                <Bike
-                                    class="bike"
-                                    :class="{ bike__active: product.type == 2}"
-                                    :style="{ borderColor: product.color }"
-                                    :_color="product.color" 
-                                    :_type="2"                                    
-                                > 
-                                </Bike>                                
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Цвет</td>
-                        <td><Palette :_color="data.color" @setColor="setColor($event)"></Palette></td>
-                    </tr>
-                    <tr>
-                        <td>Стоимость</td>
-                        <td><input class="input" v-model="product.cost"></td>
-                    </tr>
-                    <tr class="products_tr--tariffs">
-                        <td>Тарифы,<br>по умолчанию</td>
-                        <td>
-                            <Tariffs 
-                                :data="product" 
-                                @setTariffs="setTariffs($event)"
-                                @setTariffDefault="setTariffDefault($event)"
-                            >
-                            </Tariffs>                            
-                        </td>
-                    </tr>
+    <div class="product-details">
+        <h3>
+            <span v-if="!product.newProduct">Редактирование товара</span>
+            <span v-else>Новый товар</span>
+        </h3>
+        <form @input="onChange">
+            <table>
                 <tr>
-                        <td>Категория</td>
-                        <td>
-                            <Categories :productCategory="product.category" @setCategories="setCategories($event)"></Categories>
-                        </td>
-                    </tr> 
-                    <tr>
-                        <td>Описание</td>
-                        <td><textarea class="textarea" v-model="product.note"></textarea></td>
-                    </tr>
-                    <tr>
-                        <td>Размер</td>
-                        <td><input class="input" v-model="product.size"></td>
-                    </tr>
-                    <tr>
-                        <td>Статус</td>
-                        <td class="details__td details__td--status">
-                            <input 
-                                type="radio" 
-                                name="status" 
-                                value="active" 
-                                id="status_active"
-                                @click="checkStatus($event)" 
-                                :checked="product.status == 'active'"
+                    <td>id</td>
+                    <td><input class="input" :value="product.id_rent" disabled></td>
+                </tr>
+                <tr>
+                    <td>Название</td>
+                    <td><input class="input" v-model="product.name"></td>
+                </tr>
+                <tr>
+                    <td>Фото</td>
+                    <td>
+                        <label class="product__photo--label">
+                            <template>
+                                <Photo
+                                    class="details__photo"
+                                    v-if="product.img"
+                                    :product="product"
+                                    :refresh="refresh"
+                                ></Photo>
+                                <div v-else class="button">Добавить фото</div>
+                            </template>
+                            <input class="photo__input" type="file" @input="addImage($event)">
+                        </label>
+                        <span class="details__status">{{ uploadStatus }}</span>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>Иконка</td>
+                    <td class="bikes">
+                        <div @click="setType(1)">
+                            <Bike
+                                class="bike"
+                                :class="{ bike__active: product.type == 1}"
+                                :style="{ borderColor: product.color }"
+                                :_color="product.color"
+                                :_type="1"
                             >
-                            <label for="status_active">Active</label>
+                            </Bike>
+                        </div>
+                        <div @click="setType(2)">
+                            <Bike
+                                class="bike"
+                                :class="{ bike__active: product.type == 2}"
+                                :style="{ borderColor: product.color }"
+                                :_color="product.color"
+                                :_type="2"
+                            >
+                            </Bike>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Цвет</td>
+                    <td><Palette :_color="data.color" @setColor="setColor($event)"></Palette></td>
+                </tr>
+                <tr>
+                    <td>Стоимость</td>
+                    <td><input class="input" v-model="product.cost"></td>
+                </tr>
+                <tr class="products_tr--tariffs">
+                    <td>Тарифы,<br>по умолчанию</td>
+                    <td>
+                        <Tariffs
+                            :data="product"
+                            @setTariffs="setTariffs($event)"
+                            @setTariffDefault="setTariffDefault($event)"
+                        >
+                        </Tariffs>
+                    </td>
+                </tr>
+            <tr>
+                    <td>Категория</td>
+                    <td>
+                        <Categories :productCategory="product.category" @setCategories="setCategories($event)"></Categories>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Описание</td>
+                    <td><textarea class="textarea" v-model="product.note"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Размер</td>
+                    <td><input class="input" v-model="product.size"></td>
+                </tr>
+                <tr>
+                    <td>Статус</td>
+                    <td class="details__td details__td--status">
+                        <input
+                            type="radio"
+                            name="status"
+                            value="active"
+                            id="status_active"
+                            @click="checkStatus($event)"
+                            :checked="product.status == 'active'"
+                        >
+                        <label for="status_active">Active</label>
 
-                            <input 
-                                type="radio" 
-                                name="status" 
-                                value="off" 
-                                id="status_off"
-                                @click="checkStatus($event)"
-                                :checked="product.status == 'off' || !product.status"
-                                >
-                            <label for="status_off">Off</label>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-            
-            <div class="btn-group">
-                <button @click="save">Сохранить</button>
-                <button @click="close">Отмена</button>
-                <button @click="remove" v-if="!product.newProduct">Удалить</button>      
-            </div>
+                        <input
+                            type="radio"
+                            name="status"
+                            value="off"
+                            id="status_off"
+                            @click="checkStatus($event)"
+                            :checked="product.status == 'off' || !product.status"
+                            >
+                        <label for="status_off">Off</label>
+                    </td>
+                </tr>
+            </table>
+        </form>
 
-            <p class="products__updated" v-if="product.id_rent">Дата последнего изменения: {{ product.updated }}</p> 
-
-            <div class="details__close" @click="close"></div>     
+        <div class="btn-group">
+            <button @click="save">Сохранить</button>
+            <button @click="close">Отмена</button>
+            <button @click="remove" v-if="!product.newProduct">Удалить</button>
         </div>
+
+        <p class="products__updated" v-if="product.id_rent">Дата последнего изменения: {{ product.updated }}</p>
     </div>
+
 </template>
 
 <script>
@@ -270,71 +267,78 @@
     }
 </script>
 
-<style scoped>
-    .details {
-        width: 370px;
-        margin-top: 30px;
-        overflow-y: hidden;
-    }
-    .input, 
-    textarea {
-        box-sizing: border-box;
-        width: 220px;
-    }
-    td {
-        padding: 5px;
-    }
+<style lang="scss" scoped>
+    .product-details {
+        .input,
+        textarea {
+            box-sizing: border-box;
+            width: 220px;
+        }
 
-    .btn-group {
-        margin-top: 20px;
-    }
-    .products__updated {
-        font-size: 12px;
-        margin: 20px 0 0 0;
-        color: rgba(255, 255, 255, 0.5);
-    }
-    .bikes {
-        display: flex;
-    }
-    .bike {
-        padding: 5px;
-        margin-left: 10px;
-    }
-    .bike__active {
-        border-bottom: 2px solid lightgray;
-    }
+        td {
+            padding: 5px;
+        }
 
-    .details__photo {
-        position: relative;
-        width: 120px;
-        height: 90px;
-    }
-    .details__photo:hover {
-        cursor: pointer;
-    }
-    .photo__input {
-        display: none;
-    }
-    .details__status {
-        font-size: 10px;
-    }
-    .product__photo--label {
-        display: flex;
-        flex-direction: row;
-    }
+        .btn-group {
+            margin-top: 20px;
+        }
 
-    .details__td--status {
-        /*box-sizing: border-box;*/
-        display: flex;
+        .products__updated {
+            font-size: 12px;
+            margin: 20px 0 0 0;
+            color: rgba(255, 255, 255, 0.5);
+        }
 
-    }
-    .details__td--status label {
-        margin-right: 10px;
-    }
+        .bikes {
+            display: flex;
+        }
 
-    .textarea {
-        resize: vertical;
-        min-height: 50px;
+        .bike {
+            padding: 5px;
+            margin-left: 10px;
+        }
+
+        .bike__active {
+            border-bottom: 2px solid lightgray;
+        }
+
+        .details__photo {
+            position: relative;
+            width: 120px;
+            height: 90px;
+        }
+
+        .details__photo:hover {
+            cursor: pointer;
+        }
+
+        .photo__input {
+            display: none;
+        }
+
+        .details__status {
+            font-size: 10px;
+        }
+
+        .product__photo--label {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .details__td--status {
+            /*box-sizing: border-box;*/
+            display: flex;
+
+        }
+
+        .details__td--status label {
+            margin-right: 10px;
+        }
+
+        .textarea {
+            resize: vertical;
+            min-height: 50px;
+        }
     }
 
 </style>
