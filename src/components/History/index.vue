@@ -32,7 +32,7 @@
                     {{ order.customerName }}                
                 </td>
                 <td style="text-align: right">
-                    {{ shortDate(order.start_time) }}
+                    {{ order.start_time | shortDate }}
                 </td>
                 <td style="text-align: right">
                     {{ order.play_time }}
@@ -49,12 +49,16 @@
         </table>
         <div v-else>Здесь пока пусто..</div>
 
-        <Details :_order="order" @close="onClose" v-if="show"></Details>
+        <Dialog v-if="show" @close="onClose">
+            <Details :_order="order" @close="onClose" />
+        </Dialog>
+
     </div>  
 </template>
 
 <script>
     import Details          from './Details';
+    import Dialog           from '@/components/Dialog';
     import Totals           from '@/components/Totals';
     import timeFormat       from '@/functions/timeFormat';
     import copy             from '@/functions/copy';
@@ -65,7 +69,7 @@
     export default {
         name: 'History',
         components: {
-            Details, Totals
+            Details, Totals, Dialog
         },
         beforeCreate() {
             this.$store.dispatch('multipleRequest', [
@@ -113,19 +117,6 @@
             },
             onClose() {
                 this.show = false;
-            },
-            shortDate(date) {
-                const now = new Date();
-                const today = now.getDate();
-                const orderDate = new Date(date);
-
-                if (!isValidDate(orderDate)) {
-                    return 'Ошибка парсинга';
-                }
-
-                const format = orderDate.getDate() === today ? 'HH:mm' : 'DD MMMM YYYY';
-
-                return Time.format(format, orderDate);
             },
 
             // Блок вспомогательных методов для свойства orders
@@ -217,7 +208,7 @@
                     return acc;
                 }, []);
 
-                return orders.sort((a, b) => Date.parse(b.end_time) - Date.parse(a.end_time));               
+                return orders.sort((a, b) => Date.parse(b.end_time) - Date.parse(a.end_time) > 0 ? 1 : -1);
             },
 
             // FOR TOTAL
@@ -257,6 +248,36 @@
             total() {
                 return this.coin + this.card;
             }
+        },
+
+        filters: {
+            shortDate(date) {
+                const orderDate = new Date(date);
+
+                if (!isValidDate(orderDate)) {
+                    return 'Ошибка парсинга';
+                }
+
+                const isToday= (date) => {
+                    const now = new Date();
+
+                    if (date.getDate() !== now.getDate()) {
+                        return false;
+                    }
+                    if (date.getMonth() !== now.getMonth()) {
+                        return false;
+                    }
+                    if (date.getFullYear() !== now.getFullYear()) {
+                        return false;
+                    }
+
+                    return true;
+                };
+
+                const format = isToday(orderDate) ? 'HH:mm' : 'DD MMMM YYYY';
+
+                return Time.format(format, orderDate);
+            },
         }
     }
 </script>

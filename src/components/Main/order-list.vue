@@ -54,21 +54,18 @@
             </tr>
         </table>
 
-        <DetailsOrder
-            v-if="showDetails"
-            :_order="order"
-            :_subOrder="subOrder"
-            @close="closeDetails"
-            @openResume="openResume($event)"
-        >
-        </DetailsOrder>
+        <Dialog v-if="showDetails" @close="closeDetails">
+            <DetailsOrder
+                :_order="order"
+                :_subOrder="subOrder"
+                @close="closeDetails"
+                @openResume="openResume($event)"
+            />
+        </Dialog>
 
-        <Resume
-            v-if="showResume"
-            :_order="order"
-            @close="showResume = false"
-        >
-        </Resume>
+        <Dialog v-if="showResume" @close="showResume = false">
+            <Resume :_order="order" @close="showResume = false" />
+        </Dialog>
     </div>
 </template>
 
@@ -76,6 +73,7 @@
     import TotalResume   from './TotalResume';
     import stopSubOrder  from './functions/stopSubOrder'
     import DetailsOrder  from  './DetailsOrder/DetailsChangeOrder'
+    import Dialog        from  '@/components/Dialog'
     import Icon          from  '@/components/Icon/Icon'
 
     import getBill       from '@/functions/getBill'
@@ -92,7 +90,8 @@
         components: {
             Resume: TotalResume,
             DetailsOrder,
-            Icon
+            Icon,
+            Dialog
         },
 
         data() {
@@ -303,7 +302,7 @@
 
         computed: {
             orders() {
-                this.$store.getters.activeCategory; // обновление при смене категории. Косяк.
+                this.$store.getters.activeCategory; // обновление при смене категории. Косяк. Не удалять
 
                 return this.$store.getters.activeOrders.reduce((acc, order) => {
                     order.format_start_time = this.getStartTime(order.start_time);
@@ -361,84 +360,85 @@
                 return count;
             }
         }
-    }
+    };
 </script>
 
-<style scoped>
-    .order-list {
-        width: 480px;
-    }
+<style lang="sass" scoped>
+    .order-list 
+        min-width: 400px
+        padding: 10px
+    
 
-    .icon {
-        opacity: 0.2;
-        text-align: center;
-    }
-    .icon:hover {
-        opacity: 1;
-        cursor: pointer;
-    }
+    .icon 
+        opacity: 0.2
+        text-align: center
+    
+    .icon:hover 
+        opacity: 1
+        cursor: pointer
+    
 
-    .icon__active {
-        opacity: 1;
-    }
+    .icon__active 
+        opacity: 1
+    
 
-    .table td {
-        padding: 5px;
-        box-sizing: border-box;
-        border-collapse: collapse;
-        border: none;
-        margin: 0;
-    }
+    .table td 
+        padding: 5px
+        box-sizing: border-box
+        border-collapse: collapse
+        border: none
+        margin: 0
+    
 
-    .table-tr > td {
-        border-bottom: 1px solid #333;
-    }
+    .table-tr > td 
+        border-bottom: 1px solid #333
+    
 
 
-    .table-tr:nth-child(2n - 1) {
-        background-color: rgba(0,0,0,0.01);
-    }
+    .table-tr:nth-child(2n - 1) 
+        background-color: rgba(0,0,0,0.01)
+    
 
-    .table th {
-        text-align: center;
-    }
-    .td-1 {
-        width: 20px;
-    }
-    .td-2 {
-        width: 100px;
-        text-align: center;
-    }
-    .td-3 {
-        width: 240px;
-    }
-    .td-4 {
-        width: 100px;
-    }
-    .td-5 {
-        width: 70px;
-        text-align: right;
-    }
-    .td-6 {
-        width: 10px;
-    }
-    .td-7 {
-        width: 15px;
-    }
+    .table th 
+        text-align: center
+    
+    .td-1 
+        width: 20px
+    
+    .td-2 
+        width: 100px
+        text-align: center
+    
+    .td-3 
+        width: 240px
+    
+    .td-4 
+        width: 100px
+    
+    .td-5 
+        width: 70px
+        text-align: right
+    
+    .td-6 
+        width: 10px
+    
+    .td-7 
+        width: 15px
+    
 
-    .product_name:hover {
-        text-decoration: underline;
-        cursor: pointer;
-    }
-    .product-tr {
-        border-bottom: 1px solid transparent;
-    }
-    .product-tr:hover {
-        cursor: pointer;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-    }
+    .product_name:hover 
+        text-decoration: underline
+        cursor: pointer
+    
+    .product-tr 
+        border-bottom: 1px solid transparent
+    
+    .product-tr:hover 
+        cursor: pointer
+        border-bottom: 1px solid rgba(255, 255, 255, 0.8)
+    
 
-    .suborder--pause {
-        color: rgba(255, 255, 255, 0.5);
-    }
+    .suborder--pause 
+        color: rgba(255, 255, 255, 0.5)
+    
 </style>

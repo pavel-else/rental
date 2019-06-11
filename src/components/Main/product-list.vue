@@ -3,7 +3,7 @@
         <h3>
             {{ activeCategoryName }}<span v-if="products.length >= 0"> ({{ products.length }})</span>
         </h3>
-        <table class="table table-bordered">
+        <table class="table">
             <tr
                 v-for="item in products"
                 :key="item.id_rent"
@@ -98,23 +98,36 @@
                 return activeCategory ? activeCategory.name : 'Все';
             }
         },
-    }
+    };
 </script>
 
-<style scoped>
-    .products__td {
-        padding: 0px 0px 10px 5px;
-    }
-    .products__product:hover {
-        cursor: pointer;
-        outline: 1px solid #333;
-    }
-    .products__photo {
-        position: absolute;
-        margin-left: -180px;
-        top: 200px;
-        left: 50%;
-        width: 480px;
-        height: 320px;
-    }
+<style lang="sass" scoped>
+
+.product-list
+    padding: 10px
+
+    .table
+        border-collapse: collapse
+    
+    .products__td 
+        padding: 0 0 10px 5px
+    
+    .products__product
+        box-sizing: border-box
+
+    .products__product:hover
+        cursor: pointer
+        color: #fff
+
+        text-shadow: 0 0 1px #fff
+
+
+    .products__photo 
+        position: absolute
+        margin-left: -180px
+        top: 200px
+        left: 50%
+        width: 480px
+        height: 320px
+    
 </style>

@@ -22,15 +22,20 @@
         </table>
 
         <button class="tariff__button tariff__button--add" @click="addTariff">Добавить</button>
-
-        <Details :_tariff="tariff"  @close="onClose" v-if="show"></Details>
+        <Dialog v-if="show" @close="onClose">
+            <Details :_tariff="tariff"  @close="onClose" />
+        </Dialog>
     </div>
 </template>
+
 <script>
     import Details from './Details/Details'
+    import Dialog  from '@/components/Dialog'
+
     export default {
         components: {
-            Details
+            Details,
+            Dialog
         },
         beforeCreate() {
             this.$store.dispatch('getTariffs');

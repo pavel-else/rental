@@ -1,105 +1,106 @@
 <template>
-    <div class="canvas">
-        <div class="add-order details">
-            <h3>
-                <span v-if="status === 'newOrder'">Новый заказ #{{ order.id_rent }}</span>
-                <span v-else>Добавить товар к заказу #{{ order.id_rent }}</span>
-            </h3>
-            <form @submit.prevent="">
-                <table>
-                    <tr>
-                        <td>Товар</td>
-                        <td>{{ product.name }}</td>
-                    </tr>
-                    <tr>
-                        <td>Группа</td>
-                        <td>
-                            <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Аванс</td>
-                        <td>
-                            <input 
-                                class="add-order__input add-order__input--advance" 
-                                v-model="order.advance" 
-                                placeholder="0 руб"
-                            >
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="customer">Клиент</td>
-                        <td>
-                            <SelectCustomer 
-                                id="select_customer"
-                                :customer="order.customer_id"
-                                :focus="order.customer_id ? false : true"
-                                @setCustomer="setCustomer($event)" 
-                            >
-                            </SelectCustomer>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Залог</td>
-                        <td>
-                            <SelectDeposit 
-                                :deposit="order.deposit" 
-                                @setDeposit="setDeposit($event)"
-                            >
-                            </SelectDeposit>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Примечание</td>
-                        <td>
-                            <textarea 
-                                class="add-order__input add-order__input--note" 
-                                cols="30" 
-                                rows="3" 
-                                v-model="order.note"
-                            >
-                            </textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Акция</td>
-                        <td>
-                            <SelectPromotion 
-                                :promotion="order.promotion" 
-                                @setPromotion="setPromotion($event)"
-                            >
-                            </SelectPromotion>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Аксессуары</td>
-                        <td>
-                            <SelectAccessories 
-                                :accessory="subOrder.accessories" 
-                                @setAccessories="setAccessories($event)"
-                            >
-                            </SelectAccessories>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Тарифный план</td>
-                        <td>
-                            <SelectTariff 
-                                :data-tariffs="tariffs" 
-                                :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default"
-                                @setTariff="setTariff($event)"
-                            >
-                            </SelectTariff>
-                        </td>
-                    </tr>
-                </table>
-                <div class="btn-group">
-                    <button @click.prevent="save">Сохранить</button>
-                    <button type="button" @click.prevent="close">Отмена</button>
-                </div>
-            </form>
-        </div>
+
+    <div class="add-order">
+        <h3>
+            <span v-if="status === 'newOrder'">Новый заказ #{{ order.id_rent }}</span>
+            <span v-else>Добавить товар к заказу #{{ order.id_rent }}</span>
+        </h3>
+        <form @submit.prevent="">
+            <table class="add-order__table">
+                <tr>
+                    <td>Товар</td>
+                    <td>{{ product.name }}</td>
+                </tr>
+                <tr>
+                    <td>Группа</td>
+                    <td>
+                        <Position :position="getPosition()" @setPosition="setPosition($event)"></Position>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Аванс</td>
+                    <td>
+                        <input
+                            class="add-order__input add-order__input--advance"
+                            v-model="order.advance"
+                            placeholder="0 руб"
+                        >
+                    </td>
+                </tr>
+                <tr>
+                    <td class="customer">Клиент</td>
+                    <td>
+                        <SelectCustomer
+                            id="select_customer"
+                            :customer="order.customer_id"
+                            :focus="order.customer_id ? false : true"
+                            @setCustomer="setCustomer($event)"
+                        >
+                        </SelectCustomer>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Залог</td>
+                    <td>
+                        <SelectDeposit
+                            :deposit="order.deposit"
+                            @setDeposit="setDeposit($event)"
+                        >
+                        </SelectDeposit>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Примечание</td>
+                    <td>
+                        <textarea
+                            class="add-order__input add-order__input--note"
+                            cols="30"
+                            rows="3"
+                            v-model="order.note"
+                        >
+                        </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Акция</td>
+                    <td>
+                        <SelectPromotion
+                            :promotion="order.promotion"
+                            @setPromotion="setPromotion($event)"
+                        >
+                        </SelectPromotion>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Аксессуары</td>
+                    <td>
+                        <SelectAccessories
+                            :accessory="subOrder.accessories"
+                            @setAccessories="setAccessories($event)"
+                        >
+                        </SelectAccessories>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Тарифный план</td>
+                    <td>
+                        <SelectTariff
+                            :data-tariffs="tariffs"
+                            :data-tariff-default="subOrder.tariff_id ? subOrder.tariff_id : product.tariff_default"
+                            @setTariff="setTariff($event)"
+                        >
+                        </SelectTariff>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="button-group">
+                <button @click.prevent="save">Сохранить</button>
+                <button type="button" @click.prevent="close">Отмена</button>
+            </div>
+        </form>
     </div>
+
 </template>
 
 <script>
@@ -416,43 +417,57 @@
     }
 </script>
 
-<style lang="scss" scoped>
-    .add-order {
-        width: 400px;
-        margin-top: 50px;
-        padding: 10px 20px;
-    }
+<style lang="sass" scoped>
 
-    .add-order td {
-        padding: 5px 0;
-    }
+.add-order
+    padding: 10px 20px
 
-    .btn-group {
-        margin-top: 20px;
-    }
+    .add-order__table
+        margin-bottom: 50px
 
-    .add-order__input {
-        width: 300px;
-        min-height: 40px;
-        box-sizing: border-box;
-        border: 1px solid lightgray;
-        padding-left: 10px;
-    }
+    td
+        padding: 5px 0
 
-    .add-order__input--advance {
-        background-color: #000;
-        border: 1px solid #333;
-        color: rgba(255, 255, 255, 0.8);
-    }
+    td:first-child
+        padding-right: 10px
 
-    .add-order__input--note {
-        resize: vertical;
-        width: 101%;
-        background-color: #000;
-        border-color: #333;
-        color: rgba(255, 255, 255, 0.8);
-        font-family: Roboto Condensed;
-    }
+
+    .btn-group
+        margin-top: 20px
+
+
+    .add-order__input
+        width: 100%
+        min-height: 40px
+        box-sizing: border-box
+        border: 1px solid lightgray
+        padding-left: 10px
+
+
+    .add-order__input--advance
+        background-color: #000
+        border: 1px solid #333
+        color: rgba(255, 255, 255, 0.8)
+
+
+    .add-order__input--note
+        resize: vertical
+        width: 101%
+        background-color: #000
+        border-color: #333
+        color: rgba(255, 255, 255, .8)
+        font-family: Roboto Condensed
+
+    .button-group
+        display: flex
+        justify-content: center
+
+
+@media screen and (max-width: 420px)
+    .add-order
+        td:first-child
+            display: none
+
 </style>
 
 <style lang="scss">

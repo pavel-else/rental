@@ -27,7 +27,9 @@
         
         <button class="products__button products__button--add" @click="newProduct()">Добавить</button>
 
-        <Details :data="product" @close="onClose" v-if="showDetails"></Details>
+        <Dialog v-if="showDetails" @close="onClose">
+            <Details :data="product" @close="onClose" />
+        </Dialog>
 
         <Photo 
             class="photo"
@@ -40,12 +42,15 @@
 
 <script>
     import Details from './Details'
+    import Dialog  from '@/components/Dialog'
     import Bike    from '../Bike'
     import Photo   from '../Photo'
     import getProductId from '@/functions/getProductId'
+
     export default {
         components: {
             Details,
+            Dialog,
             Bike,
             Photo
         },

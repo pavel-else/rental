@@ -19,18 +19,23 @@
         <div class="customer_buttons">
             <button @click="addCustomer()">Добавить</button>
         </div>
-        
-        <Details :customer="customer" @close="onClose()" v-if="show"></Details>
+
+        <Dialog v-if="show" @close="onClose()">
+            <Details :customer="customer" @close="onClose()" />
+        </Dialog>
+
     </div>
 </template>
 
 <script>
     import Details from './details';
+    import Dialog  from '@/components/Dialog';
     import copy from '@/functions/copy';
 
     export default {
         components: {
-            Details
+            Details,
+            Dialog
         },
         beforeCreate() {
             this.$store.dispatch('getCustomers')

@@ -1,114 +1,113 @@
 <template>
-    <div class="canvas">
-        <div class="details resume">
-            <h2 class="resume__caption">Оплата заказа # {{ order.id_rent }}</h2>
 
-            <table class="resume__main-table">
-                <tr>
-                    <td>Клиент</td>
-                    <td>
-                        <span v-if="order.customer_name">{{ order.customer_name }}</span>
-                        <span v-else>-</span>
-                    </td>
-                </tr>
+    <div class="resume">
+        <h2 class="resume__caption">Оплата заказа # {{ order.id_rent }}</h2>
 
-                <tr>
-                    <td>Залог</td>
-                    <td>
-                        <span v-if="deposit">{{ deposit.name }}</span>
-                        <span v-else>-</span>
-                    </td>
-                </tr>
+        <table class="resume__main-table">
+            <tr>
+                <td>Клиент</td>
+                <td>
+                    <span v-if="order.customer_name">{{ order.customer_name }}</span>
+                    <span v-else>-</span>
+                </td>
+            </tr>
 
-                <tr>
-                    <td>Начало</td>
-                    <td>{{ shortDate(order.start_time) }}</td>
-                </tr>
+            <tr>
+                <td>Залог</td>
+                <td>
+                    <span v-if="deposit">{{ deposit.name }}</span>
+                    <span v-else>-</span>
+                </td>
+            </tr>
 
-                <tr>
-                    <td>Продолжительность</td>
-                    <td>{{ activeTime }}</td>
-                </tr>
-                <tr v-if="order.note">
-                    <td>Примечание</td>
-                    <td>{{ order.note }}</td>
-                </tr>
-            </table>
+            <tr>
+                <td>Начало</td>
+                <td>{{ shortDate(order.start_time) }}</td>
+            </tr>
 
-            <div class="products">
-                <ul class="products__list">
-                    <li class="products__item" v-for="item in activeSubOrders" :key="item.id_rent">
-                        <div class="products__line">
-                            <span>{{ item.product_name }}</span>
+            <tr>
+                <td>Продолжительность</td>
+                <td>{{ activeTime }}</td>
+            </tr>
+            <tr v-if="order.note">
+                <td>Примечание</td>
+                <td>{{ order.note }}</td>
+            </tr>
+        </table>
+
+        <div class="products">
+            <ul class="products__list">
+                <li class="products__item" v-for="item in activeSubOrders" :key="item.id_rent">
+                    <div class="products__line">
+                        <span>{{ item.product_name }}</span>
+                        <!-- <span class="product-line__fill"></span> -->
+                        <span>{{ item.bill_rent }} руб.</span>
+                    </div>
+
+                    <ul class="products__access-list">
+                        <li class="products__access-item products__line" v-for="accessory in item.extended_accessories" :key="accessory.id_rent">
+                            <span class="products__arrow"> {{ accessory.name }}</span>
                             <!-- <span class="product-line__fill"></span> -->
-                            <span>{{ item.bill_rent }} руб.</span>                                      
-                        </div>
-
-                        <ul class="products__access-list">
-                            <li class="products__access-item products__line" v-for="accessory in item.extended_accessories" :key="accessory.id_rent">
-                                <span class="products__arrow"> {{ accessory.name }}</span>
-                                <!-- <span class="product-line__fill"></span> -->
-                                <span>{{ accessory.bill_access }} руб.</span>                                        
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="products__item">
-                        <div class="products__line">
-                            <span class="products__text-resume">Итого<span v-if="saleSize > 0"> (скидка {{ saleSize }}%) </span></span>
-                            <span class="products__text-resume">
-                                <s 
-                                    v-if="billRentAccess > billRentAccessSale"
-                                    style="margin-right: 5px"
-                                >
-                                    {{ billRentAccess }} 
-                                </s>
-                                {{ billRentAccessSale }} руб.
-                            </span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <table>
-                <tr v-if="advance && advance > 0">
-                    <td>Внесен аванс:</td>
-                    <td style="text-align: right">{{ advance }} руб</td>
-                </tr>
-                <tr v-if="balance && balance !== 0">
-                    <td>
-                        <span v-if="balance < 0">Долг клиента:</span>
-                        <span v-else>Баланс клиента:</span>
-                    </td>
-                    <td style="text-align: right" :style="styleBalance">{{ Math.abs(balance) }} руб</td>
-                    <td>
-                        <input
-                            v-if="balance !== 0"
-                            type="checkbox"
-                            :checked="isApplyBalance"
-                            :title="balance < 0 ? 'Погасить сейчас' : 'Использовать при оплате'"
-                            @click="checkBalance($event)"
-                        >
-                    </td>
-                </tr>
-            </table>
-
-            <div class="total">
-                <span>{{ msgTotal }}</span>
-                <span> {{ total }} руб.</span>
-            </div>
-            <!-- off_balance: {{ balanceAmound }} -->
-            <div class="btn-group">
-                <button class="resume__button" @click="pay('card')">
-                    <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
-                </button>
-                <button class="resume__button" @click="pay('coin')">
-                    <i class="fa fa-eur" aria-hidden="true"></i>Наличными
-                </button>
-            </div>
-
-            <button class="details__close" @click.prevent="close"></button>
+                            <span>{{ accessory.bill_access }} руб.</span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="products__item">
+                    <div class="products__line">
+                        <span class="products__text-resume">Итого<span v-if="saleSize > 0"> (скидка {{ saleSize }}%) </span></span>
+                        <span class="products__text-resume">
+                            <s
+                                v-if="billRentAccess > billRentAccessSale"
+                                style="margin-right: 5px"
+                            >
+                                {{ billRentAccess }}
+                            </s>
+                            {{ billRentAccessSale }} руб.
+                        </span>
+                    </div>
+                </li>
+            </ul>
         </div>
-    </div> 
+
+        <table>
+            <tr v-if="advance && advance > 0">
+                <td>Внесен аванс:</td>
+                <td style="text-align: right">{{ advance }} руб</td>
+            </tr>
+            <tr v-if="balance && balance !== 0">
+                <td>
+                    <span v-if="balance < 0">Долг клиента:</span>
+                    <span v-else>Баланс клиента:</span>
+                </td>
+                <td style="text-align: right" :style="styleBalance">{{ Math.abs(balance) }} руб</td>
+                <td>
+                    <input
+                        v-if="balance !== 0"
+                        type="checkbox"
+                        :checked="isApplyBalance"
+                        :title="balance < 0 ? 'Погасить сейчас' : 'Использовать при оплате'"
+                        @click="checkBalance($event)"
+                    >
+                </td>
+            </tr>
+        </table>
+
+        <div class="total">
+            <span>{{ msgTotal }}</span>
+            <span> {{ total }} руб.</span>
+        </div>
+        <!-- off_balance: {{ balanceAmound }} -->
+        <div class="btn-group">
+            <button class="resume__button" @click="pay('card')">
+                <i class="icon fa fa-credit-card" aria-hidden="true"></i>Картой
+            </button>
+            <button class="resume__button" @click="pay('coin')">
+                <i class="fa fa-eur" aria-hidden="true"></i>Наличными
+            </button>
+        </div>
+
+    </div>
+
 </template>
 
 <script>
@@ -436,45 +435,13 @@
 </script>
 
 <style lang="scss" scoped>
-    .details {
+    .resume {
         top: 50px;
         width: 420px;
         min-width: 300px;
-        padding: 5px 30px;
-        padding-bottom: 30px;
+        padding: 5px 30px 30px;
     }
 
-    .details__close {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        border: 1px solid lightgray;
-        position: absolute;
-        top: 3px;
-        right: 3px;
-        opacity: 0.5;
-    }
-    .details__close:hover {
-        opacity: 1;
-        cursor: pointer;
-    }
-    .details__close::after,
-    .details__close::before {
-        display: block;
-        position: absolute;
-        content: '';
-        width: 80%;
-        height: 2px;
-        top: 9px;
-        left: 2px;
-        background-color: lightgray;
-    }
-    .details__close::after {
-        transform: rotate(45deg);
-    }
-    .details__close::before {
-        transform: rotate(-45deg);
-    }
 
     .btn-group {
         display: flex;

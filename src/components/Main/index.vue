@@ -5,7 +5,9 @@
 
         <order-list class="snippet snippet__orders" ></order-list>
 
-        <DetailsOrder v-if="show" :product="product" @close="onClose"></DetailsOrder>
+        <Dialog v-if="show" @close="show = false">
+            <DetailsOrder :product="product" @close="show = false"></DetailsOrder>
+        </Dialog>
     </div>
 </template>
 
@@ -13,12 +15,14 @@
 import productList  from './product-list';
 import orderList    from './order-list';
 import DetailsOrder from './DetailsOrder/DetailsOrder';
+import Dialog       from '@/components/Dialog';
 
     export default {
         components: {
             productList,
             orderList,
-            DetailsOrder
+            DetailsOrder,
+            Dialog
         },
         data() {
             return {
@@ -52,28 +56,41 @@ import DetailsOrder from './DetailsOrder/DetailsOrder';
                 }
             }
         },
-    }
+    };
 </script>
 
-<style scoped lang="scss">
-    .desktop {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-    }
-    .snippet {
-        padding: 0 20px;
-    }
+<style scoped lang="sass">
 
-    .snippet {
-       border: 1px solid rgba(255,255,255,.1);
-       // background: rgba(255,255,255,.05);
-    }
+.desktop
+    max-width: 1024px
+    width: 100%
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    
+   
 
-.snippet:first-child {
-        margin-right: 50px;
-    }
-    .snippet h3 {
-        text-align: center;
-    }
+    .snippet 
+       // border: 1px solid rgba(255,255,255,.1)
+       // background: rgba(255,255,255,.05)
+    
+    .snippet__products
+        flex-shrink: 1
+        flex-grow: 1
+
+    .snippet__orders
+        flex-shrink: 1
+        flex-grow: 1
+
+    
+    .snippet h3 
+        text-align: center
+
+@media screen and (max-width: 810px)
+    .desktop
+        flex-direction: column
+
+        .snippet
+            align-items: stretch
+    
 </style>
