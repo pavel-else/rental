@@ -208,7 +208,7 @@
                     return acc;
                 }, []);
 
-                return orders.sort((a, b) => Date.parse(b.end_time) - Date.parse(a.end_time));               
+                return orders.sort((a, b) => Date.parse(b.end_time) - Date.parse(a.end_time) > 0 ? 1 : -1);
             },
 
             // FOR TOTAL

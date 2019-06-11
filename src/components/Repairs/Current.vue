@@ -68,7 +68,8 @@
                     cost_work: 0,
                     cost_comp: 0,
                     start_time: new Date(),
-                    repair_type: null
+                    repair_type: null,
+                    status: 'active'
                 };
 
                 this.repair.isNew = true;
