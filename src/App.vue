@@ -2,9 +2,14 @@
     <div class="wrap">
         <div class="app" v-if="mode === 'app'">
             <div class="app__wrap">
+                <div class="loading" v-if="$store.getters.processing">
+                    <Loader />
+                </div>
+
                 <adm-panel class="adm-panel"></adm-panel>
+
                 <div class="app__content">
-                    <router-view></router-view>
+                   <router-view></router-view>
                 </div>
             </div>
         </div>
@@ -16,12 +21,14 @@
 <script>    
     import admPanel from './components/AdmPanel'
     import Print from './components/Print/Print'
+    import Loader from './components/Loader/Loader'
 
     export default {
         name: 'app',
         components: {
             admPanel,
-            Print
+            Print,
+            Loader
         },
         beforeCreate() {
             if (this.$store.getters.isAuthenticated) {
@@ -84,6 +91,21 @@
             top: 0;
             background-color: #000;
             border-bottom: 1px solid #333;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(255, 255, 255, .2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100
+
+
         }
     }
 </style>
