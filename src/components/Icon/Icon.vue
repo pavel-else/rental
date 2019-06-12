@@ -38,6 +38,7 @@
         position: relative;
         width: 25px;
         height: 25px;
+        z-index: 0
     }
     .outline {
         position: absolute;
