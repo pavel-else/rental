@@ -136,6 +136,11 @@
 
 <style lang="scss">
     .menu {
+        width: 100%;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+
         &__item {
             margin: 0;
             padding: 0;

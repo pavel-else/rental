@@ -122,12 +122,13 @@
         text-shadow: 0 0 1px #fff
 
 
-    .products__photo 
-        position: absolute
-        margin-left: -180px
-        top: 200px
-        left: 50%
+    .products__photo
+        position: fixed
+        top: calc(50% - 160px)
+        left: calc(50% - 240px)
         width: 480px
         height: 320px
+        z-index: 10
+
     
 </style>
