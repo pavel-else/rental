@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 export default {
     state: {
         initCmds: []
@@ -9,6 +10,7 @@ export default {
                 console.warn('multipleRequest error! Queue is not defined or is not array!', queue);
             }
 
+            // Функция используется для сохранения ответа с сервера в стэйт
             const setToState = (data) => {
                 for (let i in data) {
                     switch (i) {
@@ -36,6 +38,9 @@ export default {
 
             console.log('dispatch: multipleRequest', queue);
 
+            commit('processing', true);
+            commit('errors', null);
+
             return new Promise((resolve, reject) => {
                 const url = getters.url;
                 const token = localStorage.getItem('user-token');
@@ -51,10 +56,13 @@ export default {
                 .then(resp => {
                     console.log(resp);
                     setToState(resp.data);
+                    commit('processing', false);
                     resolve(true);                        
                 })
                 .catch(err => {
                     console.log(err)
+                    commit('processing', false);
+                    commit('errors', err);
                     reject(err);
                 });
             });            

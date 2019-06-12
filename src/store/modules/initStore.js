@@ -1,4 +1,24 @@
 export default {
+    state: {
+        processing: false,
+        errors: null,
+    },
+    getters: {
+        processing(state) {
+            return state.processing;
+        },
+        errors(state) {
+            return state.errors;
+        }
+    },
+    mutations: {
+        processing(state, processing) {
+            state.processing = processing;
+        },
+        errors(state, errors) {
+            state.errors = errors;
+        }
+    },
     actions: {
         initStore({ dispatch }) {
             console.log('dispatch: initStore');
