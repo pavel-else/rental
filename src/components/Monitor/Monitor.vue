@@ -86,14 +86,15 @@ import DetailsOrder from '@/components/Main/DetailsOrder/DetailsOrder';
         border: none;
         margin: 0;
         position: relative;
+        overflow: hidden;
         &--left {
-            width: 400px;
-            height: 800px;
+            width: 420px;
+            height: 820px;
             margin-right: 110px;
         }
         &--right {
-            width: 400px;
-            height: 800px;
+            width: 420px;
+            height: 820px;
             margin-left: 110px;
         }
     }
