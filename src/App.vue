@@ -34,6 +34,7 @@
             if (this.$store.getters.isAuthenticated) {
                 this.$store.dispatch('initStore')
                 .then(() => {
+                    // Включение автообновления списка ордеров
                     const time = this.$store.getters.generalSettings.timeToUpdateMonitor;
                     if (time > 0) {
                         this.$store.dispatch('startAutoUpdateOrders', time);

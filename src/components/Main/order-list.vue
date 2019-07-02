@@ -413,7 +413,7 @@
         width: 240px
     
     .td-4 
-        width: 100px
+        width: 120px
     
     .td-5 
         width: 70px
