@@ -82,7 +82,7 @@
                 </ul>
             </li>
         </ul>
-        <div class="btn-close">x</div>
+        <!-- <div class="btn-close">x</div> -->
     </nav>
 </template>
 <script>
@@ -184,53 +184,53 @@
             border: 2px solid #333;
         }
     }
-    @media screen and (max-width: 810px) {
-        .menu {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            padding-top: 30px;
-            display: flex;
-            justify-content: center;
+    // @media screen and (max-width: 810px) {
+    //     .menu {
+    //         position: fixed;
+    //         width: 100%;
+    //         height: 100%;
+    //         padding-top: 30px;
+    //         display: flex;
+    //         justify-content: center;
 
-            &__list {
-                display: flex;
-                flex-direction: column;
-            }
-            &__item {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-            &__sublist {
-                display: flex;
-                flex-direction: column;
-                margin: 0 0 0 15px;
-                position: relative;
+    //         &__list {
+    //             display: flex;
+    //             flex-direction: column;
+    //         }
+    //         &__item {
+    //             width: 100%;
+    //             margin-bottom: 10px;
+    //         }
+    //         &__sublist {
+    //             display: flex;
+    //             flex-direction: column;
+    //             margin: 0 0 0 15px;
+    //             position: relative;
 
-                .menu__link {
-                    font-weight: normal;
-                }
+    //             .menu__link {
+    //                 font-weight: normal;
+    //             }
 
-            }
-            &__item:hover &__sublist {
-                display: flex;
-                position: relative;
-                outline: none;
-                margin: 0 0 0 15px;
-            }
-            &__link {
-                font-weight: bold;
-            }
-            &__link:hover {
-                background: unset;
-            }
-            .btn-close {
-                position: absolute;
-                top: 15px;
-                right: 15px;
-            }
-        }
-    }
+    //         }
+    //         &__item:hover &__sublist {
+    //             display: flex;
+    //             position: relative;
+    //             outline: none;
+    //             margin: 0 0 0 15px;
+    //         }
+    //         &__link {
+    //             font-weight: bold;
+    //         }
+    //         &__link:hover {
+    //             background: unset;
+    //         }
+    //         .btn-close {
+    //             position: absolute;
+    //             top: 15px;
+    //             right: 15px;
+    //         }
+    //     }
+    // }
 </style>
 <style lang="scss" scoped>
     .sign {
