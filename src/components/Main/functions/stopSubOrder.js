@@ -8,7 +8,6 @@ import * as Time from '@/functions/time';
 
 export default {
     stopSubOrder(order, subOrder, send) {
-        
         /*
         * Функция должна:
         * Проставить Время остановки

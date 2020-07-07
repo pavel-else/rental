@@ -292,7 +292,7 @@
 
                 // ORDER
                 // Если сабордер единственный, деактивируем ордер
-                if (this.subOrders.length <= 1) {
+                if (order.subOrders.length <= 1) {
                     order.status = 'DEL';
                     cmds.push({ cmd: 'changeOrder', value: order }, { cmd: 'getActiveOrders' });
                 }
