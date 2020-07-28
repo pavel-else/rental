@@ -60,8 +60,6 @@
                     status: 'task',
                     cost_comp: 0,
                     cost_work: 0,
-
-                    status: 'task'
                 };
 
                 this.task = task;

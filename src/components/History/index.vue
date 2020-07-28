@@ -1,6 +1,6 @@
 <template>
     <div class="history">
-        <div class="totals">
+        <!-- <div class="history__totals">
             <table>
                 <tr>
                     <td><b>Итого за день:</b></td>
@@ -10,11 +10,17 @@
                 </tr>
             </table>
         </div>
-
-        <input class="input__serch" placeholder="Начните вводить фамилию или название" @input="search()">
+-->
+        dateEnd{{ dateEnd }}
+        dateStart {{ dateStart }}
+        <div class="history__filter">
+            <input class="history__filter-search" placeholder="Начните вводить фамилию или название" @input="search()">
+            <input class="history__filter-date" type="date" v-model="dateStart">
+            <input class="history__filter-date" type="date" v-model="dateEnd">
+        </div>
 
         <h2>История заказов</h2>
-        <table class="history__table" v-if="orders && orders.length > 0" cellspacing="0">
+        <table class="history__table" v-if="history" cellspacing="0">
             <tr class="tr__caption">
                 <th>id</th>
                 <th>ФИО</th>
@@ -24,26 +30,30 @@
                 <th>Стоимость</th>
             </tr>
 
-            <tr v-for="order in orders.filter(filt)" :key="order.id_rent" @click="onClick(order)">
+            <!-- <tr v-for="order in orders.filter(filt)" :key="order.id_rent" @click="onClick(order)"> -->
+            <tr v-for="order in history" :key="order.orderId" @click="onClick(order)">
                 <td>
-                    {{ order.id_rent }}
+                    {{ order.orderId }}
                 </td>
                 <td>                    
-                    {{ order.customerName }}                
+                    {{ getCustomerName(order.customerId) }}                
                 </td>
                 <td style="text-align: right">
-                    {{ order.start_time | shortDate }}
+                    {{ order.startTime | shortDate }}
                 </td>
                 <td style="text-align: right">
-                    {{ order.play_time }}
+                    {{ getTimePlay(order.startTime, order.subOrders[0].end_time, order.orderId) }}
                 </td>
                 <td style="padding-left: 20px">
-                    <div class="product" v-for="(product, index) in order.products" :key="order.id_rent + '_' + product.id_rent + '_' + index">
-                        {{ product.name }}
+                    <div
+                        v-for="subOrder in order.subOrders"
+                        :key="subOrder.sub_order_id"
+                    >
+                        {{ getProductName(subOrder.product_id) }}
                     </div>
                 </td>
                 <td style="text-align: right">
-                    {{ order.bill }} руб
+                    {{ order.getBill() }} руб
                 </td>
             </tr>
         </table>
@@ -57,6 +67,7 @@
 </template>
 
 <script>
+    import dayjs            from 'dayjs';
     import Details          from './Details';
     import Dialog           from '@/components/Dialog';
     import Totals           from '@/components/Totals';
@@ -71,22 +82,32 @@
         components: {
             Details, Totals, Dialog
         },
-        beforeCreate() {
+        created() {
+            // set date range
+            this.dateEnd = dayjs().format('YYYY-MM-DD');
+            this.dateStart = dayjs().subtract(1, 'month').format('YYYY-MM-DD');
+
             this.$store.dispatch('multipleRequest', [
-                { cmd: 'getOrders' },
-                { cmd: 'getSubOrders'},
-                { cmd: 'getProducts' },
-                { cmd: 'getCustomers' }
+                { cmd: 'getHistorySlice', value: { dateStart: this.dateStart, dateEnd: this.dateEnd }},
             ]);
         },
         data() {
             return {
+                dateEnd: '',
+                dateStart: '',
                 order: {},
                 show: false,
                 filt: i => i,
             }
         },
         methods: {
+            totalBill(item) {
+                return +item.bill_rent + +item.bill_access - +item.sale;
+            },
+            getProductName(id) {
+                const product = this.products.find(i => i.id_rent === id);
+                return product ? product.name : '';
+            },
             search() {
                 // Метод просто обновляет фильтр, через который Vue пропускает список
                 const searchText = event.target.value.trim();
@@ -191,6 +212,15 @@
             },
         },
         computed: {
+            history() {
+                return this.$store.getters.history;
+            },
+            products() {
+                return this.$store.getters.products;
+            },
+            customers() {
+                return this.$store.getters.customers;
+            },
             orders() {
                 const compleated = this.$store.getters.orders.filter(i => i.status === 'END');
                 const orders = compleated.reduce((acc, _item) => {
@@ -284,13 +314,33 @@
 
 <style lang="scss" scoped>
     .history {
-        .input__serch {
-            width: 100%;
-            margin-top: 25px;
-        }        
         h2 {
             margin-top: 50px;
         }
+
+        &__filter {
+            width: 100%;
+            display: flex;
+
+            &-search {
+                width: 100%;
+                margin-right: 10px;
+            }
+            
+            &-date {
+                min-width: 130px;
+                margin-left: 10px;
+
+
+            }
+            ::-webkit-calendar-picker-indicator {
+                color: transparent;
+                opacity: 1;
+                background: url('https://c7.hotpng.com/preview/590/31/787/computer-icons-mcmahon-ryan-child-advocacy-center-calendar-clip-art-restart.jpg') no-repeat center;
+                background-size: contain;
+            }
+        }
+
         &__table {
             td {
                 padding: 5px 15px;
@@ -309,7 +359,8 @@
             }
         }
     }
-    .totals {
+    .history__totals {
+        margin-bottom: 20px;
         table {
             width: 100%;
         }

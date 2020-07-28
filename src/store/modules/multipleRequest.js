@@ -5,7 +5,7 @@ export default {
         initCmds: []
     },
     actions: {
-        multipleRequest({ commit, getters }, queue) {
+        multipleRequest({ commit, getters, dispatch }, queue) {
             if (!queue || !queue.map) {
                 console.warn('multipleRequest error! Queue is not defined or is not array!', queue);
             }
@@ -27,6 +27,7 @@ export default {
                         case 'categories'        : commit('categories'     , data[i]); break;
                         case 'repairs'           : commit('repairs'        , data[i]); break;
                         case 'repair_types'      : commit('repairTypes'    , data[i]); break;
+                        case 'history_slice'     : dispatch('saveToStateHistorySlice', data[i]); break;
 
                         case 'logs' : break;
 

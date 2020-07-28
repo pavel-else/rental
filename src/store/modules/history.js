@@ -1,44 +1,22 @@
 import axios from 'axios';
+import { has } from 'lodash';
 
 export default {
     state: {
-        history: []
+        history: {},
     },
     getters: {
         history(state) {
-            return state.history
+            return state.history;
         }
     },
     mutations: {
         history(state, history) {
-            console.log('commit: history', history);
-
-            if(!history) {
-                return []
-            }
-            const products = this.getters.products
-            
-            history ? history.map(order => {
-                let bill = 0
-
-                for (var i = 0; i < order.products.length; i++) {
-                    const product = products.find(p => p.id_rent == order.products[i].product_id)
-
-                    order.products[i].name = product ? product.name : ''
-                    
-                    bill += +order.products[i].bill
-                }
-
-                order.bill = bill
-
-                return order
-            }) : []
-
-            state.history = history
+            state.history = history;
         },
+
         unsetHistory(state) {
-            console.log('commit: unsetHistory');
-            state.history = [];
+            state.history = {};
         },
 
     },
@@ -73,5 +51,46 @@ export default {
                 });
             });            
         },
+        saveToStateHistorySlice({ commit }, slice) {
+            console.time("hist")
+            const format = (slice) => {
+                const history = {};
+
+                for (let i of slice) {
+                    if (has(history, i.order_id)) {
+                        const order = history[i.order_id];
+                        order.addSubOrder(i);
+                    } else {
+                        const order = new Order(i);
+                        order.addSubOrder(i);
+                        
+                        history[i.order_id] = order;
+                    }
+                }
+
+                return history;
+            };
+            commit('history', format(slice));
+            console.timeEnd("hist")
+        },
     }
 }
+
+function Order(order) {
+    this.orderId = order.order_id;
+    this.startTime = order.start_time;
+    this.customerId = order.customer_id;
+    this.subOrders = [];
+}
+Order.prototype.addSubOrder = function (subOrder) {
+    this.subOrders.push(subOrder);
+};
+
+Order.prototype.getBill = function () {
+    const bill = this.subOrders.reduce((acc, item) => {
+        acc += +item.bill_rent;
+        return acc;
+    }, 0);
+
+    return bill;
+};
