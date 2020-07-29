@@ -11,12 +11,11 @@
             </table>
         </div>
 -->
-        dateEnd{{ dateEnd }}
-        dateStart {{ dateStart }}
         <div class="history__filter">
             <input class="history__filter-search" placeholder="Начните вводить фамилию или название" @input="search()">
-            <input class="history__filter-date" type="date" v-model="dateStart">
-            <input class="history__filter-date" type="date" v-model="dateEnd">
+            <input class="history__filter-date" type="date" v-model="dateStart" :max="dateEnd">
+            <input class="history__filter-date" type="date" v-model="dateEnd" :min="dateStart">
+            <button class="history__filter-button" @click="reloadHistory">Ok</button>
         </div>
 
         <h2>История заказов</h2>
@@ -101,6 +100,11 @@
             }
         },
         methods: {
+            reloadHistory() {
+                this.$store.dispatch('multipleRequest', [
+                    { cmd: 'getHistorySlice', value: { dateStart: this.dateStart, dateEnd: this.dateEnd }},
+                ]); 
+            },
             totalBill(item) {
                 return +item.bill_rent + +item.bill_access - +item.sale;
             },
@@ -324,14 +328,12 @@
 
             &-search {
                 width: 100%;
-                margin-right: 10px;
+                margin-right: 20px;
             }
             
             &-date {
                 min-width: 130px;
-                margin-left: 10px;
-
-
+                margin-right: 10px;
             }
             ::-webkit-calendar-picker-indicator {
                 color: transparent;
