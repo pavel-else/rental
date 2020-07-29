@@ -54,21 +54,27 @@ export default {
         saveToStateHistorySlice({ commit }, slice) {
             console.time("hist")
             const format = (slice) => {
-                const history = {};
+                // С сервера данные приходят упорядоченными по дате открытия (startDate)
+                // Стоит задача  1. Сохранить этот порядок. 2. Сгруппировать сабордеры в общем ордере
+                // Order: { orderId, ..., subOrders: [subOrder1, ...] }
+
+                const historyArr = [];
+                const historyObj = {};
 
                 for (let i of slice) {
-                    if (has(history, i.order_id)) {
-                        const order = history[i.order_id];
+                    if (has(historyObj, i.order_id)) {
+                        const order = historyObj[i.order_id];
                         order.addSubOrder(i);
                     } else {
                         const order = new Order(i);
                         order.addSubOrder(i);
                         
-                        history[i.order_id] = order;
+                        historyArr.push(order);
+                        historyObj[i.order_id] = order;
                     }
                 }
 
-                return history;
+                return historyArr;
             };
             commit('history', format(slice));
             console.timeEnd("hist")

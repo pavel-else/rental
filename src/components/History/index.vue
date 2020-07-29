@@ -67,6 +67,7 @@
 
 <script>
     import dayjs            from 'dayjs';
+    import { sortBy }       from 'lodash';
     import Details          from './Details';
     import Dialog           from '@/components/Dialog';
     import Totals           from '@/components/Totals';
