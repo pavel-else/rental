@@ -30,7 +30,7 @@
             </tr>
 
             <!-- <tr v-for="order in orders.filter(filt)" :key="order.id_rent" @click="onClick(order)"> -->
-            <tr v-for="order in history" :key="order.orderId" @click="onClick(order)">
+            <tr v-for="order in history.filter(filt)" :key="order.orderId" @click="onClick(order)">
                 <td>
                     {{ order.orderId }}
                 </td>
@@ -67,7 +67,6 @@
 
 <script>
     import dayjs            from 'dayjs';
-    import { sortBy }       from 'lodash';
     import Details          from './Details';
     import Dialog           from '@/components/Dialog';
     import Totals           from '@/components/Totals';
@@ -117,8 +116,8 @@
                 // Метод просто обновляет фильтр, через который Vue пропускает список
                 const searchText = event.target.value.trim();
 
-                this.filt = order => {
-                    const products = this.getProducts(order.id_rent);
+                this.filt = (order) => {
+                    const products = this.getProducts(order);
 
                     const productMutches = products.filter(product => {
                         const name = product ? product.name : '';
@@ -130,7 +129,8 @@
                     }
 
                     // Поиск среди ФИО
-                    const customerMutches = order.customerName.toUpperCase().indexOf(searchText.toUpperCase()) >= 0;
+                    const customerName = this.getCustomerName(order.customerId);
+                    const customerMutches = customerName.toUpperCase().indexOf(searchText.toUpperCase()) >= 0;
 
                     if (customerMutches) {
                         return true;
@@ -175,10 +175,8 @@
                 }
                 return customer ? makeCustomerName(customer) : '';
             },
-            getProducts(orderId) {
-                const subOrders = this.$store.getters.subOrders;
-                const subOrdersByOrderId = subOrders.filter(i => i.order_id === orderId && i.status !== 'DEL');
-                const products = subOrdersByOrderId.map(subOrder => {
+            getProducts(order) {
+                const products = order.subOrders.map(subOrder => {
                     const product = this.$store.getters.products.find(product => product.id_rent === subOrder.product_id);
 
                     return product ? product : null;
