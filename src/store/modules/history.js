@@ -83,11 +83,13 @@ export default {
 }
 
 function Order(order) {
-    this.orderId = order.order_id;
-    this.startTime = order.start_time;
-    this.customerId = order.customer_id;
-    this.subOrders = [];
-    this.depositId = order.deposit;
+    this.orderId     = order.order_id;
+    this.startTime   = order.start_time;
+    this.customerId  = order.customer_id;
+    this.subOrders   = [];
+    this.depositId   = order.deposit;
+    this.offBalance  = order.off_balance ? +order.off_balance : 0;
+    this.advance     = order.advance ? +order.advance : 0;
 }
 
 Order.prototype.addSubOrder = function (subOrder) {
@@ -103,5 +105,32 @@ Order.prototype.getBill = function () {
     return bill;
 };
 
-// order.endTime
-//order.customer ??
+Order.prototype.getEndTime = function () {
+    // TODO: Нужно учесть, что могут приходить активные ордеры
+
+    const end_time = this.subOrders.reduce((acc, item) => {
+        if (!acc) {
+            acc = item.end_time;
+        }
+
+        if (Date.parse(acc) < Date.parse(item.end_time)) {
+            acc = item.end_time;
+        }
+
+
+        return acc;
+    }, null);
+    
+    return end_time;
+};
+
+Order.prototype.getPlayTime = function () {
+    const end_time = Date.parse(this.getEndTime());
+    const start_time = Date.parse(this.startTime);
+
+    if (isNaN(end_time) || isNaN(start_time)) {
+        return 'Ошибка парсинга. order_id = ' + this.orderId;
+    }
+
+    return end_time - start_time;
+};

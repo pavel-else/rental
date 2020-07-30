@@ -30,7 +30,7 @@
 
                 <tr>
                     <td>Продолжительность</td>
-                    <td>{{ order.play_time }}</td>
+                    <td>{{ order.getPlayTime() | playTime }}</td>
                 </tr>
                 <tr v-if="order.note">
                     <td>Примечание</td>
@@ -115,7 +115,7 @@
                         <div class="products__line">
                             <span class="products__text-resume">Оплачено картой</span>
                             <span class="products__text-resume">
-                                {{ paidCard + offBalance - order.advance }} руб.
+                                {{ +paidCard + +offBalance - +order.advance }} руб.
                             </span>
                         </div>
                     </li>
@@ -139,18 +139,14 @@
     import * as Time        from '@/functions/time';
     import copy             from '@/functions/copy';
     import makeCustomerName from '@/functions/makeCustomerName';
+    import timeFormat       from '@/functions/timeFormat';
 
     export default {
         props: {
-            _order: Object,
+            order: Object,
         },
         beforeCreate() {
             this.$store.dispatch('getAccessories');
-        },
-        data() {
-            return {
-                order: copy(this._order),
-            }
         },
         methods: {
             close() {
@@ -204,7 +200,7 @@
                 return this.$store.getters.newProducts;
             },
             subOrders() {
-                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === this.order.id_rent);
+                const subOrders = this.order.subOrders;
 
                 return subOrders.reduce((acc, _item) => {
                     const item = copy(_item);
@@ -262,7 +258,7 @@
                 return summ;
             },
             offBalance() {
-                return +this.order.off_balance;
+                return +this.order.offBalance;
             },
             bill() {
                return  (this.paidCard + this.paidCoin) + this.offBalance;
@@ -276,7 +272,12 @@
                 }
                 //return +this.order.advance - this.paidCard - this.paidCoin - this.offBalance;
             },
-        }
+        },
+        filters: {
+            playTime(ms) {
+                return timeFormat(ms);
+            }
+        },
     };
 </script>
 

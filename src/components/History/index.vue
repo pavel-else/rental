@@ -40,7 +40,7 @@
                     {{ order.startTime | shortDate }}
                 </td>
                 <td style="text-align: right">
-                    {{ getTimePlay(order.startTime, order.subOrders[0].end_time, order.orderId) }}
+                    {{ order.getPlayTime() | playTime }}
                 </td>
                 <td style="padding-left: 20px">
                     <div
@@ -58,7 +58,7 @@
         <div v-else>Здесь пока пусто..</div>
 
         <Dialog v-if="show" @close="onClose">
-            <Details :_order="order" @close="onClose" />
+            <Details :order="order" @close="onClose" />
         </Dialog>
 
     </div>  
@@ -70,7 +70,6 @@
     import Dialog           from '@/components/Dialog';
     import Totals           from '@/components/Totals';
     import timeFormat       from '@/functions/timeFormat';
-    import copy             from '@/functions/copy';
     import * as Time        from '@/functions/time';
     import isValidDate      from '@/functions/isValidDate';
     import makeCustomerName from '@/functions/makeCustomerName';
@@ -112,7 +111,6 @@
                 return product ? product.name : '';
             },
             search() {
-                // TODO: сделать тротллинг
                 // Метод просто обновляет фильтр, через который Vue пропускает список
                 const searchText = event.target.value.trim();
 
@@ -149,24 +147,7 @@
                 this.show = false;
             },
 
-            // Блок вспомогательных методов для свойства orders
-            getEndTime(orderId) {
-                const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === orderId);
-                const end_time = subOrders.reduce((acc, item) => {
-                    if (!acc) {
-                        acc = item.end_time;
-                    }
 
-                    if (Date.parse(acc) < Date.parse(item.end_time)) {
-                        acc = item.end_time;
-                    }
-
-
-                    return acc;
-                }, null);
-                
-                return end_time;
-            },
             getCustomerName(customerId) {
                 if (!customerId) {
                     return '';
@@ -207,16 +188,6 @@
                     default: return status;
                 }
             },
-            getTimePlay(start, end, orderId) {
-                const end_time = Date.parse(end);
-                const start_time = Date.parse(start);
-
-                if (isNaN(end_time) || isNaN(start_time)) {
-                    return 'Ошибка парсинга. order_id = ' + orderId;
-                }
-
-                return timeFormat(end_time - start_time);
-            },
         },
         computed: {
             history() {
@@ -228,26 +199,6 @@
             customers() {
                 return this.$store.getters.customers;
             },
-            orders() {
-                const compleated = this.$store.getters.orders.filter(i => i.status === 'END');
-                const orders = compleated.reduce((acc, _item) => {
-                    const item = copy(_item);
-
-                    item.customerName = this.getCustomerName(item.customer_id);
-                    item.end_time = this.getEndTime(item.id_rent);
-                    item.play_time = this.getTimePlay(item.start_time, item.end_time, item.id_rent);
-                    item.products = this.getProducts(item.id_rent);
-                    item.bill = this.getBill(item.id_rent);
-                    item.formStatus = this.getStatus(item);
-
-                    acc.push(item);
-
-                    return acc;
-                }, []);
-
-                return orders.sort((a, b) => Date.parse(b.end_time) - Date.parse(a.end_time) > 0 ? 1 : -1);
-            },
-
             // FOR TOTAL
             currentSubOrders() {
                 const isCurrent = (endTime, subOrderId) => {
@@ -314,6 +265,9 @@
                 const format = isToday(orderDate) ? 'HH:mm' : 'DD MMMM YYYY';
 
                 return Time.format(format, orderDate);
+            },
+            playTime(ms) {
+                return timeFormat(ms);
             },
         }
     }
