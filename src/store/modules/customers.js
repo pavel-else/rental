@@ -3,11 +3,15 @@ import isValidDate from '@/functions/isValidDate';
 
 export default {
     state: {
-        customers: []
+        customers: [],
+        newCustomers: {},
     },
     getters: {
         customers(state) {
             return state.customers;
+        },
+        newCustomers(state) {
+            return state.newCustomers;
         },
         customerById(state) {
             return customer_id => {
@@ -41,6 +45,18 @@ export default {
             console.log('commit: customers', customers);
 
             state.customers = customers;
+
+            const prepare = (customers = []) => {
+                const result = {};
+
+                for (let customer of customers) {
+                    result[customer.id_rent] = customer;
+                }
+
+                return result;
+            };
+
+            state.newCustomers = prepare(customers);
         },
         unsetCustomers(state) {
             console.log('commit: unsetCustomers');

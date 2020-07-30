@@ -3,7 +3,7 @@ import { has } from 'lodash';
 
 export default {
     state: {
-        history: {},
+        history: null,
     },
     getters: {
         history(state) {
@@ -87,7 +87,9 @@ function Order(order) {
     this.startTime = order.start_time;
     this.customerId = order.customer_id;
     this.subOrders = [];
+    this.depositId = order.deposit;
 }
+
 Order.prototype.addSubOrder = function (subOrder) {
     this.subOrders.push(subOrder);
 };
@@ -100,3 +102,6 @@ Order.prototype.getBill = function () {
 
     return bill;
 };
+
+// order.endTime
+//order.customer ??

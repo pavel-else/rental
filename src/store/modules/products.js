@@ -1,11 +1,15 @@
 import axios from 'axios';
 export default {  
     state: {
-        products: []
+        products: [],
+        newProducts: null,
     },
     getters: {
         products(state) {
             return state.products;
+        },
+        newProducts(state) {
+            return state.newProducts;
         },
         // productNameById(state) {
         //     return product_id => {
@@ -16,8 +20,19 @@ export default {
     },
     mutations: {
         products(state, products) {
-            console.log('commit: products', products);
             state.products = products;
+
+            const prepare = (products) => {
+                const result = {};
+
+                for (const product of products) {
+                    result[product.id_rent] = product;
+                }
+
+                return result;
+            };
+
+            state.newProducts = prepare(products);
         },
         unsetProducts(state) {
             console.log('commit: unsetProducts');

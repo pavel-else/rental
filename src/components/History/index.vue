@@ -1,6 +1,6 @@
 <template>
     <div class="history">
-        <!-- <div class="history__totals">
+         <div class="history__totals">
             <table>
                 <tr>
                     <td><b>Итого за день:</b></td>
@@ -10,7 +10,7 @@
                 </tr>
             </table>
         </div>
--->
+
         <div class="history__filter">
             <input class="history__filter-search" placeholder="Начните вводить фамилию или название" @input="search()">
             <input class="history__filter-date" type="date" v-model="dateStart" :max="dateEnd">
@@ -29,7 +29,6 @@
                 <th>Стоимость</th>
             </tr>
 
-            <!-- <tr v-for="order in orders.filter(filt)" :key="order.id_rent" @click="onClick(order)"> -->
             <tr v-for="order in history.filter(filt)" :key="order.orderId" @click="onClick(order)">
                 <td>
                     {{ order.orderId }}
@@ -113,11 +112,16 @@
                 return product ? product.name : '';
             },
             search() {
+                // TODO: сделать тротллинг
                 // Метод просто обновляет фильтр, через который Vue пропускает список
                 const searchText = event.target.value.trim();
 
                 this.filt = (order) => {
                     const products = this.getProducts(order);
+
+                    if (!products) {
+                        return false;
+                    }
 
                     const productMutches = products.filter(product => {
                         const name = product ? product.name : '';

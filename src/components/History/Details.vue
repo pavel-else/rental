@@ -1,12 +1,12 @@
 <template>
     <div class="resume">
-            <h2 class="resume__caption">Заказ # {{ order.id_rent }}</h2>
+            <h2 class="resume__caption">Заказ # {{ order.orderId }}</h2>
 
             <table class="resume__main-table">
                 <tr>
                     <td>Клиент</td>
                     <td>
-                        <span v-if="order.customerName">{{ order.customerName }}</span>
+                        <span v-if="order.customerId">{{ getCustomerName(order.customerId) }}</span>
                         <span v-else>-</span>
                     </td>
                 </tr>
@@ -21,11 +21,11 @@
 
                 <tr>
                     <td>Начало</td>
-                    <td>{{ shortDate(order.start_time) }}</td>
+                    <td>{{ shortDate(order.startTime) }}</td>
                 </tr>
                 <tr>
                     <td>Завершение</td>
-                    <td>{{ shortDate(order.end_time) }}</td>
+                    <td>{{ shortDate(order.endTime) }}</td>
                 </tr>
 
                 <tr>
@@ -41,21 +41,21 @@
 
             <div class="products">
                 <ul class="products__list">
-                    <li class="products__item" v-for="item in subOrders" :key="item.id_rent">
+                    <li class="products__item" v-for="subOrder in order.subOrders" :key="subOrder.id_rent">
                         <div class="products__line">
-                            <span>{{ item.product_name }}</span>
+                            <span>{{ getProductName(subOrder.product_id) }}</span>
                             <span 
-                                v-if="item.status === 'DEL'"
-                                :title="item.end_time + ' ' + item.note"
+                                v-if="subOrder.status === 'DEL'"
+                                :title="subOrder.end_time + ' ' + subOrder.note"
                                 style="color: red"
                             >✖</span> 
                             <span v-else>
-                                {{ item.bill_rent }} руб.
+                                {{ subOrder.bill_rent }} руб.
                             </span>                                                                           
                         </div>
 
                         <ul class="products__access-list">
-                            <li class="products__access-item products__line" v-for="accessory in item.accessories" :key="accessory.id_rent">
+                            <li class="products__access-item products__line" v-for="accessory in subOrder.accessories" :key="accessory.id_rent">
                                 <span class="products__arrow"> {{ accessory.name }}</span>
                                 <span>{{ accessory.bill_access }} руб.</span>                                        
                             </li>
@@ -138,22 +138,19 @@
     import getBillAccessory from '@/functions/getBillAccessory';
     import * as Time        from '@/functions/time';
     import copy             from '@/functions/copy';
+    import makeCustomerName from '@/functions/makeCustomerName';
 
     export default {
         props: {
             _order: Object,
         },
-
+        beforeCreate() {
+            this.$store.dispatch('getAccessories');
+        },
         data() {
             return {
                 order: copy(this._order),
             }
-        },
-        beforeCreate() {
-            this.$store.dispatch('getAccessories');
-        },
-        created() {
-            this.order.abs = 'asdfasdf';
         },
         methods: {
             close() {
@@ -189,9 +186,23 @@
                 // return date;
                 return Time.format('DD MMMM YYYY HH:mm', date);
             },
+            getCustomerName(customerId) {
+                const customer = this.customers[customerId];
+                return customer ? makeCustomerName(customer) : '';
+            },
+            getProductName(productId) {
+                const product = this.products[productId];
+                return product ? product.name : '';
+            },
         },
 
         computed: {
+            customers() {
+                return this.$store.getters.newCustomers;
+            },
+            products() {
+                return this.$store.getters.newProducts;
+            },
             subOrders() {
                 const subOrders = this.$store.getters.subOrders.filter(i => i.order_id === this.order.id_rent);
 
@@ -222,7 +233,7 @@
                 return this.billRentAccess - summSale;
             },
             deposit() {
-                return this.$store.getters.deposits.find(i => i.id_rent === +this.order.deposit)
+                return this.$store.getters.deposits.find(i => i.id_rent === +this.order.depositId)
             },
             paidCoin() {
                 const summ = this.subOrders.reduce((acc, item) => {
@@ -264,7 +275,7 @@
                     return +this.order.advance - this.offBalance;
                 }
                 //return +this.order.advance - this.paidCard - this.paidCoin - this.offBalance;
-            }
+            },
         }
     };
 </script>
