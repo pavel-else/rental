@@ -24,6 +24,7 @@
         <h2>История заказов</h2>
         <table class="history__table" v-if="history" cellspacing="0">
             <tr class="tr__caption">
+                <th></th>
                 <th>id</th>
                 <th>ФИО</th>
                 <th>Начало</th>
@@ -33,6 +34,9 @@
             </tr>
 
             <tr v-for="order in history.filter(filt)" :key="order.orderId" @click="onClick(order)">
+                <td style="vertical-align: middle">
+                    <span class="active-sign" v-if="order.status === 'ACTIVE'"></span>
+                </td>
                 <td>
                     {{ order.orderId }}
                 </td>
@@ -43,7 +47,7 @@
                     {{ order.startTime | shortDate }}
                 </td>
                 <td style="text-align: right">
-                    {{ order.getPlayTime() | playTime }}
+                    <span v-if="order.status !== 'ACTIVE'">{{ order.getPlayTime() | playTime }}</span>
                 </td>
                 <td style="padding-left: 20px">
                     <div
@@ -289,5 +293,12 @@
     }
     .history__totals {
         margin-bottom: 20px;
+    }
+    .active-sign {
+        min-width: 5px;
+        min-height: 5px;
+        border: 2px solid green;
+        border-radius: 50%;
+        display: block;
     }
 </style>

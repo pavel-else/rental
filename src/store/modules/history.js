@@ -83,14 +83,15 @@ export default {
 }
 
 function Order(order) {
-    this.orderId     = order.order_id;
-    this.startTime   = order.start_time;
-    this.customerId  = order.customer_id;
-    this.subOrders   = [];
-    this.depositId   = order.deposit;
-    this.offBalance  = order.off_balance ? +order.off_balance : 0;
-    this.advance     = order.advance ? +order.advance : 0;
-    this.note        = order.note;
+    this.orderId      = order.order_id;
+    this.status       = order.order_status;
+    this.startTime    = order.start_time;
+    this.customerId   = order.customer_id;
+    this.subOrders    = [];
+    this.depositId    = order.deposit;
+    this.offBalance   = order.off_balance ? +order.off_balance : 0;
+    this.advance      = order.advance ? +order.advance : 0;
+    this.note         = order.note;
 }
 
 Order.prototype.addSubOrder = function (subOrder) {
