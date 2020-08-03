@@ -1,15 +1,18 @@
 <template>
     <div class="history">
-         <div class="history__totals">
-            <table>
-                <tr>
-                    <td><b>Итого за день:</b></td>
-                    <td>Наличные: {{ coin }} руб.</td>
-                    <td>По карте: {{ card }} руб.</td>
-                    <td>Всего: {{ total }} руб.</td>
-                </tr>
-            </table>
-        </div>
+         <Totals
+            class="history__totals history_totals__today"
+            caption="Итого за сегодня"
+            :dateStart="dayjs().format('YYYY-MM-DD')"
+            :dateEnd="dayjs().add(1, 'day').format('YYYY-MM-DD')"
+        />
+
+         <Totals
+            class="history__totals history_totals__yesterday"
+            caption="Итого за вчера"
+            :dateStart="dayjs().subtract(1, 'day').format('YYYY-MM-DD')"
+            :dateEnd="dayjs().format('YYYY-MM-DD')"
+        />
 
         <div class="history__filter">
             <input class="history__filter-search" placeholder="Начните вводить фамилию или название" @input="search()">
@@ -67,8 +70,8 @@
 <script>
     import dayjs            from 'dayjs';
     import Details          from './Details';
+    import Totals           from './Totals';
     import Dialog           from '@/components/Dialog';
-    import Totals           from '@/components/Totals';
     import timeFormat       from '@/functions/timeFormat';
     import * as Time        from '@/functions/time';
     import isValidDate      from '@/functions/isValidDate';
@@ -98,6 +101,9 @@
             }
         },
         methods: {
+            dayjs() {
+                return dayjs();
+            },
             reloadHistory() {
                 this.$store.dispatch('multipleRequest', [
                     { cmd: 'getHistorySlice', value: { dateStart: this.dateStart, dateEnd: this.dateEnd }},
@@ -320,12 +326,5 @@
     }
     .history__totals {
         margin-bottom: 20px;
-        table {
-            width: 100%;
-        }
-
-        td {
-            padding: 5px 10px;
-        }
     }
 </style>
