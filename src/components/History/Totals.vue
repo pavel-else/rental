@@ -8,10 +8,10 @@
 
 <template>
     <div class="history-totals">
-        <div><b>{{ caption }}</b></div>
-        <div>Наличные: {{ coin }} руб.</div>
-        <div>По карте: {{ card }} руб.</div>
-        <div>Всего: {{ coin + card }} руб.</div>
+        <div class="history-totals__cell"><b>{{ caption }}</b></div>
+        <div class="history-totals__cell">Наличные: {{ coin }} руб.</div>
+        <div class="history-totals__cell">По карте: {{ card }} руб.</div>
+        <div class="history-totals__cell">Всего: {{ coin + card }} руб.</div>
     </div>  
 </template>
 
@@ -65,5 +65,9 @@ export default {
         width: 100%;
         display: flex;
         justify-content: space-between;
+
+        &__cell {
+            width: 25%;
+        }
     }
 </style>

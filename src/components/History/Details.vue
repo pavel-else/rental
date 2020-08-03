@@ -45,7 +45,7 @@
                         <div class="products__line">
                             <span>{{ getProductName(subOrder.product_id) }}</span>
                             <span 
-                                v-if="subOrder.status === 'DEL'"
+                                v-if="subOrder.sub_order_status === 'DEL'"
                                 :title="subOrder.end_time + ' ' + subOrder.note"
                                 style="color: red"
                             >✖</span> 
@@ -75,20 +75,20 @@
                             </span>
                         </div>
                     </li>
-                    <li class="products__item" v-if="order.off_balance > 0">
+                    <li class="products__item" v-if="order.offBalance > 0">
                         <div class="products__line">
                             <span class="products__text-resume">Погашена задолженость</span>
                             <span class="products__text-resume">
-                                {{ order.off_balance }} руб.
+                                {{ order.offBalance }} руб.
                             </span>
                         </div>
                     </li>
 
-                    <li class="products__item" v-if="order.off_balance < 0">
+                    <li class="products__item" v-if="order.offBalance < 0">
                         <div class="products__line">
                             <span class="products__text-resume">Списано с баланса</span>
                             <span class="products__text-resume">
-                                {{ Math.abs(order.off_balance) }} руб.
+                                {{ Math.abs(order.offBalance) }} руб.
                             </span>
                         </div>
                     </li>

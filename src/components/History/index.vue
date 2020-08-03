@@ -205,43 +205,6 @@
             customers() {
                 return this.$store.getters.customers;
             },
-            // FOR TOTAL
-            currentSubOrders() {
-                const isCurrent = (endTime, subOrderId) => {
-                    const obj = new Date(endTime);
-
-                    if (!isValidDate(obj)) {
-                        console.warn('Totals: date parse error. subOrderId = ' + subOrderId);
-                        return false;
-                    }
-
-                    const today = new Date();
-
-                    return obj.getDate() === today.getDate()
-                        && obj.getMonth() === today.getMonth()
-                        && obj.getYear() === today.getYear();
-                };
-
-                return this.$store.getters.subOrders.filter(i => isCurrent(i.end_time, i.id_rent));
-            },
-            coin() {
-                const filterByCoin = this.currentSubOrders.filter(i => i.paid === 'coin');
-                return filterByCoin.reduce((acc, item) => {
-                    acc += +item.bill_rent + +item.bill_access - +item.sale;
-
-                    return acc;
-                }, 0);
-            },
-            card() {
-                const filterByCard = this.currentSubOrders.filter(i => i.paid === 'card');
-                return filterByCard.reduce((acc, item) => {
-                    acc += +item.bill_rent + +item.bill_access - +item.sale;
-                    return acc;
-                }, 0);
-            },
-            total() {
-                return this.coin + this.card;
-            }
         },
 
         filters: {
