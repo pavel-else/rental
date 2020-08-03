@@ -90,6 +90,7 @@ function Order(order) {
     this.depositId   = order.deposit;
     this.offBalance  = order.off_balance ? +order.off_balance : 0;
     this.advance     = order.advance ? +order.advance : 0;
+    this.note        = order.note;
 }
 
 Order.prototype.addSubOrder = function (subOrder) {
