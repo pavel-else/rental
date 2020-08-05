@@ -23,12 +23,12 @@
                     <td>Начало</td>
                     <td>{{ shortDate(order.startTime) }}</td>
                 </tr>
-                <tr>
+                <tr v-if="order.status !== 'ACTIVE'">
                     <td>Завершение</td>
                     <td>{{ shortDate(order.getEndTime()) }}</td>
                 </tr>
 
-                <tr>
+                <tr v-if="order.status !== 'ACTIVE'">
                     <td>Продолжительность</td>
                     <td>{{ order.getPlayTime() | playTime }}</td>
                 </tr>

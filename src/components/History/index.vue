@@ -51,7 +51,7 @@
                 </td>
                 <td style="padding-left: 20px">
                     <div
-                        v-for="subOrder in order.subOrders"
+                        v-for="subOrder in order.subOrders.filter(i => i.sub_order_status !== 'DEL')"
                         :key="subOrder.sub_order_id"
                     >
                         {{ getProductName(subOrder.product_id) }}

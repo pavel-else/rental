@@ -100,7 +100,7 @@ Order.prototype.addSubOrder = function (subOrder) {
 
 Order.prototype.getBill = function () {
     const bill = this.subOrders.reduce((acc, item) => {
-        acc += +item.bill_rent;
+        acc += +item.bill_rent + +item.bill_access - +item.sale;
         return acc;
     }, 0);
 

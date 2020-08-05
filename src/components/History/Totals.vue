@@ -8,10 +8,10 @@
 
 <template>
     <div class="history-totals">
-        <div class="history-totals__cell"><b>{{ caption }}</b></div>
+        <div class="history-totals__cell history-totals__cell--caption"><b>{{ caption }}: {{ advance + coin + card }} руб.</b></div>
         <div class="history-totals__cell">Наличные: {{ coin }} руб.</div>
         <div class="history-totals__cell">По карте: {{ card }} руб.</div>
-        <div class="history-totals__cell">Всего: {{ coin + card }} руб.</div>
+        <div class="history-totals__cell" v-if="advance">Аванс: {{ advance }} руб.</div>
     </div>  
 </template>
 
@@ -26,41 +26,30 @@ export default {
         dateEnd: String,
     },
     async created() {
-        const response = await simpleRequest('getHistorySlice', { dateStart: this.dateStart, dateEnd: this.dateEnd });
-        this.subOrders = response ? response.history_slice : null;
+        // const response = await simpleRequest('getHistorySlice', { dateStart: this.dateStart, dateEnd: this.dateEnd });
 
-        const test = await simpleRequest('getTotals', { dateStart: this.dateStart, dateEnd: this.dateEnd });
-        console.log("TEST", test);
+        const response = await simpleRequest('getTotals', { dateStart: this.dateStart, dateEnd: this.dateEnd });
+        console.log("TEST", response);
+        this.totals = response ? response.totals : null;
 
     },
     data() {
         return {
-            subOrders: null,
+            totals: null,
         }
     },
     computed: {
+        advance() {
+            return this.totals && this.totals.advance ? this.totals.advance : 0;
+        },
         coin() {
-            if (!this.subOrders) {
-                return 0;
-            }
-            const filterByCoin = this.subOrders.filter(i => i.paid === 'coin');
-            return filterByCoin.reduce((acc, item) => {
-                acc += +item.bill_rent + +item.bill_access - +item.sale;
-
-                return acc;
-            }, 0);
+            return this.totals && this.totals.coin ? this.totals.coin : 0;
         },
         card() {
-            if (!this.subOrders) {
-                return 0;
-            }
-            const filterByCard = this.subOrders.filter(i => i.paid === 'card');
-            return filterByCard.reduce((acc, item) => {
-                acc += +item.bill_rent + +item.bill_access - +item.sale;
-                return acc;
-            }, 0);
+            return this.totals && this.totals.card ? this.totals.card : 0;
         },
     },
+
 }
 </script>
 
@@ -68,10 +57,14 @@ export default {
     .history-totals {
         width: 100%;
         display: flex;
-        justify-content: space-between;
+        // justify-content: space-between;
 
         &__cell {
-            width: 25%;
+            min-width: 150px;
+            white-space: nowrap;
+        }
+        &__cell--caption {
+            min-width: 200px;
         }
     }
 </style>
