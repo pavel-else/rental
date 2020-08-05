@@ -28,6 +28,10 @@ export default {
     async created() {
         const response = await simpleRequest('getHistorySlice', { dateStart: this.dateStart, dateEnd: this.dateEnd });
         this.subOrders = response ? response.history_slice : null;
+
+        const test = await simpleRequest('getTotals', { dateStart: this.dateStart, dateEnd: this.dateEnd });
+        console.log("TEST", test);
+
     },
     data() {
         return {

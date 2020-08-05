@@ -25,7 +25,7 @@
                 </tr>
                 <tr>
                     <td>Завершение</td>
-                    <td>{{ shortDate(order.endTime) }}</td>
+                    <td>{{ shortDate(order.getEndTime()) }}</td>
                 </tr>
 
                 <tr>

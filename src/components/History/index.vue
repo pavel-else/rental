@@ -88,7 +88,7 @@
         },
         created() {
             // set date range
-            this.dateEnd = dayjs().add(1, 'day').format('YYYY-MM-DD');
+            this.dateEnd = dayjs().format('YYYY-MM-DD');
             this.dateStart = dayjs().subtract(1, 'month').format('YYYY-MM-DD');
 
             this.$store.dispatch('multipleRequest', [
@@ -115,9 +115,15 @@
                 return dayjs();
             },
             reloadHistory() {
-                this.$store.dispatch('multipleRequest', [
-                    { cmd: 'getHistorySlice', value: { dateStart: this.dateStart, dateEnd: this.dateEnd }},
-                ]); 
+            this.$store.dispatch('multipleRequest', [
+                { 
+                    cmd: 'getHistorySlice', 
+                    value: { 
+                        dateStart: dayjs(this.dateStart).format('YYYY-MM-DD 00:00'), 
+                        dateEnd: dayjs(this.dateEnd).format('YYYY-MM-DD 23:59'),
+                    }
+                },
+            ]);
             },
             totalBill(item) {
                 return +item.bill_rent + +item.bill_access - +item.sale;
