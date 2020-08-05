@@ -3,7 +3,7 @@ import { has } from 'lodash';
 
 export default {
     state: {
-        history: null,
+        history: [],
     },
     getters: {
         history(state) {

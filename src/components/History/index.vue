@@ -3,15 +3,15 @@
          <Totals
             class="history__totals history_totals__today"
             caption="Итого за сегодня"
-            :dateStart="dayjs().format('YYYY-MM-DD')"
-            :dateEnd="dayjs().add(1, 'day').format('YYYY-MM-DD')"
+            :dateStart="dayjs().format('YYYY-MM-DD 00:00')"
+            :dateEnd="dayjs().format('YYYY-MM-DD 23:59')"
         />
 
          <Totals
             class="history__totals history_totals__yesterday"
             caption="Итого за вчера"
-            :dateStart="dayjs().subtract(1, 'day').format('YYYY-MM-DD')"
-            :dateEnd="dayjs().format('YYYY-MM-DD')"
+            :dateStart="dayjs().subtract(1, 'day').format('YYYY-MM-DD 00:00')"
+            :dateEnd="dayjs().subtract(1, 'day').format('YYYY-MM-DD 23:59')"
         />
 
         <div class="history__filter">
@@ -22,7 +22,7 @@
         </div>
 
         <h2>История заказов</h2>
-        <table class="history__table" v-if="history" cellspacing="0">
+        <table class="history__table" v-if="history && history.length > 0" cellspacing="0">
             <tr class="tr__caption">
                 <th></th>
                 <th>id</th>
@@ -88,11 +88,17 @@
         },
         created() {
             // set date range
-            this.dateEnd = dayjs().format('YYYY-MM-DD');
+            this.dateEnd = dayjs().add(1, 'day').format('YYYY-MM-DD');
             this.dateStart = dayjs().subtract(1, 'month').format('YYYY-MM-DD');
 
             this.$store.dispatch('multipleRequest', [
-                { cmd: 'getHistorySlice', value: { dateStart: this.dateStart, dateEnd: this.dateEnd }},
+                { 
+                    cmd: 'getHistorySlice', 
+                    value: { 
+                        dateStart: dayjs(this.dateStart).format('YYYY-MM-DD 00:00'), 
+                        dateEnd: dayjs(this.dateEnd).format('YYYY-MM-DD 23:59'),
+                    }
+                },
             ]);
         },
         data() {
