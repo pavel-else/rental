@@ -1,11 +1,3 @@
-<docs>
-    <!--
-    Выбирает все заказы между 
-        o.start_time >= :start_date
-        so.end_time < :end_date
-    -->
-</docs>
-
 <template>
     <div class="history-totals">
         <div class="history-totals__cell history-totals__cell--caption"><b>{{ caption }}: {{ advance + coin + card }} руб.</b></div>
@@ -26,12 +18,8 @@ export default {
         dateEnd: String,
     },
     async created() {
-        // const response = await simpleRequest('getHistorySlice', { dateStart: this.dateStart, dateEnd: this.dateEnd });
-
         const response = await simpleRequest('getTotals', { dateStart: this.dateStart, dateEnd: this.dateEnd });
-        console.log("TEST", response);
         this.totals = response ? response.totals : null;
-
     },
     data() {
         return {

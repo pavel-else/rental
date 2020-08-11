@@ -13,6 +13,8 @@ import Accessories     from '@/components/Accessories';
 import Products        from '@/components/Products';
 import Monitor         from '@/components/Monitor/Monitor';
 
+import Test            from '@/views/Test';
+
 const Login = () => import('@/views/Login');
 const LoginByToken = () => import('@/components/LoginByToken');
 const NotFound = { "template": '<h2>Page Not Found</h2>' };
@@ -43,7 +45,12 @@ export default new Router({
             path: '/',
             component: Main,
             beforeEnter: ifAuthenticated,
+        },        
+        {
+            path: '/test',
+            component: Test,
         },
+
         {
             path: '/monitor',
             component: Monitor,
