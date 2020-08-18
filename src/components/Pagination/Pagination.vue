@@ -1,12 +1,17 @@
 <template>
     <div class="totals">
         Pagination
-        <slot name="list"></slot>
-        <slot name="item"></slot>
+        <div v-for="i in list" :key="i">
+            <slot name="item"></slot>
+        </div>        
     </div>
 </template>
 <script>
-    export default {};
+    export default {
+        props: {
+            list: [Array, Object],
+        }
+    };
 </script>
 <style lang="scss">
 
