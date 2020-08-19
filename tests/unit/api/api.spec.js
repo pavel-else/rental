@@ -1,11 +1,36 @@
-import simpleRequest from '@/functions/simpleRequest';
+import axios from 'axios';
 
 const token = 'e7aea113bde05e880e379398a6d104b8';
 
+const simpleRequest = (requestName, params) => {
+    return new Promise((resolve, reject) => {
+        const url = process.env.VUE_APP_BACKEND_API_URL;
+    
+        axios({ 
+            url,
+            data: {
+                queue : [ { cmd: requestName, value: params }],
+                token
+            },
+            method: 'POST',
+        })
+        .then(resp => {
+            resolve(resp);                        
+        })
+        .catch(err => {
+            console.log(err)
+            reject(err);
+        });
+    });
+};
+
+
 describe('Test API', () => {
     it('ping', async () => {
-        const  { ping }  = await simpleRequest('ping', {}, token);
-        expect(ping).toBe(1);
+        const  response  = await simpleRequest('ping', {});
+
+        expect(response.status).toBe(200);
+        expect(response.data.ping).toBe(1);
     });
 
     it('getCashFlowSlice: get', async () => {
@@ -13,31 +38,32 @@ describe('Test API', () => {
             from: '2020-01-01 00:00',
             to: '2020-01-01 00:01',
         };
-        const { slice } = await simpleRequest('getCashFlowSlice', params, token);
+        const response = await simpleRequest('getCashFlowSlice', params);
 
-        expect(slice).toHaveLength(1);
-        expect(slice[0]).toHaveProperty('id_rental_org', '8800000002');
+        expect(response.status).toBe(200);
+        expect(response.data.slice).toHaveLength(1);
+        expect(response.data.slice[0]).toHaveProperty('id_rent', '1');
     });
 
-    it('getCashFlowSlice: write', async () => {
-        const entry = {
-            date_time: 'today',
-            order_id: 1,
-            sub_order_id: 1,
-            type: 'rent_payd',
-            paid_type: 'card',
-            value: 100,
-        };
+    // it('getCashFlowSlice: write', async () => {
+    //     const entry = {
+    //         date_time: 'today',
+    //         order_id: 1,
+    //         sub_order_id: 1,
+    //         type: 'rent_payd',
+    //         paid_type: 'card',
+    //         value: 100,
+    //     };
 
-        await simpleRequest('addCashEntry', entry, token);
+    //     await simpleRequest('addCashEntry', entry, token);
 
-        const params = {
-            from: '2020-01-01 00:00',
-            to: '2020-01-01 00:01',
-        };
-        const { slice } = await simpleRequest('getCashFlowSlice', params, token);
+    //     const params = {
+    //         from: '2020-01-01 00:00',
+    //         to: '2020-01-01 00:01',
+    //     };
+    //     const { slice } = await simpleRequest('getCashFlowSlice', params, token);
 
-        expect(slice).toHaveLength(1);
-        expect(slice).toMatchObject(entry);
-    });
+    //     expect(slice).toHaveLength(1);
+    //     expect(slice).toMatchObject(entry);
+    // });
 });

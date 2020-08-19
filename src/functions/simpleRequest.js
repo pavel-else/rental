@@ -6,7 +6,7 @@ const simpleRequest = (requestName, params, token = userToken) => {
     return new Promise((resolve, reject) => {
         const url = process.env.VUE_APP_BACKEND_API_URL;
     
-        axios({ 
+        axios({
             url,
             data: {
                 queue : [ { cmd: requestName, value: params }],
