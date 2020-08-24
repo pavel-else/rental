@@ -66,7 +66,7 @@
         computed: {
             // Возвращает список всех активных велосипедов, не находящихся в прокате
             // не выключенных из списка в настройках товара и не удаленных
-            // и не находщихся в ремонте
+            // и не находящихся в ремонте
             products() {
                 const isRent = (productId) => {
                     const activeSubOrders = this.$store.getters.activeSubOrders;

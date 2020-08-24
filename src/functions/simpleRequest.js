@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-const userToken = localStorage.getItem('user-token');
-
-const simpleRequest = (requestName, params, token = userToken) => {
+const simpleRequest = (requestName, params) => {
     return new Promise((resolve, reject) => {
         const url = process.env.VUE_APP_BACKEND_API_URL;
+        const token = localStorage.getItem('user-token');
     
         axios({
             url,
@@ -25,4 +24,3 @@ const simpleRequest = (requestName, params, token = userToken) => {
 };
 
 export default simpleRequest;
-    
