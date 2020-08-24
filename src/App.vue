@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        <Print v-if="mode === 'print'"></Print>        
+        <Print v-if="mode === 'print'"></Print>
     </div>
 </template>
 
