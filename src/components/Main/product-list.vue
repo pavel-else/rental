@@ -104,6 +104,9 @@
 <style lang="sass" scoped>
 
 .product-list
+    width: 100%
+    max-width: 350px
+
     padding: 10px
 
     .table

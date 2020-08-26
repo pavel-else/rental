@@ -2,7 +2,7 @@
     <div class="order-list">
         <h3>В прокате <span>({{ length }})</span></h3>
 
-        <table cellspacing="0" class="table">
+        <table cellspacing="0" class="table order-list__table">
             <tr
                 class="table-tr"
                 v-for="order in ordersByCategory"
@@ -84,7 +84,6 @@
     import pause         from './functions/pause';
 
     import copy from '@/functions/copy';
-
 
     export default {
         components: {
@@ -364,9 +363,13 @@
 </script>
 
 <style lang="sass" scoped>
-    .order-list 
+    .order-list
+        width: 100%
         min-width: 400px
         padding: 10px
+
+        &__table
+            width: 100%
     
 
     .icon 

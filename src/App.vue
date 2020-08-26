@@ -6,22 +6,22 @@
                     <Loader />
                 </div>
 
-                <adm-panel class="adm-panel"></adm-panel>
+                <adm-panel class="adm-panel"/>
 
                 <div class="app__content">
-                   <router-view></router-view>
+                   <router-view/>
                 </div>
             </div>
         </div>
 
-        <Print v-if="mode === 'print'"></Print>
+        <Print v-if="mode === 'print'" />
     </div>
 </template>
 
-<script>    
-    import admPanel from './components/AdmPanel'
-    import Print from './components/Print/Print'
-    import Loader from './components/Loader/Loader'
+<script>
+    import admPanel from './components/AdmPanel';
+    import Print from './components/Print/Print';
+    import Loader from './components/Loader/Loader';
 
     export default {
         name: 'app',
@@ -44,7 +44,7 @@
                 this.$router.push('/#/login');
             }
         },
-        created() {        
+        created() {
             // Обновление таймеров
             this.$store.dispatch('startTimer');
         },
@@ -69,7 +69,7 @@
         justify-content: center;
         align-items: flex-start;
         background-color: #000;
-        color: rgba(255, 255, 255, 0.8);  
+        color: rgba(255, 255, 255, 0.8);
 
         &__wrap {
             width: 100%;
@@ -80,6 +80,7 @@
             padding: 10px 50px 0;
         }
         &__content {
+            max-width: 1024px;
             width: 100%;
             display: flex;
             flex-wrap: wrap;
@@ -104,9 +105,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100
-
-
+            z-index: 100;
         }
     }
 </style>
