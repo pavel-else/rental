@@ -1,9 +1,11 @@
 <template>
     <div class="totals">
         Pagination
-        <div v-for="i in list" :key="i">
-            <slot name="item"></slot>
-        </div>        
+              <v-pagination
+                v-model="page"
+                class="my-4"
+                :length="15"
+              ></v-pagination>
     </div>
 </template>
 <script>

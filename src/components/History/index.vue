@@ -33,7 +33,7 @@
                 <th>Стоимость</th>
             </tr>
 
-            <tr v-for="order in history.filter(filt)" :key="order.orderId" @click="onClick(order)">
+            <tr v-for="order in historyFilterSlice" :key="order.orderId" @click="onClick(order)">
                 <td style="vertical-align: middle">
                     <span class="active-sign" v-if="order.status === 'ACTIVE'"></span>
                 </td>
@@ -64,6 +64,12 @@
         </table>
         <div v-else>Здесь пока пусто..</div>
 
+        <Pagination
+            class="history__pagination"
+            v-model="page"
+            :length="paginationLength"
+        />
+
         <Dialog v-if="show" @close="onClose">
             <Details :order="order" @close="onClose" />
         </Dialog>
@@ -76,6 +82,7 @@
     import Details          from './Details';
     import Totals           from './Totals';
     import Dialog           from '@/components/Dialog';
+    import Pagination       from '@/elements/Pagination';
     import timeFormat       from '@/functions/timeFormat';
     import * as Time        from '@/functions/time';
     import isValidDate      from '@/functions/isValidDate';
@@ -84,7 +91,7 @@
     export default {
         name: 'History',
         components: {
-            Details, Totals, Dialog
+            Details, Totals, Dialog, Pagination,
         },
         created() {
             // set date range
@@ -108,6 +115,7 @@
                 order: {},
                 show: false,
                 filt: i => i,
+                page: 1,
             }
         },
         methods: {
@@ -115,15 +123,16 @@
                 return dayjs();
             },
             reloadHistory() {
-            this.$store.dispatch('multipleRequest', [
-                { 
-                    cmd: 'getHistorySlice', 
-                    value: { 
-                        dateStart: dayjs(this.dateStart).format('YYYY-MM-DD 00:00'), 
-                        dateEnd: dayjs(this.dateEnd).format('YYYY-MM-DD 23:59'),
-                    }
-                },
-            ]);
+                this.$store.dispatch('multipleRequest', [
+                    { 
+                        cmd: 'getHistorySlice', 
+                        value: { 
+                            dateStart: dayjs(this.dateStart).format('YYYY-MM-DD 00:00'), 
+                            dateEnd: dayjs(this.dateEnd).format('YYYY-MM-DD 23:59'),
+                        }
+                    },
+                ])
+                .then(() => { this.page = 1 });
             },
             totalBill(item) {
                 return +item.bill_rent + +item.bill_access - +item.sale;
@@ -215,11 +224,27 @@
             history() {
                 return this.$store.getters.history;
             },
+            historyFilter() {
+                return this.history.filter(this.filt);
+            },
+            historyFilterSlice() {
+                return this.historyFilter.slice((this.page - 1) * 10, this.page * 10);
+            },
             products() {
                 return this.$store.getters.products;
             },
             customers() {
                 return this.$store.getters.customers;
+            },
+            paginationLength() {
+                return this.historyFilter.length ? Math.round(this.historyFilter.length / 10) : 0;
+            }
+        },
+        watch: {
+            paginationLength(length) {
+                if (length <= this.page) {
+                    this.page = length;
+                }
             },
         },
 
@@ -258,7 +283,7 @@
     }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .history {
         h2 {
             margin-top: 50px;
@@ -301,6 +326,10 @@
             .product {
                 padding-bottom: 5px;
             }
+        }
+
+        &__pagination {
+            width: 320px;
         }
     }
     .history__totals {
