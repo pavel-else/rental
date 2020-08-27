@@ -65,6 +65,7 @@
         <div v-else>Здесь пока пусто..</div>
 
         <Pagination
+            v-if="paginationLength > 0"
             class="history__pagination"
             v-model="page"
             :length="paginationLength"
