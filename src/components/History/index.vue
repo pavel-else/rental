@@ -16,9 +16,8 @@
 
         <div class="history__filter">
             <input class="history__filter-search" placeholder="Начните вводить фамилию или название" @input="search()">
-            <input class="history__filter-date" type="date" v-model="dateStart" :max="dateEnd">
-            <input class="history__filter-date" type="date" v-model="dateEnd" :min="dateStart">
-            <button class="history__filter-button" @click="reloadHistory">Ok</button>
+            <input class="history__filter-date" type="date" v-model="dateStart" :max="dateEnd" @change="reloadHistory">
+            <input class="history__filter-date" type="date" v-model="dateEnd" :min="dateStart" @change="reloadHistory">
         </div>
 
         <h2>История заказов</h2>
