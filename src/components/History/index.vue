@@ -286,6 +286,8 @@
 
 <style lang="scss">
     .history {
+        width: 100%;
+
         h2 {
             margin-top: 50px;
         }
@@ -312,9 +314,12 @@
         }
 
         &__table {
+            width: 100%;
+            margin-bottom: 35px;
+
             td {
                 padding: 5px 15px;
-                vertical-align: top;              
+                vertical-align: top;
             }
             tr:not(:first-child):hover {
                 outline: 1px solid #333;
