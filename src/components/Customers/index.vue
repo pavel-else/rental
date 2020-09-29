@@ -38,7 +38,7 @@
             Dialog
         },
         beforeCreate() {
-            this.$store.dispatch('getCustomers')
+            // this.$store.dispatch('getCustomers')
         },
         data() {
             return {
@@ -66,7 +66,6 @@
         computed: {
             customers() {
                 const customers = copy(this.$store.getters.customers);
-                console.log("CUST", customers);
                 return customers.reduce((acc, item) => {
 
                     if (!item.phone || item.phone.length < 11) {
