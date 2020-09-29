@@ -16,29 +16,21 @@ export default {
     },
     mutations: {
         categories(state, categories) {
-            console.log('commit: categories', categories);
-
             state.categories = categories;
         },
         activeCategory(state, category) {
-            console.log('commit: activeCategory', category);
-
             state.activeCategory = category;
         },
         unsetCategories(state) {
-            console.log('commit: unsetCategories');
             state.categories = [];
         },
         unsetActiveCategories(state) {
-            console.log('commit: unsetActiveCategories');
             state.activeCategories = false;
         },
 
     },
     actions: {
         getCategories({ commit, getters }) {
-            console.log('dispatch: getCategories');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getCategories' }
@@ -55,13 +47,11 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
-
                     commit('categories', resp.data.categories);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
-                    console.log(err)
+                    console.log(err);
                     reject(err);
                 });
             });            

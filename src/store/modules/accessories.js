@@ -12,18 +12,14 @@ export default {
     },
     mutations: {
         accessories(state, accessories) {
-            console.log('commit: accessories', accessories);
             state.accessories = accessories;
         },
         unsetAccessories(state) {
-            console.log('commit: unsetAccessories');
             state.accessories = [];
         },
     },
     actions: {
         getAccessories({ commit, getters }) {
-            console.log('dispatch: getAccessories');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getAccessories' }
@@ -40,12 +36,11 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp);
                     commit('accessories', resp.data.accessories);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
-                    console.log(err)
+                    console.log(err);
                     reject(err);
                 })
             });            

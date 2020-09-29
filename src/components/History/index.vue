@@ -127,7 +127,7 @@
                     { 
                         cmd: 'getHistorySlice', 
                         value: { 
-                            dateStart: dayjs(this.dateStart).format('YYYY-MM-DD 00:00'), 
+                            dateStart: dayjs(this.dateStart).format('YYYY-MM-DD 00:00'),
                             dateEnd: dayjs(this.dateEnd).format('YYYY-MM-DD 23:59'),
                         }
                     },
@@ -209,7 +209,7 @@
                     return acc;
                 }, 0);
 
-                return bill;                
+                return bill;
             },
             getStatus(order) {
                 const status = order.status;
@@ -307,7 +307,7 @@
             ::-webkit-calendar-picker-indicator {
                 color: transparent;
                 opacity: 1;
-                background: url('https://c7.hotpng.com/preview/590/31/787/computer-icons-mcmahon-ryan-child-advocacy-center-calendar-clip-art-restart.jpg') no-repeat center;
+                background: url('/images/calendar-alt-solid.svg') no-repeat center;
                 background-size: contain;
             }
         }

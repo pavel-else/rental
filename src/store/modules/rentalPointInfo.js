@@ -18,13 +18,11 @@ export default {
     },
     mutations: {
         rentalPointInfo(state, rentalPointInfo) {
-            console.log('commit: rentalPointInfo', rentalPointInfo);
             for (let i in rentalPointInfo) {
                 state[i] = rentalPointInfo[i];
             }
-        },        
+        },
         unsetRentalPointInfo(state) {
-            console.log('commit: unsetRentalPointInfo');            
             state.name = null;
             state.address = null;
             state.open = null;
@@ -36,8 +34,6 @@ export default {
     },
     actions: {
         getRentalPointInfo({ commit, getters }) {
-            console.log('dispatch: getRentalPointInfo');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getRentalPointInfo' },
@@ -54,9 +50,8 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
                     commit('rentalPointInfo', resp.data.rental_point_info);
-                    resolve(resp);                        
+                    resolve(resp);
                 })
                 .catch(err => {
                     console.log(err)
@@ -65,7 +60,6 @@ export default {
             });
         },
         setRentalPointInfo({ commit, getters }, rentalPointInfo) {
-            console.log('dispatch: setRentalPointInfo', rentalPointInfo);
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
@@ -73,10 +67,11 @@ export default {
                     data: {
                         queue: [{ cmd: 'setRentalPointInfo', value: rentalPointInfo }],
                         token: localStorage.getItem('user-token')
-                    },                 
+                    },
                 })
                 .then(r => {
                     console.log(r);
+                    // TODO: wtf?
                     commit('rentalPointInfo', rentalPointInfo);
                 })
                 .catch(err => {

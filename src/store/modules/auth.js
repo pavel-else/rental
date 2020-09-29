@@ -32,8 +32,6 @@ export default {
     },
     actions: {
         authRequest({ getters, commit }, user) {
-            console.log('authRequest');
-
             return new Promise((resolve, reject) => {
                 commit('authRequest');
 
@@ -46,7 +44,6 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
                     const token = resp.data.token;
 
                     if (token) {
@@ -54,11 +51,11 @@ export default {
                         commit('authSuccess', token);
                         localStorage.setItem('user-token', token);
                     }
-                    resolve(resp);                        
+                    resolve(resp);
                 })
                 .catch(err => {
                     console.log(err)
-                    commit('authError', err);                  
+                    commit('authError', err);
                     localStorage.removeItem('user-token');
                     reject(err);
                 });
@@ -106,7 +103,7 @@ export default {
         //             resolve(resp);
         //         })
         //         .catch(err => {
-        //             commit('AUTH_ERROR', err);                  
+        //             commit('AUTH_ERROR', err);
         //             localStorage.removeItem('user-token');
         //             reject(err);
         //         });

@@ -69,11 +69,10 @@ const store = new Vuex.Store({
                     return [{ cmd: cmds.cmd, value: cmds.value }]
                 }
 
-                return cmds
+                return cmds;
             }
 
             const sendToServer = (queue) => {
-                
                 const url = this.getters.url
 
                 console.log('front --> back', queue)
@@ -85,7 +84,7 @@ const store = new Vuex.Store({
                         queue,
                         token: localStorage.getItem('user-token')
                     },
-                    config,                    
+                    config,
                 })
                 .catch(e => {
                     console.log(e)

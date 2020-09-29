@@ -14,26 +14,20 @@ export default {
     },
     mutations: {
         subOrders(state, subOrders) {
-            console.log('commit: subOrders', subOrders);
             state.subOrders = subOrders;
         },
         activeSubOrders(state, activeSubOrders) {
-            console.log('commit: activeSubOrders', activeSubOrders);
             state.activeSubOrders = activeSubOrders;
         },        
         unsetActiveSubOrders(state) {
-            console.log('commit: unsetActiveSubOrders');
             state.activeSubOrders = [];
         },        
         unsetSubOrders(state) {
-            console.log('commit: unsetSubOrders');
             state.subOrders = [];
         },
     },
     actions: {
         getSubOrders({ commit, getters }) {
-            console.log('dispatch: getSubOrders');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getSubOrders' }
@@ -50,9 +44,8 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
                     commit('subOrders', resp.data.sub_orders);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)
@@ -61,8 +54,6 @@ export default {
             });
         },
         getActiveSubOrders({ commit, getters }) {
-            console.log('dispatch: getActiveSubOrders');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getActiveSubOrders' }
@@ -79,9 +70,8 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
                     commit('activeSubOrders', resp.data.active_sub_orders);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)
@@ -90,8 +80,6 @@ export default {
             });
         },
         changeSubOrders({ getters }, subOrders) {
-            console.log('dispatch: changeSubOrders');
-
             return new Promise((resolve, reject) => {
                 const queue = subOrders.map(i => {
                     return { cmd: 'changeSubOrder', value: i };
@@ -110,10 +98,9 @@ export default {
                     },
                     method: 'POST',
                 })
-                .then(resp => {
-                    console.log(resp)
+                .then(() => {
                     // commit('subOrders', resp.data.sub_orders);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)
@@ -122,8 +109,6 @@ export default {
             }); 
         },
         changeSubOrder({ getters }, subOrder) {
-            console.log('dispatch: changeSubOrder', subOrder);
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'changeSubOrder', value: subOrder },
@@ -141,9 +126,8 @@ export default {
                     },
                     method: 'POST',
                 })
-                .then(resp => {
-                    console.log(resp)
-                    resolve(true);                        
+                .then(() => {
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)

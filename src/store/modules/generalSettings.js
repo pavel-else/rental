@@ -25,14 +25,11 @@ export default {
                 return acc;
             }, []);
 
-            console.log('commit: generalSettings', settings);
             for (let i in settings) {
                 state[i] = settings[i];
             }
         },
         unsetGeneralSettings(state) {
-            console.log('commit: unsetGeneralSettings'); 
-
             state.rent_min_time = 0; 
             state.rent_round_bill = 0;
             state.lastOrderID = null;
@@ -44,8 +41,6 @@ export default {
     },
     actions: {
         getGeneralSettings({ commit, getters }) {
-            console.log('dispatch: getGeneralSettings');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getGeneralSettings' }
@@ -62,10 +57,8 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
-
                     commit('generalSettings', resp.data.general_settings);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)
@@ -74,8 +67,6 @@ export default {
             });            
         },
         setGeneralSettings({ commit, getters }, settings) {
-            console.log('dispatch: setGeneralSettings', settings);
-
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
@@ -86,10 +77,9 @@ export default {
                             { cmd: 'getGeneralSettings'}
                         ],
                         token: localStorage.getItem('user-token')
-                    },                 
+                    },
                 })
                 .then(r => {
-                    console.log(r);
                     commit('generalSettings', r.data.general_settings);
                 })
                 .catch(err => {

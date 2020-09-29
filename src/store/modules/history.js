@@ -22,8 +22,6 @@ export default {
     },
     actions: {
         getHistory({ commit, getters }) {
-            console.log('dispatch: getHistory');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getHistory' }
@@ -40,19 +38,16 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
-
                     commit('history', resp.data.history);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)
                     reject(err);
                 });
-            });            
+            });
         },
         saveToStateHistorySlice({ commit }, slice) {
-            console.time("hist")
             const format = (slice) => {
                 // С сервера данные приходят упорядоченными по дате открытия (startDate)
                 // Стоит задача  1. Сохранить этот порядок. 2. Сгруппировать сабордеры в общем ордере
@@ -77,7 +72,6 @@ export default {
                 return historyArr;
             };
             commit('history', format(slice));
-            console.timeEnd("hist")
         },
     }
 }

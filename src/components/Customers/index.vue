@@ -48,15 +48,15 @@
         },
         methods: {
             onClick(customer) {
-                this.customer = customer
-                this.show = true
+                this.customer = customer;
+                this.show = true;
             },
             addCustomer() {
                 this.show = true;
                 this.customer = {};
             },
             onClose() {
-                this.show = false
+                this.show = false;
             },
             preparePhone() {
                 // const phone = new Inputmask("+7 (999) 999-99-99");
@@ -66,6 +66,7 @@
         computed: {
             customers() {
                 const customers = copy(this.$store.getters.customers);
+                console.log("CUST", customers);
                 return customers.reduce((acc, item) => {
 
                     if (!item.phone || item.phone.length < 11) {

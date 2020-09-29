@@ -21,12 +21,10 @@ export default {
                 ];
 
                 dispatch('multipleRequest', queue);
-            }, intervalInMs));          
+            }, intervalInMs));
         },
         stopAutoUpdateOrders({ commit }) {
-            console.log('dispatch: stopAutoUpdateOrders');
-            
-            commit('stopAutoUpdateOrders');          
+            commit('stopAutoUpdateOrders');
         },
     }
 }

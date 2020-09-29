@@ -14,26 +14,20 @@ export default {
     },
     mutations: {
         orders(state, orders) {
-            console.log('commit: orders', orders);
             state.orders = orders;
         },
         activeOrders(state, activeOrders) {
-            console.log('commit: activeOrders', activeOrders);
             state.activeOrders = activeOrders;
         },
         unsetOrders(state) {
-            console.log('commit: unsetOrders');
             state.orders = [];
         },
         unsetActiveOrders(state) {
-            console.log('commit: unsetActiveOrders');
             state.activeOrders = [];
         },
     },
     actions: {
         getOrders({ commit, getters }) {
-            console.log('dispatch: getOrders');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getOrders' }
@@ -50,9 +44,8 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
                     commit('orders', resp.data.orders);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)
@@ -61,8 +54,6 @@ export default {
             });
         },
         getActiveOrders({ commit, getters }) {
-            console.log('dispatch: getActiveOrders');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getActiveOrders'}
@@ -79,9 +70,8 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
                     commit('activeOrders', resp.data.active_orders);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)
@@ -90,8 +80,6 @@ export default {
             });
         },
         changeOrder({ commit, getters }, order) {
-            console.log('dispatch: changeOrder', order);
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'changeOrder', value: order },
@@ -110,9 +98,8 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
                     commit('orders', resp.data.orders);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)

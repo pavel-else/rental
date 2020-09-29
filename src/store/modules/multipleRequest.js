@@ -5,7 +5,7 @@ export default {
         initCmds: []
     },
     actions: {
-        multipleRequest({ commit, getters, dispatch }, queue) {
+        multipleRequest({ commit, dispatch }, queue) {
             if (!queue || !queue.map) {
                 console.warn('multipleRequest error! Queue is not defined or is not array!', queue);
             }
@@ -36,14 +36,11 @@ export default {
 
                 }
             };
-
-            console.log('dispatch: multipleRequest', queue);
-
             commit('processing', true);
             commit('errors', null);
 
             return new Promise((resolve, reject) => {
-                const url = getters.url;
+                const url = process.env.VUE_APP_BACKEND_API_URL;
                 const token = localStorage.getItem('user-token');
 
                 axios({ 
@@ -55,10 +52,9 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp);
                     setToState(resp.data);
                     commit('processing', false);
-                    resolve(true);                        
+                    resolve(true);
                 })
                 .catch(err => {
                     console.log(err)

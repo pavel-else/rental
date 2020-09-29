@@ -21,8 +21,6 @@ export default {
     },
     actions: {
         initStore({ dispatch }) {
-            console.log('dispatch: initStore');
-
             return new Promise((resolve) => {
                 dispatch('multipleRequest', [
                     { cmd: 'getActiveOrders' },
@@ -37,12 +35,10 @@ export default {
                     { cmd: 'getRepairs' },
                     { cmd: 'getRepairTypes' },
                 ])
-                .then(() => resolve());                
+                .then(() => resolve());
             });
         },
         unsetStore({ commit }) {
-            console.log('dispatch: unsetStore');
-
             commit('unsetOrders');
             commit('unsetActiveOrders');
             commit('unsetAccessories');

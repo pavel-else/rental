@@ -42,8 +42,6 @@ export default {
     },
     mutations: {
         customers(state, customers) {
-            console.log('commit: customers', customers);
-
             state.customers = customers;
 
             const prepare = (customers = []) => {
@@ -59,14 +57,11 @@ export default {
             state.newCustomers = prepare(customers);
         },
         unsetCustomers(state) {
-            console.log('commit: unsetCustomers');
             state.customers = [];
         },
     },
     actions: {
         getCustomers({ commit, getters }) {
-            console.log('dispatch: getCustomers');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getCustomers' }
@@ -83,20 +78,15 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
-
                     commit('customers', resp.data.customers);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
-                    console.log(err)
                     reject(err);
                 });
-            });            
+            });
         },
         setCustomer({ commit, getters }, customer) {
-            console.log('dispatch: setCustomer', customer);
-
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
@@ -110,11 +100,9 @@ export default {
                     },                 
                 })
                 .then(r => {
-                    console.log(r);
                     commit('customers', r.data.customers);
                 })
                 .catch(err => {
-                    console.log(err);
                     reject(err);
                 });
             });

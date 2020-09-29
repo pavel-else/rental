@@ -15,26 +15,20 @@ export default {
     },
     mutations: {
         repairs(state, repairs) {
-            console.log('commit: repairs', repairs);
             state.repairs = repairs;
         },
         repairTypes(state, repairTypes) {
-            console.log('commit: repairTypes', repairTypes);
             state.repairTypes = repairTypes;
         },
         unsetRepairs(state) {
-            console.log('commit: unsetRepairs');
             state.repairs = [];
         },
         unsetRepairTypes(state) {
-            console.log('commit: unsetRepairTypes');
             state.repairTypes = [];
         },
     },
     actions: {
         getRepairs({ commit, getters }) {
-            console.log('dispatch: getRepairs');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'getRepairs' },
@@ -53,11 +47,10 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp)
                     commit('repairs', resp.data.repairs);
                     commit('repairTypes', resp.data.repair_types);
                     commit('products', resp.data.products);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)
@@ -66,8 +59,6 @@ export default {
             });
         },
         setRepair({ commit, getters }, repair) {
-            console.log('dispatch: setRepair');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'setRepair', value: repair },
@@ -87,7 +78,6 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp);
                     commit('repairs', resp.data.repairs);
                     commit('repairTypes', resp.data.repair_types);
                     commit('products', resp.data.products);
@@ -100,8 +90,6 @@ export default {
             });
         },
         stopRepair({ commit, getters }, repair) {
-            console.log('dispatch: stopRepair');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'stopRepair', value: repair },
@@ -121,11 +109,10 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp);
                     commit('repairs', resp.data.repairs);
                     commit('repairTypes', resp.data.repair_types);
                     commit('products', resp.data.products);
-                    resolve(resp);                        
+                    resolve(resp);
                 }).
                 catch(err => {
                     console.log(err)
@@ -134,8 +121,6 @@ export default {
             });
         },
         setRepairType({ commit, getters }, repairType) {
-            console.log('dispatch: setRepairType', repairType);
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'setRepairType', value: repairType },
@@ -153,9 +138,8 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp);
                     commit('repairTypes', resp.data.repair_types);
-                    resolve(resp);                        
+                    resolve(resp);
                 }).
                 catch(err => {
                     console.log(err)
@@ -164,8 +148,6 @@ export default {
             });
         },
         deleteRepairType({ commit, getters }, repairTypeId) {
-            console.log('dispatch: deleteRepairType', repairTypeId);
-
             return new Promise((resolve, reject) => {
                 const queue = [
                     { cmd: 'deleteRepairType', value: repairTypeId },
@@ -183,9 +165,8 @@ export default {
                     method: 'POST',
                 })
                 .then(resp => {
-                    console.log(resp);
                     commit('repairTypes', resp.data.repair_types);
-                    resolve(resp);                        
+                    resolve(resp);
                 }).
                 catch(err => {
                     console.log(err)

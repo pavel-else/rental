@@ -35,14 +35,11 @@ export default {
             state.newProducts = prepare(products);
         },
         unsetProducts(state) {
-            console.log('commit: unsetProducts');
             state.products = [];
         },
     },
     actions: {
         getProducts({ commit, getters }) {
-            console.log('dispatch: getProducts');
-
             return new Promise((resolve, reject) => {
                 const queue = [
                         { cmd: 'getProducts'},
@@ -61,11 +58,10 @@ export default {
                     method: 'POST',
                 })
                 .then(r => {
-                    console.log(r);
                     commit('rentalPointInfo', r.data.rental_point_info);
                     commit('tariffs', r.data.tariffs);
                     commit('products', r.data.products);
-                    resolve(true);                        
+                    resolve(true);
                 }).
                 catch(err => {
                     console.log(err)
@@ -74,8 +70,6 @@ export default {
             });            
         },
         setProduct({ commit, getters }, product) {
-            console.log('dispatch: setProduct', product);
-
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
@@ -88,10 +82,9 @@ export default {
                             { cmd: 'getRentalPointInfo'}
                         ],
                         token: localStorage.getItem('user-token')
-                    },                 
+                    },
                 })
                 .then(r => {
-                    console.log(r);
                     commit('rentalPointInfo', r.data.rental_point_info);
                     commit('tariffs', r.data.tariffs);
                     commit('products', r.data.products);
@@ -103,8 +96,6 @@ export default {
             });
         },
         deleteProduct({ commit, getters }, id_rent) {
-            console.log('dispatch: deleteProduct', id_rent);
-
             return new Promise((resolve, reject) => {
                 axios({
                     method: 'post',
@@ -117,10 +108,9 @@ export default {
                             { cmd: 'getRentalPointInfo'},
                         ],
                         token: localStorage.getItem('user-token')
-                    },                 
+                    },
                 })
                 .then(r => {
-                    console.log(r);
                     commit('rentalPointInfo', r.data.rental_point_info);
                     commit('tariffs', r.data.tariffs);
                     commit('products', r.data.products);
