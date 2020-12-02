@@ -23,6 +23,8 @@
     import Print from './components/Print/Print';
     import Loader from './components/Loader/Loader';
 
+    import Request from '@/services/Request/RequestManager';
+
     export default {
         name: 'app',
         components: {
@@ -30,7 +32,11 @@
             Print,
             Loader
         },
-        beforeCreate() {
+        async beforeCreate() {
+            const R = new Request();
+            const result = await R.getProducts();
+            console.log("RRR", result);
+
             if (this.$store.getters.isAuthenticated) {
                 this.$store.dispatch('initStore')
                 .then(() => {

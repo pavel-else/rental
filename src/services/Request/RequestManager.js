@@ -1,5 +1,9 @@
 import axios from 'axios';
-import * as Test from './methods/test';
+
+const httpClient = axios.create({
+  baseURL: process.env.VUE_APP_BACKEND_API_URL,
+  // axios.defaults.headers.common['Authorization'] = process.env.VUE_APP_TOKEN,
+});
 
 export default class {
   baseUrl = '';
@@ -7,9 +11,6 @@ export default class {
 
   constructor(url = process.env.VUE_APP_BACKEND_API_URL) {
     this.baseUrl = url;
-    this.httpClient = axios.create({
-      baseURL: url,
-    });
   }
 
   getBaseUrl() {
@@ -20,5 +21,8 @@ export default class {
     this.baseUrl = url;
   }
 
-  test = Test.test(this.httpClient);
+
+  async getProducts() {
+    return await httpClient.get('/api/products');
+  }
 }

@@ -10,8 +10,6 @@ describe('RequestManager', () => {
     const url1 = 'https://url1.com';
     Request.setBaseUrl(url1);
     expect(Request.getBaseUrl()).toBe(url1);
-    expect(Request.httpClient).toBeTruthy();
-    expect(Request.httpClient.get).toEqual({});
   });
 
   it('test method', async () => {
@@ -21,6 +19,6 @@ describe('RequestManager', () => {
     const result = await Request.test(text);
     const url = process.env.VUE_APP_BACKEND_API_URL;
 
-    // expect(result).toEqual({ text, url });
+    expect(result).toEqual({ text, url });
   });
 });
