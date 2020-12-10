@@ -36,6 +36,8 @@
       axios.defaults.headers.common['Authorization'] = process.env.VUE_APP_TOKEN;
 
       this.$store.dispatch('getProducts');
+      this.$store.dispatch('getOrders');
+      this.$store.dispatch('getSubOrders');
 
       if (!this.$store.getters.isAuthenticated) {
         this.$router.push('/#/login');
@@ -44,7 +46,7 @@
 
 
 
-      await this.$store.dispatch('initStore');
+      // await this.$store.dispatch('initStore');
 
       // Включение автообновления списка ордеров
       const time = this.$store.getters.generalSettings.timeToUpdateMonitor;

@@ -1,137 +1,137 @@
 <template>
-    <div class="product-list">
-        <h3>
-            {{ activeCategoryName }}<span v-if="products.length >= 0"> ({{ products.length }})</span>
-        </h3>
-        <table class="table">
-            <tr
-                v-for="item in products"
-                :key="item.id_rent"
-                @click="onClick(item)"
-                class="products__product"
-            >
-                <td
-                    class="products__td products__td--icon"
-                    @mousemove="openPhoto(item)"
-                    @mouseout="closePhoto()"
-                >
-                    <Bike :_color="item.color" :_type="+item.type"></Bike>
-                </td>
+  <div class="product-list">
+    <h3>
+      {{ activeCategoryName }}<span v-if="products.length >= 0"> ({{ products.length }})</span>
+    </h3>
+    <table class="table">
+      <tr
+        v-for="item in products"
+        :key="item.id_rent"
+        @click="onClick(item)"
+        class="products__product"
+      >
+        <td
+          class="products__td products__td--icon"
+          @mousemove="openPhoto(item)"
+          @mouseout="closePhoto()"
+        >
+          <Bike :_color="item.color" :_type="+item.type"></Bike>
+        </td>
 
-                <td class="products__td">
-                    {{ item.name }}
-                    <span v-if="item.size && item.category != 1">({{ item.size }})</span>
-                </td>
-            </tr>
-        </table>
+        <td class="products__td">
+          {{ item.name }}
+          <span v-if="item.size && item.category != 1">({{ item.size }})</span>
+        </td>
+      </tr>
+    </table>
 
-        <Photo
-            class="products__photo"
-            v-if="product.id_rent"
-            :product="product"
-        ></Photo>
+    <Photo
+      class="products__photo"
+      v-if="product.id_rent"
+      :product="product"
+    ></Photo>
 
-    </div>
+  </div>
 </template>
 
 <script>
-    import Bike   from '../Bike'
-    import Photo  from '../Photo'
+  import Bike   from '../Bike'
+  import Photo  from '../Photo'
 
-    export default {
-        components: {
-            Bike,
-            Photo,
-        },
+  export default {
+    components: {
+      Bike,
+      Photo,
+    },
 
-        data() {
-            return {
-                modal: false,
-                product: {},
-            }
-        },
-        methods: {
-            onClick(item) {
-                this.$emit('addOrder', item)
-            },
-            openPhoto(product) {
-                this.modal = true
-                this.product = product
-            },
-            closePhoto() {
-                this.modal = false
-                this.product = {}
-            },
-        },
-        computed: {
-            // Возвращает список всех активных велосипедов, не находящихся в прокате
-            // не выключенных из списка в настройках товара и не удаленных
-            // и не находящихся в ремонте
-            products() {
-                const isRent = (productId) => {
-                    const activeSubOrders = this.$store.getters.activeSubOrders;
-                    return activeSubOrders.find(item => item.product_id == productId);
-                };
-                const isBroken = (productId) => {
-                    const repairs = this.$store.getters.repairs;
-                    const filter = repairs ? repairs.filter(i => i.product_id === productId) : [];
-                    const result = filter.find(i => !i.end_time);
-                    return !!result;
-                };
-                const belongsActiveCategory = (product) => {
-                    const activeCategory = this.$store.getters.activeCategory;
+    data() {
+      return {
+        modal: false,
+        product: {},
+      }
+    },
+    methods: {
+      onClick(item) {
+        this.$emit('addOrder', item)
+      },
+      openPhoto(product) {
+        this.modal = true
+        this.product = product
+      },
+      closePhoto() {
+        this.modal = false
+        this.product = {}
+      },
+    },
+    computed: {
+      // Возвращает список всех активных велосипедов, не находящихся в прокате
+      // не выключенных из списка в настройках товара и не удаленных
+      // и не находящихся в ремонте
+      products() {
+        const isRent = (productId) => {
+          const activeSubOrders = this.$store.getters.activeSubOrders;
+          return activeSubOrders.find(item => item.product_id == productId);
+        };
+        const isBroken = (productId) => {
+          const repairs = this.$store.getters.repairs;
+          const filter = repairs ? repairs.filter(i => i.product_id === productId) : [];
+          const result = filter.find(i => !i.end_time);
+          return !!result;
+        };
+        const belongsActiveCategory = (product) => {
+          const activeCategory = this.$store.getters.activeCategory;
 
-                    return activeCategory ? activeCategory.id_rent == product.category : true;
-                };
+          return activeCategory ? activeCategory.id_rent == product.category : true;
+        };
 
-                const list = this.$store.getters.products;
+        const list = this.$store.getters.products;
 
-                return list ? list.filter(item => {
-                    return !isRent(item.id_rent)          // не находится в прокате
-                        && item.status === 'active'     // не отключен в настройках товара и не удален
-                        && !isBroken(item.id_rent)     // не находится в ремонте
-                        && belongsActiveCategory(item) // и принадлежит активной категории
-                }) : [];
-            },
-            activeCategoryName() {
-                const activeCategory = this.$store.getters.activeCategory;
-                return activeCategory ? activeCategory.name : 'Все';
-            }
-        },
-    };
+        return list ? list.filter(item => {
+          return !isRent(item.id_rent)          // не находится в прокате
+            && item.status === 'active'     // не отключен в настройках товара и не удален
+            && !isBroken(item.id_rent)     // не находится в ремонте
+            && belongsActiveCategory(item) // и принадлежит активной категории
+        }) : [];
+      },
+      activeCategoryName() {
+        const activeCategory = this.$store.getters.activeCategory;
+        return activeCategory ? activeCategory.name : 'Все';
+      }
+    },
+  };
 </script>
 
 <style lang="sass" scoped>
 
 .product-list
-    width: 100%
-    max-width: 350px
+  width: 100%
+  max-width: 350px
 
-    padding: 10px
+  padding: 10px
 
-    .table
-        border-collapse: collapse
-    
-    .products__td 
-        padding: 0 0 10px 5px
-    
-    .products__product
-        box-sizing: border-box
+  .table
+    border-collapse: collapse
+  
+  .products__td 
+    padding: 0 0 10px 5px
+  
+  .products__product
+    box-sizing: border-box
 
-    .products__product:hover
-        cursor: pointer
-        color: #fff
+  .products__product:hover
+    cursor: pointer
+    color: #fff
 
-        text-shadow: 0 0 1px #fff
+    text-shadow: 0 0 1px #fff
 
 
-    .products__photo
-        position: fixed
-        top: calc(50% - 160px)
-        left: calc(50% - 240px)
-        width: 480px
-        height: 320px
-        z-index: 10
+  .products__photo
+    position: fixed
+    top: calc(50% - 160px)
+    left: calc(50% - 240px)
+    width: 480px
+    height: 320px
+    z-index: 10
 
-    
+  
 </style>
