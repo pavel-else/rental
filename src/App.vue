@@ -9,7 +9,7 @@
         <adm-panel class="adm-panel"/>
 
         <div class="app__content">
-           <router-view/>
+          <router-view/>
         </div>
       </div>
     </div>
@@ -35,11 +35,7 @@
       axios.defaults.baseURL = process.env.VUE_APP_BACKEND_API_URL;
       axios.defaults.headers.common['Authorization'] = process.env.VUE_APP_TOKEN;
 
-        axios({
-          method: 'GET',
-          url: '/api/products',
-          data: {},
-        });
+      this.$store.dispatch('getProducts');
 
       if (!this.$store.getters.isAuthenticated) {
         this.$router.push('/#/login');

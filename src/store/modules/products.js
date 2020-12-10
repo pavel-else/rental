@@ -11,12 +11,6 @@ export default {
         newProducts(state) {
             return state.newProducts;
         },
-        // productNameById(state) {
-        //     return product_id => {
-        //         const product = state.products.find(i => i.id_rent === product_id);
-        //         return product ? product.name : '';
-        //     };
-        // }
     },
     mutations: {
         products(state, products) {
@@ -39,35 +33,12 @@ export default {
         },
     },
     actions: {
-        getProducts({ commit, getters }) {
-            return new Promise((resolve, reject) => {
-                const queue = [
-                        { cmd: 'getProducts'},
-                        { cmd: 'getTariffs'},
-                        { cmd: 'getRentalPointInfo'}
-                ];
-                const url = getters.url;
-                const token = localStorage.getItem('user-token');
-
-                axios({ 
-                    url,
-                    data: {
-                        queue,
-                        token
-                    },
-                    method: 'POST',
-                })
-                .then(r => {
-                    commit('rentalPointInfo', r.data.rental_point_info);
-                    commit('tariffs', r.data.tariffs);
-                    commit('products', r.data.products);
-                    resolve(true);
-                }).
-                catch(err => {
-                    console.log(err)
-                    reject(err);
-                })
-            });            
+        async getProducts({ commit }) {
+            const response = await axios.get('/api/products');
+            
+            if (response.data) {
+                commit('products', response.data);
+            }
         },
         setProduct({ commit, getters }, product) {
             return new Promise((resolve, reject) => {
