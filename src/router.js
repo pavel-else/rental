@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 
-import Main              from '@/components/Main';
 import History           from '@/components/History';
 import Customers         from '@/components/Customers';
 
@@ -43,9 +42,9 @@ export default new Router({
     routes: [
         {
             path: '/',
-            component: Main,
+            component: () => import('@/views/Main'),
             beforeEnter: ifAuthenticated,
-        },        
+        },
         {
             path: '/test',
             component: Test,

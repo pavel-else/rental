@@ -36,17 +36,9 @@
       axios.defaults.headers.common['Authorization'] = process.env.VUE_APP_TOKEN;
 
         axios({
-          method: 'POST',
-          url: '',
-          data: {
-            token: 'e7aea113bde05e880e379398a6d104b8',
-            queue: [
-              {
-                cmd: 'ping',
-                value: '',
-              },
-            ],
-          },
+          method: 'GET',
+          url: '/api/products',
+          data: {},
         });
 
       if (!this.$store.getters.isAuthenticated) {
