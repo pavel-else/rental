@@ -51,7 +51,7 @@ export default {
       const m = duration.minutes();
       const s = duration.seconds();
 
-      return `${D} ${h}:${m}:${s}`;
+      return `${D} д ${h}:${m}:${s}`;
     }
   },
 };
@@ -72,6 +72,13 @@ export default {
 }
 
 .sub-order {
+  min-height: 25px;
   padding: 5px 10px;
+  display: flex;
+  align-items: center;
+
+  &__product {
+    width: 200px;
+  }
 }
 </style>
