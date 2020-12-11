@@ -5,6 +5,7 @@
       <template v-for="subOrder in subOrders">
         <div class="order-template__sub-order sub-order" :key="subOrder.id_rent">
           <div class="sub-order__product">{{ getProductName(subOrder.product_id) }}</div>
+          <div class="sub-order__duration">{{ getDuration(subOrder) | time }}</div>
         </div>
       </template>
     </div>
@@ -12,28 +13,48 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      order: Object,
-    },
-    methods: {
-      getProductName(productId) {
-        const product = this.products.find((i) => i.id_rent === productId);
+import dayjs from 'dayjs';
 
-        return product ? product.name : '';
-      },
-    },
+export default {
+  props: {
+    order: Object,
+  },
+  methods: {
+    getProductName(productId) {
+      const product = this.products.find((i) => i.id_rent === productId);
 
-    computed: {
-      subOrders() {
-        return this.$store.getters.subOrders
-          .filter((subOrder) => subOrder.order_id === this.order.id_rent);
-      },
-      products() {
-        return this.$store.getters.products;
-      },
+      return product ? product.name : '';
     },
-  };
+    getDuration(subOrder) {
+      const now = new dayjs();
+      const diff = now.diff(this.startTime) - subOrder.pause_time;
+      return dayjs.duration(diff);
+    },
+  },
+
+  computed: {
+    startTime() {
+      return new dayjs(this.order.start_time);
+    },
+    subOrders() {
+      return this.$store.getters.subOrders
+        .filter((subOrder) => subOrder.order_id === this.order.id_rent);
+    },
+    products() {
+      return this.$store.getters.products;
+    },
+  },
+  filters: {
+    time(duration) {
+      const D = duration.days();
+      const h = duration.hours();
+      const m = duration.minutes();
+      const s = duration.seconds();
+
+      return `${D} ${h}:${m}:${s}`;
+    }
+  },
+};
 </script>
 
 <style lang="scss" scoped>
