@@ -6,6 +6,7 @@
         <div class="order-template__sub-order sub-order" :key="subOrder.id_rent">
           <div class="sub-order__product">{{ getProductName(subOrder.product_id) }}</div>
           <div class="sub-order__duration">{{ getDuration(subOrder) | time }}</div>
+          <div class="sub-order__bill">{{ getBill(subOrder) | money }}</div>
         </div>
       </template>
     </div>
@@ -14,6 +15,7 @@
 
 <script>
 import dayjs from 'dayjs';
+import getBill from '@/functions/getBill';
 
 export default {
   props: {
@@ -29,6 +31,9 @@ export default {
       const now = new dayjs();
       const diff = now.diff(this.startTime) - subOrder.pause_time;
       return dayjs.duration(diff);
+    },
+    getBill(subOrder) {
+      return getBill(subOrder.tariff_id, this.getDuration(subOrder));
     },
   },
 
@@ -52,7 +57,10 @@ export default {
       const s = duration.seconds();
 
       return `${D} д ${h}:${m}:${s}`;
-    }
+    },
+    money(num) {
+      return `${num} р.`;
+    },
   },
 };
 </script>
@@ -79,6 +87,9 @@ export default {
 
   &__product {
     width: 200px;
+  }
+  &__duration {
+    width: 100px;
   }
 }
 </style>

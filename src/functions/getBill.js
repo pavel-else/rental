@@ -1,6 +1,6 @@
 import store from "../store"
 
-export default  function getBill(tariff_id, time /*ms*/) {
+export default function getBill(tariff_id, time /*ms*/) {
     if (!tariff_id || !time) {
         return 0
     }
@@ -26,14 +26,13 @@ export default  function getBill(tariff_id, time /*ms*/) {
 
         // Порог минималки, (30 min)
         // const minTime = store.getters.options.rent_min_time 
-        const minTime = store.getters.generalSettings.rent_min_time 
+        const minTime = store.getters.generalSettings.rent_min_time || 0
         // расчасовка
         const hh = tariff._h_h
         // Последний час проката расчасовки
         let last_h = +tariff._h_h[0]
         // Максимальная стоимость. Если не указана, равна +бесконечности
         const h_max = tariff._h_max > 0 ? tariff._h_max : Infinity
-        
 
         if (time < 0) {
             return 0
@@ -62,7 +61,7 @@ export default  function getBill(tariff_id, time /*ms*/) {
             result = tariff._h_min
         }
             
-        return result           
+        return result
     }
 
     const d = (tariff, time) => {
