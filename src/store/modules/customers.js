@@ -2,110 +2,76 @@ import axios from 'axios';
 import isValidDate from '@/functions/isValidDate';
 
 export default {
-    state: {
-        customers: [],
-        newCustomers: {},
+  state: {
+    customers: [],
+  },
+  getters: {
+    customers(state) {
+      return state.customers;
     },
-    getters: {
-        customers(state) {
-            return state.customers;
-        },
-        newCustomers(state) {
-            return state.newCustomers;
-        },
-        customerById(state) {
-            return customer_id => {
-                const customer = state.customers.find(i => i.id_rent === customer_id);
-                return customer;
-            };
-        },
-        lastCustomer(state) {
-            const lastCustomer = state.customers.reduce((acc, item) => {
-                if (acc === null) {
-                    acc = item;
-                }
-
-                if (!isValidDate(new Date(item.created))) {
-                    console.warn('Date parse error! Customers.js, customer_id = ' + item.id_rent);
-                }
-
-                if (Date.parse(item.created) > Date.parse(acc.created)) {
-                    acc = item;
-                }
-
-                return acc;
-                
-            }, null);
-
-            return lastCustomer;
+    customerById(state) {
+      return customer_id => {
+        const customer = state.customers.find(i => i.id_rent === customer_id);
+        return customer;
+      };
+    },
+    lastCustomer(state) {
+      const lastCustomer = state.customers.reduce((acc, item) => {
+        if (acc === null) {
+          acc = item;
         }
-    },
-    mutations: {
-        customers(state, customers) {
-            state.customers = customers;
 
-            const prepare = (customers = []) => {
-                const result = {};
+        if (!isValidDate(new Date(item.created))) {
+          console.warn('Date parse error! Customers.js, customer_id = ' + item.id_rent);
+        }
 
-                for (let customer of customers) {
-                    result[customer.id_rent] = customer;
-                }
+        if (Date.parse(item.created) > Date.parse(acc.created)) {
+          acc = item;
+        }
 
-                return result;
-            };
+        return acc;
+        
+      }, null);
 
-            state.newCustomers = prepare(customers);
-        },
-        unsetCustomers(state) {
-            state.customers = [];
-        },
-    },
-    actions: {
-        getCustomers({ commit, getters }) {
-            return new Promise((resolve, reject) => {
-                const queue = [
-                    { cmd: 'getCustomers' }
-                ];
-                const url = getters.url;
-                const token = localStorage.getItem('user-token');
-
-                axios({ 
-                    url,
-                    data: {
-                        queue,
-                        token
-                    },
-                    method: 'POST',
-                })
-                .then(resp => {
-                    commit('customers', resp.data.customers);
-                    resolve(true);
-                }).
-                catch(err => {
-                    reject(err);
-                });
-            });
-        },
-        setCustomer({ commit, getters }, customer) {
-            return new Promise((resolve, reject) => {
-                axios({
-                    method: 'post',
-                    url: getters.url,
-                    data: {
-                        queue: [
-                            { cmd: 'setCustomer', value: customer },
-                            { cmd: 'getCustomers'},
-                        ],
-                        token: localStorage.getItem('user-token')
-                    },                 
-                })
-                .then(r => {
-                    commit('customers', r.data.customers);
-                })
-                .catch(err => {
-                    reject(err);
-                });
-            });
-        },
+      return lastCustomer;
     }
+  },
+  mutations: {
+    customers(state, customers) {
+      state.customers = customers;
+    },
+    unsetCustomers(state) {
+      state.customers = [];
+    },
+  },
+  actions: {
+    async getCustomers({ commit }) {
+      const response = await axios.get('/api/customers');
+
+      if (response.data) {
+        commit('customers', response.data);
+      }
+    },
+    setCustomer({ commit, getters }, customer) {
+      return new Promise((resolve, reject) => {
+        axios({
+          method: 'post',
+          url: getters.url,
+          data: {
+            queue: [
+              { cmd: 'setCustomer', value: customer },
+              { cmd: 'getCustomers'},
+            ],
+            token: localStorage.getItem('user-token')
+          },                 
+        })
+        .then(r => {
+          commit('customers', r.data.customers);
+        })
+        .catch(err => {
+          reject(err);
+        });
+      });
+    },
+  }
 }

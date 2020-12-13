@@ -57,7 +57,7 @@ export default new Router({
         },
         {
             path: '/customers',
-            component: Customers,
+            component: () => import('@/views/Customers'),
             beforeEnter: ifAuthenticated,
         },
         {

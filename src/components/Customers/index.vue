@@ -1,6 +1,7 @@
 <template>
     <div class="customer">
-        <table class="customer__table">
+        customers
+        <!-- <table class="customer__table">
             <tr>
                 <th>id</th>
                 <th>ФИО</th>
@@ -22,67 +23,46 @@
 
         <Dialog v-if="show" @close="onClose()">
             <Details :customer="customer" @close="onClose()" />
-        </Dialog>
+        </Dialog> -->
 
     </div>
 </template>
 
 <script>
-    import Details from './details';
-    import Dialog  from '@/components/Dialog';
-    import copy from '@/functions/copy';
+    // import Details from './details';
+    // import Dialog  from '@/components/Dialog';
 
     export default {
-        components: {
-            Details,
-            Dialog
+        // components: {
+        //     Details,
+        //     Dialog
+        // },
+        props: {
+            customers: Array,
         },
-        beforeCreate() {
-            // this.$store.dispatch('getCustomers')
-        },
-        data() {
-            return {
-                customer: {},
-                show: false
-            }
-        },
-        methods: {
-            onClick(customer) {
-                this.customer = customer;
-                this.show = true;
-            },
-            addCustomer() {
-                this.show = true;
-                this.customer = {};
-            },
-            onClose() {
-                this.show = false;
-            },
-            preparePhone() {
-                // const phone = new Inputmask("+7 (999) 999-99-99");
-                // phone.mask(this.$refs.phone);
-            },
-        },
-        computed: {
-            customers() {
-                const customers = copy(this.$store.getters.customers);
-                return customers.reduce((acc, item) => {
-
-                    if (!item.phone || item.phone.length < 11) {
-                        item.formatPhone = item.phone;
-                        acc.push(item);
-                        return acc;
-                    }
-
-                    const i = item.phone;
-
-                    item.formatPhone = `+${i[0]} (${i[1]}${i[2]}${i[3]}) ${i[4]}${i[5]}${i[6]}-${i[7]}${i[8]}-${i[9]}${i[10]}`;
-
-                    acc.push(item);
-                    return acc;
-                }, []);
-            }
-        }
+        // data() {
+        //     return {
+        //         customer: {},
+        //         show: false
+        //     }
+        // },
+        // methods: {
+        //     onClick(customer) {
+        //         this.customer = customer;
+        //         this.show = true;
+        //     },
+        //     addCustomer() {
+        //         this.show = true;
+        //         this.customer = {};
+        //     },
+        //     onClose() {
+        //         this.show = false;
+        //     },
+        //     preparePhone() {
+        //         // const phone = new Inputmask("+7 (999) 999-99-99");
+        //         // phone.mask(this.$refs.phone);
+        //     },
+        // },
     }
 </script>
 

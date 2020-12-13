@@ -39,6 +39,7 @@
       this.$store.dispatch('getOrders');
       this.$store.dispatch('getSubOrders');
       this.$store.dispatch('getTariffs');
+      this.$store.dispatch('getCustomers');
 
       if (!this.$store.getters.isAuthenticated) {
         this.$router.push('/#/login');
