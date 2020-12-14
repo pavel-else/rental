@@ -2,7 +2,13 @@
   <default-layout>
     <div class="container">
       <div class="customers-page">
-        {{ customers }}
+        <template v-for="customer in customers">
+          <customer-template
+            class="customers-page__item"
+            :key="customer.id_rent"
+            :customer="customer"
+          />
+        </template>
       </div>
     </div>
   </default-layout>
@@ -10,13 +16,13 @@
 
 <script>
 import DefaultLayout from '@/layouts/default';
-import Customers from '@/components/Customers';
+import CustomerTemplate from '@/components/customers/customer-template';
 
 export default {
   name: 'Customers',
   components: {
     DefaultLayout,
-    Customers,
+    CustomerTemplate,
   },
   computed: {
     customers() {
@@ -27,8 +33,11 @@ export default {
 </script>
 
 <style lang="scss">
-.main-page {
+.customers-page {
   width: 100%;
-  display: flex;
+
+  &__item {
+    margin-bottom: 10px;
+  }
 }
 </style>

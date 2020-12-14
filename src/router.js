@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import store from '@/store'
 
 import History           from '@/components/History';
-import Customers         from '@/components/Customers';
 
 import RentalPointInfo from '@/components/Options/RentalPointInfo';
 import GeneralSettings from '@/components/Options/GeneralSettings';
