@@ -1,5 +1,6 @@
 import axios from 'axios';
 import isValidDate from '@/functions/isValidDate';
+import prepareCustomers from '@/functions/prepareCustomers';
 
 export default {
   state: {
@@ -49,7 +50,8 @@ export default {
       const response = await axios.get('/api/customers');
 
       if (response.data) {
-        commit('customers', response.data);
+        const customers = prepareCustomers(response.data);
+        commit('customers', customers);
       }
     },
     setCustomer({ commit, getters }, customer) {
@@ -63,7 +65,7 @@ export default {
               { cmd: 'getCustomers'},
             ],
             token: localStorage.getItem('user-token')
-          },                 
+          },
         })
         .then(r => {
           commit('customers', r.data.customers);

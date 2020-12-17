@@ -56,8 +56,22 @@ export default new Router({
         },
         {
             path: '/customers',
-            component: () => import('@/views/Customers'),
+            component: {
+                render(c) { return c('router-view') }
+            },
             beforeEnter: ifAuthenticated,
+            children: [
+                {
+                    path: '/',
+                    name: 'Customers',
+                    component: () => import('@/views/Customers/Customers'),
+                },
+                {
+                    path: '/create',
+                    name: 'CustomersCreate',
+                    component: () => import('@/views/Customers/Create')
+                }
+            ],
         },
         {
             path: '/history',

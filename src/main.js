@@ -17,6 +17,8 @@ Vue.use(Vuetify);
 
 Vue.config.productionTip = false
 
+window.Vue = Vue;
+
 new Vue({
   router,
   store,

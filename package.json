@@ -14,6 +14,7 @@
     "dayjs": "^1.9.7",
     "inputmask": "^4.0.9",
     "moment": "^2.29.1",
+    "v-easy-dialog": "^1.0.5",
     "vue": "^2.6.12",
     "vue-multiselect": "^2.1.6",
     "vue-router": "^3.4.9",
@@ -47,6 +48,9 @@
     },
     "parserOptions": {
       "parser": "babel-eslint"
+    },
+    "globals": {
+      "Vue": true
     }
   },
   "postcss": {

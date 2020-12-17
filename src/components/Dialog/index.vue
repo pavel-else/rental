@@ -1,58 +1,45 @@
 <template>
-    <div class="dialog">
-        <div class="background" @click="close()">
-        </div>
-        <div class="modal">
-            <slot></slot>
-            <div class="details__close" @click="close()"></div>
-        </div>
-    </div>
+  <div class="app-dialog">
+    <div class="app-dialog__body tmp">dialog</div>
+    <div class="app-dialog__overlay"></div>
+  </div>
 </template>
 
 <script>
-    export default {
-        methods: {
-            close() {
-                this.$emit('close');
-            }
-        }
+import Vue from 'vue';
+
+
+export default Vue.component('AppDialog', {
+  data() {
+    return {
+      simpleDialog: true,
     };
+  },
+});
 </script>
 
-<style lang="sass" scoped>
-.dialog 
-    position: absolute
-    top: 0
-    left: 0
-    width: 100vw
-    display: flex
-    justify-content: center
-    margin-bottom: 100px
+<style lang="scss" scoped>
+.app-dialog {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    .background 
-        position: fixed
-        top: 0
-        left: 0
-        width: 100vw
-        min-height: 100vh
-        padding-top: 50px
-        display: flex
-        justify-content: center
-        align-items: flex-start
-        background-color: rgba(0, 0, 0, .9)
-        z-index: 100
-    
+  &__overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, .5);
+  }
 
-    .modal 
-        position: relative
-        top: 50px
-        min-width: 350px
-        min-height: 120px
-        padding: 10px 20px
-        border: 1px solid #333
-        z-index: 120
-        background: #000
-        box-shadow: 0 0 100px rgba(0,0,0,1)
-
+  &__body {
+    width: 300px;
+    height: 200px;
+  }
+}
 </style>

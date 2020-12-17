@@ -2,6 +2,7 @@
   <default-layout>
     <div class="container">
       <div class="customers-page">
+        <router-link :to="{ name: 'CustomersCreate' }">Добавить</router-link>
         <template v-for="customer in customers">
           <customer-template
             class="customers-page__item"
@@ -16,7 +17,7 @@
 
 <script>
 import DefaultLayout from '@/layouts/default';
-import CustomerTemplate from '@/components/customers/customer-template';
+import CustomerTemplate from '@/components/Customers/customer-template';
 
 export default {
   name: 'Customers',
